@@ -9,7 +9,9 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.hibernate.envers.Audited;
 
+@Audited
 @Entity
 @Setter
 @Getter
@@ -51,11 +53,5 @@ public class User {
 
     @OneToMany(mappedBy = "IQP")
     private List<Fiche> fichesIQP;
-
-    @OneToMany(mappedBy = "user")
-    private List<UserHistory> histories;
-
-    @OneToMany(mappedBy = "modificateur")
-    private List<UserHistory> userHistories;
 
 }

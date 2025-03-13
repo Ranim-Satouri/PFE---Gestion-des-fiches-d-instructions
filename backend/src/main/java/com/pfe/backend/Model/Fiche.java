@@ -7,12 +7,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+
+@Audited
 public class Fiche {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +42,7 @@ public class Fiche {
     @JoinColumn(name = "idZone", nullable = false) // Clé étrangère
     private Zone zone;
 
+    @Audited
     @ManyToOne // Plusieurs fiches peuvent appartenir à une seule zone
     @JoinColumn(name = "idProduit", nullable = false) // Clé étrangère
     private Produit produit;
@@ -52,7 +56,5 @@ public class Fiche {
     @ManyToOne
     @JoinColumn(name = "idUser", nullable = false)
     private User IQP;
-
-    @OneToMany(mappedBy = "fiches") //(mappedBy = "fiche", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FicheHistory> ficheHistories;
 }
+
