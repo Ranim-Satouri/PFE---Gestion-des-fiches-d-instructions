@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import java.util.List;
 import org.hibernate.envers.Audited;
@@ -39,22 +40,27 @@ public class Fiche {
     private byte[] FicheAQL;
 
     @ManyToOne // Plusieurs fiches peuvent appartenir à une seule zone
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idZone", nullable = false) // Clé étrangère
     private Zone zone;
 
-    @Audited
+
     @ManyToOne // Plusieurs fiches peuvent appartenir à une seule zone
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idProduit", nullable = false) // Clé étrangère
     private Produit produit;
 
     @ManyToOne
-    @JoinColumn(name = "idUser", nullable = false)
+    @JoinColumn(name = "id_preparateur", nullable = false)
     private User preparateur;
+
     @ManyToOne
-    @JoinColumn(name = "idUser", nullable = false)
+    @JoinColumn(name = "id_IPDF", nullable = false)
     private User IPDF;
+
     @ManyToOne
-    @JoinColumn(name = "idUser", nullable = false)
+    @JoinColumn(name = "id_IQP", nullable = false)
     private User IQP;
+
 }
 
