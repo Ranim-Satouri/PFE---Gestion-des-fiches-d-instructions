@@ -62,5 +62,6 @@ public class Fiche {
     @JoinColumn(name = "id_IQP", nullable = false)
     private User IQP;
 
+
 }
 
