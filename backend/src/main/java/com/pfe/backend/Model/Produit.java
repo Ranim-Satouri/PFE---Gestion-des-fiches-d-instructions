@@ -22,11 +22,47 @@ public class Produit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idProduit;
     private String nomProduit;
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idFamille", nullable = false)
     private Famille famille;
 
     @OneToMany(mappedBy = "produit")
     private List<Fiche> fiches;
+
+    public long getIdProduit() {
+        return idProduit;
+    }
+
+    public void setIdProduit(long idProduit) {
+        this.idProduit = idProduit;
+    }
+
+    // Getter et Setter pour 'nomProduit'
+    public String getNomProduit() {
+        return nomProduit;
+    }
+
+    public void setNomProduit(String nomProduit) {
+        this.nomProduit = nomProduit;
+    }
+
+    // Getter et Setter pour 'famille'
+    public Famille getFamille() {
+        return famille;
+    }
+
+    public void setFamille(Famille famille) {
+        this.famille = famille;
+    }
+
+    // Getter et Setter pour 'fiches'
+    public List<Fiche> getFiches() {
+        return fiches;
+    }
+
+    public void setFiches(List<Fiche> fiches) {
+        this.fiches = fiches;
+    }
 }

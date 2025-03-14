@@ -11,8 +11,6 @@ import java.util.List;
 import org.hibernate.envers.Audited;
 
 @Entity
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -39,28 +37,125 @@ public class Fiche {
     @Column(columnDefinition = "LONGBLOB")
     private byte[] FicheAQL;
 
-    @ManyToOne // Plusieurs fiches peuvent appartenir à une seule zone
+    @ManyToOne(cascade = CascadeType.ALL) // Plusieurs fiches peuvent appartenir à une seule zone
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idZone", nullable = false) // Clé étrangère
     private Zone zone;
 
 
-    @ManyToOne // Plusieurs fiches peuvent appartenir à une seule zone
+    @ManyToOne(cascade = CascadeType.ALL) // Plusieurs fiches peuvent appartenir à une seule zone
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idProduit", nullable = false) // Clé étrangère
     private Produit produit;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_preparateur", nullable = false)
     private User preparateur;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_IPDF", nullable = false)
     private User IPDF;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_IQP", nullable = false)
     private User IQP;
 
+    // Getters and Setters
+
+    public long getIdFiche() {
+        return idFiche;
+    }
+
+    public void setIdFiche(long idFiche) {
+        this.idFiche = idFiche;
+    }
+
+    public String getNomFiche() {
+        return nomFiche;
+    }
+
+    public void setNomFiche(String nomFiche) {
+        this.nomFiche = nomFiche;
+    }
+
+    public FicheStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(FicheStatus status) {
+        this.status = status;
+    }
+
+    public String getCommentaire() {
+        return commentaire;
+    }
+
+    public void setCommentaire(String commentaire) {
+        this.commentaire = commentaire;
+    }
+
+    public String getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(String expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public byte[] getPdf() {
+        return pdf;
+    }
+
+    public void setPdf(byte[] pdf) {
+        this.pdf = pdf;
+    }
+
+    public byte[] getFicheAQL() {
+        return FicheAQL;
+    }
+
+    public void setFicheAQL(byte[] ficheAQL) {
+        this.FicheAQL = ficheAQL;
+    }
+
+    public Zone getZone() {
+        return zone;
+    }
+
+    public void setZone(Zone zone) {
+        this.zone = zone;
+    }
+
+    public Produit getProduit() {
+        return produit;
+    }
+
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+    }
+
+    public User getPreparateur() {
+        return preparateur;
+    }
+
+    public void setPreparateur(User preparateur) {
+        this.preparateur = preparateur;
+    }
+
+    public User getIPDF() {
+        return IPDF;
+    }
+
+    public void setIPDF(User IPDF) {
+        this.IPDF = IPDF;
+    }
+
+    public User getIQP() {
+        return IQP;
+    }
+
+    public void setIQP(User IQP) {
+        this.IQP = IQP;
+    }
 }
 
