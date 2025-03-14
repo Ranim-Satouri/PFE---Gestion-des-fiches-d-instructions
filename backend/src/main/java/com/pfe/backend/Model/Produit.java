@@ -22,11 +22,14 @@ public class Produit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idProduit;
     private String nomProduit;
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idFamille", nullable = false)
     private Famille famille;
 
     @OneToMany(mappedBy = "produit")
     private List<Fiche> fiches;
+
+   
 }

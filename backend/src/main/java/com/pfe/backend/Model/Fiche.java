@@ -39,26 +39,26 @@ public class Fiche {
     @Column(columnDefinition = "LONGBLOB")
     private byte[] FicheAQL;
 
-    @ManyToOne // Plusieurs fiches peuvent appartenir à une seule zone
+    @ManyToOne(cascade = CascadeType.ALL) // Plusieurs fiches peuvent appartenir à une seule zone
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idZone", nullable = false) // Clé étrangère
     private Zone zone;
 
 
-    @ManyToOne // Plusieurs fiches peuvent appartenir à une seule zone
+    @ManyToOne(cascade = CascadeType.ALL) // Plusieurs fiches peuvent appartenir à une seule zone
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idProduit", nullable = false) // Clé étrangère
     private Produit produit;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_preparateur", nullable = false)
     private User preparateur;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_IPDF", nullable = false)
     private User IPDF;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_IQP", nullable = false)
     private User IQP;
 
