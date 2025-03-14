@@ -19,24 +19,7 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     @Bean
     //awl haja ylawj aleha spring nrml
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
-//    {
-//        //to do the configuration
-//        return http
-//                .csrf(csrf -> csrf.disable()) // Disable CSRF protection
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/api/v1/auth/**").permitAll() // Allow public endpoints
-//                        .anyRequest().authenticated() // Protect all other endpoints
-//                )
-//                .sessionManagement(session -> session
-//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless session management
-//                )
-//                .authenticationProvider(authenticationProvider)
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-//                .build();
-//
 //    //we want every request to be authentifcated whoch means the session should not be stored it should be stateless
-//    }
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
