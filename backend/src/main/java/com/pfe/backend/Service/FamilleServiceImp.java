@@ -20,8 +20,6 @@ public class FamilleServiceImp implements FamilleService{
 
     @Override
     public ResponseEntity<List<Famille>> getFamilles() {
-        List<Famille> familles = familleRepository.findAll();
-        familles.forEach(fi -> System.out.println("Famille trouvée : " + fi.getIdFamille() + " - " + fi.getNomFamille()));
-        return ResponseEntity.ok().body(familles);
+        return ResponseEntity.ok().body(familleRepository.findAll());
     }
 }
