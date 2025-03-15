@@ -3,6 +3,7 @@ package com.pfe.backend.Service;
 
 import com.pfe.backend.Model.Produit;
 import com.pfe.backend.Repository.ProduitRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ProduitServiceImp implements ProduitService{
     @Autowired
     private ProduitRepository produitRepository;

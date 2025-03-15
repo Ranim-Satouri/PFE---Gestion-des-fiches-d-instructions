@@ -1,6 +1,6 @@
 package com.pfe.backend.Auth.Config;
 
-import com.pfe.backend.Repository.userRepository;
+import com.pfe.backend.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final userRepository repository;
+    private final UserRepository repository;
     // a bean should always be public
     @Bean
     public UserDetailsService userDetailsService()

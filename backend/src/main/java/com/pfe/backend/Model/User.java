@@ -1,5 +1,6 @@
 package com.pfe.backend.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -48,16 +49,10 @@ public class User implements UserDetails {
     )
     private Set<Zone> zones = new HashSet<>();
 
-    @OneToMany(mappedBy = "preparateur")
-    private List<Fiche> fichesPreparateur;
 
-    @OneToMany(mappedBy = "IPDF")
-    private List<Fiche> fichesIPDF;
-
-    @OneToMany(mappedBy = "IQP")
-    private List<Fiche> fichesIQP;
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }

@@ -38,14 +38,16 @@ public class SecurityConfiguration {
 //    //we want every request to be authentifcated whoch means the session should not be stored it should be stateless
 //    }
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers("/api/v1/auth/**").permitAll()
-                                .requestMatchers("/api/famille/**").permitAll()
+                                .requestMatchers("/famille/**").permitAll()
+                                .requestMatchers("/fiche/**").permitAll()
+                                .requestMatchers("/produit/**").permitAll()
+                                .requestMatchers("/ficheAudit/**").permitAll()
                                 .anyRequest().authenticated()
                 );
         http.addFilterBefore(jwtAuthFilter,UsernamePasswordAuthenticationFilter.class);

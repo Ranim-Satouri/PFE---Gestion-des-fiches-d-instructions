@@ -1,10 +1,7 @@
 package com.pfe.backend.Model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -18,16 +15,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Audited
-
+@ToString
 public class Zone {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idZone;
+    private long idZone;
     private String nom;
     @ManyToMany(mappedBy = "zones") //Le mappedBy fait référence à l'attribut zones dans User
     private Set<User> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "zone")
-    private List<Fiche> fiches;
 
 }

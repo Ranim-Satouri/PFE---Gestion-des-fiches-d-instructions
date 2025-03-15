@@ -20,8 +20,8 @@ public class FicheController {
         return ficheService.addFiche(fiche);
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<Fiche>> getFiches(){
+    @GetMapping("/getAllFiches")
+    public ResponseEntity<List<Fiche>> getAllFiches(){
         return ficheService.getFiches();
     }
 }
