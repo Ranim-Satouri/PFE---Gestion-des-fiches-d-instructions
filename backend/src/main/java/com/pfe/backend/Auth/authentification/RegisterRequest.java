@@ -21,4 +21,5 @@ public class RegisterRequest {
     private String genre;
     private String num;
     private User.UserStatus status;
+    private Long actionneur;
 }
