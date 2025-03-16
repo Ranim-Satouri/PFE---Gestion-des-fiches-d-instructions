@@ -1,23 +1,16 @@
 package com.pfe.backend.Service;
 
-import com.pfe.backend.Model.Fiche;
-import com.pfe.backend.Model.Produit;
-import com.pfe.backend.Model.User;
-import com.pfe.backend.Model.Zone;
+import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.FicheRepository;
 
 import com.pfe.backend.Repository.ProduitRepository;
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.ZoneRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -28,96 +21,117 @@ public class FicheServiceImp implements FicheService {
     private UserRepository userRepository;
     private ProduitRepository produitRepository;
     private ZoneRepository zoneRepository;
-    private FicheAuditService ficheAuditService;
-
 
     @Override
-    public ResponseEntity<Fiche> addFiche(Fiche fiche) {
+    public Fiche addFiche(Fiche fiche) {
 
-        Optional<User> ipdf = userRepository.findById(fiche.getIPDF().getIdUser());
-        Optional<User> iqp = userRepository.findById(fiche.getIQP().getIdUser());
-        Optional<User> preparateur = userRepository.findById(fiche.getPreparateur().getIdUser());
-        Optional<Produit> produit = produitRepository.findById(fiche.getProduit().getIdProduit());
-        Optional<Zone> zone = zoneRepository.findById(fiche.getZone().getIdZone());
+        User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));;
+        User iqp = userRepository.findById(fiche.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));;
+        User preparateur = userRepository.findById(fiche.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));;
+        Produit produit = produitRepository.findById(fiche.getProduit().getIdProduit()).orElseThrow(() -> new RuntimeException("Produit introuvable"));;
+        Zone zone = zoneRepository.findById(fiche.getZone().getIdZone()).orElseThrow(() -> new RuntimeException("Zone introuvable"));;
+        User actionneur = userRepository.findById(fiche.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));;
 
-        if(ipdf.isPresent() && iqp.isPresent() && preparateur.isPresent() && produit.isPresent() && zone.isPresent()) {
-            fiche.setIPDF(ipdf.get());
-            fiche.setIQP(iqp.get());
-            fiche.setPreparateur(preparateur.get());
-            fiche.setProduit(produit.get());
-            fiche.setZone(zone.get());
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-
-        return ResponseEntity.ok().body(ficheRepository.save(fiche));
+        fiche.setIPDF(ipdf);
+        fiche.setIQP(iqp);
+        fiche.setPreparateur(preparateur);
+        fiche.setProduit(produit);
+        fiche.setZone(zone);
+        fiche.setActionneur(actionneur);
+        fiche.setAction(Fiche.FicheAction.INSERT);
+        return ficheRepository.save(fiche);
     }
 
     @Override
-    public ResponseEntity<List<Fiche>> getFiches() {
-        return ResponseEntity.ok().body(ficheRepository.findAll());
+    public List<Fiche> getFiches() {
+        return ficheRepository.findAll();
     }
 
     @Override
-    public ResponseEntity<Fiche> updateFiche(Fiche fiche, long idModificateur) {
+    public Fiche updateFiche(Fiche fiche) {
 
-        Optional<User> ipdf = userRepository.findById(fiche.getIPDF().getIdUser());
-        Optional<User> iqp = userRepository.findById(fiche.getIQP().getIdUser());
-        Optional<User> preparateur = userRepository.findById(fiche.getPreparateur().getIdUser());
-        Optional<Produit> produit = produitRepository.findById(fiche.getProduit().getIdProduit());
-        Optional<Zone> zone = zoneRepository.findById(fiche.getZone().getIdZone());
+        User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
+        User iqp = userRepository.findById(fiche.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));
+        User preparateur = userRepository.findById(fiche.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));
+        Produit produit = produitRepository.findById(fiche.getProduit().getIdProduit()).orElseThrow(() -> new RuntimeException("Produit introuvable"));
+        Zone zone = zoneRepository.findById(fiche.getZone().getIdZone()).orElseThrow(() -> new RuntimeException("Zone introuvable"));;
+        User actionneur = userRepository.findById(fiche.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
 
-        if(ipdf.isPresent() && iqp.isPresent() && preparateur.isPresent() && produit.isPresent() && zone.isPresent()) {
-            fiche.setIPDF(ipdf.get());
-            fiche.setIQP(iqp.get());
-            fiche.setPreparateur(preparateur.get());
-            fiche.setProduit(produit.get());
-            fiche.setZone(zone.get());
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        return ResponseEntity.ok().body(ficheRepository.save(fiche));
+        fiche.setIPDF(ipdf);
+        fiche.setIQP(iqp);
+        fiche.setPreparateur(preparateur);
+        fiche.setProduit(produit);
+        fiche.setZone(zone);
+        fiche.setActionneur(actionneur);
+        fiche.setAction(Fiche.FicheAction.UPDATE);
+        return ficheRepository.save(fiche);
+
+
     }
 
     @Override
-    public ResponseEntity<Fiche> deleteFiche(long idFiche, long idSupprimateur) {
-        Optional<Fiche> fiche = ficheRepository.findById(idFiche);
-        if(fiche.isPresent()) {
-            Fiche ficheDeleted = fiche.get();
-            ficheDeleted.setStatus(Fiche.FicheStatus.DELETED);
+    public Fiche deleteFiche(long idFiche, long idSupprimateur) {
+        Fiche fiche = ficheRepository.findById(idFiche).orElseThrow(() -> new RuntimeException("fiche introuvable"));
+        User actionneur = userRepository.findById(idSupprimateur).orElseThrow(() -> new RuntimeException("actionneur introuvable"));
 
-            return ResponseEntity.ok().body(ficheRepository.save(ficheDeleted));
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        Fiche ficheDeleted = fiche;
+        ficheDeleted.setStatus(Fiche.FicheStatus.DELETED);
+        ficheDeleted.setActionneur(actionneur);
+        ficheDeleted.setAction(Fiche.FicheAction.DELETE);
+        return ficheRepository.save(ficheDeleted);
     }
 
     @Override
-    public ResponseEntity<Fiche> ValidationIPDF(long idFiche, long idIPDF , Fiche.FicheStatus status , String commentaire) {
-        Optional<Fiche> fiche = ficheRepository.findById(idFiche);
-        if(fiche.isPresent()) {
-            Fiche ficheipdf = fiche.get();
-            ficheipdf.setCommentaire(commentaire);
-            ficheipdf.setStatus(status);
-            return ResponseEntity.ok().body(ficheRepository.save(ficheipdf));
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    public Fiche ValidationIPDF(long idFiche, long idIPDF , Fiche.FicheStatus status , String commentaire) {
+        Fiche fiche = ficheRepository.findById(idFiche).orElseThrow(() -> new RuntimeException("fiche introuvable"));
+        User actionneur = userRepository.findById(idIPDF).orElseThrow(() -> new RuntimeException("actionneur introuvable"));
+
+        Fiche ficheipdf = fiche;
+        ficheipdf.setCommentaire(commentaire);
+        ficheipdf.setStatus(status);
+        ficheipdf.setActionneur(actionneur);
+        ficheipdf.setAction(Fiche.FicheAction.APPROUVE);
+        return ficheRepository.save(ficheipdf);
+
     }
 
     @Override
-    public ResponseEntity<Fiche> ValidationIQP(long idFiche, long idIQP , Fiche.FicheStatus status , byte[] ficheAQL) {
-        Optional<Fiche> fiche = ficheRepository.findById(idFiche);
-        if(fiche.isPresent()) {
-            Fiche ficheiqp = fiche.get();
-            ficheiqp.setStatus(Fiche.FicheStatus.ACCEPTEDIQP);
-            ficheiqp.setFicheAQL(ficheAQL);
+    public Fiche ValidationIQP(long idFiche, long idIQP , Fiche.FicheStatus status , byte[] ficheAQL) {
+        Fiche fiche = ficheRepository.findById(idFiche).orElseThrow(() -> new RuntimeException("fiche introuvable"));
+        User actionneur = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("actionneur introuvable"));
 
-            return ResponseEntity.ok().body(ficheRepository.save(ficheiqp));
+        Fiche ficheiqp = fiche;
+        ficheiqp.setStatus(Fiche.FicheStatus.ACCEPTEDIQP);
+        ficheiqp.setFicheAQL(ficheAQL);
+        ficheiqp.setActionneur(actionneur);
+        ficheiqp.setAction(Fiche.FicheAction.APPROUVE);
+        return ficheRepository.save(ficheiqp);
+    }
+
+    public List<Fiche> getFichesByPreparateur(Long idPreparateur) {
+        User preparateur = userRepository.findById(idPreparateur).orElseThrow(() -> new RuntimeException("user introuvable"));
+        if(preparateur.getRole().equals(Role.PREPARATEUR)){
+            return ficheRepository.findFicheByPreparateur(preparateur);
         }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            throw new RuntimeException("L'utilisateur n'a pas le rôle Preparateur requis.");
         }
+    }
+
+    public List<Fiche> getFichesSheetByIPDF(Long idIPDF) {
+        User ipdf = userRepository.findById(idIPDF).orElseThrow(() -> new RuntimeException("user introuvable"));
+        if(ipdf.getRole().equals(Role.PREPARATEUR)){
+            return ficheRepository.findFicheByIPDF(ipdf);
+        }
+        throw new RuntimeException("L'utilisateur n'a pas le rôle IPDF requis.");
+    }
+    public List<Fiche> getFichesSheetByIQP(Long idIQP) {
+        User iqp = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("user introuvable"));
+        if(iqp.getRole().equals(Role.PREPARATEUR)){
+            return ficheRepository.findFicheByIQP(iqp);
+        }else{
+            throw new RuntimeException("L'utilisateur n'a pas le rôle IQP requis.");
+        }
+
     }
 
 

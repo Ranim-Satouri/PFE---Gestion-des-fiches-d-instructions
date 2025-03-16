@@ -12,7 +12,6 @@ public class FicheHistoryDto {
     private int revision;
     private String timestamp;
     private String type;
-    private String modifiedBy;
     private Fiche fiche;
 
     public FicheHistoryDto(int revision, long timestamp, String type,  Fiche fiche) {

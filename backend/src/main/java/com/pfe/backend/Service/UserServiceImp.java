@@ -2,14 +2,14 @@ package com.pfe.backend.Service;
 
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
-import com.pfe.backend.Repository.userRepository;
+import com.pfe.backend.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImp implements UserIservice{
     @Autowired
-    private userRepository userRepo;
+    private UserRepository userRepo;
     @Override
     public void changeUserRole(long idUser, Role newRole, long idActionneur)
     {
