@@ -43,7 +43,6 @@ public class Fiche {
     @JoinColumn(name = "idZone", nullable = false) // Clé étrangère
     private Zone zone;
 
-
     @ManyToOne(cascade = CascadeType.ALL) // Plusieurs fiches peuvent appartenir à une seule zone
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idProduit", nullable = false) // Clé étrangère
@@ -61,6 +60,16 @@ public class Fiche {
     @JoinColumn(name = "id_IQP", nullable = false)
     private User IQP;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private FicheAction action;
+    public enum FicheAction{
+        INSERT , UPDATE , DELETE , APPROUVE;
+    }
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idActionneur", nullable = false)
+    private User actionneur;
 
 }
 

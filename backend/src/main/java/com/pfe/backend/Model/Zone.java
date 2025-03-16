@@ -21,6 +21,7 @@ public class Zone {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idZone;
     private String nom;
+
     @ManyToMany(mappedBy = "zones") //Le mappedBy fait référence à l'attribut zones dans User
     private Set<User> users = new HashSet<>();
 
