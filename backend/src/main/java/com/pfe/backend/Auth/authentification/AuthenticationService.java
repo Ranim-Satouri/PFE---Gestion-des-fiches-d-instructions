@@ -38,7 +38,7 @@ public class AuthenticationService {
                     .matricule(request.getMatricule())
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.ADMIN) // Attribuer un rôle spécifique (par exemple, ADMIN)
+                    .role(Role.SUPERUSER) // Attribuer un rôle spécifique (par exemple, ADMIN)
                     .genre(request.getGenre())
                     .num(request.getNum())
                     .status(request.getStatus() != null ? request.getStatus() : User.UserStatus.ACTIVE)
@@ -78,5 +78,17 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken).build();
 
+    }
+    public void updatePassword(Long idUser, String newPassword, Long idActionneur) {
+        User user = repository.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        User actionneur = repository.findById(idActionneur)
+                .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setActionneur(actionneur);
+
+        repository.save(user);
     }
 }

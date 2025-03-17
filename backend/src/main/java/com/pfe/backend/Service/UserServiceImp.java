@@ -37,9 +37,33 @@ public class UserServiceImp implements UserIservice{
         }
     }
     @Override
-    public ResponseEntity<List<User>> getUsers()
+    public ResponseEntity<List<User>> getAllUsers()
     {
         return ResponseEntity.ok().body(userRepo.findAll());
     }
+    @Override
+    public ResponseEntity<List<User>> getUsers()
+    {
+        return ResponseEntity.ok().body(userRepo.findByStatusNot(User.UserStatus.DELETED));
+    }
+    @Override
+    public User updateUser(Long idUser, User updatedUser, Long idActionneur) {
+        User existingUser = userRepo.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        User actionneur = userRepo.findById(idActionneur)
+                .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+        if (updatedUser.getNom() != null) existingUser.setNom(updatedUser.getNom());
+        if (updatedUser.getPrenom() != null) existingUser.setPrenom(updatedUser.getPrenom());
+        if (updatedUser.getEmail() != null) existingUser.setEmail(updatedUser.getEmail());
+        if (updatedUser.getMatricule() != null) existingUser.setMatricule(updatedUser.getMatricule());
+        if (updatedUser.getRole() != null) existingUser.setRole(updatedUser.getRole());
+        if (updatedUser.getGenre() != null) existingUser.setGenre(updatedUser.getGenre());
+        if (updatedUser.getNum() != null) existingUser.setNum(updatedUser.getNum());
+        if (updatedUser.getStatus() != null) existingUser.setStatus(updatedUser.getStatus());
+        existingUser.setActionneur(actionneur);
+       return userRepo.save(existingUser);
+    }
+
 
 }

@@ -37,8 +37,24 @@ public class userController {
         }
     }
     @GetMapping("/getAll")
-    public ResponseEntity<List<User>> getUsers(){
-        return  userIservice.getUsers();
+    public ResponseEntity<List<User>> getAllUsers(){
+        return  userIservice.getAllUsers();
     }
+
+    @GetMapping("/getUsers")
+    public ResponseEntity<?> getUsers(){
+            return ResponseEntity.ok().body(userIservice.getUsers());
+        }
+    @PutMapping("/update/{idUser}")
+    public ResponseEntity<User> updateUser(
+            @PathVariable Long idUser,
+            @RequestBody User updatedUser,
+            @RequestParam Long idActionneur) {
+
+        User updated = userIservice.updateUser(idUser, updatedUser, idActionneur);
+        return ResponseEntity.ok(updated);
+    }
+
+
 }
 
