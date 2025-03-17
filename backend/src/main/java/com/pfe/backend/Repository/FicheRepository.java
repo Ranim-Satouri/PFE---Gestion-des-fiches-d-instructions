@@ -9,7 +9,8 @@ import java.util.List;
 
 @Repository
 public interface FicheRepository extends JpaRepository<Fiche,Long> {
-    List<Fiche> findFicheByPreparateur(User preparateur);
-    List<Fiche> findFicheByIPDF(User IPDF);
-    List<Fiche> findFicheByIQP(User IQP);
+    List<Fiche> findFicheByPreparateurAndActionNot(User preparateur , Fiche.FicheAction action);
+    List<Fiche> findFicheByIPDFAndActionNot(User IPDF , Fiche.FicheAction action);
+    List<Fiche> findFicheByIQPAndActionNot(User IQP , Fiche.FicheAction action);
+    List<Fiche> findByActionNot(Fiche.FicheAction status);
 }

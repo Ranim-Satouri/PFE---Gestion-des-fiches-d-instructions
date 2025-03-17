@@ -1,6 +1,6 @@
 package com.pfe.backend.Controller;
 
-import com.pfe.backend.Model.FicheHistoryDto;
+import com.pfe.backend.DTO.FicheHistoryDto;
 import com.pfe.backend.Service.FicheAuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

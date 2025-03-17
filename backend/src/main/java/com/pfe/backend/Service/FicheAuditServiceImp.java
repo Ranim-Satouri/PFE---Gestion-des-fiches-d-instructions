@@ -2,7 +2,7 @@ package com.pfe.backend.Service;
 
 
 import com.pfe.backend.Model.Fiche;
-import com.pfe.backend.Model.FicheHistoryDto;
+import com.pfe.backend.DTO.FicheHistoryDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;

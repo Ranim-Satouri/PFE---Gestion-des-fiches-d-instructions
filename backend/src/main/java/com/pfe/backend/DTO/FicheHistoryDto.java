@@ -1,6 +1,7 @@
-package com.pfe.backend.Model;
+package com.pfe.backend.DTO;
 
 
+import com.pfe.backend.Model.Fiche;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

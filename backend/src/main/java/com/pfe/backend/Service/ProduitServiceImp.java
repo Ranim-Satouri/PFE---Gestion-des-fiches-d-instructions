@@ -23,16 +23,18 @@ public class ProduitServiceImp implements ProduitService{
 
     @Override
     public ResponseEntity<Produit> addProduit(Produit produit) {
-        System.out.println(produit.getFamille());
 
         Optional<Famille> famille = familleRepository.findById(produit.getFamille().getIdFamille());
         if(famille.isPresent()){
             produit.setFamille(famille.get());
+            if(produit.getNomProduit().isEmpty()){
+                produit.setNomProduit(produit.getRef()+"-"+produit.getIndice());
+            }
+            return ResponseEntity.ok().body(produitRepository.save(produit));
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
-        return ResponseEntity.ok().body(produitRepository.save(produit));
     }
 
     @Override

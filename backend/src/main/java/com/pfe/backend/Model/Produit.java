@@ -20,12 +20,12 @@ public class Produit {
     private long idProduit;
 
     private String nomProduit;
+    private String indice;
+    private String ref;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idFamille", nullable = false)
     private Famille famille;
-
-
    
 }

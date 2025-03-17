@@ -6,6 +6,7 @@ import com.pfe.backend.Service.FicheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 public class FicheController {
     @Autowired
     private FicheService ficheService;
+
 
     @PostMapping("/addFiche")
     public ResponseEntity<?> addFiche(@RequestBody Fiche fiche){
@@ -79,13 +81,8 @@ public class FicheController {
     }
     @GetMapping("/getFichesByPreparateur/{idPreparateur}")
     public ResponseEntity<?> getFichesByPreparateur(@PathVariable Long idPreparateur) {
-        System.out.println("tessst");
         try{
-            List<Fiche> fiches = ficheService.getFichesByPreparateur(idPreparateur);
-            if (fiches.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity<>(fiches, HttpStatus.OK);
+            return new ResponseEntity<>(ficheService.getFichesByPreparateur(idPreparateur), HttpStatus.OK);
         }catch(RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -94,11 +91,7 @@ public class FicheController {
     @GetMapping("/getFichesSheetByIPDF/{idIPDF}")
     public ResponseEntity<?> getFichesSheetByIPDF(@PathVariable Long idIPDF) {
         try {
-            List<Fiche> fiches = ficheService.getFichesSheetByIPDF(idIPDF);
-            if (fiches.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity<>(fiches, HttpStatus.OK);
+            return new ResponseEntity<>(ficheService.getFichesSheetByIPDF(idIPDF), HttpStatus.OK);
         }catch(RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -107,14 +100,9 @@ public class FicheController {
     @GetMapping("/getFichesSheetByIQP/{idIQP}")
     public ResponseEntity<?> getFichesSheetByIQP(@PathVariable Long idIQP) {
         try{
-            List<Fiche> fiches = ficheService.getFichesSheetByIQP(idIQP);
-            if (fiches.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            return new ResponseEntity<>(fiches, HttpStatus.OK);
+            return new ResponseEntity<>(ficheService.getFichesSheetByIQP(idIQP), HttpStatus.OK);
         }catch(RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
 }

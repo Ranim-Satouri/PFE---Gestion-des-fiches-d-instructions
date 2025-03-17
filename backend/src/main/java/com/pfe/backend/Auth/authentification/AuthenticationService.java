@@ -64,6 +64,7 @@ public class AuthenticationService {
                     .build();
         }
     repository.save(user);
+        
     var jwtToken = jwtService.generateToken(user);
     //we need to encode our pwd before saving it so we neeed to inject our passwordencoder Service
         return AuthenticationResponse.builder()
