@@ -1,7 +1,7 @@
 package com.pfe.backend.Service;
 
 
-import com.pfe.backend.Model.FicheHistoryDto;
+import com.pfe.backend.DTO.FicheHistoryDto;
 
 import java.util.List;
 
