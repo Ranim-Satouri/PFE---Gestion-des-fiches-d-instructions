@@ -3,7 +3,7 @@ package com.pfe.backend.Service;
 import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
-import com.pfe.backend.Repository.userRepository;
+import com.pfe.backend.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class UserServiceImp implements UserIservice{
     @Autowired
-    private userRepository userRepo;
+    private UserRepository userRepo;
     @Override
     public void ModifyUserRole(long idUser, Role newRole, long idActionneur)
     {

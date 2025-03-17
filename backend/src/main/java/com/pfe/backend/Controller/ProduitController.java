@@ -17,11 +17,11 @@ public class ProduitController {
     private ProduitService produitService;
 
     @PostMapping("/addProduit")
-    public ResponseEntity<Produit> addFiche(@RequestBody Produit produit){
+    public ResponseEntity<Produit> addProduit(@RequestBody Produit produit){
         return produitService.addProduit(produit);
     }
 
-    @GetMapping("/getAllProduit")
+    @GetMapping("/getAllProduits")
     public ResponseEntity<List<Produit>> getProduits(){
         return produitService.getAllProduit();
     }

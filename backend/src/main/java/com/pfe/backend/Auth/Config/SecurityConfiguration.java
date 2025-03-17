@@ -29,6 +29,10 @@ public class SecurityConfiguration {
                         auth
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers("/famille/**").permitAll()
+                                .requestMatchers("/fiche/**").permitAll()
+                                .requestMatchers("/produit/**").permitAll()
+                                .requestMatchers("/ficheAudit/**").permitAll()
+                                .requestMatchers("/zone/**").permitAll()
                                 .requestMatchers("/user/**").permitAll()
                                 .anyRequest().authenticated()
                 );

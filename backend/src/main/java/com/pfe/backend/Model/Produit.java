@@ -1,10 +1,7 @@
 package com.pfe.backend.Model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -16,11 +13,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Audited
-
+@ToString
 public class Produit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idProduit;
+
     private String nomProduit;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -28,8 +26,6 @@ public class Produit {
     @JoinColumn(name = "idFamille", nullable = false)
     private Famille famille;
 
-    @OneToMany(mappedBy = "produit")
-    private List<Fiche> fiches;
 
    
 }

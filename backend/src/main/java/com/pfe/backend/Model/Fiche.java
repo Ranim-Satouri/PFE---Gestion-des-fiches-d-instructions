@@ -1,34 +1,33 @@
 package com.pfe.backend.Model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import java.util.List;
 import org.hibernate.envers.Audited;
 
 @Entity
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Getter
+@Setter
+@ToString
 @Audited
 public class Fiche {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idFiche;
-    private String nomFiche;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private FicheStatus status;
     public enum FicheStatus{
        PENDING, ACCEPTEDIPDF , ACCEPTEDIQP , REFUSED , EXPIRED ,DELETED;
     }
+
     private String commentaire;
+
     private String expirationDate;
 
     @Lob
@@ -62,6 +61,16 @@ public class Fiche {
     @JoinColumn(name = "id_IQP", nullable = false)
     private User IQP;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private FicheAction action;
+    public enum FicheAction{
+        INSERT , UPDATE , DELETE , APPROUVE;
+    }
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idActionneur", nullable = false)
+    private User actionneur;
 
 }
 

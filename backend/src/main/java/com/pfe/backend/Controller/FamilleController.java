@@ -18,7 +18,7 @@ public class FamilleController {
     private FamilleService familleService;
 
     @PostMapping("/addFamille")
-    public ResponseEntity<Famille> addFiche(@RequestBody Famille famille){
+    public ResponseEntity<Famille> addFamille(@RequestBody Famille famille){
         return familleService.addFamille(famille);
     }
 
