@@ -79,4 +79,16 @@ public class AuthenticationService {
                 .token(jwtToken).build();
 
     }
+    public void updatePassword(Long idUser, String newPassword, Long idActionneur) {
+        User user = repository.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        User actionneur = repository.findById(idActionneur)
+                .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setActionneur(actionneur);
+
+        repository.save(user);
+    }
 }

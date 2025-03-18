@@ -50,6 +50,7 @@ public class Fiche {
     @JoinColumn(name = "idZone", nullable = false) // Clé étrangère
     private Zone zone;
 
+
     @ManyToOne(cascade = CascadeType.ALL) // Plusieurs fiches peuvent appartenir à une seule zone
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idProduit", nullable = false) // Clé étrangère

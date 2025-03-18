@@ -22,7 +22,7 @@ public class FamilleController {
         return familleService.addFamille(famille);
     }
 
-    @GetMapping("/getAllFamilles")
+    @GetMapping("/getAll")
     public ResponseEntity<List<Famille>> getFamilles(){
         return familleService.getFamilles();
     }
