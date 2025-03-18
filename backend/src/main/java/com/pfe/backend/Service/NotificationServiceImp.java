@@ -30,7 +30,7 @@ public class NotificationServiceImp implements NotificationService {
                 + "- **Zone :** " + zoneName + "\n"
                 + "- **Date d'expiration de validation :** " + expirationDate + "\n\n"
                 + "Vous pouvez valider ou rejeter cette fiche en accédant à l'application avant la date d'expiration. Si aucune action n'est effectuée avant cette date, la fiche sera automatiquement marquée comme expirée.\n\n"
-                + "Pour accéder à la fiche, cliquez sur le lien suivant : [Lien vers la fiche dans l'application]\n\n"
+                + "Pour accéder à la fiche, cliquez sur le lien suivant : https://www.youtube.com \n\n"
                 + "Cordialement,\n"
                 + "L'équipe de gestion des fiches\n"
                 + "Sagemcom";

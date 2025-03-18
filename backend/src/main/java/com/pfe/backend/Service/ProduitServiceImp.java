@@ -27,7 +27,7 @@ public class ProduitServiceImp implements ProduitService{
         Optional<Famille> famille = familleRepository.findById(produit.getFamille().getIdFamille());
         if(famille.isPresent()){
             produit.setFamille(famille.get());
-            if(produit.getNomProduit().isEmpty()){
+            if(produit.getNomProduit() == null){
                 produit.setNomProduit(produit.getRef()+"-"+produit.getIndice());
             }
             return ResponseEntity.ok().body(produitRepository.save(produit));

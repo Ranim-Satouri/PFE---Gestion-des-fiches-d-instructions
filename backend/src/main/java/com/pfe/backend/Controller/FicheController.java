@@ -1,14 +1,21 @@
 package com.pfe.backend.Controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Service.FicheService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RequestMapping("/fiche")
@@ -19,13 +26,37 @@ public class FicheController {
 
 
     @PostMapping("/addFiche")
-    public ResponseEntity<?> addFiche(@RequestBody Fiche fiche){
+    public ResponseEntity<?> addFiche(@RequestPart("fiche") String ficheJson ,@RequestPart("filePDF") MultipartFile filePDF ){
         try {
-            return ResponseEntity.ok().body(ficheService.addFiche(fiche));
-        } catch (RuntimeException e) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Fiche fiche = objectMapper.readValue(ficheJson, Fiche.class);
+            return ResponseEntity.ok().body(ficheService.addFiche(fiche , filePDF));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @GetMapping("/pdf/{filename}")
+    public ResponseEntity<Resource> getPdf(@PathVariable String filename) {
+        try {
+            System.out.println("test test");
+            Path filePath = Paths.get("C:\\Users\\Ranim\\Desktop\\pdf_storage\\").resolve(filename);
+            System.out.println(filePath);
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                System.out.println("test test 2");
+                return ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     @GetMapping("/getAllFiches")
     public ResponseEntity<List<Fiche>> getAllFiches(){
@@ -70,7 +101,7 @@ public class FicheController {
             @PathVariable long idFiche,
             @PathVariable long idIQP,
             @RequestParam String status,
-            @RequestParam("ficheAQL") byte[] ficheAQL) {
+            @RequestParam("ficheAQL") String ficheAQL) {
         Fiche.FicheStatus ficheStatus = Fiche.FicheStatus.valueOf(status.toUpperCase());
 
         try {

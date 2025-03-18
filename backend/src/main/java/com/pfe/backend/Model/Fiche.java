@@ -30,13 +30,20 @@ public class Fiche {
 
     private String expirationDate;
 
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] pdf;
+    //@Lob
+    //@Column(columnDefinition = "LONGBLOB")
+    private String pdf;
 
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] FicheAQL;
+    //@Lob
+    //@Column(columnDefinition = "LONGBLOB")
+    private String FicheAQL;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private FicheAction action;
+    public enum FicheAction{
+        INSERT , UPDATE , DELETE , APPROUVE;
+    }
 
     @ManyToOne(cascade = CascadeType.ALL) // Plusieurs fiches peuvent appartenir à une seule zone
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -59,13 +66,6 @@ public class Fiche {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_IQP", nullable = false)
     private User IQP;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private FicheAction action;
-    public enum FicheAction{
-        INSERT , UPDATE , DELETE , APPROUVE;
-    }
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idActionneur", nullable = false)

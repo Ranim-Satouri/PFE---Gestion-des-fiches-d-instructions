@@ -38,7 +38,7 @@ public class AuthenticationService {
                     .matricule(request.getMatricule())
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.ADMIN) // Attribuer un rôle spécifique (par exemple, ADMIN)
+                    .role(Role.SUPERUSER) // Attribuer un rôle spécifique (par exemple, ADMIN)
                     .genre(request.getGenre())
                     .num(request.getNum())
                     .status(request.getStatus() != null ? request.getStatus() : User.UserStatus.ACTIVE)

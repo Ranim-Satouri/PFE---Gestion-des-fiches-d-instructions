@@ -9,7 +9,9 @@ import com.pfe.backend.Repository.ZoneRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -22,9 +24,11 @@ public class FicheServiceImp implements FicheService {
     private ProduitRepository produitRepository;
     private ZoneRepository zoneRepository;
     private NotificationService nService;
+    private FileStorageService fileStorageService;
+
 
     @Override
-    public Fiche addFiche(Fiche fiche) {
+    public Fiche addFiche(Fiche fiche , MultipartFile file) {
 
         User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));;
         User iqp = userRepository.findById(fiche.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));;
@@ -39,7 +43,15 @@ public class FicheServiceImp implements FicheService {
         fiche.setZone(zone);
         fiche.setActionneur(actionneur);
         fiche.setAction(Fiche.FicheAction.INSERT);
-        nService.notifyIPDFAboutFicheInjection(fiche);
+        //nService.notifyIPDFAboutFicheInjection(fiche);
+
+        try{
+            String pdfPath = fileStorageService.saveFile(file);
+            fiche.setPdf(pdfPath);
+        }catch (IOException e){
+            System.out.println("probelme stockage fiche");
+        }
+
         return ficheRepository.save(fiche);
     }
 
@@ -96,7 +108,7 @@ public class FicheServiceImp implements FicheService {
     }
 
     @Override
-    public Fiche ValidationIQP(long idFiche, long idIQP , Fiche.FicheStatus status , byte[] ficheAQL) {
+    public Fiche ValidationIQP(long idFiche, long idIQP , Fiche.FicheStatus status , String ficheAQL) {
         Fiche fiche = ficheRepository.findById(idFiche).orElseThrow(() -> new RuntimeException("fiche introuvable"));
         User actionneur = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("actionneur introuvable"));
         //khallit status en cas ou el iqp tla3 zeda ynajjem yrejecti ficha
