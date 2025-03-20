@@ -30,7 +30,7 @@ public class User implements UserDetails {
     private String prenom;
     private String email;
     private String password;
-    private String genre;
+
     private String num;
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
@@ -48,7 +48,12 @@ public class User implements UserDetails {
     )
     private Set<Zone> zones = new HashSet<>();
 
-
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private UserGenre genre;
+    public enum UserGenre{
+        FEMME , HOMME;
+    }
 
     @ManyToOne
     @JoinColumn(name = "actionneur")

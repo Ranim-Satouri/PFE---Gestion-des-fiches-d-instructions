@@ -18,7 +18,7 @@ public class RegisterRequest {
     private String email;
     private String password;
     private Role role;
-    private String genre;
+    private User.UserGenre genre;
     private String num;
     private User.UserStatus status;
     private Long actionneur;

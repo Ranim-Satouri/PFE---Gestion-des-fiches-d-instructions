@@ -1,25 +1,18 @@
 package com.pfe.backend.Controller;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pfe.backend.DTO.FicheHistoryDto;
 import com.pfe.backend.Model.Fiche;
-import com.pfe.backend.Model.Role;
-import com.pfe.backend.Model.User;
-import com.pfe.backend.Repository.UserRepository;
+import com.pfe.backend.ServiceFiche.FicheAuditService;
 import com.pfe.backend.ServiceFiche.FicheService;
-import com.pfe.backend.ServiceMail.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @RequestMapping("/fiche")
@@ -145,4 +138,5 @@ public class FicheController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
 }
