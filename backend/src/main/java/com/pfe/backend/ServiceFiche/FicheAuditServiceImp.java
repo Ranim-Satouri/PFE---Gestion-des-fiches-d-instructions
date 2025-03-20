@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.ServiceFiche;
 
 
 import com.pfe.backend.Model.Fiche;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class FicheAuditServiceImp implements FicheAuditService{
+public class FicheAuditServiceImp implements FicheAuditService {
     @PersistenceContext
     private EntityManager entityManager;
 

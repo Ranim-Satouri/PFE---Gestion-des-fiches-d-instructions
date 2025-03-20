@@ -65,5 +65,11 @@ public class UserServiceImp implements UserIservice{
        return userRepo.save(existingUser);
     }
 
+    @Override
+    public List<User> findByRole(Role role)
+    {
+        return userRepo.findByRole(Role.SUPERUSER);
+    }
+
 
 }

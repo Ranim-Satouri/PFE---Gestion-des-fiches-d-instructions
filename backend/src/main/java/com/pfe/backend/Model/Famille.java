@@ -20,6 +20,4 @@ public class Famille {
     private long idFamille;
     private String nomFamille;
 
-    @OneToMany(mappedBy = "famille")
-    private List<Produit> produits;
 }
