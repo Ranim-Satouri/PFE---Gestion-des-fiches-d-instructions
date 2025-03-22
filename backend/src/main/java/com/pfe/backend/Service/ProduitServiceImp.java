@@ -1,16 +1,12 @@
 package com.pfe.backend.Service;
-
-
 import com.pfe.backend.Model.Famille;
 import com.pfe.backend.Model.Produit;
 import com.pfe.backend.Model.User;
-import com.pfe.backend.Model.Zone;
 import com.pfe.backend.Repository.FamilleRepository;
 import com.pfe.backend.Repository.ProduitRepository;
 import com.pfe.backend.Repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

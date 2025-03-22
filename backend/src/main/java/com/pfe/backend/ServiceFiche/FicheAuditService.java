@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.ServiceFiche;
 
 
 import com.pfe.backend.DTO.FicheHistoryDto;

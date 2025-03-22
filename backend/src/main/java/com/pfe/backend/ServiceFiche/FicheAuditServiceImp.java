@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.ServiceFiche;
 
 
 import com.pfe.backend.Model.Fiche;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class FicheAuditServiceImp implements FicheAuditService{
+public class FicheAuditServiceImp implements FicheAuditService {
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -32,7 +32,6 @@ public class FicheAuditServiceImp implements FicheAuditService{
 
         // Mapper les résultats vers une liste de DTOs
         List<FicheHistoryDto> history = new ArrayList<>();
-        ;
         for (Object[] revision : revisions) {
             Fiche fiche = (Fiche) revision[0]; // Entité modifiée
             DefaultRevisionEntity revEntity = (DefaultRevisionEntity) revision[1]; // Informations de révision par défaut
@@ -55,5 +54,4 @@ public class FicheAuditServiceImp implements FicheAuditService{
             default -> "UNKNOWN";
         };
     }
-
 }

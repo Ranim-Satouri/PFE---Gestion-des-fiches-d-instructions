@@ -1,7 +1,7 @@
 package com.pfe.backend.Controller;
 
 
-import com.pfe.backend.Service.EmailService;
+import com.pfe.backend.ServiceMail.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

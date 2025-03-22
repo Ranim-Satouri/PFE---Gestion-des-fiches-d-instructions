@@ -1,6 +1,4 @@
 package com.pfe.backend.Service;
-
-import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Model.Zone;
@@ -15,7 +13,6 @@ import org.hibernate.envers.query.AuditEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -91,6 +88,11 @@ public class UserServiceImp implements UserIservice{
         if (updatedUser.getStatus() != null) existingUser.setStatus(updatedUser.getStatus());
         existingUser.setActionneur(actionneur);
        return userRepo.save(existingUser);
+    }
+    @Override
+    public List<User> findByRole(Role role)
+    {
+        return userRepo.findByRole(Role.SUPERUSER);
     }
     @PersistenceContext
     private EntityManager entityManager; // Permet d'utiliser Hibernate Envers

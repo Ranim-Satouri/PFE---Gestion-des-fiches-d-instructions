@@ -1,12 +1,6 @@
 package com.pfe.backend.Controller;
-
-
 import com.pfe.backend.Model.Famille;
-import com.pfe.backend.Model.Fiche;
-import com.pfe.backend.Model.Produit;
-import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Service.FamilleService;
-import com.pfe.backend.Service.FicheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
