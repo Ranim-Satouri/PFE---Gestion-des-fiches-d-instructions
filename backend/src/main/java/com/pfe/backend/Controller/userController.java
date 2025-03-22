@@ -54,7 +54,23 @@ public class userController {
         User updated = userIservice.updateUser(idUser, updatedUser, idActionneur);
         return ResponseEntity.ok(updated);
     }
-
+    @GetMapping("/history/{id}")
+    public List<Object[]> getUserHistory(@PathVariable Long id) {
+        return userIservice.getUserHistory(id);
+    }
+    @PostMapping("/{idUser}/attribuer-zone")
+    public ResponseEntity<?> attribuerZoneAUser(
+            @PathVariable long idUser,
+            @RequestParam long idZone,
+            @RequestParam long idActionneur
+    ) {
+        try {
+            userIservice.attribuerZoneAUser(idUser, idZone, idActionneur);
+            return ResponseEntity.ok("Zone attribuée à l'utilisateur avec succès");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
 }
 

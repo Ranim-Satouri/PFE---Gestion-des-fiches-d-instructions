@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface FamilleService {
-    ResponseEntity<Famille> addFamille(Famille famille);
+    ResponseEntity<?> addFamille(Famille famille, Long idActionneur);
     ResponseEntity<List<Famille>> getFamilles();
+    void updateFamily(Long idFam, Famille newFamillyData ,Long idActionneur);
+    void DeleteFamily(Long idFam);
+    List<Famille> getActiveFamilies();
 }

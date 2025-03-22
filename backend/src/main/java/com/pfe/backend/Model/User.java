@@ -40,16 +40,22 @@ public class User implements UserDetails {
     }
     @Enumerated(EnumType.STRING)
     private Role role;
-    @ManyToMany
-    @JoinTable(
-            name = "user_zone",
-            joinColumns = @JoinColumn(name = "idUser"),
-            inverseJoinColumns = @JoinColumn(name = "idZone")
-    )
-    private Set<Zone> zones = new HashSet<>();
-
-
-
+//    @ManyToMany
+//    @JoinTable(
+//            name = "user_zone",
+//            joinColumns = @JoinColumn(name = "idUser"),
+//            inverseJoinColumns = @JoinColumn(name = "idZone")
+//    )
+//    private Set<Zone> zones = new HashSet<>();
+@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+private Set<UserZone> userZones = new HashSet<>();
+    public void addZone(Zone zone, Long idActionneur) {
+        UserZone userZone = new UserZone();
+        userZone.setUser(this);
+        userZone.setZone(zone);
+        userZone.setIdActionneur(idActionneur);
+        this.userZones.add(userZone);
+    }
     @ManyToOne
     @JoinColumn(name = "actionneur")
     private User actionneur;

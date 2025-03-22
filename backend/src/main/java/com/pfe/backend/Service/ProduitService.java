@@ -6,6 +6,9 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface ProduitService {
-    ResponseEntity<Produit> addProduit(Produit produit);
+    Produit addProduit(Produit produit, Long idFamille, Long idActionneur);
     ResponseEntity<List<Produit>> getAllProduit();
+       void updateProduit(Long idProduit, Produit newProduitData ,Long idActionneur);
+        void DeleteProduit(Long idProduit);
+    List<Produit> getActiveProducts();
 }
