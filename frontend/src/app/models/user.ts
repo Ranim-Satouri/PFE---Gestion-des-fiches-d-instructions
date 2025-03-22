@@ -1,6 +1,28 @@
-//ng generate interface models/User
 export interface User {
-    id: number;
-    name: string;
-    age: number;
-}
+    idUser?: number;
+    matricule: string;
+    nom: string;
+    prenom: string;
+    email: string;
+    password: string;
+    genre: Genre;
+    num: string;
+    status: UserStatus;
+    role: Role;
+    actionneur: User | null;
+  }
+  
+  export enum UserStatus {
+    ACTIVE = "ACTIVE",
+    INACTIVE = "INACTIVE",
+    DELETED = "DELETED"
+  }
+  
+  export enum Role {
+    ADMIN = "ADMIN",
+    USER = "USER"
+  }
+  export enum Genre {
+    FEMME = "FEMME",
+    HOMME = "HOMME"
+  }

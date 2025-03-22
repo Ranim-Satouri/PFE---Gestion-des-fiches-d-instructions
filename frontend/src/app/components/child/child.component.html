@@ -23,14 +23,14 @@
    <!-- *ngFor -->
     <div *ngFor="let user of usersChild; let i = index">
         @if(i<10){
-            <p>{{user.name}}</p>
+            <p>test</p>
         }
     </div>
     <br>
     <!-- @for -->
     @for (user of usersChild; track $index) {
         @if($index <10){
-            <p>{{user.name}}</p>
+            <p>test</p>
         }
     }         
 

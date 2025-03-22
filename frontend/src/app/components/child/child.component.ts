@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, output } from '@angular/core';
-import { User } from '../../models/user';
+import { User } from '../../models/User';
+
 
 //ng g c components/child
 @Component({
