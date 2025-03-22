@@ -12,6 +12,7 @@ public interface UserIservice {
    ResponseEntity<List<User>> getAllUsers();
    ResponseEntity<List<User>> getUsers();
    User updateUser(Long idUser, User updatedUser, Long idActionneur);
-   List<User> findByRole(Role role);
-
+   List<Object[]> getUserHistory(Long userId);
+   void attribuerZoneAUser(Long idUser, Long idZone, Long idActionneur);
+   public List<User> findByRole(Role role);
 }

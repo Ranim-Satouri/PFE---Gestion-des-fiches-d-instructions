@@ -18,14 +18,18 @@ public class Produit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idProduit;
-
     private String nomProduit;
     private String indice;
     private String ref;
+    private boolean isDeleted = false;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @JoinColumn(name = "idFamille", nullable = false)
+    @JoinColumn(name = "idFamille")
     private Famille famille;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idActionneur", nullable = false)
+    private User actionneur;
    
 }

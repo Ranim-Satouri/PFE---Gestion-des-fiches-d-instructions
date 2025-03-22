@@ -21,9 +21,15 @@ public class Zone {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idZone;
     private String nom;
+    private boolean isDeleted = false;
+//    @ManyToMany(mappedBy = "zones") //Le mappedBy fait référence à l'attribut zones dans User
+//    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "zone", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserZone> userZones = new HashSet<>();
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idActionneur", nullable = false)
+    private User actionneur;
 
-    @ManyToMany(mappedBy = "zones") //Le mappedBy fait référence à l'attribut zones dans User
-    private Set<User> users = new HashSet<>();
 
 
 }

@@ -1,19 +1,44 @@
 package com.pfe.backend.Service;
-
-import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
+import com.pfe.backend.Model.Zone;
 import com.pfe.backend.Repository.UserRepository;
+import com.pfe.backend.Repository.UserZoneRepository;
+import com.pfe.backend.Repository.ZoneRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class UserServiceImp implements UserIservice{
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private ZoneRepository zoneRepo;
+    @Autowired
+    private UserZoneRepository userZoneRepository;
+@Override
+    public void attribuerZoneAUser(Long idUser, Long idZone, Long idActionneur) {
+        User user = userRepo.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        Zone zone = zoneRepo.findById(idZone)
+                .orElseThrow(() -> new RuntimeException("Zone introuvable"));
+
+        // Vérifier si la zone est déjà attribuée à l'utilisateur
+        boolean zoneDejaAttribuee = user.getUserZones().stream()
+                .anyMatch(userZone -> userZone.getZone().getIdZone()== idZone);
+        if (zoneDejaAttribuee) {
+            throw new RuntimeException("La zone est déjà attribuée à cet utilisateur");
+        }
+        user.addZone(zone, idActionneur);
+        userRepo.save(user);
+    }
     @Override
     public void ModifyUserRole(long idUser, Role newRole, long idActionneur)
     {
@@ -64,12 +89,21 @@ public class UserServiceImp implements UserIservice{
         existingUser.setActionneur(actionneur);
        return userRepo.save(existingUser);
     }
-
     @Override
     public List<User> findByRole(Role role)
     {
         return userRepo.findByRole(Role.SUPERUSER);
     }
+    @PersistenceContext
+    private EntityManager entityManager; // Permet d'utiliser Hibernate Envers
 
+    @Override
+    public List<Object[]> getUserHistory(Long userId) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
+        return auditReader.createQuery()
+                .forRevisionsOfEntity(User.class, false, true)
+                .add(AuditEntity.id().eq(userId)) // Filtrer par ID de l'utilisateur
+                .getResultList();
+    }
 }
