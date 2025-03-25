@@ -11,16 +11,20 @@ export interface User {
     role: Role;
     actionneur: User | null;
   }
-  
+
   export enum UserStatus {
     ACTIVE = "ACTIVE",
     INACTIVE = "INACTIVE",
     DELETED = "DELETED"
   }
-  
+
   export enum Role {
+    SUPERUSER= "SUPERUSER",
     ADMIN = "ADMIN",
-    USER = "USER"
+    PREPARATEUR = "PREPARATEUR",
+    IPDF = "IPDF",
+    IQP ="IQP",
+    OPERATEUR = "OPERATEUR"
   }
   export enum Genre {
     FEMME = "FEMME",

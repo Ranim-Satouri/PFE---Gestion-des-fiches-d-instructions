@@ -1,0 +1,24 @@
+<app-particles></app-particles>
+<div class="flex items-center justify-center h-screen">
+    <!-- Login Container -->
+    <div class="min-w-fit flex-col border bg-white px-6 py-14 shadow-md rounded-[4px] ">
+      <div class="mb-8 flex justify-center">
+        <img class="w-24" src="/assets/sagemcom.png" alt="logo" />      </div>
+      <div class="flex flex-col text-sm rounded-md">
+        <input [(ngModel)]="email" class="mb-5 rounded-[4px] border p-3 hover:outline-none focus:outline-none hover:border-blue-500 " type="text" placeholder="Username or Email id" />
+        <input [(ngModel)]="password" class="border rounded-[4px] p-3 hover:outline-none focus:outline-none hover:border-blue-500" type="password" placeholder="Password" />
+      </div>
+      <button (click)="authenticate()" class="mt-5 w-full border p-2 bg-gradient-to-r from-[#018ef9] to-blue-300 text-white rounded-[4px]
+    hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-400 scale-105 duration-300" type="submit">Sign in</button>
+      <div class="mt-5 flex justify-between text-sm text-gray-600">
+        <a href="#">Forgot password?</a>
+        <a href="#">Sign up</a>
+      </div>
+      <div class="mt-5 flex text-center text-sm text-gray-400">
+        <p>
+          This site is protected by reCAPTCHA and the Google <br />
+          <a class="underline" href="">Privacy Policy</a> and <a class="underline" href="">Terms of Service</a> apply.
+        </p>
+      </div>
+    </div>
+  </div>
