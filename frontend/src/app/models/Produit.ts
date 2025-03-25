@@ -6,4 +6,6 @@ export interface Produit {
   indice: string;
   ref: string;
   famille: Famille;
+  modifieLe: Date;
+
 }

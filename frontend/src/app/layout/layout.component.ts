@@ -1,16 +1,16 @@
-import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
-import { ThemeService } from '../../config/theme.service';
-import { FicheListComponent } from "../fiche-list/fiche-list.component";
+import { ThemeService } from '../config/theme.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-side-bar',
+  selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule, FicheListComponent],
-  templateUrl: './side-bar.component.html',
-  styleUrl: './side-bar.component.css'
+  imports: [CommonModule,RouterModule],
+  templateUrl: './layout.component.html',
+  styleUrl: './layout.component.css'
 })
-export class SideBarComponent {
+export class LayoutComponent {
   isDarkMode: boolean;
   isSideBarOpen : boolean =true; 
   isSideBarHidden : boolean =true;
@@ -30,11 +30,12 @@ export class SideBarComponent {
 
   toggleSidebar() {
     this.isSideBarOpen = !this.isSideBarOpen;
+    this.isSideBarHidden = true;
   }
 
   showSidebar() {
+    this.isSideBarOpen = true;
     this.isSideBarHidden = !this.isSideBarHidden;
-    //this.isSideBarOpen = false;
   }
 
   @HostListener('document:click', ['$event'])

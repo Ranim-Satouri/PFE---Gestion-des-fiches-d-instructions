@@ -5,4 +5,6 @@ export interface User_Zone {
     idUserZone?: number;
     user: User;
     zone: Zone;
+    modifieLe: Date;
+
 }

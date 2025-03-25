@@ -3,10 +3,14 @@ package com.pfe.backend.Model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -63,6 +67,9 @@ private Set<UserZone> userZones = new HashSet<>();
     public enum UserGenre{
         FEMME , HOMME;
     }
+    @UpdateTimestamp
+    @Column(name = "modifie_le", nullable = false)
+    private LocalDateTime modifieLe = LocalDateTime.now(); // Ajoute une valeur par défaut
 
     @ManyToOne
     @JoinColumn(name = "actionneur")

@@ -30,7 +30,7 @@ export class ParentComponent {
 
   // awwel ma trefreshi el page
   ngOnInit() { 
-    this.getUsers();
+    //this.getUsers();
   }
 
   // ----------------------- Service  -----------------------------//

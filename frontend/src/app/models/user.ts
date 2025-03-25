@@ -10,6 +10,8 @@ export interface User {
     status: UserStatus;
     role: Role;
     actionneur: User | null;
+    modifieLe: Date;
+
   }
   
   export enum UserStatus {

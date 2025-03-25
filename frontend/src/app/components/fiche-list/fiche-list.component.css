@@ -1,0 +1,71 @@
+::ng-deep .ngx-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  height: 32px;
+  margin-top: 16px;
+
+}
+
+::ng-deep .ngx-pagination .current {
+  color: rgb(0, 0, 0) !important;
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+
+::ng-deep .ngx-pagination a {
+  text-decoration: none;
+  color: #717d91 !important; /* Gris foncé pour une bonne visibilité */
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .ngx-pagination a:hover {
+  background-color: transparent !important; /* Pas de changement au hover */
+}
+::ng-deep .ngx-pagination .disabled {
+  color: #717d91 !important; /* Gris clair */
+}
+
+
+select {
+  border-radius: 8px !important;
+  appearance: none; /* Supprime le style natif */
+}
+
+
+
+thead  {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+
+/* Personnalisation de la barre de défilement pour WebKit */
+.custom-scrollbar-container::-webkit-scrollbar {
+  width: 10px; /* Largeur de la barre de défilement */
+}
+
+.custom-scrollbar-container::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Couleur de l'arrière-plan de la barre */
+  border-radius: 10px;
+}
+
+.custom-scrollbar-container::-webkit-scrollbar-thumb {
+  background: #888; /* Couleur du curseur de défilement */
+  border-radius: 10px;
+}
+
+.custom-scrollbar-container::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Couleur lorsque le curseur est survolé */
+}
+
+/* Pour Firefox */
+.custom-scrollbar-container {
+  scrollbar-color: #807b7b #c2baba; /* Curseur et arrière-plan */
+  scrollbar-width: thin; /* Épaisseur de la barre */
+}
+

@@ -2,10 +2,13 @@ package com.pfe.backend.Model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.RelationTargetAuditMode;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.envers.Audited;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @AllArgsConstructor
@@ -45,6 +48,11 @@ public class Fiche {
         INSERT , UPDATE , DELETE , APPROUVE;
     }
 
+    @UpdateTimestamp
+    @Column(name = "modifie_le", nullable = false)
+    private LocalDateTime modifieLe = LocalDateTime.now(); // Ajoute une valeur par défaut
+
+
     @ManyToOne(cascade = CascadeType.ALL) // Plusieurs fiches peuvent appartenir à une seule zone
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinColumn(name = "idZone", nullable = false) // Clé étrangère
@@ -71,6 +79,8 @@ public class Fiche {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idActionneur", nullable = false)
     private User actionneur;
+
+
 
 }
 

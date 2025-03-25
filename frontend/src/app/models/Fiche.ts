@@ -10,6 +10,7 @@ export interface Fiche {
   commentaire: string;
   expirationDate: Date;
   pdf: string;
+  modifieLe: Date;
   FicheAQL: string;
   action: FicheAction;
   zone: Zone;
