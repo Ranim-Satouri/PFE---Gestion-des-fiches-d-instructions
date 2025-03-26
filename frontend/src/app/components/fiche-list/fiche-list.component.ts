@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FicheService } from '../../services/fiche.service';
 import { Fiche } from '../../models/Fiche';
@@ -18,6 +18,7 @@ export class FicheListComponent {
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 8;
+  @Input() isSidebarOpen: boolean = false;
   
 
   // Fonction qui gère l'ouverture du menu
@@ -38,7 +39,7 @@ export class FicheListComponent {
   getFiches() { 
     this.FicheService.getAllFiches().subscribe({
       next : (response :Fiche[]) => {  
-        console.log('fetching users success:', response);
+        console.log('fetching fiches success:', response);
        
         this.fiches = response;
       },

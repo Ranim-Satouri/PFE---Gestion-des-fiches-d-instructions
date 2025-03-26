@@ -8,7 +8,9 @@ module.exports = {
     extend: {
       colors: {
         navBluelight : '#4971d1', 
-        navBluedark : '#092d47'
+        navBluedark : '#092d47',
+        hoverColor : "#212b38",
+        hoverColor2 : "#4f5966"
       },
     },
   },

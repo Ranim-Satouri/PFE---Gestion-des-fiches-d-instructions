@@ -16,4 +16,8 @@ export class UserService {
       { email, password }
     );
   }
+
+  getAll(): Observable<User[]> {
+      return this.http.get<User[]>(`${this.apiUrl}/getAll`);
+    }
 }
