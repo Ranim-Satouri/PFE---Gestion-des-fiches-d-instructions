@@ -82,7 +82,7 @@
                 <span *ngIf="isSideBarOpen" class="ms-3">Dashboard</span>
             </a>
         </li>
-       
+
         <li>
             <a href="#" class="h-[40px] flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 group">
                 <svg class="shrink-0 w-5 h-5 text-gray-900 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
@@ -167,11 +167,9 @@
               <div *ngIf="isListOpen" class="absolute top-6 right-10 z-50  my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
                 <div class="px-4 py-3" role="none">
                   <p class="text-sm text-gray-900 dark:text-white" role="none">
-                    Neil Sims
-                  </p>
+                    {{ currentUser?.matricule }}                 </p>
                   <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                    neil.simsflowbite.com
-                  </p>
+                    {{ currentUser?.email }}                  </p>
                 </div>
                 <ul class="py-1" role="none">
                   <li>
@@ -213,7 +211,7 @@
                 <span *ngIf="isSideBarOpen" class="ms-3">Dashboard</span>
             </a>
         </li>
-       
+
         <li>
             <a href="/famillelist" class="h-[40px] flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 group">
                 <svg class="shrink-0 w-5 h-5 text-gray-900 transition duration-75 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
@@ -267,9 +265,8 @@
             </a>
         </li>
     </ul>
-</aside> 
+</aside>
 
 <div  [ngClass]="{'sm:ml-20': !isSideBarOpen ,'sm:ml-64 ': isSideBarOpen }" class="z-10 transition-all transition-discrete duration-700 ease-in-out p-4 mt-[64px]  h-[calc(100vh-80px)]" >
   <router-outlet></router-outlet>
 </div>
-  

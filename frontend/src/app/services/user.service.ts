@@ -9,11 +9,11 @@ export class UserService {
   private apiUrl = 'http://localhost:8080/user';
   private apiUrl2 = 'http://localhost:8080/api/v1/auth';
   constructor(private http: HttpClient) { }
-  Login(email: string, password: string): Observable<any> {
-    const body = { email, password }; // Envoyer email au lieu de matricule
+  Login(matricule: string, password: string): Observable<any> {
+    const body = { matricule, password }; // Envoyer email au lieu de matricule
     return this.http.post<{ token: string, role: Role }>(
       `${this.apiUrl2}/authenticate`,
-      { email, password }
+      { matricule, password }
     );
   }
 

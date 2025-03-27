@@ -6,11 +6,14 @@ import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -68,17 +71,29 @@ public class AuthenticationService {
     var jwtToken = jwtService.generateToken(user);
     //we need to encode our pwd before saving it so we neeed to inject our passwordencoder Service
         return AuthenticationResponse.builder()
-                        .token(jwtToken).build();
+                        .token(jwtToken).role(user.getRole()).build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-       authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-       var user = repository.findByEmail(request.getEmail()).orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken).role(user.getRole()).build();
-
+        try {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getMatricule(), request.getPassword())
+        );
+    } catch (BadCredentialsException e) {
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Matricule ou mot de passe incorrect");
     }
+
+    var user = repository.findByMatricule(request.getMatricule())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
+
+    var jwtToken = jwtService.generateToken(user);
+    return AuthenticationResponse.builder()
+            .token(jwtToken)
+            .user(user)
+            .role(user.getRole())
+            .build();
+}
+
     public void updatePassword(Long idUser, String newPassword, Long idActionneur) {
         User user = repository.findById(idUser)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));

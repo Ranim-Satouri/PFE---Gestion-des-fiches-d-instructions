@@ -1,8 +1,8 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit  } from '@angular/core';
 import { ThemeService } from '../config/theme.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
+import { User } from '../models/User';
 @Component({
   selector: 'app-layout',
   standalone: true,
@@ -12,14 +12,14 @@ import { RouterModule } from '@angular/router';
 })
 export class LayoutComponent {
   isDarkMode: boolean;
-  isSideBarOpen : boolean = JSON.parse(localStorage.getItem('sidebarState') || 'true'); 
+  isSideBarOpen : boolean = JSON.parse(localStorage.getItem('sidebarState') || 'true');
   isSideBarHidden : boolean =true;
   isListOpen : Boolean = false;
 
   constructor(private themeService: ThemeService) {
     this.isDarkMode = this.themeService.isDarkMode();
   }
- 
+
   openList() {
     this.isListOpen = !this.isListOpen;
   }
@@ -27,7 +27,7 @@ export class LayoutComponent {
     this.themeService.toggleDarkMode();
     this.isDarkMode = this.themeService.isDarkMode();
   }
-  
+
   toggleSidebar() {
     this.isSideBarOpen = !this.isSideBarOpen;
     this.isSideBarHidden = true;
@@ -48,6 +48,14 @@ export class LayoutComponent {
     // Vérifiez si le clic est en dehors du bouton et du dropdown
     if (this.isListOpen && dropdown && !dropdown.contains(target) && !button) {
       this.isListOpen = false; // Ferme la liste
+    }
+  }
+  currentUser!: User;
+
+  ngOnInit(): void {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      this.currentUser = JSON.parse(storedUser);
     }
   }
 }

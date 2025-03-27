@@ -24,8 +24,10 @@ export class AccessControlService {
   }
 
   canAccess(path: string): boolean {
-    return this.getAllowedInterfaces().includes(path);
-  }getCurrentRole(): Role | undefined {
+    return this.getAllowedInterfaces().some(route => path.startsWith(route));
+
+  }
+  getCurrentRole(): Role | undefined {
     return this.currentRole;
   }
 }
