@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        navBluelight : '#4971d1', 
+        navBluelight : "#60a5fa", 
         navBluedark : '#092d47',
         hoverColor : "#212b38",
         hoverColor2 : "#4f5966"

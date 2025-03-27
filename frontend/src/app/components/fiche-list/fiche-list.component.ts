@@ -18,7 +18,6 @@ export class FicheListComponent {
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 8;
-  @Input() isSidebarOpen: boolean = false;
   
 
   // Fonction qui gère l'ouverture du menu
@@ -38,9 +37,7 @@ export class FicheListComponent {
 
   getFiches() { 
     this.FicheService.getAllFiches().subscribe({
-      next : (response :Fiche[]) => {  
-        console.log('fetching fiches success:', response);
-       
+      next : (response :Fiche[]) => {         
         this.fiches = response;
       },
       error : (error : any) => {  
@@ -68,5 +65,17 @@ export class FicheListComponent {
       return rect.bottom > window.innerHeight; // Vérifie si le dropdown dépasse la fenêtre
     }
     return false;
+  }
+
+  downloadFile(fileName: string) {
+
+    this.FicheService.getPdf(fileName).subscribe((blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName; // Spécifie le nom du fichier à télécharger
+      a.click();
+      window.URL.revokeObjectURL(url); // Libère l'URL après le téléchargement
+    });
   }
 }

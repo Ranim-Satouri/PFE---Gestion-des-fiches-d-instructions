@@ -30,7 +30,7 @@
             <tr *ngFor="let famille of familles | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index" 
                 class="bg-gray-50 border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 dark:hover:bg-hoverColor hover:bg-gray-100">
                 <th scope="col" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white ">{{famille.nomFamille}}</th>
-                <th scope="col" class="px-5 py-2 font-medium">{{famille.modifieLe |date:'dd/MM/yyyy HH:mm:ss' }}</th>
+                <th scope="col" class="px-5 py-2 font-medium">{{famille.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
                 
                 <th scope="col" class="px-6 py-2 text-right relative " (click)="closeDropdown($event)">
                     <button (click)="toggleDropdown(i)"                         
@@ -44,7 +44,7 @@
                     <div *ngIf="dropdownOpen === i" 
                         id="dropdownDots-{{i}}" 
                         class="absolute right-[60px] bottom-[8px] z-50 bg-gray-200 divide-y divide-gray-100 rounded-lg shadow-sm w-36 dark:bg-gray-600 dark:divide-gray-800" 
-                        [ngClass]="{'-bottom-14': i === 0}">
+                        [ngClass]="{'-bottom-[56px]': i === 0}">
                         <ul>
                             <li>
                             <a href="#" class="block px-4 py-2 text-left dark:text-white text-black hover:bg-gray-100 rounded-lg dark:hover:bg-hoverColor2 dark:hover:text-white">Historique</a>
@@ -80,6 +80,7 @@
                 <option value="10">10</option>
                 <option value="15">15</option>
                 <option value="20">20</option>
+                <option *ngIf="familles.length > 20" value="{{familles.length}}">{{familles.length}}</option>
               </select>
               <!-- Flèche SVG personnalisée -->
               <svg class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -88,8 +89,8 @@
             </div>
           </form>
           
-        <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white h-16 "></pagination-controls>
-   </div>
+          <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white h-16 " previousLabel="Précédent" nextLabel="Suivant" ></pagination-controls>
+        </div>
 </div>
 
 

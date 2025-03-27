@@ -58,7 +58,7 @@
                 <th scope="col" class="px-6 py-2 font-medium">{{produit.ref}}</th>
                 <th scope="col" class="px-6 py-2 font-medium">{{produit.indice}}</th>
                 <th scope="col" class="px-5 py-2 font-medium">{{produit.famille.nomFamille}}</th>
-                <th scope="col" class="px-5 py-2 font-medium">{{produit.modifieLe |date:'dd/MM/yyyy HH:mm:ss' }}</th>
+                <th scope="col" class="px-5 py-2 font-medium">{{produit.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
                 
                 <th scope="col" class="px-6 py-2 text-right relative " (click)="closeDropdown($event)">
                     <button (click)="toggleDropdown(i)"                         
@@ -104,11 +104,12 @@
             <div class="relative">
               <select id="countries" [(ngModel)]="itemsPerPage" name="itemsPerPage"  class="bg-gray-50 border-2 border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 h-8 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400  dark:focus:border-blue-500">
                 <option value="5">5</option>
-                <option value="3">3</option>
                 <option value="8" selected>8</option>
                 <option value="10">10</option>
                 <option value="15">15</option>
                 <option value="20">20</option>
+                <option *ngIf="produits.length > 20" value="{{produits.length}}">{{produits.length}}</option>
+
               </select>
               <!-- Flèche SVG personnalisée -->
               <svg class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -117,8 +118,8 @@
             </div>
           </form>
           
-        <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white h-16 "></pagination-controls>
-   </div>
+          <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white h-16 " previousLabel="Précédent" nextLabel="Suivant" ></pagination-controls>
+        </div>
 </div>
 
 

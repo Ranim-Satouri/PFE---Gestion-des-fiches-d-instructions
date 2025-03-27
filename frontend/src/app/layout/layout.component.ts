@@ -12,12 +12,23 @@ import { RouterModule } from '@angular/router';
 })
 export class LayoutComponent {
   isDarkMode: boolean;
-  isSideBarOpen : boolean = JSON.parse(localStorage.getItem('sidebarState') || 'true'); 
+  isSideBarOpen : boolean = true; 
   isSideBarHidden : boolean =true;
   isListOpen : Boolean = false;
+  selectedItem: string =localStorage.getItem('selectedSidebarItem') || '';;
 
+  setActive(item: string) {
+    this.selectedItem = item;
+    localStorage.setItem('selectedSidebarItem', item);
+  }
+  
   constructor(private themeService: ThemeService) {
     this.isDarkMode = this.themeService.isDarkMode();
+    try {
+      this.isSideBarOpen = JSON.parse(localStorage.getItem('sidebarState') || 'true');
+    } catch (error) {
+      // console.warn("Erreur lors de la récupération de sidebarState:", error);
+    }
   }
  
   openList() {

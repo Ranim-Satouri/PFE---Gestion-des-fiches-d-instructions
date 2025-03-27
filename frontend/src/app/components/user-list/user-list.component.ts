@@ -1,5 +1,5 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { User } from '../../models/User';
+import { Role, User, UserStatus } from '../../models/User';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -13,13 +13,12 @@ import { FormsModule } from '@angular/forms';
 })
 export class UserListComponent {
 constructor(private userService: UserService) {} 
-  users : User[] = [];
+  users : any[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 8;
-  @Input() isSidebarOpen: boolean = false;
+  Role : Role = Role.SUPERUSER; // baddika njibouh mel local storage
 
-  // Fonction qui gère l'ouverture du menu
   toggleDropdown(index: number): void {
     // Si le menu est déjà ouvert pour cette ligne, on le ferme
     if (this.dropdownOpen === index) {
@@ -36,9 +35,7 @@ constructor(private userService: UserService) {}
 
   getFiches() { 
     this.userService.getAll().subscribe({
-      next : (response :User[]) => {  
-        console.log('fetching users success:', response);
-       
+      next : (response :User[]) => {         
         this.users = response;
       },
       error : (error : any) => {  
@@ -67,4 +64,30 @@ constructor(private userService: UserService) {}
     }
     return false;
   }
+
+  onRoleToggleChange(user: any, event: any) {
+    console.log("ken",user.role);
+    if(user.role === Role.ADMIN){
+      console.log("walla" , "SUPERUSER")
+    }
+    if(user.role === Role.SUPERUSER){
+      console.log("walla" , "ADMIN")
+    }
+    const updatedRole = event.target.checked ? 'SUPERUSER' : 'ADMIN';  // Exemple : changer le rôle basé sur l'état du toggle
+    // Envoyer la requête pour mettre à jour le rôle de l'utilisateur
+   // this.userService.updateUserRole(user.id, updatedRole).subscribe();
+}
+
+onStatusToggleChange(user: any, event: any) {
+  console.log("status", user.status);
+    if(user.status === UserStatus.ACTIVE){
+      console.log("walla" , "INACTIVE")
+    }else{
+      console.log("walla" , "ACTIVE")
+    }
+    const updatedStatus = event.target.checked ? 'ACTIVE' : 'INACTIVE';  // Exemple : changer le statut basé sur l'état du toggle
+    // Envoyer la requête pour mettre à jour le statut de l'utilisateur
+   // this.userService.updateUserStatus(user.id, updatedStatus).subscribe();
+}
+
 }

@@ -3,7 +3,7 @@
     <a href="#" class="w-36 h-8 px-4 py-2 text-sm text-center font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">Ajouter une fiche</a>
 </div>
 
-<div class="overflow-x-auto shadow-md rounded-lg max-h-[calc(100vh-218px)] overflow-y-auto custom-scrollbar-container ">
+<div class="overflow-x-auto shadow-md rounded-lg h-[calc(100%-136px)] overflow-y-auto custom-scrollbar-container ">
     <table class="w-full text-xs text-left rtl:text-right text-gray-700 dark:text-gray-400 ">
         <thead class="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-gray-400 sticky-top">
             <tr>
@@ -56,6 +56,7 @@
                         </svg></a>
                     </div>
                 </th>
+                <th scope="col" class=" py-3 "></th>
                 <th scope="col" class="px-6 py-3 "></th>
             </tr>
         </thead>
@@ -68,8 +69,16 @@
                 <th scope="col" class="px-6 py-2 font-medium">{{fiche.produit.famille.nomFamille}}</th>
                 <th scope="col" class="px-6 py-2 font-medium">{{fiche.zone.nom}}</th>
                 <th scope="col" class="px-6 py-2 font-medium">{{fiche.status}}</th>
-                <th scope="col" class="px-6 py-2 font-medium">{{fiche.modifieLe |date:'dd/MM/yyyy HH:mm:ss' }}</th>
                 
+                <th scope="col" class="px-6 py-2 font-medium">{{fiche.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
+                <th scope="col" class=" py-2 font-medium"> 
+                    <svg (click)="downloadFile(fiche.pdf)" class="hover:text-black dark:hover:text-white"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                        <path d="M12 17v-6"></path>
+                        <path d="M9.5 14.5l2.5 2.5l2.5 -2.5"></path>
+                    </svg>
+                </th>
                 <th scope="col" class="px-6 py-2 text-right relative " (click)="closeDropdown($event)">
                     <button (click)="toggleDropdown(i)"                         
                     [ngClass]="{'dark:bg-gray-600 bg-gray-200': dropdownOpen === i , ' bg-transparent': dropdownOpen !== i}" 
@@ -82,7 +91,7 @@
                     <div *ngIf="dropdownOpen === i" 
                         id="dropdownDots-{{i}}" 
                         class="absolute right-[60px] bottom-[8px] z-50 bg-gray-200 divide-y divide-gray-100 rounded-lg shadow-sm w-36 dark:bg-gray-600 dark:divide-gray-800" 
-                        [ngClass]="{'-bottom-14': i === 0}">
+                        [ngClass]="{'-bottom-[56px] ': i === 0}">
                         <ul>
                             <li>
                             <a href="#" class="block px-4 py-2 text-left dark:text-white text-black hover:bg-gray-100 rounded-lg dark:hover:bg-hoverColor2 dark:hover:text-white">Historique</a>
@@ -103,7 +112,7 @@
 </div>
 
 <!-- Pagination Controls -->
-<div class="flex sm:flex-row justify-between items-center px-4 my-1 rounded-lg h-10 flex-col gap-4">
+<div class=" flex sm:flex-row justify-between items-center px-4 my-1 rounded-lg h-10 flex-col gap-4">
     <div class="text-sm text-slate-500">
         Affichage <b>{{ (page - 1) * itemsPerPage + 1 }}</b> - <b>{{ (page * itemsPerPage > fiches.length ? fiches.length : page * itemsPerPage) }}</b> de <b>{{ fiches.length }}</b> éléments
     </div>
@@ -114,11 +123,12 @@
             <div class="relative">
               <select id="countries" [(ngModel)]="itemsPerPage" name="itemsPerPage"  class="bg-gray-50 border-2 border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 h-8 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400  dark:focus:border-blue-500">
                 <option value="5">5</option>
-                <option value="3">3</option>
                 <option value="8" selected>8</option>
                 <option value="10">10</option>
                 <option value="15">15</option>
                 <option value="20">20</option>
+                <option *ngIf="fiches.length > 20" value="{{fiches.length}}">{{fiches.length}}</option>
+
               </select>
               <!-- Flèche SVG personnalisée -->
               <svg class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -126,8 +136,8 @@
               </svg>
             </div>
           </form>
-        <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white h-16 "></pagination-controls>
-   </div>
+          <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white h-16 " previousLabel="Précédent" nextLabel="Suivant" ></pagination-controls>
+        </div>
 </div>
 
 

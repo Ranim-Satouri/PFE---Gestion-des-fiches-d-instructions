@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="utf-8">
   <title>Frontend</title>
@@ -9,7 +9,10 @@
     if (localStorage.getItem('theme') === 'dark' || 
         (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
-    }
+      console.log('✅ Mode sombre activé'); 
+  } else {
+    console.log('🌞 Mode clair activé');
+  }
   </script>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>

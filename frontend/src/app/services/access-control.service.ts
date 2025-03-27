@@ -11,7 +11,7 @@ export class AccessControlService {
     [Role.SUPERUSER]: ['/particles', '/form', '/admin', '/reports'],
     [Role.ADMIN]: ['/admin', '/dashboard', '/users'],
     [Role.PREPARATEUR]: ['/preparation', '/inventory'],
-    [Role.IPDF]: ['/quality-control', '/defects'],
+    [Role.IPDF]: ['/quality-control', '/defects' , '/fichelist'],
     [Role.IQP]: ['/quality-control', '/stats'],
     [Role.OPERATEUR]: ['/production', '/tasks']
   };

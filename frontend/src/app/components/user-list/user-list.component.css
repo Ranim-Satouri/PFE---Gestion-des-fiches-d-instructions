@@ -5,13 +5,15 @@
     gap: 5px;
     height: 32px;
     margin-top: 16px;
-  
+    font-size: 15px;
+
   }
   
   ::ng-deep .ngx-pagination .current {
-    color: rgb(0, 0, 0) !important;
+    color: rgb(255, 255, 255) !important;
     border-radius: 8px;
     padding: 6px 12px;
+    background-color: #3b82f6 !important ;
   }
   
   ::ng-deep .ngx-pagination a {
@@ -43,30 +45,18 @@
     z-index: 10;
   }
   
-  
-  /* Personnalisation de la barre de défilement pour WebKit */
-  .custom-scrollbar-container::-webkit-scrollbar {
-    width: 10px; /* Largeur de la barre de défilement */
-  }
-  
-  .custom-scrollbar-container::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Couleur de l'arrière-plan de la barre */
-    border-radius: 10px;
-  }
-  
-  .custom-scrollbar-container::-webkit-scrollbar-thumb {
-    background: #888; /* Couleur du curseur de défilement */
-    border-radius: 10px;
-  }
-  
-  .custom-scrollbar-container::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Couleur lorsque le curseur est survolé */
-  }
-  
-  /* Pour Firefox */
-  .custom-scrollbar-container {
-    scrollbar-color: #807b7b #c2baba; /* Curseur et arrière-plan */
-    scrollbar-width: thin; /* Épaisseur de la barre */
-  }
-  
+/* Mode clair */
+::-webkit-scrollbar {
+  width: 6px;
+  border: #0d0d0d;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #a1a1aa !important; /* Gris clair */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent !important; /* Fond clair */
+}
   

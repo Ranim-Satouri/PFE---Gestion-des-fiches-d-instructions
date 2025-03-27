@@ -19,7 +19,6 @@ export class FamilleListComponent {
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 8;
-  @Input() isSidebarOpen: boolean = false;
 
   // Fonction qui gère l'ouverture du menu
   toggleDropdown(index: number): void {
@@ -38,9 +37,7 @@ export class FamilleListComponent {
 
   getFiches() { 
     this.familleService.getAll().subscribe({
-      next : (response :Famille[]) => {  
-        console.log('fetching familles success:', response);
-       
+      next : (response :Famille[]) => {         
         this.familles = response;
       },
       error : (error : any) => {  

@@ -32,17 +32,33 @@
                         </svg></a>
                     </div>
                 </th>
-                <th scope="col" class="px-5 py-3 ">
+                <th *ngIf="Role !== 'SUPERUSER'" scope="col" class="px-4 py-3 ">
                     <div class="flex items-center">
-                        Numéro
+                        Situation
                         <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"/>
                         </svg></a>
                     </div>
                 </th>
-                <th scope="col" class="px-4 py-3 ">
+                <th *ngIf="Role === 'SUPERUSER'" scope="col" class="px-4 py-3 ">
                     <div class="flex items-center">
-                        Situation
+                        Super Utilisateur
+                        <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"/>
+                        </svg></a>
+                    </div>
+                </th>
+                <th *ngIf="Role === 'SUPERUSER'" scope="col" class="px-4 py-3 ">
+                    <div class="flex items-center">
+                        Activé
+                        <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"/>
+                        </svg></a>
+                    </div>
+                </th>
+                <th scope="col" class="px-5 py-3 ">
+                    <div class="flex items-center">
+                        Numéro
                         <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"/>
                         </svg></a>
@@ -66,9 +82,28 @@
                 <th scope="col" class="px-6 py-2 font-medium">{{user.prenom}} {{user.nom}}</th>
                 <th scope="col" class="px-6 py-2 font-medium">{{user.email}}</th>
                 <th scope="col" class="px-5 py-2 font-medium">{{user.role}}</th>
+                <th *ngIf="Role !== 'SUPERUSER'" scope="col" class="px-4 py-2 font-medium">{{user.status}}</th>
+
+                <!-- Toggle pour le rôle : activé si le rôle est SUPERUSER, désactivé si ADMIN -->
+                <th *ngIf="Role === 'SUPERUSER'" scope="col" class="px-4 py-2 font-medium ">
+                    <label  class="inline-flex items-center cursor-pointer">
+                        <input  [disabled]="user.role !== 'SUPERUSER' && user.role !== 'ADMIN'" type="checkbox" [checked]="user.role === 'SUPERUSER'" 
+                            (change)="onRoleToggleChange(user, $event)" class="sr-only peer">
+                            <div [ngClass]="{ 'bg-gray-200 dark:bg-gray-700 dark:after:bg-gray-500 after:border-gray-300 after:bg-gray-300 dark:after:border-gray-500': user.role !== 'SUPERUSER' && user.role !== 'ADMIN' , 'bg-gray-400 dark:bg-gray-500': user.role === 'SUPERUSER' || user.role === 'ADMIN'  }" class="relative w-9 h-5   rounded-full peer  peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-200 after:border-gray-100 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500 dark:peer-checked:bg-blue-500  peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-300"></div>
+                        </label>
+                </th>
+
+                <!-- Toggle pour le statut : activé si ACTIVE, sinon désactivé -->
+                <th *ngIf="Role === 'SUPERUSER'" scope="col" class="px-4 py-2 font-medium">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" [checked]="user.status === 'ACTIVE'" 
+                            (change)="onStatusToggleChange(user, $event)" class="sr-only peer">
+                        <div class="relative w-9 h-5 bg-gray-400  rounded-full peer dark:bg-gray-500 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-gray-100 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-200 after:border-gray-100 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500 dark:peer-checked:bg-blue-500  peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-300"></div>
+                    </label>
+                </th>
                 <th scope="col" class="px-5 py-2 font-medium" >{{user.num}}</th>
-                <th scope="col" class="px-4 py-2 font-medium">{{user.status}}</th>
-                <th scope="col" class="px-5 py-2 font-medium">{{user.modifieLe |date:'dd/MM/yyyy HH:mm:ss' }}</th>
+
+                <th scope="col" class="px-5 py-2 font-medium">{{user.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
                 
                 <th scope="col" class="px-6 py-2 text-right relative " (click)="closeDropdown($event)">
                     <button (click)="toggleDropdown(i)"                         
@@ -114,11 +149,12 @@
             <div class="relative">
               <select id="countries" [(ngModel)]="itemsPerPage" name="itemsPerPage"  class="bg-gray-50 border-2 border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 h-8 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400  dark:focus:border-blue-500">
                 <option value="5">5</option>
-                <option value="3">3</option>
                 <option value="8" selected>8</option>
                 <option value="10">10</option>
                 <option value="15">15</option>
                 <option value="20">20</option>
+                <option *ngIf="users.length > 20" value="{{users.length}}">{{users.length}}</option>
+
               </select>
               <!-- Flèche SVG personnalisée -->
               <svg class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -127,10 +163,8 @@
             </div>
           </form>
           
-        <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white h-16 "></pagination-controls>
+        <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white h-16 " previousLabel="Précédent" nextLabel="Suivant" ></pagination-controls>
    </div>
 </div>
 
 
-
-    
