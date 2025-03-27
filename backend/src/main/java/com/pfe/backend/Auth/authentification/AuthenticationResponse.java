@@ -1,5 +1,7 @@
 package com.pfe.backend.Auth.authentification;
 
+import com.pfe.backend.Model.Role;
+import com.pfe.backend.Model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,5 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationResponse {
+    private User user;
     private String token;
+    private Role role;
 }

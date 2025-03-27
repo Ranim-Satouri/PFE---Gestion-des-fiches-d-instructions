@@ -1,6 +1,6 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {Role, User} from '../models/User';
+import {Role, User, UserStatus} from '../models/User';
 import {Observable} from 'rxjs';
 @Injectable({
   providedIn: 'root'
@@ -9,15 +9,29 @@ export class UserService {
   private apiUrl = 'http://localhost:8080/user';
   private apiUrl2 = 'http://localhost:8080/api/v1/auth';
   constructor(private http: HttpClient) { }
-  Login(email: string, password: string): Observable<any> {
-    const body = { email, password }; // Envoyer email au lieu de matricule
+  Login(matricule: string, password: string): Observable<any> {
+    const body = { matricule, password }; // Envoyer email au lieu de matricule
     return this.http.post<{ token: string, role: Role }>(
       `${this.apiUrl2}/authenticate`,
-      { email, password }
+      { matricule, password }
     );
   }
 
   getAll(): Observable<User[]> {
       return this.http.get<User[]>(`${this.apiUrl}/getAll`);
     }
+
+
+  ChangeRole(idUser: number, idActionneur: number, role : Role): Observable<any> {
+    const params = new HttpParams()
+      .set('newRole', role)
+
+    return this.http.put(`${this.apiUrl}/changeRole/${idUser}/${idActionneur}`, null, { params }); 
+  }
+  ChangeStatus(idUser: number, idActionneur: number, status : UserStatus): Observable<any> {
+    const params = new HttpParams()
+      .set('newStatus', status)
+
+    return this.http.put(`${this.apiUrl}/changeStatus/${idUser}/${idActionneur}`, null, { params }); 
+  }
 }

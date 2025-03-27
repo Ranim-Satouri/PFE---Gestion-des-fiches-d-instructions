@@ -1,5 +1,6 @@
 package com.pfe.backend.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,6 +34,7 @@ public class User implements UserDetails {
     private String nom;
     private String prenom;
     private String email;
+    @JsonIgnore
     private String password;
 
     private String num;
@@ -51,6 +53,7 @@ public class User implements UserDetails {
 //            inverseJoinColumns = @JoinColumn(name = "idZone")
 //    )
 //    private Set<Zone> zones = new HashSet<>();
+@JsonIgnore
 @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 private Set<UserZone> userZones = new HashSet<>();
     public void addZone(Zone zone, Long idActionneur) {
@@ -73,6 +76,7 @@ private Set<UserZone> userZones = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "actionneur")
+    @JsonIgnore
     private User actionneur;
 
     @Override
@@ -82,7 +86,7 @@ private Set<UserZone> userZones = new HashSet<>();
 
     @Override
     public String getUsername() {
-        return email;
+        return matricule;
     }
     @Override
     public boolean isAccountNonExpired() {
@@ -109,4 +113,9 @@ private Set<UserZone> userZones = new HashSet<>();
     {
         return password;
     }
+//    @Override
+//    public UserDetails loadUserByUsername(String matricule) throws UsernameNotFoundException {
+//        return repository.findByMatricule(matricule)
+//                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé avec matricule: " + matricule));
+//    }
 }

@@ -16,22 +16,22 @@ import java.util.List;
 public class userController {
     @Autowired
     private UserIservice userIservice;
-    @PutMapping("/{idUser}/role")
-    public ResponseEntity<?> ModifyUserRole(@PathVariable long idUser, @RequestParam Role newRole, @RequestParam long idActionneur)
+    @PutMapping("/changeRole/{idUser}/{idActionneur}")
+    public ResponseEntity<?> ModifyUserRole(@PathVariable long idUser, @RequestParam Role newRole, @PathVariable long idActionneur)
     {
         try {
             userIservice.ModifyUserRole(idUser, newRole, idActionneur);  // Appel de la méthode dans le service
-            return ResponseEntity.ok("Rôle de l'utilisateur modifié avec succès");
+            return ResponseEntity.ok().body(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());  // Si un utilisateur est introuvable
         }
     }
-    @PutMapping("/{idUser}/status")
-    public ResponseEntity<?>ModifyUserStatus(@PathVariable long idUser, @RequestParam String newStatus,@RequestParam long idActionneur)
+    @PutMapping("/changeStatus/{idUser}/{idActionneur}")
+    public ResponseEntity<?>ModifyUserStatus(@PathVariable long idUser, @RequestParam String newStatus,@PathVariable long idActionneur)
     {
         try {
             userIservice.ModifyUserStatus(idUser, newStatus, idActionneur);  // Appel de la méthode dans le service
-            return ResponseEntity.ok("Status modified successfully!");
+            return ResponseEntity.ok().body(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

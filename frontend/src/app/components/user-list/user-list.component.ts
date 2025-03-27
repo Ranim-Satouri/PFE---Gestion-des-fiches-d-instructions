@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [NgxPaginationModule,CommonModule,FormsModule],
+  imports: [NgxPaginationModule, CommonModule, FormsModule],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css'
 })
@@ -17,7 +17,10 @@ constructor(private userService: UserService) {}
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 8;
-  Role : Role = Role.SUPERUSER; // baddika njibouh mel local storage
+  Role !: Role; 
+  userConnected !: User;
+  updatedRole !: Role
+  updatedStatus !: UserStatus
 
   toggleDropdown(index: number): void {
     // Si le menu est déjà ouvert pour cette ligne, on le ferme
@@ -30,6 +33,11 @@ constructor(private userService: UserService) {}
   }
 
   ngOnInit() { 
+    const userFromLocalStorage = localStorage.getItem('user');
+    if (userFromLocalStorage) {
+      this.userConnected = JSON.parse(userFromLocalStorage);
+      this.Role=this.userConnected.role;
+    }
     this.getFiches();
   }
 
@@ -67,27 +75,38 @@ constructor(private userService: UserService) {}
 
   onRoleToggleChange(user: any, event: any) {
     console.log("ken",user.role);
+    
     if(user.role === Role.ADMIN){
-      console.log("walla" , "SUPERUSER")
+      this.updatedRole = Role.SUPERUSER
+    }else{
+      this.updatedRole = Role.ADMIN
     }
-    if(user.role === Role.SUPERUSER){
-      console.log("walla" , "ADMIN")
+
+   this.userService.ChangeRole(user.idUser, this.userConnected.idUser || 1 , this.updatedRole).subscribe({
+    next : (response :any[]) => {  
+      console.log('Role changed successuly  ');       
+    },
+    error : (error : any) => {  
+      console.error('changing user Role error:', error);
     }
-    const updatedRole = event.target.checked ? 'SUPERUSER' : 'ADMIN';  // Exemple : changer le rôle basé sur l'état du toggle
-    // Envoyer la requête pour mettre à jour le rôle de l'utilisateur
-   // this.userService.updateUserRole(user.id, updatedRole).subscribe();
+  });
 }
 
 onStatusToggleChange(user: any, event: any) {
-  console.log("status", user.status);
+    console.log("status", user.status);
     if(user.status === UserStatus.ACTIVE){
-      console.log("walla" , "INACTIVE")
+      this.updatedStatus = UserStatus.INACTIVE
     }else{
-      console.log("walla" , "ACTIVE")
+      this.updatedStatus = UserStatus.ACTIVE
     }
-    const updatedStatus = event.target.checked ? 'ACTIVE' : 'INACTIVE';  // Exemple : changer le statut basé sur l'état du toggle
-    // Envoyer la requête pour mettre à jour le statut de l'utilisateur
-   // this.userService.updateUserStatus(user.id, updatedStatus).subscribe();
+   this.userService.ChangeStatus(user.idUser,this.userConnected.idUser || 1, this.updatedStatus).subscribe({
+      next : (response :any[]) => {         
+        console.log('Status changed successuly  ');  
+      },
+      error : (error : any) => {  
+        console.error('changing user Status error:', error);
+      }
+    });
 }
 
 }

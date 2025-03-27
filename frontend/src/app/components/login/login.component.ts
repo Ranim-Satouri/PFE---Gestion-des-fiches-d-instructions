@@ -17,7 +17,7 @@ declare var particlesJS: any;
 })
 export class LoginComponent {
 
-  email: string = "";
+  matricule: string = "";
   password: string = "";
 
   constructor(
@@ -27,13 +27,15 @@ export class LoginComponent {
   ) {}
 
   authenticate() {
-    this.userService.Login(this.email, this.password).subscribe({
+    this.userService.Login(this.matricule, this.password).subscribe({
       next: (response: any) => {
         console.log('Connexion réussie:', response);
 
         // Stockage du token et du rôle
         localStorage.setItem('token', response.token);
         localStorage.setItem('user_role', response.role);
+        this.accessControlService.setCurrentRole(response.role);
+        localStorage.setItem('user', JSON.stringify(response.user));
         this.redirectToRoleDashboard(response.role); // C'est ici que la redirection se passe
       },
       error: (err) => console.error('Erreur de connexion', err)
@@ -42,12 +44,12 @@ export class LoginComponent {
 
   private redirectToRoleDashboard(role: Role) {
     const roleRoutes = {
-      [Role.SUPERUSER]: '/particles', // À adapter selon vos besoins
-      [Role.ADMIN]: '/admin',
-      [Role.PREPARATEUR]: '/preparation',
-      [Role.IPDF]: '/quality-control',
-      [Role.IQP]: '/analytics',
-      [Role.OPERATEUR]: '/production'
+      [Role.SUPERUSER]: '/fichelist', // À adapter selon vos besoins
+      [Role.ADMIN]: '/fichelist',
+      [Role.PREPARATEUR]: '/fichelist',
+      [Role.IPDF]: '/fichelist',
+      [Role.IQP]: '/fichelist',
+      [Role.OPERATEUR]: '/fichelist'
     };
     const route = roleRoutes[role];
     if (!route) {

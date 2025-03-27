@@ -5,7 +5,7 @@ import { FicheListComponent } from './components/fiche-list/fiche-list.component
 import { LayoutComponent } from './layout/layout.component';
 import {LoginComponent} from './components/login/login.component';
 import {ParticlesComponent} from './components/particles/particles.component';
-//import { RoleAccessGuard } from './guards/role-access.guard';
+import { RoleAccessGuard } from './guards/role-access.guard';
 import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { FamilleListComponent } from './components/famille-list/famille-list.component';
@@ -19,13 +19,13 @@ export const routes: Routes = [
     {
       path: 'form',
       component: FormComponent,
-      //canActivate: [RoleAccessGuard]
+      canActivate: [RoleAccessGuard]
     },
     { path: 'login' , component:LoginComponent},
     {
       path:'particles' ,
       component :ParticlesComponent,
-      // canActivate: [RoleAccessGuard]
+      canActivate: [RoleAccessGuard]
     },
     {
       path: 'access-denied',
@@ -33,9 +33,9 @@ export const routes: Routes = [
     },
     {
         path: '',
-        component: LayoutComponent,  
+        component: LayoutComponent,
         children: [
-            { path: 'fichelist', component: FicheListComponent },
+            { path: 'fichelist', component: FicheListComponent},
             { path: 'famillelist', component: FamilleListComponent },
             { path: 'zonelist', component: ZoneListComponent },
             { path: 'produitlist', component: ProduitListComponent },
@@ -44,6 +44,6 @@ export const routes: Routes = [
     },
     {
       path: '**',
-      redirectTo: 'access-denied' 
+      redirectTo: 'access-denied'
     }
 ];
