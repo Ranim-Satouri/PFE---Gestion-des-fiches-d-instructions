@@ -4,21 +4,23 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { FicheService } from '../../services/fiche.service';
 import { Fiche } from '../../models/Fiche';
 import { FormsModule } from '@angular/forms';
+import {FicheFormComponent} from '../fiche-form/fiche-form.component';
+
 @Component({
   selector: 'app-fiche-list',
   standalone: true,
-  imports: [NgxPaginationModule,CommonModule,FormsModule],
+  imports: [NgxPaginationModule,CommonModule,FormsModule,FicheFormComponent],
   templateUrl: './fiche-list.component.html',
   styleUrl: './fiche-list.component.css'
 })
 export class FicheListComponent {
 
-  constructor(private FicheService: FicheService) {} 
+  constructor(private FicheService: FicheService) {}
   fiches : Fiche[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 8;
-  
+
 
   // Fonction qui gère l'ouverture du menu
   toggleDropdown(index: number): void {
@@ -31,16 +33,16 @@ export class FicheListComponent {
     }
   }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.getFiches();
   }
 
-  getFiches() { 
+  getFiches() {
     this.FicheService.getAllFiches().subscribe({
-      next : (response :Fiche[]) => {         
+      next : (response :Fiche[]) => {
         this.fiches = response;
       },
-      error : (error : any) => {  
+      error : (error : any) => {
         console.error('fetching fiches error:', error);
       }
     });
@@ -77,5 +79,12 @@ export class FicheListComponent {
       a.click();
       window.URL.revokeObjectURL(url); // Libère l'URL après le téléchargement
     });
+  }
+  showForm=false;
+  showFicheForm(){
+    this.showForm=true;
+  }
+  hideForm(){
+    this.showForm=false;
   }
 }

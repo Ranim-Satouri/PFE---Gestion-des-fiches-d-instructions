@@ -11,9 +11,14 @@ import { UserListComponent } from './components/user-list/user-list.component';
 import { FamilleListComponent } from './components/famille-list/famille-list.component';
 import { ZoneListComponent } from './components/zone-list/zone-list.component';
 import { ProduitListComponent } from './components/produit-list/produit-list.component';
+import {RegisterFormComponent} from './components/register-form/register-form.component';
+import {FicheFormComponent} from './components/fiche-form/fiche-form.component';
 
 export const routes: Routes = [
-    { path: '', component: LoginComponent },
+  { path: 'form' , component:RegisterFormComponent},
+  { path: 'ficheForm' , component:FicheFormComponent},
+
+  { path: '', component: LoginComponent },
     { path: 'child', component: ChildComponent },
     { path: 'form', component: FormComponent},
     {

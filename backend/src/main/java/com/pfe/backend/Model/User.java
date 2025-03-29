@@ -113,9 +113,5 @@ private Set<UserZone> userZones = new HashSet<>();
     {
         return password;
     }
-//    @Override
-//    public UserDetails loadUserByUsername(String matricule) throws UsernameNotFoundException {
-//        return repository.findByMatricule(matricule)
-//                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé avec matricule: " + matricule));
-//    }
+
 }

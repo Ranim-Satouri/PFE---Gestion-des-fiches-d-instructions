@@ -4,20 +4,36 @@ import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FormsModule } from '@angular/forms';
+import { RegisterFormComponent } from '../register-form/register-form.component';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, RegisterFormComponent],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css'
 })
 export class UserListComponent {
-constructor(private userService: UserService) {} 
+  showForm = false;
+
+  showRegisterForm() {
+    this.showForm = true;
+  }
+
+  hideRegisterForm() {
+    this.showForm = false;
+    console.log('Form closed');
+  }
+  onUserRegistered(newUser: any) {
+    // Ajoutez le nouvel utilisateur à votre liste
+    this.users.unshift(newUser);
+    this.hideRegisterForm();
+  }
+constructor(private userService: UserService) {}
   users : any[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 8;
-  Role !: Role; 
+  Role !: Role;
   userConnected !: User;
   updatedRole !: Role
   updatedStatus !: UserStatus
@@ -32,7 +48,7 @@ constructor(private userService: UserService) {}
     }
   }
 
-  ngOnInit() { 
+  ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
@@ -41,12 +57,12 @@ constructor(private userService: UserService) {}
     this.getFiches();
   }
 
-  getFiches() { 
+  getFiches() {
     this.userService.getAll().subscribe({
-      next : (response :User[]) => {         
+      next : (response :User[]) => {
         this.users = response;
       },
-      error : (error : any) => {  
+      error : (error : any) => {
         console.error('fetching users error:', error);
       }
     });
@@ -75,7 +91,7 @@ constructor(private userService: UserService) {}
 
   onRoleToggleChange(user: any, event: any) {
     console.log("ken",user.role);
-    
+
     if(user.role === Role.ADMIN){
       this.updatedRole = Role.SUPERUSER
     }else{
@@ -83,10 +99,10 @@ constructor(private userService: UserService) {}
     }
 
    this.userService.ChangeRole(user.idUser, this.userConnected.idUser || 1 , this.updatedRole).subscribe({
-    next : (response :any[]) => {  
-      console.log('Role changed successuly  ');       
+    next : (response :any[]) => {
+      console.log('Role changed successuly  ');
     },
-    error : (error : any) => {  
+    error : (error : any) => {
       console.error('changing user Role error:', error);
     }
   });
@@ -100,10 +116,10 @@ onStatusToggleChange(user: any, event: any) {
       this.updatedStatus = UserStatus.ACTIVE
     }
    this.userService.ChangeStatus(user.idUser,this.userConnected.idUser || 1, this.updatedStatus).subscribe({
-      next : (response :any[]) => {         
-        console.log('Status changed successuly  ');  
+      next : (response :any[]) => {
+        console.log('Status changed successuly  ');
       },
-      error : (error : any) => {  
+      error : (error : any) => {
         console.error('changing user Status error:', error);
       }
     });

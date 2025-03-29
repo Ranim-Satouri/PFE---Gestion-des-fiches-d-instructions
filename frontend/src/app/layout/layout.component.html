@@ -63,7 +63,8 @@
     </div>
 </nav>
 
-<aside id="logo-sidebar" [ngClass]="{'sm:w-16 ': !isSideBarOpen ,'sm:w-60 w-60  max-sm:left-3': isSideBarOpen, 'translate-x-0 w-[96%] max-sm:left-4': !isSideBarHidden , '-translate-x-full ': isSideBarHidden }"  class="fixed  sm:left-4 bottom-4 z-40 left-0  overflow-y-auto h-[calc(100%-96px)] px-3 py-4 rounded-lg  -translate-x-full transition-all transition-discrete duration-700 ease-in-out sm:translate-x-0 bg-navBluelight dark:bg-navBluedark  overflow-x-hidden " aria-label="Sidebar">
+<aside id="logo-sidebar" [ngClass]="{'sm:w-16 ': !isSideBarOpen ,'sm:w-60 w-60  max-sm:left-3': isSideBarOpen, 'translate-x-0 w-[96%] max-sm:left-4': !isSideBarHidden , '-translate-x-full ': isSideBarHidden }"
+       class="fixed  sm:left-4 bottom-4 z-[40] left-0  overflow-y-auto h-[calc(100%-96px)] px-3 py-4 rounded-lg  -translate-x-full transition-all transition-discrete duration-700 ease-in-out sm:translate-x-0 bg-navBluelight dark:bg-navBluedark" aria-label="Sidebar">
     <button (click)="toggleSidebar()" class="hidden sm:block mb-4 p-1 rounded-md bg-gray-300 hover:bg-gray-100 dark:bg-gray-700 absolute right-4 dark:hover:bg-gray-600">
         <svg *ngIf="!isSideBarOpen"  class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 16 4-4-4-4m6 8 4-4-4-4"/>
