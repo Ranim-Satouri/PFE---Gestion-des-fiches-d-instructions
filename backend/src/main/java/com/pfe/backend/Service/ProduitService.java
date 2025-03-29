@@ -9,6 +9,6 @@ public interface ProduitService {
     Produit addProduit(Produit produit, Long idFamille, Long idActionneur);
     ResponseEntity<List<Produit>> getAllProduit();
        void updateProduit(Long idProduit, Produit newProduitData ,Long idActionneur);
-        void DeleteProduit(Long idProduit);
+        void DeleteProduit(Long idProduit ,Long idActionneur);
     List<Produit> getActiveProducts();
 }

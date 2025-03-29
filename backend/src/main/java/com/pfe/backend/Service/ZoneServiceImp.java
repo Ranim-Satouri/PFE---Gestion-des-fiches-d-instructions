@@ -1,8 +1,10 @@
 package com.pfe.backend.Service;
 
 
+import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Model.Zone;
+import com.pfe.backend.Repository.FicheRepository;
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.ZoneRepository;
 import lombok.AllArgsConstructor;
@@ -17,8 +19,8 @@ import java.util.List;
 public class ZoneServiceImp implements ZoneService {
     @Autowired
     private ZoneRepository zoneRepository;
-    @Autowired
     private UserRepository userRepo;
+    private FicheRepository ficheRepo;
     @Override
     public ResponseEntity<List<Zone>> getAllZones() {
         return ResponseEntity.ok().body(zoneRepository.findAll());
@@ -38,12 +40,21 @@ public class ZoneServiceImp implements ZoneService {
 
     }
     @Override
-
-    public void DeleteZone(Long idZone) {
+    public void DeleteZone(Long idZone , Long idActionneur) {
         Zone zone = zoneRepository.findById(idZone)
                 .orElseThrow(() -> new RuntimeException("Zone introuvable"));
+        User actionneur = userRepo.findById(idActionneur)
+                .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
         zone.setDeleted(true);
         zone.getUserZones().clear();
+        zone.setActionneur( actionneur);
+        List<Fiche> fiches = ficheRepo.findByZone(zone);
+        for (Fiche fiche : fiches) {
+            fiche.setStatus(Fiche.FicheStatus.DELETED);
+            fiche.setAction(Fiche.FicheAction.DELETE);
+            fiche.setActionneur(actionneur);
+        }
+        ficheRepo.saveAll(fiches);
         zoneRepository.save(zone);
     }
     @Override

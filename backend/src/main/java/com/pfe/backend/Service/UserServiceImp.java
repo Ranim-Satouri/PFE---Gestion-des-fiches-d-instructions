@@ -1,6 +1,7 @@
 package com.pfe.backend.Service;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
+import com.pfe.backend.Model.UserZone;
 import com.pfe.backend.Model.Zone;
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.UserZoneRepository;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImp implements UserIservice{
@@ -23,9 +25,10 @@ public class UserServiceImp implements UserIservice{
     private ZoneRepository zoneRepo;
     @Autowired
     private UserZoneRepository userZoneRepository;
-@Override
+    @Override
     public void attribuerZoneAUser(Long idUser, Long idZone, Long idActionneur) {
-        User user = userRepo.findById(idUser)
+
+    User user = userRepo.findById(idUser)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
         Zone zone = zoneRepo.findById(idZone)
                 .orElseThrow(() -> new RuntimeException("Zone introuvable"));
@@ -38,6 +41,13 @@ public class UserServiceImp implements UserIservice{
         }
         user.addZone(zone, idActionneur);
         userRepo.save(user);
+    }
+    @Override
+    public Set<UserZone> getUserZones(Long idUser) {
+
+        User user = userRepo.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        return user.getUserZones();
     }
     @Override
     public void ModifyUserRole(long idUser, Role newRole, long idActionneur)

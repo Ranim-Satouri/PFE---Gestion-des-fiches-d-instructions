@@ -121,7 +121,7 @@ public class FicheServiceImp implements FicheService {
 
     @Override
     public List<Fiche> getFiches() {
-        return ficheRepository.findByActionNot(Fiche.FicheAction.DELETE);
+        return ficheRepository.findByStatusNot(Fiche.FicheStatus.DELETED);
     }
 
     @Override

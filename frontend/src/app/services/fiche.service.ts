@@ -37,7 +37,7 @@ export class FicheService {
   }
 
   // Méthode pour supprimer une fiche
-  deleteFiche(idFiche: number, idSupprimateur: number): Observable<any> {
+  deleteFiche(idFiche: number | undefined , idSupprimateur: number | undefined): Observable<any> {
     return this.http.put( `${this.apiUrl}/deleteFiche/${idFiche}/${idSupprimateur}`, null); 
   }
   

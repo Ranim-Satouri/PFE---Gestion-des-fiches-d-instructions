@@ -1,8 +1,10 @@
 package com.pfe.backend.Service;
 import com.pfe.backend.Model.Famille;
+import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.Produit;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Repository.FamilleRepository;
+import com.pfe.backend.Repository.FicheRepository;
 import com.pfe.backend.Repository.ProduitRepository;
 import com.pfe.backend.Repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -18,10 +20,10 @@ import java.util.Optional;
 public class ProduitServiceImp implements ProduitService{
     @Autowired
     private ProduitRepository produitRepository;
-    @Autowired
     private FamilleRepository familleRepository;
-    @Autowired
     private UserRepository userRepo;
+    private FicheRepository ficheRepo;
+
     @Override
     public Produit addProduit(Produit produit, Long idFamille, Long idActionneur) {
         Famille famille = familleRepository.findById(idFamille)
@@ -58,11 +60,21 @@ public class ProduitServiceImp implements ProduitService{
             produitRepository.save(produit);
         }
         @Override
-        public void DeleteProduit(Long idProduit)
+        public void DeleteProduit(Long idProduit ,Long idActionneur)
         {
             Produit prod = produitRepository.findById(idProduit)
                     .orElseThrow(() -> new RuntimeException("produit introuvable"));
+            User actionneur = userRepo.findById(idActionneur)
+                    .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
             prod.setDeleted(true);
+            prod.setActionneur(actionneur);
+            List<Fiche> fiches = ficheRepo.findByProduit(prod);
+            for (Fiche fiche : fiches) {
+                fiche.setStatus(Fiche.FicheStatus.DELETED);
+                fiche.setAction(Fiche.FicheAction.DELETE);
+                fiche.setActionneur(actionneur);
+            }
+            ficheRepo.saveAll(fiches);
 //            prod.getUserZones().clear();
             produitRepository.save(prod);
         }

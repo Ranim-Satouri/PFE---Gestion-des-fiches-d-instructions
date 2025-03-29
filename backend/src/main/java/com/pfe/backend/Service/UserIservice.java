@@ -2,9 +2,11 @@ package com.pfe.backend.Service;
 
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
+import com.pfe.backend.Model.UserZone;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserIservice {
    void ModifyUserRole(long idUser, Role newRole, long idActionneur);
@@ -15,4 +17,5 @@ public interface UserIservice {
    List<Object[]> getUserHistory(Long userId);
    void attribuerZoneAUser(Long idUser, Long idZone, Long idActionneur);
    public List<User> findByRole(Role role);
+   Set<UserZone> getUserZones(Long idUser);
 }

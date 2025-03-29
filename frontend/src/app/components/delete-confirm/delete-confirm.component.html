@@ -1,0 +1,42 @@
+<div *ngIf="isOpen" class="absolute z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-gray-500/75 dark:bg-gray-500/50 transition-opacity" aria-hidden="true"></div>
+  
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+      <div class="flex min-h-full  justify-center p-4 text-center items-start sm:p-0">
+        <div class="border dark:border-red-300 border-red-300 relative transform overflow-hidden rounded-lg bg-gray-200 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-[630px]  translate-y-[-100%] opacity-0 animate-[slideFromTop_0.3s_ease-out_forwards]">
+          <div class="bg-gray-50 dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                <svg class="size-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                </svg>
+              </div>
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <h3 class="text-base font-semibold dark:text-gray-50 text-gray-900 sm:pl-[2px]" id="modal-title">Êtes-vous sûr de vouloir supprimer {{title}} ?</h3>
+                <div class="mt-2 text-sm text-gray-700 dark:text-gray-400 space-y-2">
+                  <p class="sm:pl-[2px]">{{message1}}</p>
+                  <p class="sm:pl-[2px]">{{message2}}</p>
+                  <div class="mt-2 flex items-center gap-2 rounded-md bg-red-100 px-3 py-2 text-sm font-semibold text-red-700 dark:bg-red-200/10 border dark:border-red-200/10 border-red-200 dark:text-red-400">
+                    <svg class="size-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M4.93 4.93l14.14 14.14M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                    </svg>
+                    Cette action est irréversible.
+                  </div>                  
+                </div>                                
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-800 px-4 pb-3 sm:flex sm:flex-row-reverse sm:px-6">
+            <button (click)="confirm()"
+              class="inline-flex w-full justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
+              Supprimer
+            </button>
+            <button (click)="cancel()" 
+              class="mt-3 inline-flex w-full justify-center rounded-md bg-white dark:bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-100 sm:mt-0 sm:w-auto">
+              Annuler
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

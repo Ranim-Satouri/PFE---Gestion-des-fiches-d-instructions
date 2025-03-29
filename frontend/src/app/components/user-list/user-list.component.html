@@ -5,12 +5,12 @@
         <a href="#" class="w-36 h-8 px-4 py-2 text-sm text-center font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">Ajouter une fiche</a>
     </div>
 
-    <div class="mb-2 overflow-x-auto shadow-md rounded-lg max-h-[calc(100%-136px)] overflow-y-auto custom-scrollbar-container ">
-        <table class="w-full text-xs text-left rtl:text-right text-gray-700 dark:text-gray-400 ">
+    <div class="relative z-10  mb-2 shadow-md rounded-lg max-h-[calc(100%-132px)] custom-scrollbar-container overflow-auto " (scroll)="onScroll()">
+        <table class=" w-full text-xs text-left rtl:text-right text-gray-700 dark:text-gray-400 ">
             <thead class="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-gray-400 sticky-top">
                 <tr>
-                    <th scope="col" class="px-6 py-3 ">Matricule</th>
-                    <th scope="col" class="px-6 py-3 ">
+                    <th scope="col" class="px-4 py-3 ">Matricule</th>
+                    <th scope="col" class="px-2 py-3 ">
                         <div class="flex items-center">
                             Nom Complet
                             <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -18,7 +18,7 @@
                             </svg></a>
                         </div>
                     </th>
-                    <th scope="col" class="px-6 py-3 ">
+                    <th scope="col" class="px-4 py-3 ">
                         <div class="flex items-center">
                             E-mail
                             <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -26,7 +26,7 @@
                             </svg></a>
                         </div>
                     </th>
-                    <th scope="col" class="px-5 py-3 ">
+                    <th scope="col" class="px-4 py-3 ">
                         <div class="flex items-center">
                             Role
                             <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -58,15 +58,10 @@
                             </svg></a>
                         </div>
                     </th>
-                    <th scope="col" class="px-5 py-3 ">
-                        <div class="flex items-center">
-                            Numéro
-                            <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"/>
-                            </svg></a>
-                        </div>
+                    <th scope="col" class="px-4 py-2 font-medium">
+                        Zones
                     </th>
-                    <th scope="col" class="px-5 py-3 ">
+                    <th scope="col" class="px-4 py-3 ">
                         <div class="flex items-center">
                             Modifié le
                             <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -74,16 +69,16 @@
                             </svg></a>
                         </div>
                     </th>
-                    <th scope="col" class="px-6 py-3 "></th>
+                    <th scope="col" class="px-4 py-3 "></th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let user of users | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index"
                     class="bg-gray-50 border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 dark:hover:bg-hoverColor hover:bg-gray-100">
-                    <th scope="col" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white ">{{user.matricule}}</th>
-                    <th scope="col" class="px-6 py-2 font-medium">{{user.prenom}} {{user.nom}}</th>
-                    <th scope="col" class="px-6 py-2 font-medium">{{user.email}}</th>
-                    <th scope="col" class="px-5 py-2 font-medium">{{user.role}}</th>
+                    <th scope="col" class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white ">{{user.matricule}}</th>
+                    <th scope="col" class="px-2 py-2 font-medium">{{user.prenom}} {{user.nom}}</th>
+                    <th scope="col" class="px-4 py-2 font-medium">{{user.email}}</th>
+                    <th scope="col" class="px-4 py-2 font-medium">{{user.role}}</th>
                     <th *ngIf="Role !== 'SUPERUSER'" scope="col" class="px-4 py-2 font-medium">{{user.status}}</th>
 
                     <!-- Toggle pour le rôle : activé si le rôle est SUPERUSER, désactivé si ADMIN -->
@@ -103,71 +98,78 @@
                             <div class="relative w-9 h-5 bg-gray-400  rounded-full peer dark:bg-gray-500 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-gray-100 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-200 after:border-gray-100 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500 dark:peer-checked:bg-blue-500  peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-300"></div>
                         </label>
                     </th>
-                    <th scope="col" class="px-5 py-2 font-medium" >{{user.num}}</th>
-
-                    <th scope="col" class="px-5 py-2 font-medium">{{user.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
-
-                    <th scope="col" class="px-6 py-2 text-right relative " (click)="closeDropdown($event)">
-                        <button (click)="toggleDropdown(i)"
-                        [ngClass]="{'dark:bg-gray-600 bg-gray-200': dropdownOpen === i , ' bg-transparent': dropdownOpen !== i}"
-                        id="dropdownMenuIconButton" data-dropdown-toggle="dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 rounded-lg   dark:text-white    " type="button">
-                            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
-                                <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
-                            </svg>
-                        </button>
-                        <!-- Dropdown menu -->
-                        <div *ngIf="dropdownOpen === i"
-                            id="dropdownDots-{{i}}"
-                            class="absolute right-[60px] bottom-[8px] z-50 bg-gray-200 divide-y divide-gray-100 rounded-lg shadow-sm w-36 dark:bg-gray-600 dark:divide-gray-800"
-                            [ngClass]="{'-bottom-14': i === 0}">
-                            <ul>
-                                <li>
-                                <a href="#" class="block px-4 py-2 text-left dark:text-white text-black hover:bg-gray-100 rounded-lg dark:hover:bg-hoverColor2 dark:hover:text-white">Historique</a>
-                                </li>
-                                <li>
-                                <a href="#" class="block px-4 py-2 text-left dark:text-white text-black hover:bg-gray-100 rounded-lg dark:hover:bg-hoverColor2 dark:hover:text-white">Modifier</a>
-                                </li>
-                                <li>
-                                <a href="#" class="block px-4 py-2 text-left text-red-500 hover:bg-gray-100 rounded-lg dark:hover:bg-hoverColor2">Supprimer</a>
-                                </li>
-                            </ul>
-                        </div>
-
+                    <th scope="col" class="px-2 py-2 max-w-40 font-medium">
+                        {{ getZoneNames(user) }}
                     </th>
+                    <th scope="col" class="px-4 py-2 font-medium">{{user.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
+
+                    
+                    <th class="px-4 py-2 text-right relative">
+                        <div class="relative inline-block text-left">
+                            <button (click)="toggleDropdown(i, $event)" 
+                            [ngClass]="{'dark:bg-gray-600 bg-gray-300': dropdownOpen === i , ' bg-transparent': dropdownOpen !== i}"
+                            class="p-1 dark:hover:bg-gray-600  hover:bg-gray-300 rounded-full focus:outline-none">
+                                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                    <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                                </svg>
+                            </button>   
+                            <!-- Menu déroulant -->
+                            <div *ngIf="dropdownOpen === i"  id="dropdownDots-{{i}}"
+                                [ngStyle]="{ top: dropdownPosition.top + 'px', left: dropdownPosition.left + 'px' }"
+                                class="fixed w-40 bg-gray-300 dark:bg-gray-700 border border-gray-50 dark:border-gray-600 rounded-md shadow-lg z-50"
+                                [ngClass]="{ 'origin-bottom-right': displayAbove, 'origin-top-right': !displayAbove }">
+
+                                <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
+                            >
+
+                                    <li><a  class="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">Modifier</a></li>
+                                    <li><a  class="block px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">Historique</a></li>
+                                    <li><a class="block px-4 py-2 text-red-600 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer" (click)="openDeleteModel(user)">Supprimer</a></li>
+                                </ul>
+                            </div>  
+                        </div>
+                    </th>
+                      
                 </tr>
             </tbody>
         </table>
     </div>
 
     <!-- Pagination Controls -->
-    <div class="flex sm:flex-row justify-between items-center px-4  rounded-lg h-10 flex-col gap-4">
+    <div class=" flex sm:flex-row justify-between items-center px-4 rounded-lg h-10 flex-col gap-4">
         <div class="text-sm text-slate-500">
             Affichage <b>{{ (page - 1) * itemsPerPage + 1 }}</b> - <b>{{ (page * itemsPerPage > users.length ? users.length : page * itemsPerPage) }}</b> de <b>{{ users.length }}</b> éléments
         </div>
-    <div class="flex space-x-3 flex-row sm:flex-row flex-col">
-
-            <form class="max-w-sm mx-auto flex flex-row gap-3 items-center ">
-                <label for="countries" class="block text-sm font-medium text-slate-500">Élément par page</label>
-                <div class="relative">
-                <select id="countries" [(ngModel)]="itemsPerPage" name="itemsPerPage"  class="bg-gray-50 border-2 border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 h-8 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400  dark:focus:border-blue-500">
-                    <option value="5">5</option>
-                    <option value="8" selected>8</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
+        <div class="flex space-x-3 flex-row sm:flex-row flex-col">
+             <form class="max-w-sm mx-auto flex flex-row gap-3 items-center ">
+                 <label for="countries" class="block text-sm font-medium text-slate-500">Élément par page</label>
+                 <div class="relative">
+                   <select id="countries" [(ngModel)]="itemsPerPage" name="itemsPerPage"  class="bg-gray-50 border-2 border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 h-8 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400  dark:focus:border-blue-500">
+                     <option value="5" selected>5</option>
+                     <option value="10">10</option>
+                     <option value="15">15</option>
+                     <option value="20">20</option>
                     <option *ngIf="users.length > 20" value="{{users.length}}">{{users.length}}</option>
 
                 </select>
                 <!-- Flèche SVG personnalisée -->
                 <svg class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
-                </div>
-            </form>
-
-            <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white " previousLabel="Précédent" nextLabel="Suivant" ></pagination-controls>
-    </div>
-    </div>
-
+              </div>
+          </form>
+          <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white  " previousLabel="Précédent" nextLabel="Suivant" ></pagination-controls>
+      </div>
+  </div>    
 </div>
+  
+<app-delete-confirm 
+    [isOpen]="isDeleteModelOpen"
+    [title]="'cet utilisateur'"
+    [message1]="'Vous êtes sur le point de supprimer un utilisateur du système.'"
+    [message2]="'Cette action est importante et aura un impact permanent.'"
+    (onConfirm)="ChangeUserStatus(selectedUser , UserStatus.DELETED)"
+    (onCancel)="closeDeleteModel()">
+</app-delete-confirm>
 
+  

@@ -16,7 +16,8 @@ export class LayoutComponent {
   isSideBarHidden : boolean =true;
   isListOpen : Boolean = false;
   selectedItem: string =localStorage.getItem('selectedSidebarItem') || '';;
-
+  isPopUpOpen: boolean = false;
+ 
   setActive(item: string) {
     this.selectedItem = item;
     localStorage.setItem('selectedSidebarItem', item);

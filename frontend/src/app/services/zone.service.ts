@@ -11,6 +11,9 @@ export class ZoneService {
   private apiUrl = 'http://localhost:8080/zone'; 
   constructor(private http: HttpClient) { } 
   getAll(): Observable<Zone[]> {
-      return this.http.get<Zone[]>(`${this.apiUrl}/getAllZones`);
+      return this.http.get<Zone[]>(`${this.apiUrl}/activeZones`);
+  }
+  deleteZone(idZone: number | undefined, idSupprimateur: number): Observable<any> {
+    return this.http.delete( `${this.apiUrl}/delete/${idZone}/${idSupprimateur}`); 
   }
 }

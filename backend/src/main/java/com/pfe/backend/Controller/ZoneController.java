@@ -31,11 +31,11 @@ public class ZoneController {
         return zoneService.addZone(zone,idActionneur);
 
     }
-    @DeleteMapping("/delete/{idZone}")
-    public ResponseEntity<?> DeleteZone(@PathVariable Long idZone) {
+    @DeleteMapping("/delete/{idZone}/{idActionneur}")
+    public ResponseEntity<?> DeleteZone(@PathVariable Long idZone, @PathVariable Long idActionneur) {
         try {
-            zoneService.DeleteZone(idZone);
-            return ResponseEntity.ok("Zone supprimée avec succès");
+            zoneService.DeleteZone(idZone ,  idActionneur);
+            return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

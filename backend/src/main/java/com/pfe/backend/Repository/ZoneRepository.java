@@ -1,5 +1,7 @@
 package com.pfe.backend.Repository;
 
+import com.pfe.backend.Model.Fiche;
+import com.pfe.backend.Model.Produit;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Model.Zone;
 import org.springframework.data.jpa.repository.JpaRepository;
