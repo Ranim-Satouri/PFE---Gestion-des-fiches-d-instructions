@@ -18,20 +18,21 @@ export class UserService {
   }
 
   getAll(): Observable<User[]> {
-      return this.http.get<User[]>(`${this.apiUrl}/getAll`);
+      return this.http.get<User[]>(`${this.apiUrl}/getUsers`);
     }
 
 
-  ChangeRole(idUser: number, idActionneur: number, role : Role): Observable<any> {
+  ChangeRole(idUser: number | undefined, idActionneur: number | undefined, role : Role): Observable<any> {
     const params = new HttpParams()
       .set('newRole', role)
 
     return this.http.put(`${this.apiUrl}/changeRole/${idUser}/${idActionneur}`, null, { params }); 
   }
-  ChangeStatus(idUser: number, idActionneur: number, status : UserStatus): Observable<any> {
+  ChangeStatus(idUser: number | undefined , idActionneur: number | undefined, status : UserStatus): Observable<any> {
     const params = new HttpParams()
       .set('newStatus', status)
 
     return this.http.put(`${this.apiUrl}/changeStatus/${idUser}/${idActionneur}`, null, { params }); 
   }
+  
 }

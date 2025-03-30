@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ParticlesComponent } from '../particles/particles.component';
+import { ParticlesComponent } from '../../components/particles/particles.component';
 import {UserService} from '../../services/user.service';
 import { FormsModule } from '@angular/forms';
 import {Role} from '../../models/User';

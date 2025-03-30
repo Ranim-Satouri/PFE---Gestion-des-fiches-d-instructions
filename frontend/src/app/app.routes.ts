@@ -1,9 +1,8 @@
 import { Routes } from '@angular/router';
-import { ChildComponent } from './components/child/child.component';
 import { FormComponent } from './components/form/form.component';
 import { FicheListComponent } from './components/fiche-list/fiche-list.component';
 import { LayoutComponent } from './layout/layout.component';
-import {LoginComponent} from './components/login/login.component';
+import {LoginComponent} from './pages/login/login.component';
 import {ParticlesComponent} from './components/particles/particles.component';
 import { RoleAccessGuard } from './guards/role-access.guard';
 import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
@@ -15,11 +14,11 @@ import {RegisterFormComponent} from './components/register-form/register-form.co
 import {FicheFormComponent} from './components/fiche-form/fiche-form.component';
 
 export const routes: Routes = [
+    { path: '', component: LoginComponent },
   { path: 'form' , component:RegisterFormComponent},
   { path: 'ficheForm' , component:FicheFormComponent},
 
   { path: '', component: LoginComponent },
-    { path: 'child', component: ChildComponent },
     { path: 'form', component: FormComponent},
     {
       path: 'form',

@@ -3,6 +3,7 @@ package com.pfe.backend.Controller;
 import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
+import com.pfe.backend.Model.UserZone;
 import com.pfe.backend.Service.UserIservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RequestMapping("/user")
 @RestController
@@ -42,8 +44,8 @@ public class userController {
     }
 
     @GetMapping("/getUsers")
-    public ResponseEntity<?> getUsers(){
-            return ResponseEntity.ok().body(userIservice.getUsers());
+    public ResponseEntity<List<User>> getUsers(){
+            return userIservice.getUsers();
         }
     @PutMapping("/update/{idUser}")
     public ResponseEntity<User> updateUser(
@@ -58,12 +60,14 @@ public class userController {
     public List<Object[]> getUserHistory(@PathVariable Long id) {
         return userIservice.getUserHistory(id);
     }
-    @PostMapping("/{idUser}/attribuer-zone")
+    @PostMapping("/attribuer-zone/{idUser}/{idZone}/{idActionneur}")
     public ResponseEntity<?> attribuerZoneAUser(
             @PathVariable long idUser,
-            @RequestParam long idZone,
-            @RequestParam long idActionneur
+            @PathVariable long idZone,
+            @PathVariable long idActionneur
     ) {
+
+
         try {
             userIservice.attribuerZoneAUser(idUser, idZone, idActionneur);
             return ResponseEntity.ok("Zone attribuée à l'utilisateur avec succès");
@@ -71,6 +75,10 @@ public class userController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+    @GetMapping("/user-zones/{idUser}")
+    public Set<UserZone> getUserZones(@PathVariable Long idUser) {
 
+        return userIservice.getUserZones(idUser);
+    }
 }
 

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ParentComponent } from './parent.component';
+import { DeleteConfirmComponent } from './delete-confirm.component';
 
-describe('ParentComponent', () => {
-  let component: ParentComponent;
-  let fixture: ComponentFixture<ParentComponent>;
+describe('DeleteConfirmComponent', () => {
+  let component: DeleteConfirmComponent;
+  let fixture: ComponentFixture<DeleteConfirmComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ParentComponent]
+      imports: [DeleteConfirmComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ParentComponent);
+    fixture = TestBed.createComponent(DeleteConfirmComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

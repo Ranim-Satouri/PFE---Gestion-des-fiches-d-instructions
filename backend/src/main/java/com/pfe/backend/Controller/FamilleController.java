@@ -13,8 +13,8 @@ import java.util.List;
 public class FamilleController {
     @Autowired
     private FamilleService familleService;
-    @PostMapping("/addFamille")
-    public ResponseEntity<?> addFamille(@RequestBody Famille famille, @RequestParam Long idActionneur) {
+    @PostMapping("/addFamille/{idActionneur}")
+    public ResponseEntity<?> addFamille(@RequestBody Famille famille, @PathVariable Long idActionneur) {
         ResponseEntity<?> response = familleService.addFamille(famille, idActionneur);
         if (response.getStatusCode() == HttpStatus.CONFLICT || response.getStatusCode() == HttpStatus.BAD_REQUEST) {
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
@@ -25,11 +25,11 @@ public class FamilleController {
     public ResponseEntity<List<Famille>> getFamilles(){
         return familleService.getFamilles();
     }
-    @PutMapping("/update/{idFam}")
+    @PutMapping("/update/{idFam}/{idActionneur}")
     public ResponseEntity<String> updateFamily(
             @PathVariable Long idFam,
             @RequestBody Famille newFamillyData,
-            @RequestParam Long idActionneur) {
+            @PathVariable Long idActionneur) {
         try {
             familleService.updateFamily(idFam, newFamillyData, idActionneur);
             return ResponseEntity.ok("Famille mis à jour avec succès !");
@@ -37,11 +37,11 @@ public class FamilleController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @DeleteMapping("/delete/{idFam}")
-    public ResponseEntity<?> DeleteFamily(@PathVariable Long idFam) {
+    @DeleteMapping("/delete/{idFam}/{idActionneur}")
+    public ResponseEntity<?> DeleteFamily(@PathVariable Long idFam , @PathVariable Long idActionneur) {
         try {
-            familleService.DeleteFamily(idFam);
-            return ResponseEntity.ok("Famille supprimé avec succès");
+            familleService.DeleteFamily(idFam , idActionneur);
+            return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

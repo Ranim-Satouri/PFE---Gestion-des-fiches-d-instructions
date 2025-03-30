@@ -18,10 +18,10 @@ public class ProduitController {
     @Autowired
     private ProduitService produitService;
 
-    @PostMapping("/addProduit")
+    @PostMapping("/addProduit/{idFamille}/{idActionneur}")
     public ResponseEntity<Produit> addProduit(@RequestBody Produit produit,
-                                              @RequestParam Long idFamille,
-                                              @RequestParam Long idActionneur) {
+                                              @PathVariable Long idFamille,
+                                              @PathVariable Long idActionneur) {
         return ResponseEntity.ok(produitService.addProduit(produit, idFamille, idActionneur));
 
     }
@@ -45,11 +45,11 @@ public class ProduitController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @DeleteMapping("/delete/{idProd}")
-    public ResponseEntity<?> DeleteProduit(@PathVariable Long idProd) {
+    @DeleteMapping("/delete/{idProd}/{idActionneur}")
+    public ResponseEntity<?> DeleteProduit(@PathVariable Long idProd , @PathVariable Long idActionneur) {
         try {
-            produitService.DeleteProduit(idProd);
-            return ResponseEntity.ok("produit supprimé avec succès");
+            produitService.DeleteProduit(idProd,idActionneur);
+            return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

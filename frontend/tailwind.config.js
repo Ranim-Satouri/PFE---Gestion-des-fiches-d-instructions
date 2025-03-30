@@ -12,6 +12,15 @@ module.exports = {
         hoverColor : "#212b38",
         hoverColor2 : "#4f5966"
       },
+      keyframes: {
+        slideFromTop: {
+          '0%': { transform: 'translateY(-100%)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+      },
+      animation: {
+        slideFromTop: 'slideFromTop 0.3s ease-out forwards',
+      },
     },
   },
   plugins: [],

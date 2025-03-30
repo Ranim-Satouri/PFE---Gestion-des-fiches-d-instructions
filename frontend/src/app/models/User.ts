@@ -1,3 +1,6 @@
+import { User_Zone } from "./User_Zone";
+import { Zone } from "./Zone";
+
 export interface User {
     idUser?: number;
     matricule: string;
@@ -11,7 +14,7 @@ export interface User {
     role: Role;
     actionneur: User | null;
     modifieLe: Date;
-
+    zones : Zone[];
   }
 
   export enum UserStatus {
