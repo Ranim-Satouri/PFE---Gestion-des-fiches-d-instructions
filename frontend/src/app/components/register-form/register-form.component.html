@@ -2,126 +2,169 @@
   <!-- Conteneur principal avec position relative -->
   <div class="bg-white p-6 rounded-lg shadow-lg w-fit relative max-h-[90vh] overflow-y-auto">
     <!-- Bouton X avec z-index élevé et position fixe -->
-    <button
-      (click)="closeForm()"
-      class="absolute top-2 right-1 z-10 bg-white rounded-full p-1 shadow-md border border-gray-200 hover:bg-gray-100">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+    <button (click)="closeForm()"
+            type="button"
+            class="absolute top-[5px] right-1 text-gray-400 bg-transparent hover:bg-blue-100 hover:text-gray-500 rounded-lg
+            text-sm w-8 h-8  inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+            data-modal-hide="default-modal">
+      <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
       </svg>
-    </button>
-
+      <span class="sr-only">Close modal</span>
+    </button> <br>
     <!-- Contenu du formulaire -->
     <!-- Stepper -->
-    <div data-hs-stepper="">
-      <!-- Stepper Nav -->
-      <ul class="relative flex flex-row gap-x-2">
-        <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{
-      "index": 1
-    }'>
-      <span class="min-w-7 min-h-7 group inline-flex items-center text-xs align-middle">
-        <span class="size-7 flex justify-center items-center shrink-0 bg-gray-100 font-medium text-gray-800 rounded-full group-focus:bg-gray-200 hs-stepper-active:bg-blue-600 hs-stepper-active:text-white hs-stepper-success:bg-blue-600 hs-stepper-success:text-white hs-stepper-completed:bg-teal-500 hs-stepper-completed:group-focus:bg-teal-600 dark:bg-neutral-700 dark:text-white dark:group-focus:bg-gray-600 dark:hs-stepper-active:bg-blue-500 dark:hs-stepper-success:bg-blue-500 dark:hs-stepper-completed:bg-teal-500 dark:hs-stepper-completed:group-focus:bg-teal-600">
-          <span class="hs-stepper-success:hidden hs-stepper-completed:hidden">1</span>
-          <svg class="hidden shrink-0 size-3 hs-stepper-success:block" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </span>
-        <span class="ms-2 text-sm font-medium text-gray-800 dark:text-neutral-200">
-          Step
-        </span>
-      </span>
-          <div class="w-full h-px flex-1 bg-gray-200 group-last:hidden hs-stepper-success:bg-blue-600 hs-stepper-completed:bg-teal-600 dark:bg-neutral-700 dark:hs-stepper-success:bg-blue-600 dark:hs-stepper-completed:bg-teal-600"></div>
-        </li>
+    <div data-hs-stepper="" >
 
-        <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{
-      "index": 2
-    }'>
-      <span class="min-w-7 min-h-7 group inline-flex items-center text-xs align-middle">
-        <span class="size-7 flex justify-center items-center shrink-0 bg-gray-100 font-medium text-gray-800 rounded-full group-focus:bg-gray-200 hs-stepper-active:bg-blue-600 hs-stepper-active:text-white hs-stepper-success:bg-blue-600 hs-stepper-success:text-white hs-stepper-completed:bg-teal-500 hs-stepper-completed:group-focus:bg-teal-600 dark:bg-neutral-700 dark:text-white dark:group-focus:bg-gray-600 dark:hs-stepper-active:bg-blue-500 dark:hs-stepper-success:bg-blue-500 dark:hs-stepper-completed:bg-teal-500 dark:hs-stepper-completed:group-focus:bg-teal-600">
-          <span class="hs-stepper-success:hidden hs-stepper-completed:hidden">2</span>
-          <svg class="hidden shrink-0 size-3 hs-stepper-success:block" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </span>
-        <span class="ms-2 text-sm font-medium text-gray-800 dark:text-neutral-200">
-          Step
-        </span>
-      </span>
-          <div class="w-full h-px flex-1 bg-gray-200 group-last:hidden hs-stepper-success:bg-blue-600 hs-stepper-completed:bg-teal-600 dark:bg-neutral-700 dark:hs-stepper-success:bg-blue-600 dark:hs-stepper-completed:bg-teal-600"></div>
-        </li>
+      <ol class="flex items-center w-full p-3 space-x-2 text-sm font-medium text-center
+      text-gray-500 bg-white border border-gray-200 rounded-lg shadow-xs dark:text-gray-400
+       sm:text-base dark:bg-gray-800 dark:border-gray-700 sm:p-4 sm:space-x-4 rtl:space-x-reverse" >
+        <li *ngFor="let step of steps; let i = index"
+            class="flex items-center gap-x-1"
+            [ngClass]="{ 'text-blue-600 dark:text-blue-500': currentStep === i + 1,
+            'text-gray-500 dark:text-gray-400': currentStep !== i + 1 }">
 
-        <li class="flex items-center gap-x-2 shrink basis-0 flex-1 group" data-hs-stepper-nav-item='{
-        "index": 3
-      }'>
-      <span class="min-w-7 min-h-7 group inline-flex items-center text-xs align-middle">
-        <span class="size-7 flex justify-center items-center shrink-0 bg-gray-100 font-medium text-gray-800 rounded-full group-focus:bg-gray-200 hs-stepper-active:bg-blue-600 hs-stepper-active:text-white hs-stepper-success:bg-blue-600 hs-stepper-success:text-white hs-stepper-completed:bg-teal-500 hs-stepper-completed:group-focus:bg-teal-600 dark:bg-neutral-700 dark:text-white dark:group-focus:bg-gray-600 dark:hs-stepper-active:bg-blue-500 dark:hs-stepper-success:bg-blue-500 dark:hs-stepper-completed:bg-teal-500 dark:hs-stepper-completed:group-focus:bg-teal-600">
-          <span class="hs-stepper-success:hidden hs-stepper-completed:hidden">3</span>
-          <svg class="hidden shrink-0 size-3 hs-stepper-success:block" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="20 6 9 17 4 12"></polyline>
+          <!-- Numéro d'étape avec couleur dynamique -->
+          <span class="flex items-center justify-center w-6 h-6
+           text-x border rounded-full shrink-0"
+                [ngClass]="{ 'border-blue-600 bg-blue-600 text-white dark:border-blue-500 dark:bg-blue-500': currentStep === i + 1,
+                       'border-gray-500 dark:border-gray-400': currentStep !== i + 1 }">
+      {{ i + 1 }}</span>
+          <!-- Texte de l'étape -->
+          <span class="hidden sm:inline-flex ms-0.5">{{ step }}</span>
+
+          <!-- Icône de séparation -->
+          <svg *ngIf="i < steps.length - 1"
+               class="w-3 h-3 ms-2 sm:ms-4 rtl:rotate-180" aria-hidden="true"
+               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 9 4-4-4-4M1 9l4-4-4-4"/>
           </svg>
-        </span>
-        <span class="ms-2 text-sm font-medium text-gray-800 dark:text-neutral-200">
-          Step
-        </span>
-      </span>
-          <div class="w-full h-px flex-1 bg-gray-200 group-last:hidden hs-stepper-success:bg-blue-600 hs-stepper-completed:bg-teal-600 dark:bg-neutral-700 dark:hs-stepper-success:bg-blue-600 dark:hs-stepper-completed:bg-teal-600"></div>
         </li>
-        <!-- End Item -->
-      </ul>
+      </ol>
+
       <!-- End Stepper Nav -->
-
       <!-- Stepper Content -->
       <div class="mt-5 sm:mt-8">
-        <!-- First Content -->
-        <div data-hs-stepper-content-item='{
-      "index": 1
-    }'>
-          <div class="p-4 h-48 bg-gray-50 flex justify-center items-center border border-dashed border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
-            <div class="bg-white p-4 rounded-lg">
-              <div class="flex flex-row justify-around space-x-1.5">
-              <div class="relative bg-inherit">
-                <input type="text" id="Nom" name="Nom" class="peer bg-transparent h-10 w-72 rounded-lg
-                text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none
-                focus:border-rose-600" placeholder="Type inside me"/>
-                <label for="nom" class="absolute cursor-text
-                left-0 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500
-                peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all">Nom</label>
-              </div><br>
-              <div class="relative bg-inherit">
-                <input type="text" id="Prénom" name="Prénom" class="peer bg-transparent h-10 w-72 rounded-lg
-                text-gray-200 placeholder-transparent ring-2 px-2 ring-gray-500 focus:ring-sky-600 focus:outline-none
-                focus:border-rose-600" placeholder="Type inside me"/>
-                <label for="Prénom" class="absolute cursor-text
-                left-0 -top-3 text-sm text-gray-500 bg-inherit mx-1 px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500
-                peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all">Prénom</label>
+          <!-- First Content -->
+          <div class="flex flex-row justify-around p-2
+           border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700 ">
+            <form action="" class="w-fit max-w-md mx-auto z-40">
+          <div  *ngIf="currentStep === 1" data-hs-stepper-content-item='{  "index": 1 }'>
+              <!-- Nom et Prénom sur la même ligne -->
+              <div class="flex flex-row space-x-3 bg-white rounded-lg w-full ">
+                <!-- Nom -->
+                <div class="relative bg-inherit w-fit">
+                  <input type="text" id="Nom" name="Nom" class="peer bg-transparent h-10 rounded-lg
+          text-gray-800 placeholder-transparent ring-2 px-2 ring-gray-300 focus:ring-sky-600 w-full
+          focus:outline-none focus:border-rose-600" placeholder="nom"/>
+                  <label for="Nom" class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white
+          px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2
+          peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all">Nom</label>
+                </div>
+
+              <!-- Prénom -->
+              <div class="relative bg-inherit w-1/2 ">
+                <input type="text" id="Prénom" name="Prénom" class=" peer bg-transparent h-10 rounded-lg  w-full
+        text-gray-800 placeholder-transparent ring-2 px-2 ring-gray-300 focus:ring-sky-600
+        focus:outline-none focus:border-rose-600" placeholder="Type inside me"/>
+                <label for="Prénom" class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white
+        px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2
+        peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all">Prénom</label>
               </div>
             </div>
+
+            <!-- Matricule en dessous -->
+            <div class="relative bg-white  mt-4 rounded-lg ">
+
+              <input type="text" id="Matricule" name="Matricule" class="peer bg-transparent h-10 w-full  rounded-lg
+        text-gray-800 placeholder-transparent ring-2 px-2 ring-gray-300 focus:ring-sky-600
+        focus:outline-none focus:border-rose-600" placeholder="Matricule"/>
+
+                <label for="Matricule" class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white w-fit pl-0.5
+        px-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2
+        peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all">
+                Matricule</label>
+            </div><br>
+<!--num et genre-->
+
+          <div class="flex flex-row space-x-3 bg-white rounded-lg w-full">
+            <!-- Nom -->
+            <div class="relative bg-inherit ">
+
+              <input type="text" id="num" name="num" class="peer bg-transparent h-10 rounded-lg
+        text-gray-800 placeholder-transparent ring-2 px-2 ring-gray-300 focus:ring-sky-600 w-60
+        focus:outline-none focus:border-rose-600" placeholder="Numéro"/>
+
+              <label for="num" class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white
+        px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2
+        peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all">Numéro</label>
+          </div>
+
+            <div class="relative bg-inherit w-full">
+          <select id="Genre" class="peer  block h-10 rounded-lg ring-2
+           sm:text-sm focus:border-blue-400  px-2  dark:bg-gray-700 ring-gray-300 focus:ring-sky-600 w-full
+         dark:focus:border-blue-300  focus:outline-none focus:ring focus:ring-opacity-40 ">
+            <option selected disabled>Genre</option>
+            <option>Femme</option>
+            <option>Homme</option>
+          </select></div>
+          </div></div>
+        <!-- End First Content -->
+
+        <!-- Second Content -->
+
+              <div *ngIf="currentStep === 2" class=" border-gray-200 rounded-xl
+dark:bg-neutral-800 dark:border-neutral-700 w-full min-w-[400px] h-auto">
+          <div class="relative bg-white  mt-3.5 rounded-lg w-full ">
+            <input type="text" id="Email" name="Email" class="peer bg-transparent h-10 w-full  rounded-lg
+        text-gray-800 placeholder-transparent ring-2 px-2 ring-gray-300 focus:ring-sky-600
+        focus:outline-none focus:border-rose-600 mb-1.5" placeholder="Email"/>
+
+              <label for="Email" class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white w-fit pl-0.5
+        px-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2
+        peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all">
+              Email</label>
+          </div>
+          <div class="relative bg-white  mt-4 rounded-lg 5.5">
+
+            <input type="text" id="Password" name="Password" class="peer bg-transparent h-10 w-full  rounded-lg
+        text-gray-800 placeholder-transparent ring-2 px-2 ring-gray-300 focus:ring-sky-600
+        focus:outline-none focus:border-rose-600" placeholder="Matricule"/>
+
+              <label for="Password" class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white w-fit pl-0.5
+        px-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2
+        peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all">
+              Password</label><br>
+          </div >
+        </div>
+
+        <!-- End First Content -->
+
+        <!-- 3 Content -->
+        <div *ngIf="currentStep === 3" class="border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700 w-full min-w-[400px] h-auto">
+          <div class="flex flex-row space-x-3 bg-white rounded-lg w-full">
+            <!-- Nom -->
+            <div class="relative bg-inherit ">
+
+              <input type="text" id="um" name="num" class="peer bg-transparent h-10 rounded-lg
+        text-gray-800 placeholder-transparent ring-2 px-2 ring-gray-300 focus:ring-sky-600 w-60
+        focus:outline-none focus:border-rose-600" placeholder="uméro"/>
+
+              <label for="num" class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white
+        px-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2
+        peer-focus:-top-3 peer-focus:text-sky-600 peer-focus:text-sm transition-all">Numéro</label>
             </div>
-          </div>
-        </div>
-        <!-- End First Content -->
 
-        <!-- First Content -->
-        <div data-hs-stepper-content-item='{
-      "index": 2
-    }' style="display: none;">
-          <div class="p-4 h-48 bg-gray-50 flex justify-center items-center border border-dashed border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
-            <h3 class="text-gray-500 dark:text-neutral-500">
-              Second content
-            </h3>
-          </div>
-        </div>
-        <!-- End First Content -->
+            <div class="relative bg-inherit w-full">
+              <select id="Status" class="peer  block h-10 rounded-lg ring-2
+           sm:text-sm focus:border-blue-400  px-2  dark:bg-gray-700 ring-gray-300 focus:ring-sky-600 w-full
+         dark:focus:border-blue-300  focus:outline-none focus:ring focus:ring-opacity-40 ">
+                <option selected disabled>Status</option>
+                <option>Femme</option>
+                <option>Homme</option>
+              </select></div>
+          </div></div>
 
-        <!-- First Content -->
-        <div data-hs-stepper-content-item='{
-      "index": 3
-    }' style="display: none;">
-          <div class="p-4 h-48 bg-gray-50 flex justify-center items-center border border-dashed border-gray-200 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
-            <h3 class="text-gray-500 dark:text-neutral-500">
-              Third content
-            </h3>
-          </div>
-        </div>
         <!-- End First Content -->
 
         <!-- Final Content -->
@@ -138,13 +181,13 @@
 
         <!-- Button Group -->
         <div class="mt-5 flex justify-between items-center gap-x-2">
-          <button type="button" class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" data-hs-stepper-back-btn="">
+          <button (click)="goToPreviousStep()" type="button" class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" data-hs-stepper-back-btn="">
             <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="m15 18-6-6 6-6"></path>
             </svg>
             Back
           </button>
-          <button type="button" class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" data-hs-stepper-next-btn="">
+          <button (click)="goToNextStep()" type="button" class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" data-hs-stepper-next-btn="">
             Next
             <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="m9 18 6-6-6-6"></path>
@@ -157,11 +200,6 @@
             Reset
           </button>
         </div>
-        <!-- End Button Group -->
-      </div>
-      <!-- End Stepper Content -->
-    </div>
-    <!-- End Stepper -->
-
-
-  </div>  </div>
+          </form></div><!-- End Button Group -->
+      </div><!-- End Stepper Content --></div>
+    <!-- End Stepper --></div> </div>
