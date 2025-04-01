@@ -13,6 +13,6 @@ import java.util.Optional;
 @Repository
 public interface ZoneRepository extends JpaRepository<Zone, Long> {
     List<Zone> findByIsDeletedFalse();
-
+    Optional<Zone> findByNomAndIsDeleted(String nomZone , boolean deleted);
 
 }

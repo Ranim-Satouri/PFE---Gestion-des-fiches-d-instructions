@@ -23,23 +23,28 @@ public class FamilleServiceImp implements FamilleService{
 
     @Override
     public ResponseEntity<?> addFamille(Famille famille, Long idActionneur) {
-        try {
-            User actionneur = userRepository.findById(idActionneur)
-                    .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-
-            Optional<Famille> existingFamille = familleRepository.findByNomFamille(famille.getNomFamille());
-            if (existingFamille.isPresent()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("Une famille avec le même nom existe déjà");
-            }
-            famille.setActionneur(actionneur);
-            Famille savedFamille = familleRepository.save(famille);
-            return ResponseEntity.ok().body(savedFamille);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Une erreur s'est produite : " + e.getMessage());
+        Optional<User> actionneurOpt = userRepository.findById(idActionneur);
+        if (actionneurOpt.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Actionneur introuvable");
         }
+
+        Optional<Famille> existingFamille = familleRepository.findByNomFamilleAndIsDeleted(famille.getNomFamille(), false);
+        if (existingFamille.isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Une famille avec le même nom existe déjà");
+        }
+
+        famille.setActionneur(actionneurOpt.get());
+        Famille savedFamille = familleRepository.save(famille);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED) // 201 Created, plus approprié ici
+                .body(savedFamille);
     }
+
     @Override
     public ResponseEntity<List<Famille>> getFamilles() {
         return ResponseEntity.ok().body(familleRepository.findAll());

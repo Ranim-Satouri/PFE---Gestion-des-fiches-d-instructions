@@ -1,4 +1,5 @@
 import { Famille } from "./Famille";
+import { User } from "./User";
 
 export interface Produit {
   idProduit?: number;
@@ -6,6 +7,6 @@ export interface Produit {
   indice: string;
   ref: string;
   famille: Famille;
-  modifieLe: Date;
-
+  modifieLe?: Date;
+  actionneur: User;
 }

@@ -1,5 +1,6 @@
 package com.pfe.backend.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Audited
 @ToString
+
 public class Produit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

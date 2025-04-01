@@ -26,7 +26,7 @@ public class ZoneController {
         return ResponseEntity.ok(zoneService.getActiveZones());
     }
     @PostMapping("addZone")
-    public ResponseEntity<Zone> addZone(@RequestBody Zone zone,@RequestParam Long idActionneur)
+    public ResponseEntity<?> addZone(@RequestBody Zone zone,@RequestParam Long idActionneur)
     {
         return zoneService.addZone(zone,idActionneur);
 

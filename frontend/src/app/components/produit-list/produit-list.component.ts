@@ -6,10 +6,11 @@ import { FormsModule } from '@angular/forms';
 import { Produit } from '../../models/Produit';
 import { ProduitService } from '../../services/produit.service';
 import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
+import { AddProduitFormComponent } from '../add-produit-form/add-produit-form.component';
 @Component({
   selector: 'app-produit-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent,AddProduitFormComponent],
   templateUrl: './produit-list.component.html',
   styleUrl: './produit-list.component.css'
 })
@@ -24,10 +25,17 @@ constructor(private produitService: ProduitService) {}
   userConnected !: User;
   isDeleteModelOpen : boolean = false;
   selectedProduit : number | undefined;
+  showAddPorduitForm = false;
   ngOnInit() { 
     this.getProduits();
   }
-
+  openAddForm() {
+    this.showAddPorduitForm  = true;
+  }
+  
+  closeAddForm() {
+    this.showAddPorduitForm = false;
+  }
   getProduits() { 
     this.produitService.getAll().subscribe({
       next : (response :Produit[]) => {  

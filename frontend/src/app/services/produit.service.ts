@@ -16,4 +16,8 @@ export class ProduitService {
   deleteProduit(idProduit: number | undefined, idSupprimateur: number | undefined): Observable<any> {
     return this.http.delete( `${this.apiUrl}/delete/${idProduit}/${idSupprimateur}`); 
   }
+  addProduit(produit: Produit, idFamille: number, idActionneur: number): Observable<Produit> {
+    const url = `${this.apiUrl}/addProduit/${idFamille}/${idActionneur}`;
+    return this.http.post<Produit>(url, produit);
+  }
 }

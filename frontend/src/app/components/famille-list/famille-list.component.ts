@@ -6,10 +6,11 @@ import { FormsModule } from '@angular/forms';
 import { FamilleService } from '../../services/famille.service';
 import { Famille } from '../../models/Famille';
 import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
+import { AddFamilleFormComponent } from "../add-famille-form/add-famille-form.component";
 @Component({
   selector: 'app-famille-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent],
   templateUrl: './famille-list.component.html',
   styleUrl: './famille-list.component.css'
 })
@@ -25,6 +26,7 @@ export class FamilleListComponent {
   userConnected !: User ;
   isDeleteModelOpen : boolean = false;
   selectedFamille : number | undefined;
+  showFamilyModal = false;
   ngOnInit() { 
     this.getFamilles();
   }
@@ -131,5 +133,8 @@ export class FamilleListComponent {
     if (this.dropdownOpen !== null && dropdown && !dropdown.contains(target) && !button) {
       this.dropdownOpen = null; // Ferme le dropdown
     }
+  }
+  OpenAddFamillePopUp(){
+    this.showFamilyModal = true;
   }
 }

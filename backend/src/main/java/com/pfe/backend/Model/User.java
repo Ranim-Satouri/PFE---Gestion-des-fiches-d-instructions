@@ -1,6 +1,7 @@
 package com.pfe.backend.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,7 @@ import lombok.Data;
 @Builder // Assurez-vous que cette annotation est bien après les constructeurs
 @Audited
 @Entity
+@JsonIgnoreProperties({"authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,9 +55,9 @@ public class User implements UserDetails {
 //            inverseJoinColumns = @JoinColumn(name = "idZone")
 //    )
 //    private Set<Zone> zones = new HashSet<>();
-@JsonIgnore
-@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-private Set<UserZone> userZones = new HashSet<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserZone> userZones = new HashSet<>();
     public void addZone(Zone zone, Long idActionneur) {
         UserZone userZone = new UserZone();
         userZone.setUser(this);
@@ -73,6 +75,7 @@ private Set<UserZone> userZones = new HashSet<>();
     @UpdateTimestamp
     @Column(name = "modifie_le", nullable = false)
     private LocalDateTime modifieLe = LocalDateTime.now(); // Ajoute une valeur par défaut
+
 
     @ManyToOne
     @JoinColumn(name = "actionneur")

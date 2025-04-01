@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ZoneService {
     ResponseEntity<List<Zone>> getAllZones();
-    ResponseEntity<Zone> addZone(Zone zone,Long idActionneur);
+    ResponseEntity<?> addZone(Zone zone,Long idActionneur);
     void updateZone(Long idZone, Zone newZoneData ,Long idActionneur);
     void DeleteZone(Long idZone , Long idActionneur);
     List<Zone> getActiveZones();

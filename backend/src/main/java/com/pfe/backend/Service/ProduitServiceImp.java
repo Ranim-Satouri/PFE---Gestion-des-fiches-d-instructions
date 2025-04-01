@@ -9,6 +9,7 @@ import com.pfe.backend.Repository.ProduitRepository;
 import com.pfe.backend.Repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -25,23 +26,39 @@ public class ProduitServiceImp implements ProduitService{
     private FicheRepository ficheRepo;
 
     @Override
-    public Produit addProduit(Produit produit, Long idFamille, Long idActionneur) {
-        Famille famille = familleRepository.findById(idFamille)
-                .orElseThrow(() -> new RuntimeException("Famille introuvable"));
-        User actionneur = userRepo.findById(idActionneur)
-                .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+    public ResponseEntity<?> addProduit(Produit produit, Long idFamille, Long idActionneur) {
+        Optional<Famille> familleOpt = familleRepository.findById(idFamille);
+        if (familleOpt.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Famille introuvable");
+        }
+
+        Optional<User> actionneurOpt = userRepo.findById(idActionneur);
+        if (actionneurOpt.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Actionneur introuvable");
+        }
 
         if (produit.getNomProduit() == null || produit.getNomProduit().isEmpty()) {
             produit.setNomProduit(produit.getRef() + "-" + produit.getIndice());
         }
-        Optional<Produit> existingProduitByNom = produitRepository.findByNomProduit(produit.getNomProduit());
-        if (existingProduitByNom.isPresent()) {
-            throw new RuntimeException("Un produit avec le même nom existe déjà");
+
+        Optional<Produit> existingProduit = produitRepository.findByIndiceAndRefAndIsDeleted(produit.getIndice(),produit.getRef(),false);
+        if (existingProduit.isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Un produit avec le même nom existe déjà");
         }
-        produit.setFamille(famille);
-        produit.setActionneur(actionneur);
-        return produitRepository.save(produit);
+
+        produit.setFamille(familleOpt.get());
+        produit.setActionneur(actionneurOpt.get());
+        Produit savedProduit = produitRepository.save(produit);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedProduit);
     }
+
     @Override
     public ResponseEntity<List<Produit>> getAllProduit() {
         return ResponseEntity.ok().body(produitRepository.findAll());

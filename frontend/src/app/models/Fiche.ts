@@ -8,16 +8,16 @@ export interface Fiche {
   idFiche?: number;
   status: FicheStatus;
   commentaire: string;
-  expirationDate: Date;
+  expirationDate?: Date;
   pdf: string;
-  modifieLe: Date;
-  FicheAQL: string;
+  modifieLe?: Date;
+  ficheAQL?: string;
   action: FicheAction;
   zone: Zone;
   produit: Produit;
   preparateur: User;
-  IPDF: User;
-  IQP: User;
+  ipdf?: User;
+  iqp?: User;
   actionneur: User;
 }
 

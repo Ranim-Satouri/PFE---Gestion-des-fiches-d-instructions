@@ -11,12 +11,19 @@ export class FicheService {
   constructor(private http: HttpClient) { } 
   
    // Méthode pour ajouter une fiche
-  addFiche(fiche: Fiche, file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('fiche', JSON.stringify(fiche)); // Envoie l'objet fiche en JSON
-    formData.append('filePDF', file, file.name); // Ajoute le fichier PDF
+  addFiche(fiche: Fiche): Observable<any> {
+    // const formData = new FormData();
+    // formData.append('fiche', JSON.stringify(fiche)); // Envoie l'objet fiche en JSON
+    // formData.append('filePDF', file, file.name); // Ajoute le fichier PDF
 
-    return this.http.post(`${this.apiUrl}/addFiche`, formData);
+    return this.http.post(`${this.apiUrl}/addFiche`, fiche);
+  }
+
+  uploadPDF(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post(`${this.apiUrl}/uploadPDF`, formData);
   }
 
   // Méthode pour récupérer le PDF en tant que ressource

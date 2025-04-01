@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface FicheService {
-    Fiche addFiche(Fiche fiche , MultipartFile file);
+    Fiche addFiche(Fiche fiche);
     List<Fiche> getFiches();
     Fiche updateFiche(Fiche fiche , MultipartFile file);
     Fiche deleteFiche(long idFiche , long idSupprimateur );

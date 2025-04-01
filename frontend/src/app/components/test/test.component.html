@@ -1,0 +1,65 @@
+<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6 space-y-4">
+      <h2 class="text-xl font-semibold">Ajouter un produit</h2>
+  
+      <form [formGroup]="form" (ngSubmit)="submitForm()" class="space-y-4">
+        <input
+          formControlName="nom"
+          placeholder="Nom du produit"
+          class="w-full border rounded-xl px-4 py-2 focus:outline-none focus:ring"
+        />
+        <input
+          formControlName="indice"
+          placeholder="Indice"
+          class="w-full border rounded-xl px-4 py-2 focus:outline-none focus:ring"
+        />
+        <input
+          formControlName="reference"
+          placeholder="Référence"
+          class="w-full border rounded-xl px-4 py-2 focus:outline-none focus:ring"
+        />
+  
+        <!-- Famille dropdown -->
+        <div class="relative">
+          <input
+            [value]="familleSearch"
+            (input)="onFamilleSearchChange($event)"
+            placeholder="Rechercher une famille"
+            class="w-full border rounded-xl px-4 py-2 focus:outline-none focus:ring"
+          />
+          <ul
+            *ngIf="showDropdown && (filteredFamilles.length > 0 || familleSearch)"
+            class="absolute z-10 w-full bg-white shadow rounded-xl mt-1 max-h-40 overflow-y-auto"
+          >
+            <li
+              *ngFor="let f of filteredFamilles"
+              (click)="selectFamille(f)"
+              class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+            >
+              {{ f }}
+            </li>
+            <li
+              *ngIf="familleSearch && !familles.includes(familleSearch)"
+              (click)="addFamille(familleSearch)"
+              class="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 cursor-pointer"
+            >
+              ➕ Ajouter "{{ familleSearch }}"
+            </li>
+          </ul>
+        </div>
+  
+        <!-- Hidden control to hold selected famille -->
+        <input type="hidden" formControlName="famille" />
+  
+        <div class="text-right">
+          <button
+            type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700"
+          >
+            Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  

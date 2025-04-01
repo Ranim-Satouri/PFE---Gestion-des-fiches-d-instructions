@@ -1,5 +1,6 @@
 package com.pfe.backend.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -17,6 +18,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Setter
 @ToString
 @Audited
+
 public class Fiche {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +41,7 @@ public class Fiche {
 
     //@Lob
     //@Column(columnDefinition = "LONGBLOB")
-    private String FicheAQL;
+    private String ficheAQL;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 10)

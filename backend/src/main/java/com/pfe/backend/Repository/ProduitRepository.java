@@ -10,6 +10,5 @@ import java.util.Optional;
 @Repository
 public interface ProduitRepository extends JpaRepository<Produit,Long> {
     List<Produit> findByIsDeletedFalse();
-    Optional<Produit> findByNomProduit(String nomProduit);
-
+    Optional<Produit> findByIndiceAndRefAndIsDeleted(String indice, String ref, boolean deleted) ;
 }

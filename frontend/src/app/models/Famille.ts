@@ -1,6 +1,9 @@
+import { User } from "./User";
+
 export interface Famille {
     idFamille?: number;
     nomFamille: string;
-    modifieLe: Date;
+    modifieLe?: Date;
+    actionneur: User;
 }
   

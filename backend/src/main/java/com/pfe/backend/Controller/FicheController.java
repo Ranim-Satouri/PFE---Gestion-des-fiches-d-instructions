@@ -1,6 +1,8 @@
 package com.pfe.backend.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pfe.backend.DTO.FicheHistoryDto;
 import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.ServiceFiche.FicheAuditService;
@@ -13,7 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/fiche")
 @RestController
@@ -22,24 +27,42 @@ public class FicheController {
     private FicheService ficheService;
 
 
-    @PostMapping("/addFiche")
+   /* @PostMapping("/addFiche")
     public ResponseEntity<?> addFiche(@RequestPart("fiche") String ficheJson ,@RequestPart("filePDF") MultipartFile filePDF ){
         try {
             System.out.println("aaslema");
-        /* ❌ Pourquoi @RequestBody et @RequestPart ne fonctionnent pas ensemble ?
-        En Spring Boot, @RequestBody attend une requête en JSON pur (application/json),
-        tandis que @RequestPart est utilisé pour gérer des fichiers ou des données mixtes (multipart/form-data).
-        💡 Spring ne peut pas traiter les deux types en même temps dans une seule requête.
-        ✅ Solution : Utiliser @RequestPart pour tout (JSON + fichier)
-        Pour envoyer un fichier + un objet JSON en multipart/form-data, tu dois utiliser @RequestPart pour les deux */
-
+            System.out.println(ficheJson);
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule()); // ✅ Supporte LocalDateTime
+            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Recommandé
             Fiche fiche = objectMapper.readValue(ficheJson, Fiche.class); //  String --> Fiche
 
             return ResponseEntity.ok().body(ficheService.addFiche(fiche , filePDF));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }*/
+    @PostMapping("/addFiche")
+    public ResponseEntity<?> addFiche(@RequestBody Fiche fiche) {
+        Fiche saved = ficheService.addFiche(fiche);
+        return ResponseEntity.ok(saved);
+    }
+
+    @PostMapping("/uploadPDF")
+    public ResponseEntity<Map<String, String>> uploadPDF(@RequestParam("file") MultipartFile file) {
+        try{
+            String result = ficheService.saveFile(file);
+            Map<String, String> response = new HashMap<>();
+            response.put("fileName", result);
+            return ResponseEntity.ok(response);
+        }catch (Exception e) {
+            e.printStackTrace();
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Erreur lors de l'enregistrement du fichier");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+
     }
 
     //fel front inshallah kif yenzel el user aala telcharger uen fiche walla cansulter , nekhdhou akal filename w naamlou getPDF

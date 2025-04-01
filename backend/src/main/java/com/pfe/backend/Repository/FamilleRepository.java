@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface FamilleRepository extends JpaRepository<Famille,Long> {
     List<Famille> findByIsDeletedFalse();
-    Optional<Famille> findByNomFamille(String nomFamille);
+    Optional<Famille> findByNomFamilleAndIsDeleted(String nomFamille , boolean deleted);
 }

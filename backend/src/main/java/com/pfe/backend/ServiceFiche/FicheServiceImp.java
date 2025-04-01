@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -36,8 +37,8 @@ public class FicheServiceImp implements FicheService {
     private static final String STORAGE_DIR = "C:\\Users\\Ranim\\Desktop\\pdf_storage\\";
 
     @Override
-    public Fiche addFiche(Fiche fiche , MultipartFile file) {
-
+    public Fiche addFiche(Fiche fiche ) {
+        System.out.println(fiche );
         User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));;
         User iqp = userRepository.findById(fiche.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));;
         User preparateur = userRepository.findById(fiche.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));;
@@ -53,14 +54,6 @@ public class FicheServiceImp implements FicheService {
         fiche.setActionneur(actionneur);
         fiche.setAction(Fiche.FicheAction.INSERT);
         fiche.setStatus(Fiche.FicheStatus.PENDING);
-
-        try{
-            String pdfPath = saveFile(file);
-            fiche.setPdf(pdfPath);
-        }catch (Exception e){
-            throw new RuntimeException("Problème lors du stockage du fichier PDF : " + e.getMessage(), e);
-        }
-
         nService.notifyIPDFAboutFicheInjection(fiche);
         List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
         for(User u : superUsers){
@@ -68,6 +61,7 @@ public class FicheServiceImp implements FicheService {
         }
         return ficheRepository.save(fiche);
     }
+
 
     @Override
     public String saveFile(MultipartFile file) throws IOException, Exception {

@@ -15,6 +15,8 @@ export class FamilleService {
   }
   deleteFamille(idFamille: number | undefined , idSupprimateur: number | undefined ): Observable<any> {
       return this.http.delete( `${this.apiUrl}/delete/${idFamille}/${idSupprimateur}`); 
-    }
-
+  }
+  addFamille(famille: Famille, idActionneur: number | undefined): Observable<Famille> {
+    return this.http.post<Famille>(`${this.apiUrl}/addFamille/${idActionneur}`, famille);
+  }
 }

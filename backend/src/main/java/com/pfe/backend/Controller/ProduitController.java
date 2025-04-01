@@ -19,10 +19,10 @@ public class ProduitController {
     private ProduitService produitService;
 
     @PostMapping("/addProduit/{idFamille}/{idActionneur}")
-    public ResponseEntity<Produit> addProduit(@RequestBody Produit produit,
+    public ResponseEntity<?> addProduit(@RequestBody Produit produit,
                                               @PathVariable Long idFamille,
                                               @PathVariable Long idActionneur) {
-        return ResponseEntity.ok(produitService.addProduit(produit, idFamille, idActionneur));
+        return produitService.addProduit(produit, idFamille, idActionneur);
 
     }
     @GetMapping("/getAllProduits")

@@ -2,6 +2,7 @@ package com.pfe.backend.Service;
 
 
 import com.pfe.backend.Model.Fiche;
+import com.pfe.backend.Model.Produit;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Model.Zone;
 import com.pfe.backend.Repository.FicheRepository;
@@ -9,10 +10,12 @@ import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.ZoneRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -30,14 +33,24 @@ public class ZoneServiceImp implements ZoneService {
     return zoneRepository.findByIsDeletedFalse();
     }
     @Override
-    public ResponseEntity<Zone> addZone(Zone zone,Long idActionneur)
-    {
-        User actionneur = userRepo.findById(idActionneur)
-            .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-        zone.setActionneur(actionneur);
-        Zone savedZone = zoneRepository.save(zone);
-        return ResponseEntity.ok(savedZone);
+    public ResponseEntity<?> addZone(Zone zone, Long idActionneur) {
+        Optional<User> actionneurOpt = userRepo.findById(idActionneur);
+        if (actionneurOpt.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Actionneur introuvable");
+        }
 
+        Optional<Zone> existingZoneByNom = zoneRepository.findByNomAndIsDeleted(zone.getNom(), false);
+        if (existingZoneByNom.isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Une Zone avec le même nom existe déjà");
+        }
+
+        zone.setActionneur(actionneurOpt.get());
+        Zone savedZone = zoneRepository.save(zone);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedZone);
     }
     @Override
     public void DeleteZone(Long idZone , Long idActionneur) {
