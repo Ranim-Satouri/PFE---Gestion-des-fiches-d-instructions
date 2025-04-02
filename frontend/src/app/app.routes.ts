@@ -13,14 +13,12 @@ import { ProduitListComponent } from './components/produit-list/produit-list.com
 import {RegisterFormComponent} from './components/register-form/register-form.component';
 import {FicheFormComponent} from './components/fiche-form/fiche-form.component';
 import { AddProduitFormComponent } from './components/add-produit-form/add-produit-form.component';
-import { TestComponent } from './components/test/test.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
   { path: 'form' , component:RegisterFormComponent},
   { path: 'ficheForm' , component:FicheFormComponent},
   { path: 'produitForm' , component:AddProduitFormComponent},
-  { path: 'test' , component:TestComponent},
 
   { path: '', component: LoginComponent },
     { path: 'form', component: FormComponent},

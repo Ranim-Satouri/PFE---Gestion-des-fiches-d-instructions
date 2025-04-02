@@ -1,35 +1,96 @@
-<div class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-    <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg w-full max-w-md p-6 transition-all">
-      
-      <!-- Button Close -->
-      <button type="button"
-        class="absolute top-[5px] right-1 text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg
-               text-sm w-8 h-8 flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-        (click)="onClose()">
-        <svg class="w-3 h-3" fill="none" viewBox="0 0 14 14">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-        </svg>
-        <span class="sr-only">Fermer</span>
-      </button>
-  
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Ajouter une Famille</h2>
-  
-      <form [formGroup]="familyForm" (ngSubmit)="onSubmit()" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom de la famille</label>
-          <input type="text" formControlName="name"
-            class="w-full p-2 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
-            placeholder="Ex: Électronique" />
-        </div>
-  
-        <div class="text-right pt-2">
-          <button type="submit"
-            class="bg-blue-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded transition">
-            Ajouter
-          </button>
-        </div>
-      </form>
+<div class="fixed inset-0 z-50 bg-black/70 dark:bg-black/60 flex items-center justify-center p-4">
+  <div
+      *ngIf="successMessage"
+      class="fixed top-16 -translate-x-1/2 z-50 w-fit max-w-md flex items-start justify-between gap-3 p-3 rounded-lg border border-green-400 bg-green-50 dark:bg-green-900/10 dark:border-green-700 text-green-800 dark:text-green-300 text-sm animate-slideFromTop shadow-lg"
+    >
+    <div class="flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+        <path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95"></path>
+        <path d="M3.69 8.56a9 9 0 0 0 -.69 3.44"></path>
+        <path d="M3.69 15.44a9 9 0 0 0 1.95 2.92"></path>
+        <path d="M8.56 20.31a9 9 0 0 0 3.44 .69"></path>
+        <path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95"></path>
+        <path d="M20.31 15.44a9 9 0 0 0 .69 -3.44"></path>
+        <path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92"></path>
+        <path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69"></path>
+        <path d="M9 12l2 2l4 -4"></path>
+      </svg>
+      {{successMessage }}
+    </div>
+
+  </div>
+  <!-- Message d'erreur (style cohérent avec success) -->
+  <div
+    *ngIf="errorMessage"
+    class="fixed top-16 -translate-x-1/2 z-50 w-fit max-w-md flex items-start justify-between gap-3 p-3 rounded-lg border border-red-400 bg-red-50 dark:bg-red-900/10 dark:border-red-700 text-red-800 dark:text-red-300 text-sm animate-slideFromTop shadow-lg"
+    >
+    <div class="flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+        <path d="M12 9v4"></path>
+        <path d="M12 16v.01"></path>
+      </svg>
+      {{ errorMessage }}
     </div>
   </div>
-  
+
+
+  <div class="relative bg-white  dark:bg-gray-900 border border-gray-500  dark:border-gray-700 rounded-2xl shadow-2xl w-full max-w-lg p-6 transition-all">
+
+    <!-- Close button -->
+    <button
+      (click)="close.emit()"
+      type="button"
+      class="absolute top-2 right-2 text-gray-500 hover:text-gray-600 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg w-8 h-8 flex items-center justify-center transition"
+    >
+    <svg class="w-3 h-3" fill="none" viewBox="0 0 14 14">
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+    </svg>
+    </button>
+
+    <!-- Title -->
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Ajouter une Famille</h2>
+
+    <form [formGroup]="familyForm"  (ngSubmit)="onSubmit()" class="space-y-4">
+
+      <!-- Nom -->
+      <div>
+        <label class="text-sm text-black dark:text-gray-300 mb-1 block">Nom de la famille <span class="text-red-500">*</span></label>
+        <input
+          type="text"
+          placeholder="Nom"
+          formControlName="nom"
+          class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:ring-2 focus:ring-blue-500"
+          [ngClass]="{
+            'border-red-500 ring-red-500': familyForm.get('nom')?.invalid && familyForm.get('nom')?.touched,
+            'border-gray-400 dark:border-gray-700': !(familyForm.get('nom')?.invalid && familyForm.get('nom')?.touched)
+          }"
+        />
+        <div *ngIf="familyForm.get('nom')?.invalid && familyForm.get('nom')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
+          Le nom de la famille est requis.
+        </div>
+      </div>     
+
+      <!-- Submit -->
+      <div class="text-right">
+        <button
+          type="submit"
+          class="mt-2 inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-gray-100 text-md font-semibold px-2 py-1 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 ease-in-out outline-none ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-900"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+          Enregister
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

@@ -26,12 +26,13 @@ export class AddProduitFormComponent {
   showDropdown = false;
   userConnected !: User;
   successMessage: string = '';
+  errorMessage = '';
 
   productForm: FormGroup = this.fb.group({
-    nom: ['', Validators.required],
+    nom: [''],
     reference: ['', Validators.required],
     indice: ['', Validators.required],
-    famille: ['', Validators.required]  // <-- attention ici, c’est "famille"
+    famille: ['', Validators.required]  
   });
 
  
@@ -78,7 +79,8 @@ export class AddProduitFormComponent {
     this.familleService.addFamille(newFamille , this.userConnected.idUser).subscribe({
       next: (famille) => {
         console.log('Famille ajoutée :', famille);
-        this.successMessage = `Produit "${famille.nomFamille}" ajouté avec succès !`;
+        this.errorMessage='';
+        this.successMessage = `Famille "${famille.nomFamille}" ajouté avec succès !`;
         setTimeout(() => {
           this.successMessage = '';
         }, 3000);
@@ -118,14 +120,40 @@ export class AddProduitFormComponent {
       this.produitService.addProduit(produit, idFamille, idActionneur).subscribe({
         next: (response) => {
           console.log('Produit ajouté avec succès', response);
-          this.close.emit(); // ou reset form, ou afficher succès
+          this.successMessage = `Produit "${response.nomProduit}" ajouté avec succès !`;
+          this.errorMessage=''
+          setTimeout(() => {
+            this.successMessage = '';
+          }, 3000);
+          this.productForm.reset();
         },
         error: (err) => {
-          console.error('Erreur lors de l’ajout du produit :', err);
+          this.successMessage = '';
+          console.error('Erreur backend:', err);
+  
+          if (err.status === 404) {
+            if (err.error === 'Famille introuvable') {
+              this.errorMessage = 'La famille sélectionnée est introuvable.';
+            } else if (err.error === 'Actionneur introuvable') {
+              this.errorMessage = 'Utilisateur non autorisé à effectuer cette action.';
+            } else {
+              this.errorMessage = 'Ressource introuvable.';
+            }
+          } else if (err.status === 409) {
+            this.errorMessage = 'Un produit avec le même indice et référence existe déjà.';
+          } else {
+            this.errorMessage = 'Une erreur inattendue est survenue.';
+          }
+  
+          // Auto-hide message after 4s
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 4000);
         }
       });
     } else {
       this.productForm.markAllAsTouched();
+      
     }
   }
   
