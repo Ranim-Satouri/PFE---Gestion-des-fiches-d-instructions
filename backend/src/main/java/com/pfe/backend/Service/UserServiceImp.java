@@ -116,4 +116,5 @@ public class UserServiceImp implements UserIservice{
                 .add(AuditEntity.id().eq(userId)) // Filtrer par ID de l'utilisateur
                 .getResultList();
     }
+
 }

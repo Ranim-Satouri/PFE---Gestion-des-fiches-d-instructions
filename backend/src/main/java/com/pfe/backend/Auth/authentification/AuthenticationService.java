@@ -4,7 +4,10 @@ package com.pfe.backend.Auth.authentification;
 import com.pfe.backend.Auth.Config.JwtService;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
+import com.pfe.backend.Model.UserZone;
+import com.pfe.backend.Model.Zone;
 import com.pfe.backend.Repository.UserRepository;
+import com.pfe.backend.Repository.ZoneRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,27 +26,23 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+private final ZoneRepository zoneRepository;
 
     public AuthenticationResponse register(RegisterRequest request, Long idCreator) {
-       //this register will allow us to create a user , save it to the db and return the generated token out of it
+        //this register will allow us to create a user , save it to the db and return the generated token out of it
         // Récupérer l'email de l'utilisateur qui crée le compte (SuperUser/Admin)
-//        User creator = repository.findById(idCreator)
-//                .orElseThrow(() -> new RuntimeException("Créateur du compte introuvable"));
-        // Vérifier si la base de données est vide
         boolean isDatabaseEmpty = repository.count() == 0;
-
+        if (repository.existsByMatricule(request.getMatricule())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Un utilisateur avec ce matricule existe déjà.");
+        }
         User user;
         if (isDatabaseEmpty) {
             // Créer le premier utilisateur sans actionneur
-            user = User.builder()
-                    .nom(request.getNom())
-                    .prenom(request.getPrenom())
-                    .matricule(request.getMatricule())
+            user = User.builder().nom(request.getNom()).prenom(request.getPrenom()).matricule(request.getMatricule())
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role(Role.SUPERUSER) // Attribuer un rôle spécifique (par exemple, ADMIN)
-                    .genre(request.getGenre())
-                    .num(request.getNum())
+                    .genre(request.getGenre()).num(request.getNum())
                     .status(request.getStatus() != null ? request.getStatus() : User.UserStatus.ACTIVE)
                     .actionneur(null) // Pas d'actionneur pour le premier utilisateur
                     .build();
@@ -66,15 +65,14 @@ public class AuthenticationService {
                     .actionneur(creator) // Enregistrer l'actionneur
                     .build();
         }
-    repository.save(user);
-        
-    var jwtToken = jwtService.generateToken(user);
-    //we need to encode our pwd before saving it so we neeed to inject our passwordencoder Service
-        return AuthenticationResponse.builder()
-                        .token(jwtToken).role(user.getRole()).build();
-    }
+        repository.save(user);
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+            var jwtToken = jwtService.generateToken(user);
+            //we need to encode our pwd before saving it so we neeed to inject our passwordencoder Service
+            return AuthenticationResponse.builder()
+                    .token(jwtToken).user(user).role(user.getRole()).build();}
+
+        public AuthenticationResponse authenticate(AuthenticationRequest request) {
         try {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getMatricule(), request.getPassword())

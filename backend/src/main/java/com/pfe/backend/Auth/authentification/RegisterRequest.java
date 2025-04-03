@@ -2,10 +2,13 @@ package com.pfe.backend.Auth.authentification;
 
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
+import com.pfe.backend.Model.UserZone;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @Builder

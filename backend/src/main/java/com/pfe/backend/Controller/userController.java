@@ -57,25 +57,28 @@ public class userController {
         return ResponseEntity.ok(updated);
     }
     @GetMapping("/history/{id}")
+
     public List<Object[]> getUserHistory(@PathVariable Long id) {
         return userIservice.getUserHistory(id);
     }
-    @PostMapping("/attribuer-zone/{idUser}/{idZone}/{idActionneur}")
+
+    @PostMapping("/attribueZone/{idUser}/{idZone}/{idActionneur}")
     public ResponseEntity<?> attribuerZoneAUser(
             @PathVariable long idUser,
             @PathVariable long idZone,
             @PathVariable long idActionneur
     ) {
-
-
+        System.out.println("hani hne");
         try {
+            System.out.println("hani hne2");
+
             userIservice.attribuerZoneAUser(idUser, idZone, idActionneur);
-            return ResponseEntity.ok("Zone attribuée à l'utilisateur avec succès");
+            return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @GetMapping("/user-zones/{idUser}")
+    @GetMapping("/userzones/{idUser}")
     public Set<UserZone> getUserZones(@PathVariable Long idUser) {
 
         return userIservice.getUserZones(idUser);

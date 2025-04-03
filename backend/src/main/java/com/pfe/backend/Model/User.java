@@ -55,7 +55,7 @@ public class User implements UserDetails {
 //            inverseJoinColumns = @JoinColumn(name = "idZone")
 //    )
 //    private Set<Zone> zones = new HashSet<>();
-    @JsonIgnore
+//    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserZone> userZones = new HashSet<>();
     public void addZone(Zone zone, Long idActionneur) {
