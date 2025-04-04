@@ -16,7 +16,7 @@ import { forkJoin, map } from 'rxjs';
 })
 export class UserZoneAssignComponent {
   constructor(private userService: UserService , private userZoneService: UserZoneService) {}
-  
+  successMessage: string = '';
   users: User[] = [];
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<User[]>();
@@ -24,7 +24,7 @@ export class UserZoneAssignComponent {
   searchText: string = '';
   selectedRole: string = '';
   userConnected !: User;
-  roles = ['ipdf', 'iqp', 'admin', 'superuser', 'operateur','preparateur'];
+  roles = [ 'superuser', 'admin','preparateur','ipdf', 'iqp','operateur'];
   showRoleDropdown: boolean = false;
   affectationFilter: string = ''; // '', 'assigned', 'not-assigned'
   showSelectorDropdown: boolean = false;
@@ -112,7 +112,12 @@ export class UserZoneAssignComponent {
       .then(() => {
         console.log('✅ Modifications enregistrées');
         this.save.emit(this.users.filter(u => this.selectedUsers.has(u.idUser!)));
-        this.close.emit();
+        this.successMessage = `Les modifications ont bien été enregistrées !`;
+        setTimeout(() => {
+          this.successMessage = '';
+          this.close.emit();
+        }, 3000);
+        
       })
       .catch(error => {
         console.error('❌ Une erreur est survenue lors de l’enregistrement', error);

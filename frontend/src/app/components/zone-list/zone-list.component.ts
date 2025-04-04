@@ -26,6 +26,7 @@ export class ZoneListComponent {
   userConnected !: User;
   isDeleteModelOpen : boolean = false;
   selectedZone !: number ;
+  showUserPopup = false;
   ngOnInit() { 
     this.getZones();
   }
@@ -111,7 +112,7 @@ export class ZoneListComponent {
   }
 
 
-showUserPopup = false;
+
 
 openUserPopup(zone: Zone) {
   this.dropdownOpen = null; 

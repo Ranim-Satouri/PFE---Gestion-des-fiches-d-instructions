@@ -1,4 +1,23 @@
 <div  class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+  <div
+    *ngIf="successMessage"
+    class="fixed top-10 -translate-x-1/2 z-50 w-fit max-w-md flex items-start justify-between gap-3 p-3 rounded-lg border border-green-400 bg-green-50 dark:bg-green-900/10 dark:border-green-700 text-green-800 dark:text-green-300 text-sm animate-slideFromTop shadow-lg"
+    >
+    <div class="flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+        <path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95"></path>
+        <path d="M3.69 8.56a9 9 0 0 0 -.69 3.44"></path>
+        <path d="M3.69 15.44a9 9 0 0 0 1.95 2.92"></path>
+        <path d="M8.56 20.31a9 9 0 0 0 3.44 .69"></path>
+        <path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95"></path>
+        <path d="M20.31 15.44a9 9 0 0 0 .69 -3.44"></path>
+        <path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92"></path>
+        <path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69"></path>
+        <path d="M9 12l2 2l4 -4"></path>
+      </svg>
+      {{successMessage }}
+    </div>
+  </div>
     <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg w-full max-w-3xl p-6 max-h-[71.5vh] overflow-y-auto ">
         <button
             (click)="close.emit()"
@@ -47,7 +66,7 @@
                 class="absolute z-10 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg "            >
                     <li
                     (click)="selectState('')"
-                    class="px-2 py-2 m-2 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+                    class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
                     >
                     Tous
                     </li>
