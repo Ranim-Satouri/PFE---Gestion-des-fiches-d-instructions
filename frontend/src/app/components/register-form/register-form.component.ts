@@ -34,7 +34,7 @@ export class RegisterFormComponent {
     prenom: ['',Validators.required],
     matricule : ['',Validators.required],
     email : ['',Validators.required],
-    password : ['',Validators.required],
+    // password : ['',Validators.required],
     numero :[''],
     genre: [''],
     role: [null, Validators.required] ,

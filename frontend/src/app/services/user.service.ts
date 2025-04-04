@@ -24,6 +24,11 @@ export class UserService {
     return this.http.post<{ token: string, role: Role ,user : User }>(
       `${this.apiUrl2}/register`, user, { params } );
   }
+  
+  getAll(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/getUsers`);
+  }
+
   attribuerZone(idUser: number, idZone:number,idActionneur:number):Observable<any>
     {
    console.log("user",idUser);
@@ -33,9 +38,6 @@ export class UserService {
     `${this.apiUrl}/attribueZone/${idUser}/${idZone}/${idActionneur}`,null)}
 
 
-  getAll(): Observable<User[]> {
-      return this.http.get<User[]>(`${this.apiUrl}/getUsers`);
-    }
 
 
   ChangeRole(idUser: number | undefined, idActionneur: number | undefined, role : Role): Observable<any> {

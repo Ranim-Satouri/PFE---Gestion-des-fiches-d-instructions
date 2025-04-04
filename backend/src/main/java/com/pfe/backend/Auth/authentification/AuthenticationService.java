@@ -4,8 +4,7 @@ package com.pfe.backend.Auth.authentification;
 import com.pfe.backend.Auth.Config.JwtService;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
-import com.pfe.backend.Model.UserZone;
-import com.pfe.backend.Model.Zone;
+
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.ZoneRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-private final ZoneRepository zoneRepository;
 
     public AuthenticationResponse register(RegisterRequest request, Long idCreator) {
         //this register will allow us to create a user , save it to the db and return the generated token out of it
@@ -62,17 +60,18 @@ private final ZoneRepository zoneRepository;
                     .genre(request.getGenre())
                     .num(request.getNum())
                     .status(request.getStatus() != null ? request.getStatus() : User.UserStatus.ACTIVE)
-                    .actionneur(creator) // Enregistrer l'actionneur
+                    .actionneur(creator)
                     .build();
         }
         repository.save(user);
 
             var jwtToken = jwtService.generateToken(user);
             //we need to encode our pwd before saving it so we neeed to inject our passwordencoder Service
-            return AuthenticationResponse.builder()
-                    .token(jwtToken).user(user).role(user.getRole()).build();}
+        return AuthenticationResponse.builder()
+                    .token(jwtToken).user(user).role(user.getRole()).build();
 
-        public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    }
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
         try {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getMatricule(), request.getPassword())

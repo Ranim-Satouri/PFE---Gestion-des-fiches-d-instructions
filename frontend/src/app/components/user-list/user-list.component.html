@@ -1,12 +1,14 @@
 <div class="h-full flex flex-col" >
 
     <div class="h-16 w-full bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 flex flex-row justify-around gap-[284px]">
-      <input >
+     
+    <input/>
       <div  class="flex flex-row justify-end content-between gap-x-[26px]" >
         <button (click)="showRegisterForm()" class="w-fit h-8 px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">
           Ajouter un utilisateur
         </button>
-      </div>
+       </div>
+
     </div>
   <app-register-form
     *ngIf="showForm"
@@ -216,5 +218,3 @@
     (onCancel)="closeDeleteModel()">
 </app-delete-confirm>
 
-
-+
