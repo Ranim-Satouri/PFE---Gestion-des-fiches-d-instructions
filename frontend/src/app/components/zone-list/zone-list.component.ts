@@ -6,11 +6,12 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../models/User';
 import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
+import { UserZoneAssignComponent } from "../user-zone-assign/user-zone-assign.component";
 
 @Component({
   selector: 'app-zone-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, UserZoneAssignComponent],
   templateUrl: './zone-list.component.html',
   styleUrl: './zone-list.component.css',
 })
@@ -24,7 +25,7 @@ export class ZoneListComponent {
   displayAbove = false;
   userConnected !: User;
   isDeleteModelOpen : boolean = false;
-  selectedZone : number | undefined;
+  selectedZone !: number ;
   ngOnInit() { 
     this.getZones();
   }
@@ -59,12 +60,11 @@ export class ZoneListComponent {
     this.closeDeleteModel()
   }
   openDeleteModel(zone: Zone){
-    this.selectedZone = zone.idZone;
+    this.selectedZone = zone.idZone!;
     this.dropdownOpen = null;
     this.isDeleteModelOpen = true;
   }
   closeDeleteModel(){
-    this.selectedZone = undefined;
     this.isDeleteModelOpen = false;
   }
   toggleDropdown(index: number, event: MouseEvent): void {
@@ -109,4 +109,14 @@ export class ZoneListComponent {
       this.dropdownOpen = null; // Ferme le dropdown
     }
   }
+
+
+showUserPopup = false;
+
+openUserPopup(zone: Zone) {
+  this.dropdownOpen = null; 
+  this.selectedZone = zone.idZone!;
+  this.showUserPopup = true;
+}
+
 }

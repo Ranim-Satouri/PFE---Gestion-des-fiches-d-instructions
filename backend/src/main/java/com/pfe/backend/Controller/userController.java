@@ -66,11 +66,22 @@ public class userController {
             @PathVariable long idZone,
             @PathVariable long idActionneur
     ) {
-
-
         try {
             userIservice.attribuerZoneAUser(idUser, idZone, idActionneur);
-            return ResponseEntity.ok("Zone attribuée à l'utilisateur avec succès");
+            return ResponseEntity.ok(null);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/retirerZoneAUser/{idUser}/{idZone}/{idActionneur}")
+    public ResponseEntity<?> retirerZoneAUser(
+            @PathVariable long idUser,
+            @PathVariable long idZone,
+            @PathVariable long idActionneur
+    ) {
+        try {
+            userIservice.retirerZoneAUser(idUser, idZone, idActionneur);
+            return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -80,5 +91,6 @@ public class userController {
 
         return userIservice.getUserZones(idUser);
     }
+
 }
 

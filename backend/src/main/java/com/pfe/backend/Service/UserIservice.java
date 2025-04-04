@@ -16,6 +16,7 @@ public interface UserIservice {
    User updateUser(Long idUser, User updatedUser, Long idActionneur);
    List<Object[]> getUserHistory(Long userId);
    void attribuerZoneAUser(Long idUser, Long idZone, Long idActionneur);
-   public List<User> findByRole(Role role);
+   List<User> findByRole(Role role);
    Set<UserZone> getUserZones(Long idUser);
+   void retirerZoneAUser(Long idUser, Long idZone, Long idActionneur);
 }

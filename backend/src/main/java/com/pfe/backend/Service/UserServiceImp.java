@@ -25,6 +25,7 @@ public class UserServiceImp implements UserIservice{
     private ZoneRepository zoneRepo;
     @Autowired
     private UserZoneRepository userZoneRepository;
+
     @Override
     public void attribuerZoneAUser(Long idUser, Long idZone, Long idActionneur) {
 
@@ -32,7 +33,6 @@ public class UserServiceImp implements UserIservice{
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
         Zone zone = zoneRepo.findById(idZone)
                 .orElseThrow(() -> new RuntimeException("Zone introuvable"));
-
         // Vérifier si la zone est déjà attribuée à l'utilisateur
         boolean zoneDejaAttribuee = user.getUserZones().stream()
                 .anyMatch(userZone -> userZone.getZone().getIdZone()== idZone);
@@ -42,6 +42,20 @@ public class UserServiceImp implements UserIservice{
         user.addZone(zone, idActionneur);
         userRepo.save(user);
     }
+    public void retirerZoneAUser(Long idUser, Long idZone, Long idActionneur) {
+        // Vérifier si les entités existent
+        User user = userRepo.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        Zone zone = zoneRepo.findById(idZone)
+                .orElseThrow(() -> new RuntimeException("Zone introuvable"));
+
+        var userZoneOpt = userZoneRepository.findByUserAndZone(user, zone);
+
+        if (userZoneOpt.isEmpty()) {
+            throw new RuntimeException("Aucune liaison entre cet utilisateur et cette zone");
+        }
+        userZoneRepository.delete(userZoneOpt.get());
+    }
     @Override
     public Set<UserZone> getUserZones(Long idUser) {
 
@@ -49,6 +63,7 @@ public class UserServiceImp implements UserIservice{
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
         return user.getUserZones();
     }
+
     @Override
     public void ModifyUserRole(long idUser, Role newRole, long idActionneur)
     {

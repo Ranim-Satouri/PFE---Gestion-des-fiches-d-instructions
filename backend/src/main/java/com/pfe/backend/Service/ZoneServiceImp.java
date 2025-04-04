@@ -1,10 +1,7 @@
 package com.pfe.backend.Service;
 
 
-import com.pfe.backend.Model.Fiche;
-import com.pfe.backend.Model.Produit;
-import com.pfe.backend.Model.User;
-import com.pfe.backend.Model.Zone;
+import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.FicheRepository;
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.ZoneRepository;
@@ -16,11 +13,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class ZoneServiceImp implements ZoneService {
     @Autowired
+    private ZoneRepository zoneRepo;
     private ZoneRepository zoneRepository;
     private UserRepository userRepo;
     private FicheRepository ficheRepo;
@@ -82,5 +81,11 @@ public class ZoneServiceImp implements ZoneService {
         if(newZoneData.getNom()!=null ) zone.setNom(newZoneData.getNom());
         zone.setActionneur(actionneur);
         zoneRepository.save(zone);
+    }
+    @Override
+    public Set<UserZone> getZoneUsers(Long idZone) {
+        Zone zone = zoneRepo.findById(idZone)
+                .orElseThrow(() -> new RuntimeException("Zone introuvable"));
+        return zone.getUserZones();
     }
 }
