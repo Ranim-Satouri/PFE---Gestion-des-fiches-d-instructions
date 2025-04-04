@@ -153,7 +153,7 @@ export class RegisterFormComponent {
         genre: this.registerForm.value.genre.toUpperCase(),
         email: this.registerForm.value.email,
         matricule: this.registerForm.value.matricule,
-        password: this.registerForm.value.password,  // Correction de la majuscule
+        password: "123456",  // Correction de la majuscule
         num: this.registerForm.value.numero,
         actionneur: this.userConnected.idUser!, // Correction de la majuscule
         status: this.registerForm.value.status.toUpperCase(),

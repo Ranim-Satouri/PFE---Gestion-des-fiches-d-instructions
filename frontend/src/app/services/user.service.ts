@@ -25,13 +25,12 @@ export class UserService {
       `${this.apiUrl2}/register`, user, { params } );
   }
   attribuerZone(idUser: number, idZone:number,idActionneur:number):Observable<any>
- {
+    {
    console.log("user",idUser);
    console.log("zone",idZone);
    console.log("act",idActionneur);
-  return this.http.post(
-    `${this.apiUrl}/attribueZone/${idUser}/${idZone}/${idActionneur}`,null)
-}
+      return this.http.post(
+    `${this.apiUrl}/attribueZone/${idUser}/${idZone}/${idActionneur}`,null)}
 
 
   getAll(): Observable<User[]> {
