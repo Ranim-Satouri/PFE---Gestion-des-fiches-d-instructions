@@ -1,6 +1,7 @@
 package com.pfe.backend.Controller;
 
 
+import com.pfe.backend.Model.UserZone;
 import com.pfe.backend.Model.Zone;
 import com.pfe.backend.Repository.ZoneRepository;
 import com.pfe.backend.Service.ZoneService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RequestMapping("/zone")
 @RestController
@@ -45,5 +47,8 @@ public class ZoneController {
         zoneService.updateZone(idZone, updatedZone,idActionneur);
         return ResponseEntity.ok("Zone mis à jour !");
     }
-
+    @GetMapping("/zone-users/{idZone}")
+    public Set<UserZone> getZoneUsers(@PathVariable Long idZone) {
+        return zoneService.getZoneUsers(idZone);
+    }
 }

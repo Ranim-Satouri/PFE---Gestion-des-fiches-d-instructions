@@ -57,12 +57,10 @@ public class userController {
         return ResponseEntity.ok(updated);
     }
     @GetMapping("/history/{id}")
-
     public List<Object[]> getUserHistory(@PathVariable Long id) {
         return userIservice.getUserHistory(id);
     }
-
-    @PostMapping("/attribueZone/{idUser}/{idZone}/{idActionneur}")
+    @PostMapping("/attribuer-zone/{idUser}/{idZone}/{idActionneur}")
     public ResponseEntity<?> attribuerZoneAUser(
             @PathVariable long idUser,
             @PathVariable long idZone,
@@ -78,7 +76,21 @@ public class userController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    @GetMapping("/userzones/{idUser}")
+    @DeleteMapping("/retirerZoneAUser/{idUser}/{idZone}/{idActionneur}")
+    public ResponseEntity<?> retirerZoneAUser(
+            @PathVariable long idUser,
+            @PathVariable long idZone,
+            @PathVariable long idActionneur
+    ) {
+        try {
+            userIservice.retirerZoneAUser(idUser, idZone, idActionneur);
+            return ResponseEntity.ok(null);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/user-zones/{idUser}")
     public Set<UserZone> getUserZones(@PathVariable Long idUser) {
 
         return userIservice.getUserZones(idUser);

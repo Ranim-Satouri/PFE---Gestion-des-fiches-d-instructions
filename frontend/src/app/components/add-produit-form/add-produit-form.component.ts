@@ -1,6 +1,6 @@
-import { Component,EventEmitter,HostListener,inject,Output} from '@angular/core';
+import { Component,EventEmitter,HostListener,inject,Input,Output} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {AbstractControl, FormBuilder,FormGroup,ReactiveFormsModule,ValidationErrors,ValidatorFn,Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder,FormControl,FormGroup,ReactiveFormsModule,ValidationErrors,ValidatorFn,Validators} from '@angular/forms';
 import { FamilleService } from '../../services/famille.service';
 import { Famille } from '../../models/Famille';
 import { User } from '../../models/User';
@@ -16,9 +16,7 @@ import { Produit } from '../../models/Produit';
 })
 export class AddProduitFormComponent {
   constructor(private familleService: FamilleService,private produitService: ProduitService) {}
-  private fb = inject(FormBuilder);
   @Output() close = new EventEmitter<void>();
-
   families: Famille[] = [];
   familleNames: string[] = [];
   filteredFamilles: Famille[] = [];
@@ -27,22 +25,23 @@ export class AddProduitFormComponent {
   userConnected !: User;
   successMessage: string = '';
   errorMessage = '';
-
-  productForm: FormGroup = this.fb.group(
-    {
-    nom: [''],
-    reference: ['', Validators.required],
-    indice: ['', Validators.required],
-    famille: ['', Validators.required]
-    }
-  );
+  @Input() newProduit !: String ; // nrecuperi el nom produit mel form add fiche
+  productForm!: FormGroup;
+  @Output() produitAdded = new EventEmitter<Produit>(); // au cas jey mel add fiche awka yabaathlou el produit kif yetzed
+  formSubmitted = false; // bech les erreurs yettafichew keen ba3d ma yenzel aal button enregistrer
 
 
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
-      if (userFromLocalStorage) {
-        this.userConnected = JSON.parse(userFromLocalStorage);
-      }
+    if (userFromLocalStorage) {
+      this.userConnected = JSON.parse(userFromLocalStorage);
+    }
+    this.productForm = new FormGroup({
+      nom: new FormControl(this.newProduit ?? '', []),  // <-- ici on utilise l'@Input()
+      reference: new FormControl('', [Validators.required]),
+      indice: new FormControl('', [Validators.required]),
+      famille: new FormControl('', [Validators.required])
+    });
     this.getFamilles();
   }
   getFamilles() {
@@ -105,6 +104,7 @@ export class AddProduitFormComponent {
 
 
   onSubmit() {
+    this.formSubmitted = true;
     this.productForm.markAllAsTouched();
     if (this.productForm.valid) {
       const produit : Produit = {
@@ -127,6 +127,10 @@ export class AddProduitFormComponent {
           setTimeout(() => {
             this.successMessage = '';
           }, 3000);
+          if(this.newProduit){
+            this.produitAdded.emit(response); // <-- ICI on retourne le produit au parent
+            this.close.emit(); // Fermer le popup si besoin
+          }
           this.productForm.reset();
         },
         error: (err) => {
