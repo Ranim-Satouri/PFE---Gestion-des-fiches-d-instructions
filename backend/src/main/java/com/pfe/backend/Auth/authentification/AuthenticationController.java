@@ -1,9 +1,11 @@
 package com.pfe.backend.Auth.authentification;
 
 import com.pfe.backend.Model.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -15,11 +17,25 @@ public class AuthenticationController {
         this.Aservice = Aservice;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(Aservice.register(request, request.getActionneur()));
+//    @PostMapping("/register")
+//    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
+//        return ResponseEntity.ok(Aservice.register(request, request.getActionneur()));
+//    }
+@PostMapping("/register")
+public ResponseEntity<AuthenticationResponse> register(
+        @RequestBody RegisterRequest request,
+        @RequestParam(required = false) Long idCreator) {
+    System.out.println("d5alna");
+    System.out.println(request);
+    try {
+        AuthenticationResponse response = Aservice.register(request, idCreator);
+        return ResponseEntity.ok(response);
+    } catch (ResponseStatusException e) {
+        throw e;
+    } catch (Exception e) {
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Une erreur est survenue lors de l'enregistrement", e);
     }
-
+}
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(Aservice.authenticate(request));

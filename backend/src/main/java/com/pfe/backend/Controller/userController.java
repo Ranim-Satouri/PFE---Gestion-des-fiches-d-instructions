@@ -16,10 +16,13 @@ import java.util.Set;
 @RequestMapping("/user")
 @RestController
 public class userController {
+
     @Autowired
     private UserIservice userIservice;
+
     @PutMapping("/changeRole/{idUser}/{idActionneur}")
     public ResponseEntity<?> ModifyUserRole(@PathVariable long idUser, @RequestParam Role newRole, @PathVariable long idActionneur)
+
     {
         try {
             userIservice.ModifyUserRole(idUser, newRole, idActionneur);  // Appel de la méthode dans le service
@@ -28,7 +31,9 @@ public class userController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());  // Si un utilisateur est introuvable
         }
     }
+
     @PutMapping("/changeStatus/{idUser}/{idActionneur}")
+
     public ResponseEntity<?>ModifyUserStatus(@PathVariable long idUser, @RequestParam String newStatus,@PathVariable long idActionneur)
     {
         try {
@@ -38,15 +43,19 @@ public class userController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
     @GetMapping("/getAll")
     public ResponseEntity<List<User>> getAllUsers(){
         return  userIservice.getAllUsers();
     }
 
+
     @GetMapping("/getUsers")
     public ResponseEntity<List<User>> getUsers(){
             return userIservice.getUsers();
         }
+
+
     @PutMapping("/update/{idUser}")
     public ResponseEntity<User> updateUser(
             @PathVariable Long idUser,
@@ -60,13 +69,16 @@ public class userController {
     public List<Object[]> getUserHistory(@PathVariable Long id) {
         return userIservice.getUserHistory(id);
     }
-    @PostMapping("/attribuer-zone/{idUser}/{idZone}/{idActionneur}")
+    @PostMapping("/attribueZone/{idUser}/{idZone}/{idActionneur}")
     public ResponseEntity<?> attribuerZoneAUser(
             @PathVariable long idUser,
             @PathVariable long idZone,
             @PathVariable long idActionneur
     ) {
+        System.out.println("hani hne");
         try {
+            System.out.println("hani hne2");
+
             userIservice.attribuerZoneAUser(idUser, idZone, idActionneur);
             return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
@@ -86,11 +98,11 @@ public class userController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
     @GetMapping("/user-zones/{idUser}")
     public Set<UserZone> getUserZones(@PathVariable Long idUser) {
 
         return userIservice.getUserZones(idUser);
     }
-
 }
 

@@ -30,8 +30,8 @@ export class AddProduitFormComponent {
   @Output() produitAdded = new EventEmitter<Produit>(); // au cas jey mel add fiche awka yabaathlou el produit kif yetzed
   formSubmitted = false; // bech les erreurs yettafichew keen ba3d ma yenzel aal button enregistrer
 
- 
-  ngOnInit() { 
+
+  ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
@@ -44,13 +44,13 @@ export class AddProduitFormComponent {
     });
     this.getFamilles();
   }
-  getFamilles() { 
+  getFamilles() {
       this.familleService.getAll().subscribe({
-        next : (response :Famille[]) => {       
-          this.families = response;  
+        next : (response :Famille[]) => {
+          this.families = response;
           this.familleNames = response.map(famille => famille.nomFamille);
         },
-        error : (error : any) => {  
+        error : (error : any) => {
           console.error('fetching familles error:', error);
         }
       });
@@ -100,8 +100,8 @@ export class AddProduitFormComponent {
     this.filteredFamilles = this.families;
     this.showDropdown = false;
   }
-  
-  
+
+
 
   onSubmit() {
     this.formSubmitted = true;
@@ -114,11 +114,11 @@ export class AddProduitFormComponent {
         famille: this.productForm.value.famille,
         actionneur: this.userConnected
       };
-  
+
       const famille: Famille = this.productForm.value.famille;
       const idFamille = famille.idFamille!;
       const idActionneur = this.userConnected.idUser!; // à récupérer dynamiquement selon ton app
-  
+
       this.produitService.addProduit(produit, idFamille, idActionneur).subscribe({
         next: (response) => {
           console.log('Produit ajouté avec succès', response);
@@ -136,7 +136,7 @@ export class AddProduitFormComponent {
         error: (err) => {
           this.successMessage = '';
           console.error('Erreur backend:', err);
-  
+
           if (err.status === 404) {
             if (err.error === 'Famille introuvable') {
               this.errorMessage = 'La famille sélectionnée est introuvable.';
@@ -150,7 +150,7 @@ export class AddProduitFormComponent {
           } else {
             this.errorMessage = 'Une erreur inattendue est survenue.';
           }
-  
+
           // Auto-hide message after 4s
           setTimeout(() => {
             this.errorMessage = '';
@@ -159,10 +159,10 @@ export class AddProduitFormComponent {
       });
     } else {
       this.productForm.markAllAsTouched();
-      
+
     }
   }
-  
+
   toggleDropdown() {
     this.filteredFamilles = this.families
     this.showDropdown = !this.showDropdown;

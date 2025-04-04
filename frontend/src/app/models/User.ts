@@ -12,9 +12,9 @@ export interface User {
     num: string;
     status: UserStatus;
     role: Role;
-    actionneur: User | null;
-    modifieLe: Date;
-    zones : Zone[];
+    actionneur: User | number |null;
+    modifieLe?: Date;
+    zones?: Zone[];
   }
 
   export enum UserStatus {

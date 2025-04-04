@@ -1,12 +1,14 @@
 <div class="h-full flex flex-col" >
 
     <div class="h-16 w-full bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 flex flex-row justify-around gap-[284px]">
-      <input >
+     
+    <input/>
       <div  class="flex flex-row justify-end content-between gap-x-[26px]" >
         <button (click)="showRegisterForm()" class="w-fit h-8 px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">
           Ajouter un utilisateur
         </button>
-      </div>
+       </div>
+
     </div>
   <app-register-form
     *ngIf="showForm"
@@ -125,14 +127,14 @@
                             <!-- Menu déroulant -->
                             <div *ngIf="dropdownOpen === i"  id="dropdownDots-{{i}}"
                                 [ngStyle]="{ top: dropdownPosition.top + 'px', left: dropdownPosition.left + 'px' }"
-                                class="fixed w-40 
-                                        bg-gray-100 dark:bg-gray-800 
-                                        border border-gray-300 dark:border-gray-600 
+                                class="fixed w-40
+                                        bg-gray-100 dark:bg-gray-800
+                                        border border-gray-300 dark:border-gray-600
                                         rounded-md shadow-md z-50 transition-all"
                                 [ngClass]="{ 'origin-bottom-right': displayAbove, 'origin-top-right': !displayAbove }">
 
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 font-medium space-y-1">
-                                
+
                                 <li>
                                     <a class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                         <!-- Pencil Icon -->
@@ -158,7 +160,7 @@
                                 <li>
                                 <a class="flex items-center  mx-1 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-600 hover:text-red-700 dark:hover:text-white rounded-lg cursor-pointer transition-all"
                                 (click)="openDeleteModel(user)">
-                                    <!-- Trash Icon -->    
+                                    <!-- Trash Icon -->
                                     <svg class="w-5 h-5 mr-3  " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                                         <path d="M4 7l16 0"></path>
                                         <path d="M10 11l0 6"></path>
@@ -215,5 +217,4 @@
     (onConfirm)="ChangeUserStatus(selectedUser , UserStatus.DELETED)"
     (onCancel)="closeDeleteModel()">
 </app-delete-confirm>
-
 

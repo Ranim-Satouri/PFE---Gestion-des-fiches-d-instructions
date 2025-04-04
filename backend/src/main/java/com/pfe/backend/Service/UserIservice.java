@@ -3,6 +3,7 @@ package com.pfe.backend.Service;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Model.UserZone;
+import com.pfe.backend.Model.Zone;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -19,4 +20,5 @@ public interface UserIservice {
    List<User> findByRole(Role role);
    Set<UserZone> getUserZones(Long idUser);
    void retirerZoneAUser(Long idUser, Long idZone, Long idActionneur);
+//   public void addZone(Zone zone, Long idActionneur);
 }

@@ -1,5 +1,6 @@
 package com.pfe.backend.Auth.authentification;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationResponse {
+
     private User user;
+    @JsonIgnore
     private String token;
     private Role role;
 }

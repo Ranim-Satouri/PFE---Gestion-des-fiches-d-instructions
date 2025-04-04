@@ -55,6 +55,7 @@ public class User implements UserDetails {
 //            inverseJoinColumns = @JoinColumn(name = "idZone")
 //    )
 //    private Set<Zone> zones = new HashSet<>();
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserZone> userZones = new HashSet<>();
@@ -65,7 +66,6 @@ public class User implements UserDetails {
         userZone.setIdActionneur(idActionneur);
         this.userZones.add(userZone);
     }
-
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private UserGenre genre;
@@ -76,10 +76,9 @@ public class User implements UserDetails {
     @Column(name = "modifie_le", nullable = false)
     private LocalDateTime modifieLe = LocalDateTime.now(); // Ajoute une valeur par défaut
 
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "actionneur")
-    @JsonIgnore
     private User actionneur;
 
     @Override
