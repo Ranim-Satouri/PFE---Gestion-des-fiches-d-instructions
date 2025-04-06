@@ -16,7 +16,7 @@ import { forkJoin, map } from 'rxjs';
 })
 export class UserZoneAssignComponent {
   constructor(private userService: UserService , private userZoneService: UserZoneService) {}
-  successMessage: string = '';
+  @Input() successMessage: string = '';
   users: User[] = [];
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<User[]>();
@@ -110,9 +110,9 @@ export class UserZoneAssignComponent {
   
     Promise.all(allRequests.map(req => req.toPromise()))
       .then(() => {
-        console.log('✅ Modifications enregistrées');
         this.save.emit(this.users.filter(u => this.selectedUsers.has(u.idUser!)));
-        this.successMessage = `Les modifications ont bien été enregistrées !`;
+        this.successMessage = ''; 
+        this.successMessage = `Les Utilisateurs ont bien été affectées !`;
         setTimeout(() => {
           this.successMessage = '';
           this.close.emit();
@@ -120,7 +120,7 @@ export class UserZoneAssignComponent {
         
       })
       .catch(error => {
-        console.error('❌ Une erreur est survenue lors de l’enregistrement', error);
+        console.error(' Une erreur est survenue lors de l’enregistrement', error);
       });
   }
 

@@ -6,11 +6,12 @@ import { FormsModule } from '@angular/forms';
 import { Produit } from '../../models/Produit';
 import { ProduitService } from '../../services/produit.service';
 import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
-import { AddProduitFormComponent } from '../add-produit-form/add-produit-form.component';
+import { AddProduitFormComponent } from '../add/add-produit-form/add-produit-form.component';
+import { UpdateProduitComponent } from "../update/update-produit/update-produit.component";
 @Component({
   selector: 'app-produit-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent,AddProduitFormComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddProduitFormComponent, UpdateProduitComponent],
   templateUrl: './produit-list.component.html',
   styleUrl: './produit-list.component.css'
 })
@@ -24,16 +25,28 @@ constructor(private produitService: ProduitService) {}
   displayAbove = false;
   userConnected !: User;
   isDeleteModelOpen : boolean = false;
-  selectedProduit : number | undefined;
+  selectedProduit !: number ;
   showAddPorduitForm = false;
+  showUpdateProduitForm = false;
+  produitToUpdate!: Produit;
   ngOnInit() { 
     this.getProduits();
   }
   openAddForm() {
     this.showAddPorduitForm  = true;
   }
+  openUpdateForm(produit : Produit) {
+    this.dropdownOpen = null;
+    this.produitToUpdate = produit;
+    this.showUpdateProduitForm  = true;
+  }
+  closeUpdateForm() {
+    this.getProduits();
+    this.showUpdateProduitForm  = false;
+  }
   
   closeAddForm() {
+    this.getProduits()
     this.showAddPorduitForm = false;
   }
   getProduits() { 
@@ -41,7 +54,7 @@ constructor(private produitService: ProduitService) {}
       next : (response :Produit[]) => {  
         console.log('fetching produits success:', response);
        
-        this.produits = response;
+        this.produits = response.sort((a, b) => b.idProduit! - a.idProduit!);
       },
       error : (error : any) => {  
         console.error('fetching produits error:', error);
@@ -78,7 +91,7 @@ constructor(private produitService: ProduitService) {}
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);      
     }
-    this.produitService.deleteProduit(idProduit || undefined ,this.userConnected.idUser || undefined ).subscribe({
+    this.produitService.deleteProduit(idProduit || undefined ,this.userConnected.idUser! ).subscribe({
       next: () => {
         console.log('Produit supprimée');
         this.dropdownOpen = null;
@@ -91,12 +104,11 @@ constructor(private produitService: ProduitService) {}
     this.closeDeleteModel()
   }
  openDeleteModel(produit : Produit){
-    this.selectedProduit = produit.idProduit;
+    this.selectedProduit = produit.idProduit!;
     this.dropdownOpen = null;
     this.isDeleteModelOpen = true;
   }
   closeDeleteModel(){
-    this.selectedProduit = undefined;
     this.isDeleteModelOpen = false;
   }
   @HostListener('window:scroll', [])

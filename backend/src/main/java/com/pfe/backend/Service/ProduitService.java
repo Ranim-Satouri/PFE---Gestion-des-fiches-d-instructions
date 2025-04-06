@@ -8,7 +8,7 @@ import java.util.List;
 public interface ProduitService {
     ResponseEntity<?> addProduit(Produit produit, Long idFamille, Long idActionneur);
     ResponseEntity<List<Produit>> getAllProduit();
-       void updateProduit(Long idProduit, Produit newProduitData ,Long idActionneur);
+    ResponseEntity<?> updateProduit(Long idProduit,Long idFamille, Produit newProduitData ,Long idActionneur);
         void DeleteProduit(Long idProduit ,Long idActionneur);
     List<Produit> getActiveProducts();
 }

@@ -1,9 +1,9 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, FormGroup, Validators, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Famille } from '../../models/Famille';
-import { User } from '../../models/User';
-import { FamilleService } from '../../services/famille.service';
+import { Famille } from '../../../models/Famille';
+import { User } from '../../../models/User';
+import { FamilleService } from '../../../services/famille.service';
 
 @Component({
   selector: 'app-add-famille-form',
@@ -38,7 +38,7 @@ export class AddFamilleFormComponent {
         actionneur: this.userConnected
       };
   
-      this.familleService.addFamille(newFamille, this.userConnected.idUser).subscribe({
+      this.familleService.addFamille(newFamille, this.userConnected.idUser!).subscribe({
         next: (famille) => {
           this.errorMessage = '';
           this.successMessage = `Famille "${famille.nomFamille}" ajoutée avec succès !`;

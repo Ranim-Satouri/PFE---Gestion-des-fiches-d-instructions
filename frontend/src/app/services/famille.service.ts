@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Famille } from '../models/Famille';
@@ -13,10 +13,19 @@ export class FamilleService {
   getAll(): Observable<Famille[]> {
     return this.http.get<Famille[]>(`${this.apiUrl}/activeFamilies`);
   }
-  deleteFamille(idFamille: number | undefined , idSupprimateur: number | undefined ): Observable<any> {
-      return this.http.delete( `${this.apiUrl}/delete/${idFamille}/${idSupprimateur}`); 
+  deleteFamille(idFamille: number | undefined , idSupprimateur: number  ): Observable<any> {
+    const params = new HttpParams()
+                  .set('idActionneur',idSupprimateur);
+      return this.http.delete( `${this.apiUrl}/delete/${idFamille}` ,  { params }); 
   }
-  addFamille(famille: Famille, idActionneur: number | undefined): Observable<Famille> {
-    return this.http.post<Famille>(`${this.apiUrl}/addFamille/${idActionneur}`, famille);
+  addFamille(famille: Famille, idActionneur: number ): Observable<Famille> {
+    const params = new HttpParams()
+                  .set('idActionneur',idActionneur);
+    return this.http.post<Famille>(`${this.apiUrl}/addFamille`, famille ,  { params });
+  }
+  updateFamille(famille: Famille, idFamille : number | undefined , idActionneur: number ): Observable<Famille> {
+    const params = new HttpParams()
+                  .set('idActionneur',idActionneur);
+    return this.http.put<Famille>(`${this.apiUrl}/update/${idFamille}`, famille , { params }) ;
   }
 }

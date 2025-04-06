@@ -6,17 +6,17 @@ import { FormsModule } from '@angular/forms';
 import { FamilleService } from '../../services/famille.service';
 import { Famille } from '../../models/Famille';
 import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
-import { AddFamilleFormComponent } from "../add-famille-form/add-famille-form.component";
+import { AddFamilleFormComponent } from "../add/add-famille-form/add-famille-form.component";
+import { UpdateFamilleComponent } from "../update/update-famille/update-famille.component";
 @Component({
   selector: 'app-famille-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent, UpdateFamilleComponent],
   templateUrl: './famille-list.component.html',
   styleUrl: './famille-list.component.css'
 })
 export class FamilleListComponent {
-  constructor(private familleService: FamilleService) {} 
-  
+  constructor(private familleService: FamilleService) {}  
   familles : Famille[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
@@ -25,16 +25,18 @@ export class FamilleListComponent {
   displayAbove = false;
   userConnected !: User ;
   isDeleteModelOpen : boolean = false;
-  selectedFamille : number | undefined;
-  showFamilyModal = false;
+  selectedFamille !: number ;
+  FamilleToUpdate !: Famille;
+  showAddModal = false;
+  showUpdateModal = false;
   ngOnInit() { 
     this.getFamilles();
   }
-
+ 
   getFamilles() { 
     this.familleService.getAll().subscribe({
       next : (response :Famille[]) => {         
-        this.familles = response;
+        this.familles = response.sort((a, b) => b.idFamille! - a.idFamille!);
       },
       error : (error : any) => {  
         console.error('fetching familles error:', error);
@@ -47,7 +49,7 @@ export class FamilleListComponent {
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);      
     }
-    this.familleService.deleteFamille(idFamille || undefined , this.userConnected.idUser || undefined ).subscribe({
+    this.familleService.deleteFamille(idFamille || undefined , this.userConnected.idUser! ).subscribe({
       next: () => {
         console.log('Famille supprimée');
         this.dropdownOpen = null;
@@ -59,15 +61,32 @@ export class FamilleListComponent {
     });
     this.closeDeleteModel()
   }
+
+  OpenAddFamillePopUp(){
+    this.showAddModal = true;
+  }
+  closeAddForm() {
+    this.getFamilles();
+    this.showAddModal = false;
+  }
   openDeleteModel(famille : Famille) {
-    this.selectedFamille = famille.idFamille;
+    this.selectedFamille = famille.idFamille!;
       this.dropdownOpen = null;
       this.isDeleteModelOpen = true;
     }
-    closeDeleteModel(){
-      this.selectedFamille = undefined;
-      this.isDeleteModelOpen = false;
-    }
+  closeDeleteModel(){
+    this.isDeleteModelOpen = false;
+  }
+
+  OpenUpdateFamillePopUp(famille : Famille){
+    this.FamilleToUpdate = famille;
+    this.dropdownOpen = null;
+    this.showUpdateModal = true;
+  }
+  closeUpdateForm() {
+    this.getFamilles();
+    this.showUpdateModal = false;
+  }
   // toggleDropdown(index: number, event: MouseEvent): void {
   //   const target = event.target as HTMLElement;
   //   const button = target.closest("button");
@@ -134,7 +153,5 @@ export class FamilleListComponent {
       this.dropdownOpen = null; // Ferme le dropdown
     }
   }
-  OpenAddFamillePopUp(){
-    this.showFamilyModal = true;
-  }
+ 
 }

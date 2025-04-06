@@ -3,7 +3,6 @@ package com.pfe.backend.Controller;
 
 import com.pfe.backend.Model.UserZone;
 import com.pfe.backend.Model.Zone;
-import com.pfe.backend.Repository.ZoneRepository;
 import com.pfe.backend.Service.ZoneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,10 +30,9 @@ public class ZoneController {
     public ResponseEntity<?> addZone(@RequestBody Zone zone,@RequestParam Long idActionneur)
     {
         return zoneService.addZone(zone,idActionneur);
-
     }
-    @DeleteMapping("/delete/{idZone}/{idActionneur}")
-    public ResponseEntity<?> DeleteZone(@PathVariable Long idZone, @PathVariable Long idActionneur) {
+    @DeleteMapping("/delete/{idZone}")
+    public ResponseEntity<?> DeleteZone(@PathVariable Long idZone, @RequestParam Long idActionneur) {
         try {
             zoneService.DeleteZone(idZone ,  idActionneur);
             return ResponseEntity.ok(null);
@@ -44,8 +42,7 @@ public class ZoneController {
     }
     @PutMapping("/update/{idZone}")
     public ResponseEntity<?> updateZone(@PathVariable Long idZone, @RequestBody Zone updatedZone,@RequestParam Long idActionneur) {
-        zoneService.updateZone(idZone, updatedZone,idActionneur);
-        return ResponseEntity.ok("Zone mis à jour !");
+        return zoneService.updateZone(idZone, updatedZone,idActionneur);
     }
     @GetMapping("/zone-users/{idZone}")
     public Set<UserZone> getZoneUsers(@PathVariable Long idZone) {

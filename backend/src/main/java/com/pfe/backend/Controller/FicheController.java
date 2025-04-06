@@ -87,29 +87,27 @@ public class FicheController {
         return ResponseEntity.ok().body(ficheService.getFiches());
     }
     @PutMapping("/updateFiche")
-    public ResponseEntity<?> updateFiche(@RequestPart("fiche") String ficheJson ,@RequestPart("filePDF") MultipartFile filePDF){
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Fiche fiche = objectMapper.readValue(ficheJson, Fiche.class);
-            return ResponseEntity.ok().body(ficheService.updateFiche(fiche , filePDF));
-        } catch (Exception e) {
+    public ResponseEntity<?> updateFiche(@RequestBody Fiche fiche ){
+        try{
+            return ResponseEntity.ok().body(ficheService.updateFiche(fiche));
+        }catch(RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @PutMapping("/deleteFiche/{idFiche}/{idSupprimateur}")
-    public ResponseEntity<?> deleteFiche(@PathVariable("idFiche") long idFiche, @PathVariable("idSupprimateur") long idSupprimateur){
+    @PutMapping("/deleteFiche/{idFiche}")
+    public ResponseEntity<?> deleteFiche(@PathVariable long idFiche, @RequestParam long idActionneur){
         try {
-            return ResponseEntity.ok().body(ficheService.deleteFiche(idFiche , idSupprimateur));
+            return ResponseEntity.ok().body(ficheService.deleteFiche(idFiche , idActionneur));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @PutMapping("/validationIPDF/{idFiche}/{idIPDF}")
+    @PutMapping("/validationIPDF/{idFiche}")
     public ResponseEntity<?> validationIPDF(
             @PathVariable long idFiche,
-            @PathVariable long idIPDF,
+            @RequestParam long idIPDF,
             @RequestParam String status,
             @RequestParam String commentaire) {
         Fiche.FicheStatus ficheStatus = Fiche.FicheStatus.valueOf(status.toUpperCase());

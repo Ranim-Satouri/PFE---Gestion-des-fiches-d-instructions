@@ -15,7 +15,7 @@ export class UserZoneService {
     return this.http.get<User_Zone[]>(`${this.apiUrl}/user-zones/${idUser}`);
   }
   attribuerZoneAUser(idUser: number, idZone: number, idActionneur: number): Observable<any> {
-    const url = `${this.apiUrl}/attribuer-zone/${idUser}/${idZone}/${idActionneur}`;
+    const url = `${this.apiUrl}/attribueZone/${idUser}/${idZone}/${idActionneur}`;
     return this.http.post(url, null);
   }
   getZoneUsers(idZone: number): Observable<User_Zone[]> {

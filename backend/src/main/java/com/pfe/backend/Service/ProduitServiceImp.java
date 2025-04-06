@@ -64,17 +64,39 @@ public class ProduitServiceImp implements ProduitService{
         return ResponseEntity.ok().body(produitRepository.findAll());
     }
       @Override
-       public void updateProduit(Long idProduit, Produit newProduitData ,Long idActionneur)
+       public ResponseEntity<?> updateProduit(Long idProduit, Long idFamille, Produit newProduitData ,Long idActionneur)
         {
-            Produit produit = produitRepository.findById(idProduit).orElseThrow(()-> new RuntimeException("Produit introuvable ! "));
-            User actionneur = userRepo.findById(idActionneur)
-                    .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+            Optional<Produit> produitOpt = produitRepository.findById(idProduit);
+            if(produitOpt.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produitne introuvable");
+            }
+            Produit produit = produitOpt.get();
+            Optional<User> actionneur = userRepo.findById(idActionneur);
+            if (actionneur.isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body("Actionneur introuvable");
+            }
+            Optional<Produit> existingProduit = produitRepository.findByIndiceAndRefAndIsDeleted(newProduitData.getIndice(),newProduitData.getRef(),false);
+            if (existingProduit.isPresent() && existingProduit.get().getIdProduit() != idProduit) {
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body("Un produit avec le même indice et reference existe déjà");
+            }
+            Optional<Famille> familleOpt = familleRepository.findById(idFamille);
+            if (familleOpt.isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body("Famille introuvable");
+            }
             if(newProduitData.getNomProduit()!=null ) produit.setNomProduit(newProduitData.getNomProduit());
             if(newProduitData.getRef()!=null ) produit.setRef(newProduitData.getRef());
             if(newProduitData.getIndice()!=null ) produit.setIndice(newProduitData.getIndice());
-            if(newProduitData.getFamille()!=null ) produit.setFamille(newProduitData.getFamille());
-            produit.setActionneur(actionneur);
-            produitRepository.save(produit);
+            produit.setFamille(familleOpt.get());
+            newProduitData.setIdProduit(idProduit);
+            newProduitData.setActionneur(actionneur.get());
+            //System.out.println(produitRepository.save(newProduitData));
+            return ResponseEntity.status(HttpStatus.CREATED).body(produitRepository.save(produit));
         }
         @Override
         public void DeleteProduit(Long idProduit ,Long idActionneur)

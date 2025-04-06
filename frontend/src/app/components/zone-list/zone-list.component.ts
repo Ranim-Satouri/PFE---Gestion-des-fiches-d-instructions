@@ -7,11 +7,14 @@ import { FormsModule } from '@angular/forms';
 import { User } from '../../models/User';
 import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
 import { UserZoneAssignComponent } from "../user-zone-assign/user-zone-assign.component";
+import { AddZoneFormComponent } from "../add/add-zone-form/add-zone-form.component";
+import { Console } from 'console';
+import { UpdateZoneComponent } from "../update/update-zone/update-zone.component";
 
 @Component({
   selector: 'app-zone-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, UserZoneAssignComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, UserZoneAssignComponent, AddZoneFormComponent, UpdateZoneComponent],
   templateUrl: './zone-list.component.html',
   styleUrl: './zone-list.component.css',
 })
@@ -27,6 +30,10 @@ export class ZoneListComponent {
   isDeleteModelOpen : boolean = false;
   selectedZone !: number ;
   showUserPopup = false;
+  showAddZoneForm = false;
+  showUpdateZoneForm = false;
+  zoneToUpdate !: Zone;
+
   ngOnInit() { 
     this.getZones();
   }
@@ -36,7 +43,7 @@ export class ZoneListComponent {
       next : (response :Zone[]) => {  
         console.log('fetching zones success:', response);
        
-        this.zones = response;
+        this.zones = response.sort((a, b) => b.idZone! - a.idZone!);
       },
       error : (error : any) => {  
         console.error('fetching zones error:', error);
@@ -111,13 +118,32 @@ export class ZoneListComponent {
     }
   }
 
+  openAddForm() {
+    this.showAddZoneForm  = true;
+  }
+  
+  closeAddForm() {
+    this.getZones();
+    this.showAddZoneForm = false;
+  }
+  
+  openUserPopup(zone: Zone) {
+    this.dropdownOpen = null; 
+    this.selectedZone = zone.idZone!;
+    this.showUserPopup = true;
+  }
+  closeUserPopup() {
+    this.getZones();
+    this.showUserPopup = false;
+  }
 
-
-
-openUserPopup(zone: Zone) {
-  this.dropdownOpen = null; 
-  this.selectedZone = zone.idZone!;
-  this.showUserPopup = true;
-}
-
+  openUpdateForm(zone : Zone) {
+    this.zoneToUpdate = zone;
+    this.showUpdateZoneForm  = true;
+  }
+  
+  closeUpdateForm() {
+    this.getZones();
+    this.showUpdateZoneForm = false;
+  }
 }

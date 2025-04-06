@@ -35,10 +35,8 @@ export class UserService {
    console.log("zone",idZone);
    console.log("act",idActionneur);
       return this.http.post(
-    `${this.apiUrl}/attribueZone/${idUser}/${idZone}/${idActionneur}`,null)}
-
-
-
+    `${this.apiUrl}/attribueZone/${idUser}/${idZone}/${idActionneur}`,null)
+  }
 
   ChangeRole(idUser: number | undefined, idActionneur: number | undefined, role : Role): Observable<any> {
     const params = new HttpParams()

@@ -37,14 +37,14 @@ public class ZoneServiceImp implements ZoneService {
         if (actionneurOpt.isEmpty()) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("Actionneur introuvable");
+                    .body(null);
         }
 
         Optional<Zone> existingZoneByNom = zoneRepository.findByNomAndIsDeleted(zone.getNom(), false);
         if (existingZoneByNom.isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body("Une Zone avec le même nom existe déjà");
+                    .body(null);
         }
 
         zone.setActionneur(actionneurOpt.get());
@@ -70,17 +70,29 @@ public class ZoneServiceImp implements ZoneService {
         zoneRepository.save(zone);
     }
     @Override
-    public void updateZone(Long idZone, Zone newZoneData ,Long idActionneur)
+    public ResponseEntity<?> updateZone(Long idZone, Zone newZoneData ,Long idActionneur)
     {
-        Zone zone = zoneRepository.findById(idZone).orElseThrow(()-> new RuntimeException("zone introuvable ! "));
-        User actionneur = userRepo.findById(idActionneur)
-                .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-        if (zone.isDeleted()) {
-            throw new RuntimeException("Impossible de mettre à jour une zone supprimée.");
+        Optional<Zone> zone = zoneRepository.findById(idZone);
+        if(zone.isEmpty()){
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(null);
         }
-        if(newZoneData.getNom()!=null ) zone.setNom(newZoneData.getNom());
-        zone.setActionneur(actionneur);
-        zoneRepository.save(zone);
+        Optional<User> actionneurOpt = userRepo.findById(idActionneur);
+        if (actionneurOpt.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
+        Optional<Zone> existingZoneByNom = zoneRepository.findByNomAndIsDeleted(newZoneData.getNom(), false);
+        if (existingZoneByNom.isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(null);
+        }
+        if(newZoneData.getNom()!=null ) zone.get().setNom(newZoneData.getNom());
+        zone.get().setActionneur(actionneurOpt.get());
+        return ResponseEntity.status(HttpStatus.CREATED).body(zoneRepository.save(zone.get()));
     }
     @Override
     public Set<UserZone> getZoneUsers(Long idZone) {

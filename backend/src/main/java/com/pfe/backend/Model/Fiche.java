@@ -28,7 +28,7 @@ public class Fiche {
     @Column(length = 10)
     private FicheStatus status;
     public enum FicheStatus{
-       PENDING, ACCEPTEDIPDF , ACCEPTEDIQP , REFUSED , EXPIRED ,DELETED;
+       PENDING, ACCEPTEDIPDF , ACCEPTEDIQP , REJECTEDIQP, REJECTEDIPDF , EXPIRED ,DELETED;
     }
 
     private String commentaire;

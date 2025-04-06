@@ -84,9 +84,9 @@
             <!-- Matricule en dessous -->
             <div class="relative bg-white  mt-4 rounded-lg ">
 
-              <input type="text" id="matricule" name="email" class="peer bg-transparent h-10 w-full  rounded-lg
+              <input type="text" id="matricule" name="matricule" class="peer bg-transparent h-10 w-full  rounded-lg
         text-gray-800 placeholder-transparent ring-2 px-2 ring-gray-300 focus:ring-sky-600
-        focus:outline-none focus:border-rose-600" placeholder="email" formControlName="email" [ngClass]="{
+        focus:outline-none focus:border-rose-600" placeholder="matricule" formControlName="matricule" [ngClass]="{
             'border-red-500 ring-red-500': registerForm.get('matricule')?.invalid && registerForm.get('matricule')?.touched,
             'border-gray-400 dark:border-gray-700': !(registerForm.get('matricule')?.invalid && registerForm.get('matricule')?.touched) }" />
 
@@ -116,7 +116,7 @@ dark:bg-neutral-800 dark:border-neutral-700 w-full min-w-[400px] h-auto">
           <div class="relative bg-white  mt-3.5 rounded-lg w-full ">
             <input type="text" id="email" name="email" class="peer bg-transparent h-10 w-full  rounded-lg
         text-gray-800 placeholder-transparent ring-2 px-2 ring-gray-300 focus:ring-sky-600
-        focus:outline-none focus:border-rose-600 mb-1.5" placeholder="email" formControlName="matricule" [ngClass]="{
+        focus:outline-none focus:border-rose-600 mb-1.5" placeholder="email" formControlName="email" [ngClass]="{
             'border-red-500 ring-red-500': registerForm.get('email')?.invalid && registerForm.get('email')?.touched,
             'border-gray-400 dark:border-gray-700': !(registerForm.get('email')?.invalid && registerForm.get('email')?.touched) }" />
 

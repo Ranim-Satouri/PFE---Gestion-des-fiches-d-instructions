@@ -11,8 +11,8 @@ import { FamilleListComponent } from './components/famille-list/famille-list.com
 import { ZoneListComponent } from './components/zone-list/zone-list.component';
 import { ProduitListComponent } from './components/produit-list/produit-list.component';
 import {RegisterFormComponent} from './components/register-form/register-form.component';
-import {FicheFormComponent} from './components/fiche-form/fiche-form.component';
-import { AddProduitFormComponent } from './components/add-produit-form/add-produit-form.component';
+import {FicheFormComponent} from './components/add/fiche-form/fiche-form.component';
+import { AddProduitFormComponent } from './components/add/add-produit-form/add-produit-form.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },

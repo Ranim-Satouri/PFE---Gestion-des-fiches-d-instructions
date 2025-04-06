@@ -29,7 +29,7 @@ constructor(private userService: UserService , private userZoneService: UserZone
   displayAbove = false;
   UserStatus = UserStatus;
   isDeleteModelOpen : boolean = false;
-  selectedUser : number | undefined;
+  selectedUser !: number;
 
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
@@ -42,7 +42,7 @@ constructor(private userService: UserService , private userZoneService: UserZone
   getUsers() {
     this.userService.getAll().subscribe({
       next: (users: User[]) => {
-        this.users = users; // Stocker les utilisateurs temporairement
+        this.users = users.sort((a, b) => b.idUser! - a.idUser!);  // ligne hedhy bech yjiw sorted bel le plus recent
 
         // Créer un tableau d'observables pour récupérer les zones de chaque utilisateur
         const zoneRequests = users.map(user =>
@@ -107,14 +107,12 @@ constructor(private userService: UserService , private userZoneService: UserZone
      this.ChangeUserStatus(user.idUser,user.status)
   }
   openDeleteModel(user : User){
-      this.selectedUser = user.idUser  ;
+      this.selectedUser = user.idUser!  ;
       this.dropdownOpen = null;
       this.isDeleteModelOpen = true;
     }
   closeDeleteModel(){
-    this.selectedUser = undefined;
     this.isDeleteModelOpen = false;
-
   }
   ChangeUserStatus(idUser : number | undefined , status : UserStatus){
     this.userService.ChangeStatus(idUser , this.userConnected.idUser , status).subscribe({
@@ -181,8 +179,8 @@ constructor(private userService: UserService , private userZoneService: UserZone
   }
 
   hideRegisterForm() {
+    this.getUsers();
     this.showForm = false;
-    console.log('Form closed');
   }
   onUserRegistered(newUser: any) {
     // Ajoutez le nouvel utilisateur à votre liste
