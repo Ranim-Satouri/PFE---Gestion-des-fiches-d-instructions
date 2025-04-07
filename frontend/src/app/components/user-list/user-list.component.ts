@@ -1,23 +1,38 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, ViewChild } from '@angular/core';
-import { Role, User, UserStatus } from '../../models/User';
-import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
-import { NgxPaginationModule } from 'ngx-pagination';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RegisterFormComponent } from '../register-form/register-form.component';
-import { User_Zone } from '../../models/User_Zone';
-import { UserZoneService } from '../../services/user-zone.service';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { forkJoin, map } from 'rxjs';
-import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
-import { FilterPipe } from "../../filter.pipe";
-import { ZoneService } from "../../services/zone.service";
-import { Zone } from "../../models/Zone";
+import { Role, User, UserStatus } from '../../models/User';
+import { User_Zone } from '../../models/User_Zone';
+import { Zone } from '../../models/Zone';
+import { FilterPipe } from '../../pipes/filter.pipe';
+import { UserZoneService } from '../../services/user-zone.service';
+import { UserService } from '../../services/user.service';
+import { ZoneService } from '../../services/zone.service';
+import { DeleteConfirmComponent } from '../delete-confirm/delete-confirm.component';
+import { RegisterFormComponent } from '../register-form/register-form.component';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, RegisterFormComponent, DeleteConfirmComponent, FilterPipe],
+  imports: [
+    NgxPaginationModule,
+    CommonModule,
+    FormsModule,
+    RegisterFormComponent,
+    DeleteConfirmComponent,
+    FilterPipe,
+  ],
   templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css'
+  styleUrl: './user-list.component.css',
 })
 export class UserListComponent implements AfterViewInit, OnDestroy {
   @ViewChild('roleInput', { static: false }) roleInput?: ElementRef;
@@ -30,8 +45,9 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   constructor(
     private userService: UserService,
     private userZoneService: UserZoneService,
-    private zoneService : ZoneService,
-  private cdr: ChangeDetectorRef) {}
+    private zoneService: ZoneService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   users: any[] = [];
   dropdownOpen: number | null = null;
@@ -40,7 +56,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   Role!: Role;
   userConnected!: User;
   dropdownPosition = { top: 0, left: 0 };
-  
+
   displayAbove = false;
   UserStatus = UserStatus;
   isDeleteModelOpen: boolean = false;
@@ -48,20 +64,21 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   isFiltrageOpen: boolean = false;
   showDropdown = false;
   roles: Role[] = [];
-  searchText: string = "";
+  searchText: string = '';
   filteredRoles: Role[] = [];
   role?: Role;
   searchbar: string = '';
   isDropdownPositioned = false;
   filteredUsers: User[] = [];
-  zones : Zone[]=[];
-  selectedZones: number[]=[];
+  zones: Zone[] = [];
+  selectedZones: number[] = [];
   selectedStatus: string = '';
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
-      this.Role = this.userConnected.role;  }
+      this.Role = this.userConnected.role;
+    }
     this.getUsers();
     this.roles = Object.values(Role);
     this.filteredRoles = this.roles;
@@ -72,7 +89,9 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
       },
       error: (error: any) => {
         console.error('Fetching zones error:', error);
-      }}); }
+      },
+    });
+  }
   onZonesChange() {
     console.log('Selected zones:', this.selectedZones);
     // Filter users based on selected zones
@@ -85,49 +104,54 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    this.filteredUsers = this.users.filter(user => {
+    this.filteredUsers = this.users.filter((user) => {
       if (!user.zones || user.zones.length === 0) return false;
       // Check if the user has at least one zone that matches the selected zones
-      return user.zones.some((zone: Zone) => zone.idZone !== undefined && this.selectedZones.includes(zone.idZone));
+      return user.zones.some(
+        (zone: Zone) =>
+          zone.idZone !== undefined && this.selectedZones.includes(zone.idZone)
+      );
     });
   }
   zoneDropdownOpen = false;
 
-toggleZoneDropdown() {
-  this.zoneDropdownOpen = !this.zoneDropdownOpen;
-}
-
-onCheckboxChange(event: any) {
-  const value = +event.target.value;
-  if (event.target.checked) {
-    if (!this.selectedZones.includes(value)) {
-      this.selectedZones.push(value);
-    }
-  } else {
-    this.selectedZones = this.selectedZones.filter(z => z !== value);
+  toggleZoneDropdown() {
+    this.zoneDropdownOpen = !this.zoneDropdownOpen;
   }
-  this.applyFilters();
-}
-clearFilters() {
-  this.selectedZones = [];
-  this.selectedStatus = '';
-  this.role = undefined;
-  this.searchText = '';
-  this.applyFilters();
-}
+
+  onCheckboxChange(event: any) {
+    const value = +event.target.value;
+    if (event.target.checked) {
+      if (!this.selectedZones.includes(value)) {
+        this.selectedZones.push(value);
+      }
+    } else {
+      this.selectedZones = this.selectedZones.filter((z) => z !== value);
+    }
+    this.applyFilters();
+  }
+  clearFilters() {
+    this.selectedZones = [];
+    this.selectedStatus = '';
+    this.role = undefined;
+    this.searchText = '';
+    this.applyFilters();
+  }
   ngAfterViewInit() {
     // Set up a MutationObserver to watch for changes to divFiltrage
     if (this.divFiltrage) {
       this.observer = new MutationObserver(() => {
         if (this.showDropdown && this.isFiltrageOpen) {
-          console.log('MutationObserver: divFiltrage changed, adjusting dropdown position');
+          console.log(
+            'MutationObserver: divFiltrage changed, adjusting dropdown position'
+          );
           this.adjustDropdownPosition();
         }
       });
       this.observer.observe(this.divFiltrage.nativeElement, {
         childList: true,
         subtree: true,
-        attributes: true
+        attributes: true,
       });
     }
 
@@ -157,16 +181,21 @@ clearFilters() {
 
   adjustDropdownPosition() {
     if (!this.isFiltrageOpen) {
-      console.log('adjustDropdownPosition: Filtrage section is not open, skipping positioning');
+      console.log(
+        'adjustDropdownPosition: Filtrage section is not open, skipping positioning'
+      );
       return;
     }
 
     if (!this.arrowButton || !this.roleDropdown || !this.roleInput) {
-      console.log('adjustDropdownPosition: One or more elements are undefined', {
-        arrowButton: this.arrowButton,
-        roleDropdown: this.roleDropdown,
-        roleInput: this.roleInput
-      });
+      console.log(
+        'adjustDropdownPosition: One or more elements are undefined',
+        {
+          arrowButton: this.arrowButton,
+          roleDropdown: this.roleDropdown,
+          roleInput: this.roleInput,
+        }
+      );
       return;
     }
 
@@ -181,7 +210,9 @@ clearFilters() {
     console.log('Input position:', inputRect);
 
     if (arrowRect.top === 0 && arrowRect.left === 0) {
-      console.warn('adjustDropdownPosition: Arrow button is not visible in the viewport');
+      console.warn(
+        'adjustDropdownPosition: Arrow button is not visible in the viewport'
+      );
       return;
     }
 
@@ -193,7 +224,7 @@ clearFilters() {
     console.log('Dropdown positioned at:', {
       top: dropdown.style.top,
       left: dropdown.style.left,
-      width: dropdown.style.width
+      width: dropdown.style.width,
     });
 
     // Make the dropdown visible after positioning
@@ -217,9 +248,8 @@ clearFilters() {
     this.searchText = role;
     this.role = role;
     this.showDropdown = false;
-    this.applyFilters()
+    this.applyFilters();
   }
-  
 
   onSearchChange(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -234,49 +264,49 @@ clearFilters() {
     }
   }
 
-
   applyFilters() {
     let filtered = [...this.users];
 
     // Filter by Zone
     if (this.selectedZones.length > 0) {
-      filtered = filtered.filter(user => {
+      filtered = filtered.filter((user) => {
         if (!user.zones || user.zones.length === 0) return false;
-        return user.zones.some((zone: Zone) => zone.idZone !== undefined && this.selectedZones.includes(zone.idZone));
+        return user.zones.some(
+          (zone: Zone) =>
+            zone.idZone !== undefined &&
+            this.selectedZones.includes(zone.idZone)
+        );
       });
     }
 
     // Filter by Status
     if (this.selectedStatus) {
-      filtered = filtered.filter(user => user.status === this.selectedStatus);
+      filtered = filtered.filter((user) => user.status === this.selectedStatus);
     }
 
     // Filter by Role
     if (this.role) {
-      filtered = filtered.filter(user => user.role === this.role);
+      filtered = filtered.filter((user) => user.role === this.role);
     }
 
     this.filteredUsers = filtered;
     this.cdr.detectChanges(); // Ensure UI updates
   }
 
-
-
   getSelectedZoneNames(): string {
     if (this.selectedZones.length === 0) {
       return 'Sélectionner des zones';
     }
-    const selected = this.zones.filter(z => z.idZone !== undefined && this.selectedZones.includes(z.idZone));
-    return selected.map(z => z.nom).join(', ');
+    const selected = this.zones.filter(
+      (z) => z.idZone !== undefined && this.selectedZones.includes(z.idZone)
+    );
+    return selected.map((z) => z.nom).join(', ');
   }
 
   // Status filter handler
   onStatusChange() {
     this.applyFilters();
   }
-
-
-
 
   toggleDropdown2() {
     this.showDropdown = !this.showDropdown;
@@ -294,7 +324,12 @@ clearFilters() {
     const dropdown = document.getElementById('dropDown');
     const button = target.closest('button');
 
-    if (this.showDropdown && dropdown && !dropdown.contains(target) && !button) {
+    if (
+      this.showDropdown &&
+      dropdown &&
+      !dropdown.contains(target) &&
+      !button
+    ) {
       this.showDropdown = false;
     }
   }
@@ -303,10 +338,10 @@ clearFilters() {
     this.userService.getAll().subscribe({
       next: (users: User[]) => {
         this.users = users;
-        const zoneRequests = users.map(user =>
+        const zoneRequests = users.map((user) =>
           this.userZoneService.getUserZones(user.idUser).pipe(
             map((zones: User_Zone[]) => {
-              user.zones = zones.map(uz => uz.zone);
+              user.zones = zones.map((uz) => uz.zone);
               return user;
             })
           )
@@ -321,42 +356,48 @@ clearFilters() {
           },
           error: (error: any) => {
             console.error('Fetching user zones error:', error);
-          }
+          },
         });
       },
       error: (error: any) => {
         console.error('Fetching users error:', error);
-      }
+      },
     });
   }
 
   getZoneNames(user: User): string {
     if (user.zones && user.zones.length > 0) {
-      return user.zones.map(zone => zone.nom).join(', ');
+      return user.zones.map((zone) => zone.nom).join(', ');
     }
     return '-';
   }
 
   onRoleToggleChange(user: User, event: any) {
-    console.log("ken", user.role);
+    console.log('ken', user.role);
     if (user.role === Role.ADMIN) {
       user.role = Role.SUPERUSER;
     } else {
       user.role = Role.ADMIN;
     }
 
-    this.userService.ChangeRole(user.idUser || undefined, this.userConnected.idUser || undefined, user.role).subscribe({
-      next: (response: any[]) => {
-        console.log('Role changed successfully');
-      },
-      error: (error: any) => {
-        console.error('changing user Role error:', error);
-      }
-    });
+    this.userService
+      .ChangeRole(
+        user.idUser || undefined,
+        this.userConnected.idUser || undefined,
+        user.role
+      )
+      .subscribe({
+        next: (response: any[]) => {
+          console.log('Role changed successfully');
+        },
+        error: (error: any) => {
+          console.error('changing user Role error:', error);
+        },
+      });
   }
 
   onStatusToggleChange(user: User, event: any) {
-    console.log("status", user.status);
+    console.log('status', user.status);
     if (user.status === UserStatus.ACTIVE) {
       user.status = UserStatus.INACTIVE;
     } else {
@@ -377,15 +418,17 @@ clearFilters() {
   }
 
   ChangeUserStatus(idUser: number | undefined, status: UserStatus) {
-    this.userService.ChangeStatus(idUser, this.userConnected.idUser, status).subscribe({
-      next: (response: any[]) => {
-        console.log('Status changed successfully');
-        this.getUsers();
-      },
-      error: (error: any) => {
-        console.error('changing user Status error:', error);
-      }
-    });
+    this.userService
+      .ChangeStatus(idUser, this.userConnected.idUser, status)
+      .subscribe({
+        next: (response: any[]) => {
+          console.log('Status changed successfully');
+          this.getUsers();
+        },
+        error: (error: any) => {
+          console.error('changing user Status error:', error);
+        },
+      });
     if (this.isDeleteModelOpen) {
       this.closeDeleteModel();
     }
@@ -393,7 +436,7 @@ clearFilters() {
 
   toggleDropdown(index: number, event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    const button = target.closest("button");
+    const button = target.closest('button');
 
     if (this.dropdownOpen === index) {
       this.dropdownOpen = null;
@@ -429,10 +472,17 @@ clearFilters() {
   @HostListener('document:click', ['$event'])
   closeDropdown(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    const dropdown = document.getElementById(`dropdownDots-${this.dropdownOpen}`);
+    const dropdown = document.getElementById(
+      `dropdownDots-${this.dropdownOpen}`
+    );
     const button = target.closest('button[data-dropdown-toggle]');
 
-    if (this.dropdownOpen !== null && dropdown && !dropdown.contains(target) && !button) {
+    if (
+      this.dropdownOpen !== null &&
+      dropdown &&
+      !dropdown.contains(target) &&
+      !button
+    ) {
       this.dropdownOpen = null;
     }
   }
