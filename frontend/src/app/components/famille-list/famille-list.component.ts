@@ -7,16 +7,18 @@ import { FamilleService } from '../../services/famille.service';
 import { Famille } from '../../models/Famille';
 import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
 import { AddFamilleFormComponent } from "../add-famille-form/add-famille-form.component";
+import { FilterPipe } from "../../filter.pipe";
+
 @Component({
   selector: 'app-famille-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent,FilterPipe],
   templateUrl: './famille-list.component.html',
   styleUrl: './famille-list.component.css'
 })
 export class FamilleListComponent {
   constructor(private familleService: FamilleService) {} 
-  
+  searchbar : String ='';
   familles : Famille[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;

@@ -31,7 +31,8 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
     private userService: UserService,
     private userZoneService: UserZoneService,
     private zoneService : ZoneService,
-    private cdr: ChangeDetectorRef) {}
+  private cdr: ChangeDetectorRef) {}
+
   users: any[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
@@ -39,6 +40,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   Role!: Role;
   userConnected!: User;
   dropdownPosition = { top: 0, left: 0 };
+  
   displayAbove = false;
   UserStatus = UserStatus;
   isDeleteModelOpen: boolean = false;

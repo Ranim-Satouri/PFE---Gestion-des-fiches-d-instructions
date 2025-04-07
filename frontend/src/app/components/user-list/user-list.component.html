@@ -8,7 +8,7 @@
             type="search"
             id="form1"
             [(ngModel)]="searchbar"
-            class="form-control w-96 h-10 px-4 py-2 dark:bg-gray-700 border-gray-300 dark:border-gray-600 shadow-sm dark:shadow-gray-900 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200 dark:focus:shadow-blue-500 transition-all duration-200 text-gray-900 bg-gray-50 border rounded-lg focus:border-blue-500 dark:placeholder-gray-400 dark:text-white outline-none"
+            class="form-control no-native-clear w-96 h-10 px-4 py-2 dark:bg-gray-700 border-gray-300 dark:border-gray-600 shadow-sm dark:shadow-gray-900 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200 dark:focus:shadow-blue-500 transition-all duration-200 text-gray-900 bg-gray-50 border rounded-lg focus:border-blue-500 dark:placeholder-gray-400 dark:text-white outline-none"
             placeholder="Rechercher ..."
           />
           <button class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -31,6 +31,16 @@
               />
             </svg>
           </button>
+                 <!-- Custom X button (only shown if searchbar not empty) -->
+                 <button
+                 *ngIf="searchbar"
+                 (click)="searchbar = ''"
+                 class="absolute right-8 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-400">
+                 <svg xmlns="http://www.w3.org/2000/svg"  class=" text-gray-600 fill-current"  height="18" width="18" viewBox="0 0 512 512">
+                     <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175
+                     175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/>
+                     </svg>
+                 </button>
         </div>
         <button
           (click)="showRegisterForm()"

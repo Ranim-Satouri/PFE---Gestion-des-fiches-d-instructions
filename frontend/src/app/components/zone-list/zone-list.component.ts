@@ -7,16 +7,17 @@ import { FormsModule } from '@angular/forms';
 import { User } from '../../models/User';
 import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
 import { UserZoneAssignComponent } from "../user-zone-assign/user-zone-assign.component";
-
+import { FilterPipe } from "../../filter.pipe";
 @Component({
   selector: 'app-zone-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, UserZoneAssignComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, UserZoneAssignComponent,FilterPipe],
   templateUrl: './zone-list.component.html',
   styleUrl: './zone-list.component.css',
 })
 export class ZoneListComponent {
   constructor(private zoneService: ZoneService) {} 
+  searchbar: string = '';
   zones : Zone[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
