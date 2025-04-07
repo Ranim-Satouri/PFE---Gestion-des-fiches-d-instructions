@@ -59,6 +59,8 @@
 ::-webkit-scrollbar-track {
   background-color: transparent !important; /* Fond clair */
 }
-  
+.no-native-clear::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
 
 

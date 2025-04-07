@@ -1,8 +1,9 @@
 import { Component, HostListener, Input } from '@angular/core';
 import { User } from '../../models/User';
 import { CommonModule } from '@angular/common';
-import { NgxPaginationModule } from 'ngx-pagination';
 import { FormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { FilterPipe } from '../../pipes/filter.pipe';
 import { FamilleService } from '../../services/famille.service';
 import { Famille } from '../../models/Famille';
 import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
@@ -11,13 +12,14 @@ import { UpdateFamilleComponent } from "../update/update-famille/update-famille.
 @Component({
   selector: 'app-famille-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent, UpdateFamilleComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent,FilterPipe, UpdateFamilleComponent],
   templateUrl: './famille-list.component.html',
   styleUrl: './famille-list.component.css'
 })
 export class FamilleListComponent {
-  constructor(private familleService: FamilleService) {}  
-  familles : Famille[] = [];
+  constructor(private familleService: FamilleService) {}
+  searchbar: String = '';
+  familles: Famille[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 5;
@@ -29,25 +31,26 @@ export class FamilleListComponent {
   FamilleToUpdate !: Famille;
   showAddModal = false;
   showUpdateModal = false;
-  ngOnInit() { 
+
+  ngOnInit(){
     this.getFamilles();
   }
- 
-  getFamilles() { 
+
+  getFamilles() {
     this.familleService.getAll().subscribe({
-      next : (response :Famille[]) => {         
+      next : (response :Famille[]) => {
         this.familles = response.sort((a, b) => b.idFamille! - a.idFamille!);
       },
-      error : (error : any) => {  
+      error: (error: any) => {
         console.error('fetching familles error:', error);
-      }
+      },
     });
   }
 
   deleteFamille(idFamille: number | undefined): void {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
-      this.userConnected = JSON.parse(userFromLocalStorage);      
+      this.userConnected = JSON.parse(userFromLocalStorage);
     }
     this.familleService.deleteFamille(idFamille || undefined , this.userConnected.idUser! ).subscribe({
       next: () => {
@@ -90,7 +93,7 @@ export class FamilleListComponent {
   // toggleDropdown(index: number, event: MouseEvent): void {
   //   const target = event.target as HTMLElement;
   //   const button = target.closest("button");
-  
+
   //   if (this.dropdownOpen === index) {
   //     this.dropdownOpen = null;
   //   } else {
@@ -98,9 +101,9 @@ export class FamilleListComponent {
   //     if (rect) {
   //       const dropdownHeight = 115; // approx. hauteur du menu dropdown
   //       const spaceBelow = window.innerHeight - rect.bottom;
-  
+
   //       this.displayAbove = spaceBelow < dropdownHeight;
-  
+
   //       this.dropdownPosition = {
   //         top: this.displayAbove
   //           ? rect.top + window.scrollY - dropdownHeight - 8
@@ -114,7 +117,7 @@ export class FamilleListComponent {
   toggleDropdown(index: number, event: MouseEvent): void {
     const target = event.target as HTMLElement;
     const button = target.closest("button");
-  
+
     if (this.dropdownOpen === index) {
       this.dropdownOpen = null;
     } else {
@@ -122,9 +125,9 @@ export class FamilleListComponent {
       if (rect) {
         const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
         const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
-  
+
         this.displayAbove = spaceBelow < dropdownHeight;
-  
+
         this.dropdownPosition = {
           top: this.displayAbove
             ? rect.top + window.scrollY - dropdownHeight + 25
@@ -153,5 +156,5 @@ export class FamilleListComponent {
       this.dropdownOpen = null; // Ferme le dropdown
     }
   }
- 
+
 }

@@ -7,19 +7,21 @@ import { FormsModule } from '@angular/forms';
 import { User } from '../../models/User';
 import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
 import { UserZoneAssignComponent } from "../user-zone-assign/user-zone-assign.component";
-import { AddZoneFormComponent } from "../add/add-zone-form/add-zone-form.component";
+import { FilterPipe } from '../../pipes/filter.pipe';
 import { Console } from 'console';
 import { UpdateZoneComponent } from "../update/update-zone/update-zone.component";
+import { AddZoneFormComponent } from "../add/add-zone-form/add-zone-form.component";
 
 @Component({
   selector: 'app-zone-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, UserZoneAssignComponent, AddZoneFormComponent, UpdateZoneComponent],
+  imports: [NgxPaginationModule,FilterPipe, CommonModule, FormsModule, DeleteConfirmComponent, UserZoneAssignComponent,AddZoneFormComponent, UpdateZoneComponent],
   templateUrl: './zone-list.component.html',
   styleUrl: './zone-list.component.css',
 })
 export class ZoneListComponent {
-  constructor(private zoneService: ZoneService) {} 
+  constructor(private zoneService: ZoneService) {}
+  searchbar: string = '';
   zones : Zone[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
@@ -34,18 +36,18 @@ export class ZoneListComponent {
   showUpdateZoneForm = false;
   zoneToUpdate !: Zone;
 
-  ngOnInit() { 
+  ngOnInit() {
     this.getZones();
   }
 
-  getZones() { 
+  getZones() {
     this.zoneService.getAll().subscribe({
-      next : (response :Zone[]) => {  
+      next : (response :Zone[]) => {
         console.log('fetching zones success:', response);
-       
+
         this.zones = response.sort((a, b) => b.idZone! - a.idZone!);
       },
-      error : (error : any) => {  
+      error : (error : any) => {
         console.error('fetching zones error:', error);
       }
     });
@@ -53,7 +55,7 @@ export class ZoneListComponent {
   deleteZone(idZone: number | undefined ): void {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
-      this.userConnected = JSON.parse(userFromLocalStorage);      
+      this.userConnected = JSON.parse(userFromLocalStorage);
     }
     this.zoneService.deleteZone(idZone || undefined , this.userConnected.idUser || 1  ).subscribe({
       next: () => {
@@ -78,7 +80,7 @@ export class ZoneListComponent {
   toggleDropdown(index: number, event: MouseEvent): void {
     const target = event.target as HTMLElement;
     const button = target.closest("button");
-  
+
     if (this.dropdownOpen === index) {
       this.dropdownOpen = null;
     } else {
@@ -86,9 +88,9 @@ export class ZoneListComponent {
       if (rect) {
         const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
         const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
-  
+
         this.displayAbove = spaceBelow < dropdownHeight;
-  
+
         this.dropdownPosition = {
           top: this.displayAbove
             ? rect.top + window.scrollY - dropdownHeight + 25
@@ -121,14 +123,14 @@ export class ZoneListComponent {
   openAddForm() {
     this.showAddZoneForm  = true;
   }
-  
+
   closeAddForm() {
     this.getZones();
     this.showAddZoneForm = false;
   }
-  
+
   openUserPopup(zone: Zone) {
-    this.dropdownOpen = null; 
+    this.dropdownOpen = null;
     this.selectedZone = zone.idZone!;
     this.showUserPopup = true;
   }
@@ -141,7 +143,7 @@ export class ZoneListComponent {
     this.zoneToUpdate = zone;
     this.showUpdateZoneForm  = true;
   }
-  
+
   closeUpdateForm() {
     this.getZones();
     this.showUpdateZoneForm = false;

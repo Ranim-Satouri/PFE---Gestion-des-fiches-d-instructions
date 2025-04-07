@@ -1,9 +1,18 @@
-import { Component, HostListener, Input } from '@angular/core';
-import { User } from '../../models/User';
 import { CommonModule } from '@angular/common';
-import { NgxPaginationModule } from 'ngx-pagination';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { Famille } from '../../models/Famille';
 import { Produit } from '../../models/Produit';
+import { User } from '../../models/User';
+import { FilterPipe } from '../../pipes/filter.pipe';
+import { FamilleService } from '../../services/famille.service';
 import { ProduitService } from '../../services/produit.service';
 import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
 import { AddProduitFormComponent } from '../add/add-produit-form/add-produit-form.component';
@@ -11,17 +20,26 @@ import { UpdateProduitComponent } from "../update/update-produit/update-produit.
 @Component({
   selector: 'app-produit-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddProduitFormComponent, UpdateProduitComponent],
+  imports: [NgxPaginationModule, CommonModule,FilterPipe, FormsModule, DeleteConfirmComponent, AddProduitFormComponent, UpdateProduitComponent],
   templateUrl: './produit-list.component.html',
   styleUrl: './produit-list.component.css'
 })
 export class ProduitListComponent {
-constructor(private produitService: ProduitService) {} 
-  produits : Produit[] = [];
+  @ViewChild('familleInput', { static: false }) familleInput?: ElementRef;
+  @ViewChild('familleDropdown', { static: false }) familleDropdown?: ElementRef;
+  @ViewChild('familleArrowButton', { static: false })
+  familleArrowButton?: ElementRef;
+  constructor(
+    private produitService: ProduitService,
+    private cdr: ChangeDetectorRef,
+    private familleService: FamilleService
+  ) {}
+
+  searchbar: string = '';
+  produits: Produit[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 5;
-  dropdownPosition = { top: 0, left: 0 };
   displayAbove = false;
   userConnected !: User;
   isDeleteModelOpen : boolean = false;
@@ -29,9 +47,196 @@ constructor(private produitService: ProduitService) {}
   showAddPorduitForm = false;
   showUpdateProduitForm = false;
   produitToUpdate!: Produit;
-  ngOnInit() { 
+  // fitrage champs
+  // Filtrage champs
+  refSearchText: string = '';
+  indiceSearchText: string = '';
+  familleSearchText: string = '';
+  selectedFamille?: Famille;
+  familles: Famille[] = [];
+  filteredFamilles: Famille[] = [];
+  searchText: string = '';
+  filteredProducts: Produit[] = [];
+  selectedZones: number[] = [];
+  selectedStatus: string = '';
+  // Dropdown
+  isDropdownPositioned = false;
+  isFamilleDropdownPositioned = false;
+  dropdownPosition = { top: 0, left: 0 };
+  isFiltrageOpen: boolean = false;
+  showDropdown = false;
+  showFamilleDropdown = false;
+
+
+  ngOnInit() {
+    const userFromLocalStorage = localStorage.getItem('user');
+    if (userFromLocalStorage) {
+      this.userConnected = JSON.parse(userFromLocalStorage);
+    }
     this.getProduits();
+    this.getFamilles();
+  } // Fetch the list of Famille
+  // ---------------fitrage-------------------------------------------------
+  applyFilters() {
+    let filtered = [...this.produits];
+    if (this.refSearchText) {
+      filtered = filtered.filter((produit) =>
+        produit.ref.toLowerCase().includes(this.refSearchText.toLowerCase())
+      );
+    }
+    // Filter by Indice
+    if (this.indiceSearchText) {
+      filtered = filtered.filter((produit) =>
+        produit.indice
+          .toLowerCase()
+          .includes(this.indiceSearchText.toLowerCase())
+      );
+    }
+    // Filter by Famille
+    if (this.selectedFamille) {
+      filtered = filtered.filter(
+        (produit) =>
+          produit.famille.idFamille === this.selectedFamille?.idFamille
+      );
+    }
+    this.filteredProducts = filtered;
+    this.cdr.detectChanges(); // Ensure UI updates
   }
+  clearFilters() {
+    this.refSearchText = '';
+    this.indiceSearchText = '';
+    this.familleSearchText = '';
+    this.selectedFamille = undefined;
+    this.filteredFamilles = this.familles;
+    this.applyFilters();
+  }
+  //--------------tousskiyé dropdown--------------------
+  // Famille Dropdown Handlers
+  filterFamilles() {
+    if (!this.familleSearchText) {
+      this.filteredFamilles = this.familles;
+      return;
+    }
+
+    this.filteredFamilles = this.familles.filter((f) =>
+      f.nomFamille.toLowerCase().includes(this.familleSearchText.toLowerCase())
+    );
+  }
+
+  selectFamille(famille: Famille) {
+    console.log('✅ Famille sélectionnée :', famille);
+    this.familleSearchText = famille.nomFamille;
+    this.selectedFamille = famille;
+    this.showFamilleDropdown = false;
+    this.applyFilters();
+  }
+
+  onFamilleSearchChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.familleSearchText = input.value;
+    this.filterFamilles();
+    this.showFamilleDropdown = true;
+    if (this.isFiltrageOpen) {
+      setTimeout(() => {
+        console.log('onFamilleSearchChange: Adjusting dropdown position');
+        this.adjustFamilleDropdownPosition();
+      }, 100);
+    }
+  }
+
+  toggleFamilleDropdown() {
+    this.showFamilleDropdown = !this.showFamilleDropdown;
+    if (this.showFamilleDropdown && this.isFiltrageOpen) {
+      this.filterFamilles();
+      setTimeout(() => {
+        console.log('toggleFamilleDropdown: Adjusting dropdown position');
+        this.adjustFamilleDropdownPosition();
+      }, 100);
+    }
+  }
+
+  adjustFamilleDropdownPosition() {
+    if (!this.isFiltrageOpen) {
+      console.log(
+        'adjustFamilleDropdownPosition: Filtrage section is not open, skipping positioning'
+      );
+      return;
+    }
+
+    if (
+      !this.familleArrowButton ||
+      !this.familleDropdown ||
+      !this.familleInput
+    ) {
+      console.log(
+        'adjustFamilleDropdownPosition: One or more elements are undefined',
+        {
+          familleArrowButton: this.familleArrowButton,
+          familleDropdown: this.familleDropdown,
+          familleInput: this.familleInput,
+        }
+      );
+      return;
+    }
+
+    const arrow = this.familleArrowButton.nativeElement;
+    const dropdown = this.familleDropdown.nativeElement;
+    const input = this.familleInput.nativeElement;
+
+    const arrowRect = arrow.getBoundingClientRect();
+    const inputRect = input.getBoundingClientRect();
+
+    console.log('Arrow button position:', arrowRect);
+    console.log('Input position:', inputRect);
+
+    if (arrowRect.top === 0 && arrowRect.left === 0) {
+      console.warn(
+        'adjustFamilleDropdownPosition: Arrow button is not visible in the viewport'
+      );
+      return;
+    }
+
+    // Position the dropdown below the SVG, but align its left edge with the input's left edge
+    dropdown.style.top = `${arrowRect.bottom + window.scrollY + 4}px`;
+    dropdown.style.left = `${inputRect.left + window.scrollX}px`;
+    dropdown.style.width = `${inputRect.width}px`;
+
+    console.log('Dropdown positioned at:', {
+      top: dropdown.style.top,
+      left: dropdown.style.left,
+      width: dropdown.style.width,
+    });
+
+    // Make the dropdown visible after positioning
+    this.isFamilleDropdownPositioned = true;
+    this.cdr.detectChanges();
+  }
+
+  // Tousskiyé Dropdown
+  toggleFiltrage() {
+    this.isFiltrageOpen = !this.isFiltrageOpen;
+    console.log('isFiltrageOpen:', this.isFiltrageOpen);
+    this.cdr.detectChanges();
+    if (this.showFamilleDropdown && this.isFiltrageOpen) {
+      setTimeout(() => {
+        console.log('toggleFiltrage: Adjusting dropdown position');
+        this.adjustFamilleDropdownPosition();
+      }, 100);
+    }
+  }
+  getFamilles() {
+    this.familleService.getAll().subscribe({
+      next: (familles: Famille[]) => {
+        this.familles = familles;
+        this.filteredFamilles = this.familles;
+        console.log('Familles loaded:', this.familles);
+      },
+      error: (error: any) => {
+        console.error('Fetching familles error:', error);
+      },
+    });
+  }
+  //khedmet nimou
   openAddForm() {
     this.showAddPorduitForm  = true;
   }
@@ -44,19 +249,21 @@ constructor(private produitService: ProduitService) {}
     this.getProduits();
     this.showUpdateProduitForm  = false;
   }
-  
+
   closeAddForm() {
     this.getProduits()
     this.showAddPorduitForm = false;
   }
-  getProduits() { 
+  getProduits() {
     this.produitService.getAll().subscribe({
-      next : (response :Produit[]) => {  
+      next : (response :Produit[]) => {
         console.log('fetching produits success:', response);
-       
+
         this.produits = response.sort((a, b) => b.idProduit! - a.idProduit!);
+        this.filteredProducts = [...this.produits]; // Initialize
+        this.applyFilters();
       },
-      error : (error : any) => {  
+      error : (error : any) => {
         console.error('fetching produits error:', error);
       }
     });
@@ -65,7 +272,7 @@ constructor(private produitService: ProduitService) {}
   toggleDropdown(index: number, event: MouseEvent): void {
     const target = event.target as HTMLElement;
     const button = target.closest("button");
-  
+
     if (this.dropdownOpen === index) {
       this.dropdownOpen = null;
     } else {
@@ -73,9 +280,9 @@ constructor(private produitService: ProduitService) {}
       if (rect) {
         const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
         const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
-  
+
         this.displayAbove = spaceBelow < dropdownHeight;
-  
+
         this.dropdownPosition = {
           top: this.displayAbove
             ? rect.top + window.scrollY - dropdownHeight + 25
@@ -89,7 +296,7 @@ constructor(private produitService: ProduitService) {}
   deleteProduit(idProduit: number | undefined): void {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
-      this.userConnected = JSON.parse(userFromLocalStorage);      
+      this.userConnected = JSON.parse(userFromLocalStorage);
     }
     this.produitService.deleteProduit(idProduit || undefined ,this.userConnected.idUser! ).subscribe({
       next: () => {
