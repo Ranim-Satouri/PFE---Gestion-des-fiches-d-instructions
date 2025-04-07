@@ -1,12 +1,10 @@
-import {Component, EventEmitter, Output, inject, HostListener} from '@angular/core';
+import {Component, EventEmitter, Output, inject, HostListener, ViewChild, ElementRef} from '@angular/core';
 import {FormGroup, FormControl, Validators, ReactiveFormsModule, FormBuilder, FormArray} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Zone } from '../../models/Zone';
 import { ZoneService } from '../../services/zone.service';
 import {UserService} from '../../services/user.service';
 import {Genre, Role, User, UserStatus} from '../../models/User';
-import {User_Zone} from '../../models/User_Zone';
-import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-register-form',
@@ -16,6 +14,8 @@ import {Observable} from 'rxjs';
   styleUrl: './register-form.component.css',
 })
 export class RegisterFormComponent {
+  @ViewChild('roleInput', { static: false }) roleInput!: ElementRef;
+  @ViewChild('roleDropdown', { static: false }) roleDropdown!: ElementRef;
   constructor(private userService:UserService,private zoneService: ZoneService) {}
   userConnected !: User;
 
@@ -25,6 +25,9 @@ export class RegisterFormComponent {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
     this.loadZones();
+    // Populate roles from the Role enum
+    this.roles = Object.values(Role);
+    this.filteredRoles = this.roles; // Initially show all roles
   }
 
   private fb =inject(FormBuilder);
@@ -68,13 +71,28 @@ export class RegisterFormComponent {
   searchText:string ="" ;
   filteredRoles: Role[] = [];
   role?:Role;
+  
+  // Dynamically position the dropdown above the input
+  adjustDropdownPosition() {
+    if (this.roleInput && this.roleDropdown) {
+      const input = this.roleInput.nativeElement;
+      const dropdown = this.roleDropdown.nativeElement;
+
+      const rect = input.getBoundingClientRect();
+      const dropdownHeight = dropdown.offsetHeight;
+
+      dropdown.style.top = `${rect.top + window.scrollY - dropdownHeight - 4}px`; // 4px margin above
+      dropdown.style.left = `${rect.left + window.scrollX}px`;
+      dropdown.style.width = `${rect.width}px`;
+    }
+  }
   filterRoles() {
     if (!this.searchText) {
       this.filteredRoles = this.roles; // Si aucun texte n'est saisi, afficher tous les produits
       return;
     }
 
-    this.filteredRoles = this.roles.filter(r =>
+    this.filteredRoles = this.roles.filter((r) =>
       r.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
@@ -88,14 +106,18 @@ export class RegisterFormComponent {
   }
 
   // Gérer l'événement de saisie dans l'input
-  onSearchChange() {
-    this.filterRoles(); // Filtrer les produits
-    this.showDropdown = true; // Afficher la liste déroulante
+  onSearchChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.searchText = input.value; // Update searchText with the input value
+    this.filterRoles();
+    this.showDropdown = true;
   }
+
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
     if (this.showDropdown) {
-      this.filterRoles(); // Filtrer au moment où le dropdown est affiché
+      this.filterRoles();
+      this.adjustDropdownPosition(); // Adjust position when opening
     }
   }
 
@@ -156,7 +178,7 @@ export class RegisterFormComponent {
         password: "123456",  // Correction de la majuscule
         num: this.registerForm.value.numero,
         actionneur: this.userConnected.idUser!, // Correction de la majuscule
-        status: this.registerForm.value.status.toUpperCase(),
+        status: this.registerForm.value.status,
         role: this.registerForm.value.role.toUpperCase() || null, // Ajout d'une valeur par défaut
         // zones: Array.isArray(this.registerForm.value.zones) ? this.registerForm.value.zones : [],
         // modifieLe: new Date(),

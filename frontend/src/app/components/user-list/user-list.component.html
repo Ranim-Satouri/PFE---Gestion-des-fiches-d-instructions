@@ -1,20 +1,180 @@
-<div class="h-full flex flex-col" >
-
-    <div class="h-16 w-full bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 flex flex-row justify-around gap-[284px]">
-     
-    <input/>
-      <div  class="flex flex-row justify-end content-between gap-x-[26px]" >
-        <button (click)="showRegisterForm()" class="w-fit h-8 px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+<div class="h-full flex flex-col">
+    <div class="w-full bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 flex flex-col justify-around">
+      <!-- Search Bar and Button Row -->
+      <div class="flex items-center justify-between w-full h-16 px-3">
+        <div class="relative form-outline mt-3">
+          <!-- Search Bar -->
+          <input
+            type="search"
+            id="form1"
+            [(ngModel)]="searchbar"
+            class="form-control w-96 h-10 px-4 py-2 dark:bg-gray-700 border-gray-300 dark:border-gray-600 shadow-sm dark:shadow-gray-900 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200 dark:focus:shadow-blue-500 transition-all duration-200 text-gray-900 bg-gray-50 border rounded-lg focus:border-blue-500 dark:placeholder-gray-400 dark:text-white outline-none"
+            placeholder="Rechercher ..."
+          />
+          <button class="absolute inset-y-0 right-0 flex items-center pr-3">
+            <svg
+              class="text-gray-600 h-4 w-4 fill-current"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              version="1.1"
+              id="Capa_1"
+              x="0px"
+              y="0px"
+              viewBox="0 0 56.966 56.966"
+              style="enable-background: new 0 0 56.966 56.966;"
+              xml:space="preserve"
+              width="513px"
+              height="513px"
+            >
+              <path
+                d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23 s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92 c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17 s-17-7.626-17-17S14.61,6,23.984,6z"
+              />
+            </svg>
+          </button>
+        </div>
+        <button
+          (click)="showRegisterForm()"
+          class="h-fit w-fit p-3 mr-6 rounded-lg bg-blue-400 mt-2 hover:bg-blue-500 text-sm font-bold text-white shadow-lg
+           shadow-blue-200 transition ease-in-out duration-200 dark:shadow-blue-500 dark:shadow-md"
+        >
           Ajouter un utilisateur
         </button>
-       </div>
-
-    </div>
-  <app-register-form
-    *ngIf="showForm"
-    (close)="hideRegisterForm()"
-    (submit)="onUserRegistered($event)">
-  </app-register-form>
+      </div>
+  
+      <!-- Filter Arrow -->
+      <div class="flex justify-center mt-1 mb-2">
+              <button (click)="toggleFiltrage()">
+                <svg
+                  class="w-5 h-5 transition-transform duration-200"
+                  [ngClass]="{'rotate-180': isFiltrageOpen}"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              </div>
+        
+            <!-- Input Filtrage -->
+        <div *ngIf="isFiltrageOpen" id="divFiltrage" class=" px-2 pb-4">
+          
+         <!-- New div for filter buttons and reset button -->
+         <div class="flex justify-between items-center px-2">
+          <!-- Filter Buttons (Zone, Status, Role) -->
+          <div class="flex flex-row space-x-4">
+            <!-- Zone Dropdown -->
+            <div class="relative w-[300px]">
+              <div
+                (click)="toggleZoneDropdown()"
+                class="cursor-pointer py-2.5 px-4 h-10 block w-[full] border border-gray-300 rounded-lg text-sm bg-white
+                 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 dark:text-gray-400
+                  dark:bg-gray-700 dark:focus:border-blue-300 dark:border-gray-600 dark:shadow-gray-900
+                   dark:focus:ring-blue-500 dark:focus:border dark:focus:shadow-blue-500 transition-all duration-200"
+              >
+                {{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Sélectionner des zones' }}
+              </div>
+              <div
+                *ngIf="zoneDropdownOpen"
+                class="absolute z-[1001] mt-2 bg-white dark:bg-gray-800 border rounded-lg shadow-lg w-full max-h-60 overflow-y-scroll"
+              >
+                <label
+                  *ngFor="let zone of zones"
+                  class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <input
+                    type="checkbox"
+                    [value]="zone.idZone"
+                    (change)="onCheckboxChange($event)"
+                    [checked]="zone.idZone !== undefined && selectedZones.includes(zone.idZone)"
+                    class="mr-2"
+                  />
+                  {{ zone.nom }}
+                </label>
+              </div>
+            </div>
+      
+            <!-- Status Dropdown -->
+            <select
+              id="status"
+              [(ngModel)]="selectedStatus"
+              (change)="onStatusChange()"
+              class="py-2.5 px-4 h-10 block w-[40%] border border-gray-300 rounded-lg text-sm focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 dark:text-gray-400 dark:bg-gray-700 dark:focus:border-blue-300 dark:border-gray-600 dark:shadow-gray-900 dark:focus:ring-blue-500 dark:focus:border dark:focus:shadow-blue-500 transition-all duration-200"
+            >
+              <option value="" selected disabled>Status</option>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
+            </select>
+      
+            <!-- Role Input and Dropdown -->
+            <div class="relative w-[200px]">
+              <input
+                #roleInput
+                class="py-2.5 px-4 h-10 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 dark:text-gray-400 dark:bg-gray-700 dark:focus:border-blue-300 dark:border-gray-600 dark:shadow-gray-900 dark:focus:ring-blue-500 dark:focus:border dark:focus:shadow-blue-500 transition-all duration-200"
+                type="text"
+                [value]="searchText"
+                (input)="onSearchChange($event)"
+                placeholder="Role"
+                name="searchText"
+              />
+              <div
+                #arrowButton
+                class="absolute top-1/2 end-3 -translate-y-1/2 cursor-pointer"
+                (click)="toggleDropdown2()"
+              >
+                <svg
+                  class="shrink-0 size-3.5 text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m7 15 5 5 5-5"></path>
+                  <path d="m7 9 5-5 5 5"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Reset Filters Button -->
+          <button
+            (click)="clearFilters()"
+            class="w-fit mx-5 px-2 h-10 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition ease-in-out duration-200"
+          >
+            Réinitialiser les filtres
+          </button>
+        </div>
+      </div>
+      
+      <!-- Role Dropdown (Moved Outside divFiltrage) -->
+      <div
+        *ngIf="showDropdown"
+        id="dropDown"
+        #roleDropdown
+        class="fixed bg-white shadow-md w-fit dark:bg-gray-700 border border-gray-50 rounded-lg max-h-40 overflow-y-auto z-[1001] mb-3"
+        [ngClass]="{'invisible': !isDropdownPositioned}"
+      >
+        <div
+          *ngFor="let r of filteredRoles"
+          (click)="selectRole(r)"
+          class="cursor-pointer py-2 px-4 text-sm text-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600"
+        >
+          {{ r }}
+        </div>
+      </div></div>
+      <!-- class="px-6 py-2 w-full rounded-md flex-1 outline-none bg-white
+        border-gray-300 focus:ring-2  focus:ring-blue-400 focus:border-blue-400 focus:shadow-md focus:shadow-blue-200
+          dark:border-gray-600 shadow-sm dark:shadow-gray-900 
+          dark:bg-gray-700 dark:text-white border
+           dark:focus:ring-blue-500 dark:focus:border-blue-500  dark:focus:shadow-blue-500 transition-all duration-200 "
+      /> -->
+    <app-register-form  *ngIf="showForm" (close)="hideRegisterForm()" (submit)="onUserRegistered($event)"></app-register-form>
 
     <div class="relative z-10  mb-2 shadow-md rounded-lg max-h-[calc(100%-132px)] custom-scrollbar-container overflow-auto " (scroll)="onScroll()">
         <table class=" w-full text-xs text-left rtl:text-right text-gray-700 dark:text-gray-400 ">
@@ -84,7 +244,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let user of users | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index"
+                <tr *ngFor="let user of filteredUsers | filter:searchbar  | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index"
                     class="bg-gray-50 border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 dark:hover:bg-hoverColor hover:bg-gray-100">
                     <th scope="col" class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white ">{{user.matricule}}</th>
                     <th scope="col" class="px-2 py-2 font-medium">{{user.prenom}} {{user.nom}}</th>
@@ -209,12 +369,12 @@
   </div>
 </div>
 
-<app-delete-confirm
-    [isOpen]="isDeleteModelOpen"
-    [title]="'cet utilisateur'"
-    [message1]="'Vous êtes sur le point de supprimer un utilisateur du système.'"
-    [message2]="'Cette action est importante et aura un impact permanent.'"
-    (onConfirm)="ChangeUserStatus(selectedUser , UserStatus.DELETED)"
-    (onCancel)="closeDeleteModel()">
-</app-delete-confirm>
+    <app-delete-confirm
+        [isOpen]="isDeleteModelOpen"
+        [title]="'cet utilisateur'"
+        [message1]="'Vous êtes sur le point de supprimer un utilisateur du système.'"
+        [message2]="'Cette action est importante et aura un impact permanent.'"
+        (onConfirm)="ChangeUserStatus(selectedUser , UserStatus.DELETED)"
+        (onCancel)="closeDeleteModel()">
+    </app-delete-confirm>
 
