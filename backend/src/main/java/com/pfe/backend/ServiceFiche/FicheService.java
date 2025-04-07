@@ -19,4 +19,6 @@ public interface FicheService {
     List<Fiche> getFichesSheetByIQP(Long idIQP);
     String saveFile(MultipartFile file) throws  Exception;
     Resource loadPdf(String filename) throws Exception;
+    List<Fiche> getFichesSheetByOperateur(Long idOperateur);
+    List<Fiche> getFichesSheetByAdmin(Long idAdmin);
 }

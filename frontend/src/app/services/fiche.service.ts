@@ -80,6 +80,12 @@ export class FicheService {
   getFichesByIQP(idIQP: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/getFichesSheetByIQP/${idIQP}`);
   }
+  getFichesByOperateur(idOperateur: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getFichesSheetByOperateur/${idOperateur}`);
+  }
+  getFichesByAdmin(idAdmin: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getFichesSheetByAdmin/${idAdmin}`);
+  }
   
    // Méthode pour récupérer l'historique d'une fiche
    getFicheHistory(id: number): Observable<any> {

@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -53,10 +55,10 @@ public class FicheServiceImp implements FicheService {
         fiche.setActionneur(actionneur);
         fiche.setAction(Fiche.FicheAction.INSERT);
         fiche.setStatus(Fiche.FicheStatus.PENDING);
-        nService.notifyIPDFAboutFicheInjection(fiche);
+        //nService.notifyIPDFAboutFicheInjection(fiche);
         List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
         for(User u : superUsers){
-            nService.notifySuperUserAboutNewFiche(fiche, u);
+           // nService.notifySuperUserAboutNewFiche(fiche, u);
         }
         return ficheRepository.save(fiche);
     }
@@ -110,6 +112,7 @@ public class FicheServiceImp implements FicheService {
             throw new RuntimeException("Erreur lors du chargement du fichier PDF : " + filename, e);
         }
     }
+
 
 
     @Override
@@ -166,15 +169,15 @@ public class FicheServiceImp implements FicheService {
 
         List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
         if(status.equals(Fiche.FicheStatus.ACCEPTEDIPDF)){
-            nService.notifyPreparateurAboutIPDFAcceptance(fiche);
+            //nService.notifyPreparateurAboutIPDFAcceptance(fiche);
             for(User u : superUsers){
-                nService.notifySuperUserAboutIPDFValidation(fiche, u);
+                //nService.notifySuperUserAboutIPDFValidation(fiche, u);
             }
-            nService.notifyIQPAboutFicheValidationByIPDF(fiche);
+            //nService.notifyIQPAboutFicheValidationByIPDF(fiche);
         }else{
-            nService.notifyPreparateurAboutIPDFRejection(fiche);
+            //nService.notifyPreparateurAboutIPDFRejection(fiche);
             for(User u : superUsers){
-                nService.notifySuperUserAboutIPDFRejection(fiche, u);
+                //nService.notifySuperUserAboutIPDFRejection(fiche, u);
             }
         }
         return ficheRepository.save(fiche);
@@ -197,10 +200,10 @@ public class FicheServiceImp implements FicheService {
         }
         fiche.setActionneur(actionneur);
         fiche.setAction(Fiche.FicheAction.APPROUVE);
-        nService.notifyPreparateurAboutFicheFinalValidation(fiche);
+        //nService.notifyPreparateurAboutFicheFinalValidation(fiche);
         List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
         for(User u : superUsers){
-            nService.notifySuperUserAboutAQLAddition(fiche, u);
+            //nService.notifySuperUserAboutAQLAddition(fiche, u);
         }
         return ficheRepository.save(fiche);
     }
@@ -236,4 +239,25 @@ public class FicheServiceImp implements FicheService {
             throw new RuntimeException("L'utilisateur n'a pas le rôle IQP requis.");
         }
     }
+    @Override
+    public List<Fiche> getFichesSheetByOperateur(Long idOperateur) {
+        User operateur = userRepository.findById(idOperateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        Set<UserZone> zones = operateur.getUserZones();
+        List<Fiche> fiches = new ArrayList<>();
+        for(UserZone u : zones){
+            fiches.addAll(ficheRepository.findByZoneAndStatus(u.getZone() , Fiche.FicheStatus.ACCEPTEDIQP));
+        }
+        return  fiches;
+    }
+    @Override
+    public List<Fiche> getFichesSheetByAdmin(Long idAdmin) {
+        User admin = userRepository.findById(idAdmin).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        Set<UserZone> zones = admin.getUserZones();
+        List<Fiche> fiches = new ArrayList<>();
+        for(UserZone u : zones){
+            fiches.addAll(ficheRepository.findByZone(u.getZone()));
+        }
+        return  fiches;
+    }
+
 }

@@ -159,5 +159,20 @@ public class FicheController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    @GetMapping("/getFichesSheetByOperateur/{idOperateur}")
+    public ResponseEntity<?> getFichesSheetByOperateur(@PathVariable Long idOperateur) {
+        try{
+            return new ResponseEntity<>(ficheService.getFichesSheetByOperateur(idOperateur), HttpStatus.OK);
+        }catch(RuntimeException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    } @GetMapping("/getFichesSheetByAdmin/{idAdmin}")
+    public ResponseEntity<?> getFichesSheetByAdmin(@PathVariable Long idAdmin) {
+        try{
+            return new ResponseEntity<>(ficheService.getFichesSheetByAdmin(idAdmin), HttpStatus.OK);
+        }catch(RuntimeException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
 }

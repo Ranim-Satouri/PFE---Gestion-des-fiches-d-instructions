@@ -77,78 +77,26 @@
                         class="px-6 py-3 font-medium text-sm"
                         [ngSwitch]="fiche.status">
 
-                        <span *ngSwitchCase="'ACCEPTEDIPDF'" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-100/80 text-green-800 dark:text-green-900">
-                            Validée par l'IPDF
-                        </span>
-                        <span *ngSwitchCase="'ACCEPTEDIQP'" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-100/80 text-green-800 dark:text-green-900">
-                            Validée par l'IQP
-                        </span>
+                        <span *ngSwitchCase="'ACCEPTEDIPDF'" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-100/80 text-green-800 dark:text-green-900">Validée par l'IPDF</span>
+                        <span *ngSwitchCase="'ACCEPTEDIQP'" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-100/80 text-green-800 dark:text-green-900">Validée par l'IQP</span>
                         <span *ngSwitchCase="'REJECTEDIPDF'" class="inline-flex items-center justify-between px-3 py-1 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-100/90 text-red-800  dark:text-red-900 w-fit space-x-2">
                             <span>Rejetée par l'IPDF</span>
-                            <svg (click)="openCommentModal(fiche.commentaire)"
-                                class="w-4 h-4 cursor-pointer hover:text-red-600"
-                                fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.96 9.96 0 01-5.917-1.908L3 20l1.67-3.609A8.963 8.963 0 013 12
-                                    c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                            <svg (click)="openCommentModal(fiche.commentaire)" class="w-4 h-4 cursor-pointer hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.96 9.96 0 01-5.917-1.908L3 20l1.67-3.609A8.963 8.963 0 013 12 c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                             </svg>
                         </span>
                         <span *ngSwitchCase="'REJECTEDIQP'" class="inline-flex items-center justify-between px-3 py-1 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-100/90 dark:text-red-900 text-red-800 w-fit space-x-2">
                             <span>Rejetée par l'IQP</span>
-                            <svg (click)="openCommentModal(fiche.commentaire)"
-                                class="w-4 h-4 cursor-pointer hover:text-red-600"
-                                fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.96 9.96 0 01-5.917-1.908L3 20l1.67-3.609A8.963 8.963 0 013 12
-                                    c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                            <svg (click)="openCommentModal(fiche.commentaire)" class="w-4 h-4 cursor-pointer hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.96 9.96 0 01-5.917-1.908L3 20l1.67-3.609A8.963 8.963 0 013 12 c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                             </svg>
                         </span>
-                        <span *ngSwitchCase="'PENDING'" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-700">
-                            En attente
-                        </span>
-
-                        <span *ngSwitchCase="'EXPIRED'" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-                            Expirée
-                        </span>
-
-                    </th>
-
-                    <th *ngIf="userConnected.role === role.IPDF || userConnected.role === role.IQP || userConnected.role === role.SUPERUSER"  scope="col" class="px-6 py-3 font-medium" class="px-6 py-3 font-medium ">                       
-                        <div *ngIf="(userConnected.role === role.IPDF && !(fiche.status === FicheStatus.ACCEPTEDIQP || fiche.status === FicheStatus.REJECTEDIQP))
-                          || (userConnected.role === role.SUPERUSER && (fiche.status === FicheStatus.PENDING || fiche.status === FicheStatus.ACCEPTEDIPDF))
-                          || userConnected.role === role.IQP "  
-                          class="relative w-full max-w-[130px] ">
-                            <select
-                              [(ngModel)]="fiche.status"
-                              (change)="onStatusChange(fiche)"
-                              class="w-full  appearance-none px-4 py-1 pr-10 rounded-xl text-sm 
-                                     bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600
-                                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                     transition-colors duration-150 ease-in-out
-                                     "
-                              [ngClass]="{
-                                'text-green-600': (fiche.status === FicheStatus.ACCEPTEDIPDF  && userConnected.role === role.IPDF ) || fiche.status === FicheStatus.ACCEPTEDIQP ,
-                                'text-red-500': fiche.status === FicheStatus.REJECTEDIQP || fiche.status === FicheStatus.REJECTEDIPDF,
-                                'text-gray-700 dark:text-gray-200': fiche.status === 'PENDING'
-                              }"
-                            >
-                              <!-- <option disabled  [value]=" getDefaultStatus(fiche)" hidden>En attente</option> -->
-                              <option class="text-green-600" [value]="getValidationStatus()">Approuvée</option>
-                              <option class="text-red-500" [value]="getRefuStatus()">Rejetée</option>
-                              
-                            </select>
-                            <!-- Flèche SVG personnalisée -->
-                            <svg class="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
-                                fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-                            </svg>
-                            
-                        </div>
-                          
-                    </th>
-                                       
+                        <span *ngSwitchCase="'PENDING'" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-700">En attente</span>
+                        <span *ngSwitchCase="'EXPIRED'" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Expirée</span>
+                    </th>             
+                    <th *ngIf="userConnected.role === role.IPDF || userConnected.role === role.IQP || userConnected.role === role.SUPERUSER"  scope="col" class="px-6 py-3 font-medium" >                       
+                        <app-fiche-validation [fiche]="fiche" (ficheUpdated)="getFiches()"></app-fiche-validation>
+                    </th>                 
                     <th *ngIf="userConnected.role !== role.OPERATEUR" scope="col" class="px-6 py-2 font-medium">{{fiche.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
                     <th  scope="col" class=" py-2 font-medium">
                         <svg (click)="downloadFile(fiche.pdf)" class="hover:text-black dark:hover:text-white"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
@@ -191,9 +139,9 @@
                                     Fiche AQL
                                 </a>
                                 </li>
-                                <li>
+                                <!-- <li>
                                 <a class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
-                                    <!-- Check Icon -->
+                                    
                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                                         <path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95"></path>
                                         <path d="M3.69 8.56a9 9 0 0 0 -.69 3.44"></path>
@@ -207,7 +155,7 @@
                                       </svg>
                                     Approuver
                                 </a>
-                                </li>
+                                </li> -->
                                 <li>
                                 <a (click)="openUpdateForm(fiche)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- Pencil Icon -->
@@ -281,83 +229,78 @@
         </div>
     </div>
 </div>
+
+
+
 <app-delete-confirm 
-     [isOpen]="isDeleteModelOpen"
-     [title]="'cette zone'"
-     [message1]="''"
-     [message2]="''"
-     (onConfirm)="deleteFiche(selectedFiche )"
-     (onCancel)="closeDeleteModel()">
- </app-delete-confirm>
+    [isOpen]="isDeleteModelOpen"
+    [title]="'cette zone'"
+    [message1]="''"
+    [message2]="''"
+    (onConfirm)="deleteFiche(selectedFiche )"
+    (onCancel)="closeDeleteModel()">
+</app-delete-confirm>
 
 <app-fiche-form
-    *ngIf="showForm"
-    (close)="hideForm()"
+*ngIf="showForm"
+(close)="hideForm()"
 ></app-fiche-form>
 
 <app-update-fiche
-    *ngIf="showUpdateForm"
-    [fiche]="ficheToUpdate"
-    (close)="closeUpdateForm()"
+*ngIf="showUpdateForm"
+[fiche]="ficheToUpdate"
+(close)="closeUpdateForm()"
 ></app-update-fiche>
 
-<!-- Overlay -->
-<div class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center" *ngIf="isRejetModalOpen">
-    <!-- Modal content -->
+
+
+<!-- <div class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center" *ngIf="isRejetModalOpen">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-[90%] max-w-md p-6 space-y-4 relative">
-      <!-- <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Rejeter la fiche</h2> -->
-      
-      <textarea [(ngModel)]="rejetComment"
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Rejeter la fiche</h2>
+        
+        <textarea [(ngModel)]="rejetComment"
                 placeholder="Entrez un commentaire de rejet..."
                 rows="4"
                 class="w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500
                 transition-colors duration-150 ease-in-out border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white resize-none"></textarea>
-  
-      <div class="flex justify-end space-x-2">
+
+        <div class="flex justify-end space-x-2">
         <button (click)="fermerRejetModal()"
                 class="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 dark:hover:bg-gray-500">
-          Annuler
+            Annuler
         </button>
         <button (click)="approuverFicheIPDF(ficheToReject,getRefuStatus())" 
                 [disabled]="!rejetComment.trim()"
                 class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50">
-          Envoyer
+            Envoyer
         </button>
-      </div>
-  
-      <!-- Bouton de fermeture (croix) -->
-      <!-- <button (click)="fermerRejetModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 dark:hover:text-white">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button> -->
+        </div>
     </div>
-  </div>
-  
-  <!-- Modal Upload AQL -->
-<div *ngIf="isUploadAQLModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+</div> -->
+
+<!-- Modal Upload AQL -->
+<!-- <div *ngIf="isUploadAQLModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-[90%] max-w-md">
-      <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Ajouter une fiche AQL</h2>
-  
-      <input type="file" (change)="onFileSelected($event)" accept="application/pdf"
-             class="mb-4 w-full border rounded p-2 dark:bg-gray-700 dark:text-white"/>
-  
-      <div class="flex justify-end space-x-2">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Ajouter une fiche AQL</h2>
+
+        <input type="file" (change)="onFileSelected($event)" accept="application/pdf"
+                class="mb-4 w-full border rounded p-2 dark:bg-gray-700 dark:text-white"/>
+
+        <div class="flex justify-end space-x-2">
         <button (click)="fermerUploadAQLModal()"
                 class="px-4 py-2 bg-gray-300 dark:bg-gray-600 rounded hover:bg-gray-400 dark:hover:bg-gray-500">
-          Annuler
+            Annuler
         </button>
         <button [disabled]="!aqlFile" (click)="approuverFicheAvecAQL(FicheStatus.ACCEPTEDIQP)"
                 class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-          Valider
+            Valider
         </button>
-      </div>
+        </div>
     </div>
-  </div>
-  
-  <!-- Modal pour commentaire -->
+</div> -->
+
+<!-- Modal pour commentaire -->
 <div *ngIf="isCommentModalOpen" class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
-    
     <div class="fixed bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-[90%] relative">
         <button
             (click)="isCommentModalOpen = false"
@@ -371,7 +314,7 @@
         <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Commentaire</h2>
         <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line break-words">
         {{ rejetComment }}
-      </p>
+        </p>
     </div>
-  </div>
+</div>
   

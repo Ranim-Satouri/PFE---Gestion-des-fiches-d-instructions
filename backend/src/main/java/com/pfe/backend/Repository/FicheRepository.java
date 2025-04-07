@@ -17,4 +17,5 @@ public interface FicheRepository extends JpaRepository<Fiche,Long> {
     List<Fiche> findByStatusNot(Fiche.FicheStatus status);
     List<Fiche> findByProduit(Produit produit);
     List<Fiche> findByZone(Zone zone);
+    List<Fiche> findByZoneAndStatus(Zone zone , Fiche.FicheStatus status);
 }

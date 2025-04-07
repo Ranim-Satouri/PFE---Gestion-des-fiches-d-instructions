@@ -61,11 +61,8 @@
           type="text"
           placeholder="Nom"
           formControlName="nom"
-          class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:ring-2 focus:ring-blue-500"
-          [ngClass]="{
-            'border-red-500 ring-red-500': productForm.get('nom')?.invalid && productForm.get('nom')?.touched,
-            'border-gray-400 dark:border-gray-700': !(productForm.get('nom')?.invalid && productForm.get('nom')?.touched)
-          }"
+          class="w-full p-2  rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:ring-1 focus:outline-none focus:ring-blue-500/50 border-gray-400 dark:border-gray-700"
+         
         />
         <div *ngIf="productForm.get('nom')?.invalid && productForm.get('nom')?.touched && formSubmitted" class="text-red-500 dark:text-red-400 text-sm mt-1">
           Le nom du produit est requis.
@@ -79,11 +76,8 @@
           type="text"
           placeholder="Référence"
           formControlName="reference"
-          class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800  dark:text-white border-2  text-sm transition focus:ring-2 focus:ring-blue-500"
-          [ngClass]="{
-            'border-red-500 ring-red-500': productForm.get('reference')?.invalid && productForm.get('reference')?.touched && formSubmitted,
-            'border-gray-400 dark:border-gray-700': !(productForm.get('reference')?.invalid && productForm.get('reference')?.touched)
-          }"
+          class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800  dark:text-white border-2  text-sm transition focus:ring-1 focus:outline-none focus:ring-blue-500/50 border-gray-400 dark:border-gray-700"
+          
         />
         <div *ngIf="productForm.get('reference')?.invalid && productForm.get('reference')?.touched && formSubmitted" class="text-red-500 dark:text-red-400 text-sm mt-1">
           La référence est requise.
@@ -97,11 +91,8 @@
           type="text"
           placeholder="Indice"
           formControlName="indice"
-          class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2 text-sm transition focus:ring-2 focus:ring-blue-500"
-          [ngClass]="{
-            'border-red-500 ring-red-500': productForm.get('indice')?.invalid && productForm.get('indice')?.touched && formSubmitted,
-            'border-gray-400 dark:border-gray-700': !(productForm.get('indice')?.invalid && productForm.get('indice')?.touched)
-          }"
+          class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2 text-sm transition focus:ring-1 focus:outline-none focus:ring-blue-500/50 border-gray-400 dark:border-gray-700"
+         
         />
         <div *ngIf="productForm.get('indice')?.invalid && productForm.get('indice')?.touched && formSubmitted" class="text-red-500 dark:text-red-400 text-sm mt-1">
           L’indice est requis.
@@ -118,12 +109,7 @@
             [value]="familleSearch"
             (input)="onFamilleSearchChange($event)"
            
-            class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:ring-2 focus:ring-blue-500"
-            [ngClass]="{
-              'border-red-500 ring-red-500': productForm.get('famille')?.invalid && productForm.get('famille')?.touched && formSubmitted,
-              'border-gray-400 dark:border-gray-700': !(productForm.get('famille')?.invalid && productForm.get('famille')?.touched)
-            }"
-            
+            class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:ring-1 focus:outline-none focus:ring-blue-500/50 border-gray-400 dark:border-gray-700"         
           />
               <!-- Dropdown toggle icon -->
             <div
