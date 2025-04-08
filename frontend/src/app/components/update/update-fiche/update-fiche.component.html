@@ -135,7 +135,8 @@
             [value]="produitSearch"
             (input)="onProduitSearchChange($event)"
            
-            class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:ring-1 focus:outline-none focus:ring-blue-500/50 border-gray-400 dark:border-gray-700"
+            class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
+            dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
             [ngClass]="{
               'border-red-500 ring-red-500': Form.get('produit')?.invalid && Form.get('produit')?.touched,
               'border-gray-400 dark:border-gray-700': !(Form.get('produit')?.invalid && Form.get('produit')?.touched)
@@ -212,7 +213,8 @@
           [value]="zoneSearch"
           (input)="onZoneSearchChange($event)"
           
-          class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:ring-1 focus:outline-none focus:ring-blue-500/50 border-gray-400 dark:border-gray-700"
+          class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition   focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
+          dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
           [ngClass]="{
             'border-red-500 ring-red-500': Form.get('zone')?.invalid && Form.get('zone')?.touched,
             'border-gray-400 dark:border-gray-700': !(Form.get('zone')?.invalid && Form.get('zone')?.touched)
@@ -280,8 +282,9 @@
     <div>
       <label class="text-sm text-black dark:text-gray-300 mb-1 block">Fiche d'instruction <span class="text-red-500">*</span></label>
       <input type="file"
-      class="rounded-lg bg-gray-50  dark:bg-gray-800 w-full text-slate-500 font-medium text-sm border-2  file:cursor-pointer cursor-pointer border  focus:ring-1 focus:outline-none focus:ring-blue-500/50 border-gray-400 dark:border-gray-700
-      file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-900 file:hover:bg-gray-900/80 file:text-gray-100 rounded" />
+      class="rounded-lg bg-gray-50  dark:bg-gray-800 w-full text-slate-500 font-medium text-sm border-2  file:cursor-pointer cursor-pointer border file:border-0 file:py-2 file:px-4 file:mr-4 
+      file:bg-gray-900 file:hover:bg-gray-900/80 file:text-gray-100 rounded  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
+      dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200" />
         
       <div *ngIf="Form.get('fichier')?.invalid && Form.get('fichier')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
       Veuillez sélectionner une fiche d'instruction au format PDF.
