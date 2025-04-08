@@ -35,30 +35,30 @@ export class FicheService {
   }
 
   // Méthode pour mettre à jour une fiche avec un fichier PDF
-  updateFiche(fiche: Fiche, filePDF: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('fiche', JSON.stringify(fiche));
-    formData.append('filePDF', filePDF, filePDF.name);
-
-    return this.http.put(`${this.apiUrl}/updateFiche`, formData);
+  updateFiche(fiche: Fiche): Observable<any> {
+    
+    return this.http.put(`${this.apiUrl}/updateFiche`, fiche);
   }
 
   // Méthode pour supprimer une fiche
-  deleteFiche(idFiche: number | undefined , idSupprimateur: number | undefined): Observable<any> {
-    return this.http.put( `${this.apiUrl}/deleteFiche/${idFiche}/${idSupprimateur}`, null); 
+  deleteFiche(idFiche: number | undefined , idSupprimateur: number ): Observable<any> {
+    const params = new HttpParams()
+              .set('idActionneur',idSupprimateur)
+    return this.http.put( `${this.apiUrl}/deleteFiche/${idFiche}`, null , { params }); 
   }
   
   // Méthode pour valider l'IPDF
-  validationIPDF(idFiche: number, idIPDF: number, status: string, commentaire: string): Observable<any> {
+  validationIPDF(idFiche: number | undefined, idIPDF: number, status: string, commentaire: string): Observable<any> {
     const params = new HttpParams()
       .set('status', status)
-      .set('commentaire', commentaire);
+      .set('commentaire', commentaire)
+      .set('idIPDF', idIPDF);
 
-    return this.http.put(`${this.apiUrl}/validationIPDF/${idFiche}/${idIPDF}`, null, { params }); 
+    return this.http.put(`${this.apiUrl}/validationIPDF/${idFiche}`, null, { params }); 
   }
 
    // Méthode pour valider l'IQP
-   validationIQP(idFiche: number, idIQP: number, status: string, ficheAQL: File): Observable<any> {
+   validationIQP(idFiche: number | undefined, idIQP: number, status: string, ficheAQL: File): Observable<any> {
     const formData: FormData = new FormData();
     formData.append('ficheAQL', ficheAQL);
     formData.append('status', status);
@@ -72,13 +72,19 @@ export class FicheService {
   }
 
   // Récupérer les fiches par ID IPDF
-  getFichesSheetByIPDF(idIPDF: number): Observable<any> {
+  getFichesByIPDF(idIPDF: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/getFichesSheetByIPDF/${idIPDF}`);
   }
 
   // Récupérer les fiches par ID IQP
-  getFichesSheetByIQP(idIQP: number): Observable<any> {
+  getFichesByIQP(idIQP: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/getFichesSheetByIQP/${idIQP}`);
+  }
+  getFichesByOperateur(idOperateur: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getFichesSheetByOperateur/${idOperateur}`);
+  }
+  getFichesByAdmin(idAdmin: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getFichesSheetByAdmin/${idAdmin}`);
   }
   
    // Méthode pour récupérer l'historique d'une fiche

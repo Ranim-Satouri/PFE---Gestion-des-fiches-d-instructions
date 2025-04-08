@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import {ChangeDetectorRef,Component,ElementRef,HostListener, ViewChild,} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Famille } from '../../models/Famille';
@@ -8,14 +14,15 @@ import { User } from '../../models/User';
 import { FilterPipe } from '../../pipes/filter.pipe';
 import { FamilleService } from '../../services/famille.service';
 import { ProduitService } from '../../services/produit.service';
-import { AddProduitFormComponent } from '../add-produit-form/add-produit-form.component';
-import { DeleteConfirmComponent } from '../delete-confirm/delete-confirm.component';
+import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
+import { AddProduitFormComponent } from '../add/add-produit-form/add-produit-form.component';
+import { UpdateProduitComponent } from "../update/update-produit/update-produit.component";
 @Component({
   selector: 'app-produit-list',
   standalone: true,
-  imports: [NgxPaginationModule,CommonModule,FormsModule,DeleteConfirmComponent,AddProduitFormComponent,FilterPipe,],
+  imports: [NgxPaginationModule, CommonModule,FilterPipe, FormsModule, DeleteConfirmComponent, AddProduitFormComponent, UpdateProduitComponent],
   templateUrl: './produit-list.component.html',
-  styleUrl: './produit-list.component.css',
+  styleUrl: './produit-list.component.css'
 })
 export class ProduitListComponent {
   @ViewChild('familleInput', { static: false }) familleInput?: ElementRef;
@@ -33,12 +40,13 @@ export class ProduitListComponent {
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 5;
-
   displayAbove = false;
-  userConnected!: User;
-  isDeleteModelOpen: boolean = false;
-  selectedProduit: number | undefined;
+  userConnected !: User;
+  isDeleteModelOpen : boolean = false;
+  selectedProduit !: number ;
   showAddPorduitForm = false;
+  showUpdateProduitForm = false;
+  produitToUpdate!: Produit;
   // fitrage champs
   // Filtrage champs
   refSearchText: string = '';
@@ -58,6 +66,7 @@ export class ProduitListComponent {
   isFiltrageOpen: boolean = false;
   showDropdown = false;
   showFamilleDropdown = false;
+
 
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
@@ -229,29 +238,40 @@ export class ProduitListComponent {
   }
   //khedmet nimou
   openAddForm() {
-    this.showAddPorduitForm = true;
+    this.showAddPorduitForm  = true;
+  }
+  openUpdateForm(produit : Produit) {
+    this.dropdownOpen = null;
+    this.produitToUpdate = produit;
+    this.showUpdateProduitForm  = true;
+  }
+  closeUpdateForm() {
+    this.getProduits();
+    this.showUpdateProduitForm  = false;
   }
 
   closeAddForm() {
+    this.getProduits()
     this.showAddPorduitForm = false;
   }
   getProduits() {
     this.produitService.getAll().subscribe({
-      next: (response: Produit[]) => {
+      next : (response :Produit[]) => {
         console.log('fetching produits success:', response);
-        this.produits = response;
+
+        this.produits = response.sort((a, b) => b.idProduit! - a.idProduit!);
         this.filteredProducts = [...this.produits]; // Initialize
         this.applyFilters();
       },
-      error: (error: any) => {
+      error : (error : any) => {
         console.error('fetching produits error:', error);
-      },
+      }
     });
   }
 
   toggleDropdown(index: number, event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    const button = target.closest('button');
+    const button = target.closest("button");
 
     if (this.dropdownOpen === index) {
       this.dropdownOpen = null;
@@ -259,7 +279,7 @@ export class ProduitListComponent {
       const rect = button?.getBoundingClientRect();
       if (rect) {
         const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
-        const spaceBelow = window.innerHeight - rect.bottom + 50; // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
+        const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
 
         this.displayAbove = spaceBelow < dropdownHeight;
 
@@ -278,30 +298,24 @@ export class ProduitListComponent {
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
-    this.produitService
-      .deleteProduit(
-        idProduit || undefined,
-        this.userConnected.idUser || undefined
-      )
-      .subscribe({
-        next: () => {
-          console.log('Produit supprimée');
-          this.dropdownOpen = null;
-          this.getProduits();
-        },
-        error: (err) => {
-          console.error('Erreur suppression Produit', err);
-        },
-      });
-    this.closeDeleteModel();
+    this.produitService.deleteProduit(idProduit || undefined ,this.userConnected.idUser! ).subscribe({
+      next: () => {
+        console.log('Produit supprimée');
+        this.dropdownOpen = null;
+        this.getProduits()
+      },
+      error: err => {
+        console.error('Erreur suppression Produit', err);
+      }
+    });
+    this.closeDeleteModel()
   }
-  openDeleteModel(produit: Produit) {
-    this.selectedProduit = produit.idProduit;
+ openDeleteModel(produit : Produit){
+    this.selectedProduit = produit.idProduit!;
     this.dropdownOpen = null;
     this.isDeleteModelOpen = true;
   }
-  closeDeleteModel() {
-    this.selectedProduit = undefined;
+  closeDeleteModel(){
     this.isDeleteModelOpen = false;
   }
   @HostListener('window:scroll', [])
@@ -313,18 +327,11 @@ export class ProduitListComponent {
   @HostListener('document:click', ['$event'])
   closeDropdown(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    const dropdown = document.getElementById(
-      `dropdownDots-${this.dropdownOpen}`
-    );
+    const dropdown = document.getElementById(`dropdownDots-${this.dropdownOpen}`);
     const button = target.closest('button[data-dropdown-toggle]');
 
     // Vérifiez si le clic est en dehors du dropdown et du bouton
-    if (
-      this.dropdownOpen !== null &&
-      dropdown &&
-      !dropdown.contains(target) &&
-      !button
-    ) {
+    if (this.dropdownOpen !== null && dropdown && !dropdown.contains(target) && !button) {
       this.dropdownOpen = null; // Ferme le dropdown
     }
   }

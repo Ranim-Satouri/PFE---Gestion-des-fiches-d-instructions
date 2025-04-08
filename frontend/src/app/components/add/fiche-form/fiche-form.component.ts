@@ -2,13 +2,13 @@ import { Component ,EventEmitter, HostListener, Input, Output} from '@angular/co
 import {FormsModule} from "@angular/forms";
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import {ProduitService} from '../../services/produit.service';
-import {Produit} from '../../models/Produit';
-import {ZoneService} from '../../services/zone.service';
-import {Zone} from '../../models/Zone'
-import {FicheService} from '../../services/fiche.service';
-import { Fiche, FicheAction, FicheStatus } from '../../models/Fiche';
-import { User } from '../../models/User';
+import {ProduitService} from '../../../services/produit.service';
+import {Produit} from '../../../models/Produit';
+import {ZoneService} from '../../../services/zone.service';
+import {Zone} from '../../../models/Zone'
+import {FicheService} from '../../../services/fiche.service';
+import { Fiche, FicheAction, FicheStatus } from '../../../models/Fiche';
+import { User } from '../../../models/User';
 import { AddProduitFormComponent } from "../add-produit-form/add-produit-form.component";
 @Component({
   selector: 'app-fiche-form',

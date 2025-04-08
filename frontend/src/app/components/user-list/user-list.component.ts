@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit,ChangeDetectorRef,Component,ElementRef,
-  HostListener,
-  OnDestroy,
-  ViewChild,} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { forkJoin, map } from 'rxjs';
@@ -18,16 +16,9 @@ import { RegisterFormComponent } from '../register-form/register-form.component'
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [
-    NgxPaginationModule,
-    CommonModule,
-    FormsModule,
-    RegisterFormComponent,
-    DeleteConfirmComponent,
-    FilterPipe,
-  ],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, RegisterFormComponent, DeleteConfirmComponent,FilterPipe],
   templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css',
+  styleUrl: './user-list.component.css'
 })
 export class UserListComponent implements AfterViewInit, OnDestroy {
   @ViewChild('roleInput', { static: false }) roleInput?: ElementRef;
@@ -55,7 +46,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   displayAbove = false;
   UserStatus = UserStatus;
   isDeleteModelOpen: boolean = false;
-  selectedUser: number | undefined;
+  selectedUser !: number ;
   isFiltrageOpen: boolean = false;
   showDropdown = false;
   roles: Role[] = [];
@@ -72,7 +63,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
-      this.Role = this.userConnected.role;
+      this.Role=this.userConnected.role;
     }
     this.getUsers();
     this.roles = Object.values(Role);
@@ -332,16 +323,20 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   getUsers() {
     this.userService.getAll().subscribe({
       next: (users: User[]) => {
-        this.users = users;
-        const zoneRequests = users.map((user) =>
+        this.users = users.sort((a, b) => b.idUser! - a.idUser!);  // ligne hedhy bech yjiw sorted bel le plus recent
+
+        // Créer un tableau d'observables pour récupérer les zones de chaque utilisateur
+        const zoneRequests = users.map(user =>
           this.userZoneService.getUserZones(user.idUser).pipe(
+            // Assigner les zones à l'utilisateur correspondant
             map((zones: User_Zone[]) => {
-              user.zones = zones.map((uz) => uz.zone);
+              user.zones = zones.map(uz => uz.zone);
               return user;
             })
           )
         );
 
+        // Exécuter toutes les requêtes en parallèle et mettre à jour this.users une fois terminé
         forkJoin(zoneRequests).subscribe({
           next: (updatedUsers: User[]) => {
             this.users = updatedUsers;
@@ -359,87 +354,76 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
       },
     });
   }
-
   getZoneNames(user: User): string {
     if (user.zones && user.zones.length > 0) {
-      return user.zones.map((zone) => zone.nom).join(', ');
+      return user.zones.map(zone => zone.nom).join(', ');
     }
-    return '-';
+    return '-'; // Default message if no zones
   }
 
   onRoleToggleChange(user: User, event: any) {
-    console.log('ken', user.role);
-    if (user.role === Role.ADMIN) {
+    console.log("ken",user.role);
+
+    if(user.role === Role.ADMIN){
       user.role = Role.SUPERUSER;
-    } else {
+    }else{
       user.role = Role.ADMIN;
     }
 
-    this.userService
-      .ChangeRole(
-        user.idUser || undefined,
-        this.userConnected.idUser || undefined,
-        user.role
-      )
-      .subscribe({
-        next: (response: any[]) => {
-          console.log('Role changed successfully');
-        },
-        error: (error: any) => {
-          console.error('changing user Role error:', error);
-        },
-      });
+    this.userService.ChangeRole(user.idUser || undefined , this.userConnected.idUser || undefined , user.role).subscribe({
+      next : (response :any[]) => {
+        console.log('Role changed successuly  ');
+      },
+      error : (error : any) => {
+        console.error('changing user Role error:', error);
+      }
+    });
   }
 
   onStatusToggleChange(user: User, event: any) {
-    console.log('status', user.status);
-    if (user.status === UserStatus.ACTIVE) {
-      user.status = UserStatus.INACTIVE;
-    } else {
-      user.status = UserStatus.ACTIVE;
+      console.log("status", user.status);
+      if(user.status === UserStatus.ACTIVE){
+        user.status = UserStatus.INACTIVE
+      }else{
+        user.status = UserStatus.ACTIVE
+      }
+     this.ChangeUserStatus(user.idUser,user.status)
+  }
+  openDeleteModel(user : User){
+      this.selectedUser = user.idUser!  ;
+      this.dropdownOpen = null;
+      this.isDeleteModelOpen = true;
     }
-    this.ChangeUserStatus(user.idUser, user.status);
-  }
-
-  openDeleteModel(user: User) {
-    this.selectedUser = user.idUser;
-    this.dropdownOpen = null;
-    this.isDeleteModelOpen = true;
-  }
-
-  closeDeleteModel() {
-    this.selectedUser = undefined;
+  closeDeleteModel(){
     this.isDeleteModelOpen = false;
-  }
 
-  ChangeUserStatus(idUser: number | undefined, status: UserStatus) {
-    this.userService
-      .ChangeStatus(idUser, this.userConnected.idUser, status)
-      .subscribe({
-        next: (response: any[]) => {
-          console.log('Status changed successfully');
-          this.getUsers();
-        },
-        error: (error: any) => {
-          console.error('changing user Status error:', error);
-        },
-      });
-    if (this.isDeleteModelOpen) {
+  }
+  ChangeUserStatus(idUser : number | undefined , status : UserStatus){
+    this.userService.ChangeStatus(idUser , this.userConnected.idUser , status).subscribe({
+      next : (response :any[]) => {
+        console.log('Status changed successuly  ');
+        this.getUsers();
+      },
+      error : (error : any) => {
+        console.error('changing user Status error:', error);
+      }
+    });
+    if(this.isDeleteModelOpen){
       this.closeDeleteModel();
     }
   }
 
   toggleDropdown(index: number, event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    const button = target.closest('button');
+    const button = target.closest("button");
 
     if (this.dropdownOpen === index) {
       this.dropdownOpen = null;
     } else {
       const rect = button?.getBoundingClientRect();
       if (rect) {
-        const dropdownHeight = 145;
-        const spaceBelow = window.innerHeight - rect.bottom + 50;
+        const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
+        const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
 
         this.displayAbove = spaceBelow < dropdownHeight;
 
@@ -454,6 +438,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+
   @HostListener('window:scroll', [])
   onScroll(): void {
     if (this.dropdownOpen !== null) {
@@ -463,25 +448,17 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
       this.adjustDropdownPosition();
     }
   }
-
   @HostListener('document:click', ['$event'])
   closeDropdown(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    const dropdown = document.getElementById(
-      `dropdownDots-${this.dropdownOpen}`
-    );
+    const dropdown = document.getElementById(`dropdownDots-${this.dropdownOpen}`);
     const button = target.closest('button[data-dropdown-toggle]');
 
-    if (
-      this.dropdownOpen !== null &&
-      dropdown &&
-      !dropdown.contains(target) &&
-      !button
-    ) {
-      this.dropdownOpen = null;
+    // Vérifiez si le clic est en dehors du dropdown et du bouton
+    if (this.dropdownOpen !== null && dropdown && !dropdown.contains(target) && !button) {
+      this.dropdownOpen = null; // Ferme le dropdown
     }
   }
-
   showForm = false;
 
   showRegisterForm() {
@@ -489,12 +466,13 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   }
 
   hideRegisterForm() {
+    this.getUsers();
     this.showForm = false;
-    console.log('Form closed');
   }
-
   onUserRegistered(newUser: any) {
+    // Ajoutez le nouvel utilisateur à votre liste
     this.users.unshift(newUser);
     this.hideRegisterForm();
   }
+
 }

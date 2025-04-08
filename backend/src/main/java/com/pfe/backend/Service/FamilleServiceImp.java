@@ -50,14 +50,22 @@ public class FamilleServiceImp implements FamilleService{
         return ResponseEntity.ok().body(familleRepository.findAll());
     }
     @Override
-    public void updateFamily(Long idFam, Famille NewfamilyData , Long idActionneur)
+    public ResponseEntity<?> updateFamily(Long idFam, Famille NewfamilyData , Long idActionneur)
     {
         Famille famille = familleRepository.findById(idFam).orElseThrow(()-> new RuntimeException("Famille introuvable ! "));
         User actionneur = userRepository.findById(idActionneur)
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+        Optional<Famille> existingFamille = familleRepository.findByNomFamilleAndIsDeleted(NewfamilyData.getNomFamille(), false);
+        if (existingFamille.isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Une famille avec le même nom existe déjà");
+        }
         if(NewfamilyData.getNomFamille()!=null ) famille.setNomFamille(NewfamilyData.getNomFamille());
         famille.setActionneur(actionneur);
-        familleRepository.save(famille);
+        return ResponseEntity
+                .status(HttpStatus.CREATED) // 201 Created, plus approprié ici
+                .body(familleRepository.save(famille));
     }
     @Override
     public void DeleteFamily(Long idFam ,Long idActionneur)

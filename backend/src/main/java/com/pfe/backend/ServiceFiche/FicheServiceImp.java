@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -38,7 +40,6 @@ public class FicheServiceImp implements FicheService {
 
     @Override
     public Fiche addFiche(Fiche fiche ) {
-        System.out.println(fiche );
         User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));;
         User iqp = userRepository.findById(fiche.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));;
         User preparateur = userRepository.findById(fiche.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));;
@@ -54,17 +55,17 @@ public class FicheServiceImp implements FicheService {
         fiche.setActionneur(actionneur);
         fiche.setAction(Fiche.FicheAction.INSERT);
         fiche.setStatus(Fiche.FicheStatus.PENDING);
-        nService.notifyIPDFAboutFicheInjection(fiche);
+        //nService.notifyIPDFAboutFicheInjection(fiche);
         List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
         for(User u : superUsers){
-            nService.notifySuperUserAboutNewFiche(fiche, u);
+           // nService.notifySuperUserAboutNewFiche(fiche, u);
         }
         return ficheRepository.save(fiche);
     }
 
 
     @Override
-    public String saveFile(MultipartFile file) throws IOException, Exception {
+    public String saveFile(MultipartFile file) throws Exception {
 
         if (file.isEmpty()) {
             throw new IOException("Le fichier est vide");
@@ -93,7 +94,7 @@ public class FicheServiceImp implements FicheService {
     }
 
     @Override
-    public Resource loadPdf(String filename)  throws Exception {
+    public Resource loadPdf(String filename) {
         try {
             // générer la clé de chiffrement unique (ken ma fammech bech yasna3 wehed)
             SecretKey secretKey = EncryptionUtils.loadOrGenerateEncryptionKey();
@@ -113,13 +114,14 @@ public class FicheServiceImp implements FicheService {
     }
 
 
+
     @Override
     public List<Fiche> getFiches() {
         return ficheRepository.findByStatusNot(Fiche.FicheStatus.DELETED);
     }
 
     @Override
-    public Fiche updateFiche(Fiche fiche , MultipartFile file) {
+    public Fiche updateFiche(Fiche fiche ) {
         Fiche exisitingFiche = ficheRepository.findById(fiche.getIdFiche()).orElseThrow(() -> new RuntimeException("Fiche introuvable"));
 
         User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
@@ -129,27 +131,18 @@ public class FicheServiceImp implements FicheService {
         Zone zone = zoneRepository.findById(fiche.getZone().getIdZone()).orElseThrow(() -> new RuntimeException("Zone introuvable"));;
         User actionneur = userRepository.findById(fiche.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
 
-        if(!exisitingFiche.getStatus().equals(Fiche.FicheStatus.PENDING) && !actionneur.getRole().equals(Role.SUPERUSER)){
-            throw new RuntimeException("Interdit de Modifier une fiche deja Approuver sans etre un SUPERUSR");
-        }
+        //if(!exisitingFiche.getStatus().equals(Fiche.FicheStatus.PENDING) && !actionneur.getRole().equals(Role.SUPERUSER)){
+          //  throw new RuntimeException("Interdit de Modifier une fiche deja Approuver sans etre un SUPERUSR");
+        //}
+        exisitingFiche.setPdf(fiche.getPdf());
         exisitingFiche.setIPDF(ipdf);
         exisitingFiche.setIQP(iqp);
         exisitingFiche.setPreparateur(preparateur);
         exisitingFiche.setProduit(produit);
         exisitingFiche.setZone(zone);
         exisitingFiche.setActionneur(actionneur);
+        exisitingFiche.setStatus(fiche.getStatus());
         exisitingFiche.setAction(Fiche.FicheAction.UPDATE); // najmou nahiwha fel mba3d kif na3mlou el frontend w nabaathouha direct maa el data JSON
-
-        // Traitement du fichier si présent
-        if (file != null && !file.isEmpty()) {
-            try{
-                String pdfPath = saveFile(file);
-                exisitingFiche.setPdf(pdfPath);
-            }catch (Exception e){
-                throw new RuntimeException("Problème lors du stockage du fichier PDF : " + e.getMessage(), e);
-            }
-        }
-
         return ficheRepository.save(exisitingFiche);
     }
 
@@ -176,15 +169,15 @@ public class FicheServiceImp implements FicheService {
 
         List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
         if(status.equals(Fiche.FicheStatus.ACCEPTEDIPDF)){
-            nService.notifyPreparateurAboutIPDFAcceptance(fiche);
+            //nService.notifyPreparateurAboutIPDFAcceptance(fiche);
             for(User u : superUsers){
-                nService.notifySuperUserAboutIPDFValidation(fiche, u);
+                //nService.notifySuperUserAboutIPDFValidation(fiche, u);
             }
-            nService.notifyIQPAboutFicheValidationByIPDF(fiche);
+            //nService.notifyIQPAboutFicheValidationByIPDF(fiche);
         }else{
-            nService.notifyPreparateurAboutIPDFRejection(fiche);
+            //nService.notifyPreparateurAboutIPDFRejection(fiche);
             for(User u : superUsers){
-                nService.notifySuperUserAboutIPDFRejection(fiche, u);
+                //nService.notifySuperUserAboutIPDFRejection(fiche, u);
             }
         }
         return ficheRepository.save(fiche);
@@ -195,7 +188,7 @@ public class FicheServiceImp implements FicheService {
         Fiche fiche = ficheRepository.findById(idFiche).orElseThrow(() -> new RuntimeException("fiche introuvable"));
         User actionneur = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("actionneur introuvable"));
         //khallit status en cas ou el iqp tla3 zeda ynajjem yrejecti ficha
-        fiche.setStatus(Fiche.FicheStatus.ACCEPTEDIQP);
+        fiche.setStatus(status);
         // Traitement du fichier si présent
         if (file != null && !file.isEmpty()) {
             try{
@@ -207,10 +200,10 @@ public class FicheServiceImp implements FicheService {
         }
         fiche.setActionneur(actionneur);
         fiche.setAction(Fiche.FicheAction.APPROUVE);
-        nService.notifyPreparateurAboutFicheFinalValidation(fiche);
+        //nService.notifyPreparateurAboutFicheFinalValidation(fiche);
         List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
         for(User u : superUsers){
-            nService.notifySuperUserAboutAQLAddition(fiche, u);
+            //nService.notifySuperUserAboutAQLAddition(fiche, u);
         }
         return ficheRepository.save(fiche);
     }
@@ -231,7 +224,7 @@ public class FicheServiceImp implements FicheService {
         User ipdf = userRepository.findById(idIPDF).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
         System.out.println(ipdf.getRole());
         if(ipdf.getRole().equals(Role.IPDF) || ipdf.getRole().equals(Role.SUPERUSER) ){
-            return ficheRepository.findFicheByIPDFAndActionNot(ipdf , Fiche.FicheAction.DELETE);
+            return ficheRepository.findFicheByIPDFAndActionNot(ipdf , Fiche.FicheAction.DELETE );
         }
         throw new RuntimeException("L'utilisateur n'a pas le rôle IPDF requis.");
     }
@@ -241,9 +234,30 @@ public class FicheServiceImp implements FicheService {
         User iqp = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
         System.out.println(iqp.getRole());
         if(iqp.getRole().equals(Role.IQP) || iqp.getRole().equals(Role.SUPERUSER)){
-            return  ficheRepository.findFicheByIQPAndActionNot(iqp , Fiche.FicheAction.DELETE );
+            return  ficheRepository.findFicheByIQPAndActionNotAndStatusNot(iqp , Fiche.FicheAction.DELETE , Fiche.FicheStatus.REJECTEDIPDF );
         }else{
             throw new RuntimeException("L'utilisateur n'a pas le rôle IQP requis.");
         }
     }
+    @Override
+    public List<Fiche> getFichesSheetByOperateur(Long idOperateur) {
+        User operateur = userRepository.findById(idOperateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        Set<UserZone> zones = operateur.getUserZones();
+        List<Fiche> fiches = new ArrayList<>();
+        for(UserZone u : zones){
+            fiches.addAll(ficheRepository.findByZoneAndStatus(u.getZone() , Fiche.FicheStatus.ACCEPTEDIQP));
+        }
+        return  fiches;
+    }
+    @Override
+    public List<Fiche> getFichesSheetByAdmin(Long idAdmin) {
+        User admin = userRepository.findById(idAdmin).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        Set<UserZone> zones = admin.getUserZones();
+        List<Fiche> fiches = new ArrayList<>();
+        for(UserZone u : zones){
+            fiches.addAll(ficheRepository.findByZone(u.getZone()));
+        }
+        return  fiches;
+    }
+
 }

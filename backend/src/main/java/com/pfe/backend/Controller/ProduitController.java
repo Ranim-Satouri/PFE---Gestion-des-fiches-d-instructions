@@ -18,10 +18,10 @@ public class ProduitController {
     @Autowired
     private ProduitService produitService;
 
-    @PostMapping("/addProduit/{idFamille}/{idActionneur}")
+    @PostMapping("/addProduit/{idFamille}")
     public ResponseEntity<?> addProduit(@RequestBody Produit produit,
                                               @PathVariable Long idFamille,
-                                              @PathVariable Long idActionneur) {
+                                              @RequestParam Long idActionneur) {
         return produitService.addProduit(produit, idFamille, idActionneur);
 
     }
@@ -34,19 +34,15 @@ public class ProduitController {
         return ResponseEntity.ok(produitService.getActiveProducts());
     }
     @PutMapping("/update/{idProduit}")
-    public ResponseEntity<String> updateProduit(
-            @PathVariable Long idProduit,
-            @RequestBody Produit newProduitData,
-            @RequestParam Long idActionneur) {
-        try {
-            produitService.updateProduit(idProduit, newProduitData, idActionneur);
-            return ResponseEntity.ok("Produit mis à jour avec succès !");
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
+    public ResponseEntity<?> updateProduit(
+                                            @PathVariable Long idProduit,
+                                            @RequestBody Produit newProduitData,
+                                            @RequestParam Long idActionneur,
+                                            @RequestParam Long idFamille) {
+            return produitService.updateProduit(idProduit,idFamille, newProduitData, idActionneur);
     }
-    @DeleteMapping("/delete/{idProd}/{idActionneur}")
-    public ResponseEntity<?> DeleteProduit(@PathVariable Long idProd , @PathVariable Long idActionneur) {
+    @DeleteMapping("/delete/{idProd}")
+    public ResponseEntity<?> DeleteProduit(@PathVariable Long idProd , @RequestParam Long idActionneur) {
         try {
             produitService.DeleteProduit(idProd,idActionneur);
             return ResponseEntity.ok(null);

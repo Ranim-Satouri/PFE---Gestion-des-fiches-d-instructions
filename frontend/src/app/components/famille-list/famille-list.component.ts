@@ -1,27 +1,20 @@
+import { Component, HostListener, Input } from '@angular/core';
+import { User } from '../../models/User';
 import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { Famille } from '../../models/Famille';
-import { User } from '../../models/User';
 import { FilterPipe } from '../../pipes/filter.pipe';
 import { FamilleService } from '../../services/famille.service';
-import { AddFamilleFormComponent } from '../add-famille-form/add-famille-form.component';
-import { DeleteConfirmComponent } from '../delete-confirm/delete-confirm.component';
-
+import { Famille } from '../../models/Famille';
+import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
+import { AddFamilleFormComponent } from "../add/add-famille-form/add-famille-form.component";
+import { UpdateFamilleComponent } from "../update/update-famille/update-famille.component";
 @Component({
   selector: 'app-famille-list',
   standalone: true,
-  imports: [
-    NgxPaginationModule,
-    CommonModule,
-    FormsModule,
-    DeleteConfirmComponent,
-    AddFamilleFormComponent,
-    FilterPipe,
-  ],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent,FilterPipe, UpdateFamilleComponent],
   templateUrl: './famille-list.component.html',
-  styleUrl: './famille-list.component.css',
+  styleUrl: './famille-list.component.css'
 })
 export class FamilleListComponent {
   constructor(private familleService: FamilleService) {}
@@ -32,18 +25,21 @@ export class FamilleListComponent {
   itemsPerPage: number = 5;
   dropdownPosition = { top: 0, left: 0 };
   displayAbove = false;
-  userConnected!: User;
-  isDeleteModelOpen: boolean = false;
-  selectedFamille: number | undefined;
-  showFamilyModal = false;
-  ngOnInit() {
+  userConnected !: User ;
+  isDeleteModelOpen : boolean = false;
+  selectedFamille !: number ;
+  FamilleToUpdate !: Famille;
+  showAddModal = false;
+  showUpdateModal = false;
+
+  ngOnInit(){
     this.getFamilles();
   }
 
   getFamilles() {
     this.familleService.getAll().subscribe({
-      next: (response: Famille[]) => {
-        this.familles = response;
+      next : (response :Famille[]) => {
+        this.familles = response.sort((a, b) => b.idFamille! - a.idFamille!);
       },
       error: (error: any) => {
         console.error('fetching familles error:', error);
@@ -56,31 +52,43 @@ export class FamilleListComponent {
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
-    this.familleService
-      .deleteFamille(
-        idFamille || undefined,
-        this.userConnected.idUser || undefined
-      )
-      .subscribe({
-        next: () => {
-          console.log('Famille supprimée');
-          this.dropdownOpen = null;
-          this.getFamilles();
-        },
-        error: (err) => {
-          console.error('Erreur suppression Famille', err);
-        },
-      });
-    this.closeDeleteModel();
+    this.familleService.deleteFamille(idFamille || undefined , this.userConnected.idUser! ).subscribe({
+      next: () => {
+        console.log('Famille supprimée');
+        this.dropdownOpen = null;
+        this.getFamilles()
+      },
+      error: err => {
+        console.error('Erreur suppression Famille', err);
+      }
+    });
+    this.closeDeleteModel()
   }
-  openDeleteModel(famille: Famille) {
-    this.selectedFamille = famille.idFamille;
-    this.dropdownOpen = null;
-    this.isDeleteModelOpen = true;
+
+  OpenAddFamillePopUp(){
+    this.showAddModal = true;
   }
-  closeDeleteModel() {
-    this.selectedFamille = undefined;
+  closeAddForm() {
+    this.getFamilles();
+    this.showAddModal = false;
+  }
+  openDeleteModel(famille : Famille) {
+    this.selectedFamille = famille.idFamille!;
+      this.dropdownOpen = null;
+      this.isDeleteModelOpen = true;
+    }
+  closeDeleteModel(){
     this.isDeleteModelOpen = false;
+  }
+
+  OpenUpdateFamillePopUp(famille : Famille){
+    this.FamilleToUpdate = famille;
+    this.dropdownOpen = null;
+    this.showUpdateModal = true;
+  }
+  closeUpdateForm() {
+    this.getFamilles();
+    this.showUpdateModal = false;
   }
   // toggleDropdown(index: number, event: MouseEvent): void {
   //   const target = event.target as HTMLElement;
@@ -108,7 +116,7 @@ export class FamilleListComponent {
   // }
   toggleDropdown(index: number, event: MouseEvent): void {
     const target = event.target as HTMLElement;
-    const button = target.closest('button');
+    const button = target.closest("button");
 
     if (this.dropdownOpen === index) {
       this.dropdownOpen = null;
@@ -116,7 +124,7 @@ export class FamilleListComponent {
       const rect = button?.getBoundingClientRect();
       if (rect) {
         const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
-        const spaceBelow = window.innerHeight - rect.bottom + 50; // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
+        const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
 
         this.displayAbove = spaceBelow < dropdownHeight;
 
@@ -140,22 +148,13 @@ export class FamilleListComponent {
   @HostListener('document:click', ['$event'])
   closeDropdown(event: MouseEvent) {
     const target = event.target as HTMLElement;
-    const dropdown = document.getElementById(
-      `dropdownDots-${this.dropdownOpen}`
-    );
+    const dropdown = document.getElementById(`dropdownDots-${this.dropdownOpen}`);
     const button = target.closest('button[data-dropdown-toggle]');
 
     // Vérifiez si le clic est en dehors du dropdown et du bouton
-    if (
-      this.dropdownOpen !== null &&
-      dropdown &&
-      !dropdown.contains(target) &&
-      !button
-    ) {
+    if (this.dropdownOpen !== null && dropdown && !dropdown.contains(target) && !button) {
       this.dropdownOpen = null; // Ferme le dropdown
     }
   }
-  OpenAddFamillePopUp() {
-    this.showFamilyModal = true;
-  }
+
 }

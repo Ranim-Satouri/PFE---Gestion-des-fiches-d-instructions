@@ -1,11 +1,11 @@
 import { Component,EventEmitter,HostListener,inject,Input,Output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {AbstractControl, FormBuilder,FormControl,FormGroup,ReactiveFormsModule,ValidationErrors,ValidatorFn,Validators} from '@angular/forms';
-import { FamilleService } from '../../services/famille.service';
-import { Famille } from '../../models/Famille';
-import { User } from '../../models/User';
-import { ProduitService } from '../../services/produit.service';
-import { Produit } from '../../models/Produit';
+import { FamilleService } from '../../../services/famille.service';
+import { Famille } from '../../../models/Famille';
+import { User } from '../../../models/User';
+import { ProduitService } from '../../../services/produit.service';
+import { Produit } from '../../../models/Produit';
 
 @Component({
   selector: 'app-add-produit-form',
@@ -77,7 +77,7 @@ export class AddProduitFormComponent {
       nomFamille: nom,
       actionneur : this.userConnected
     };
-    this.familleService.addFamille(newFamille , this.userConnected.idUser).subscribe({
+    this.familleService.addFamille(newFamille , this.userConnected.idUser!).subscribe({
       next: (famille) => {
         console.log('Famille ajoutée :', famille);
         this.errorMessage='';
@@ -87,7 +87,7 @@ export class AddProduitFormComponent {
         }, 3000);
         this.families.push(famille); // Mets à jour ta liste
         this.familleNames.push(nom);
-        this.selectFamille(famille); // Si besoin de lier à ton formulaire
+        this.selectFamille(famille); 
       },
       error: (err) => {
         console.error('Erreur lors de l’ajout :', err);
@@ -117,7 +117,7 @@ export class AddProduitFormComponent {
 
       const famille: Famille = this.productForm.value.famille;
       const idFamille = famille.idFamille!;
-      const idActionneur = this.userConnected.idUser!; // à récupérer dynamiquement selon ton app
+      const idActionneur = this.userConnected.idUser!; 
 
       this.produitService.addProduit(produit, idFamille, idActionneur).subscribe({
         next: (response) => {
@@ -129,8 +129,9 @@ export class AddProduitFormComponent {
           }, 3000);
           if(this.newProduit){
             this.produitAdded.emit(response); // <-- ICI on retourne le produit au parent
-            this.close.emit(); // Fermer le popup si besoin
+            this.close.emit(); 
           }
+          this.familleSearch = '';
           this.productForm.reset();
         },
         error: (err) => {
@@ -151,7 +152,6 @@ export class AddProduitFormComponent {
             this.errorMessage = 'Une erreur inattendue est survenue.';
           }
 
-          // Auto-hide message after 4s
           setTimeout(() => {
             this.errorMessage = '';
           }, 4000);
@@ -180,8 +180,5 @@ export class AddProduitFormComponent {
       this.filteredFamilles = [];
     }
   }
-  closeFamilleAlert() {
-    this.successMessage = '';
-  }
-
+ 
 }

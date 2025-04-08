@@ -13,8 +13,9 @@ import java.util.List;
 public interface FicheRepository extends JpaRepository<Fiche,Long> {
     List<Fiche> findFicheByPreparateurAndActionNot(User preparateur , Fiche.FicheAction action);
     List<Fiche> findFicheByIPDFAndActionNot(User IPDF , Fiche.FicheAction action);
-    List<Fiche> findFicheByIQPAndActionNot(User IQP , Fiche.FicheAction action);
+    List<Fiche> findFicheByIQPAndActionNotAndStatusNot(User IQP , Fiche.FicheAction action , Fiche.FicheStatus status);
     List<Fiche> findByStatusNot(Fiche.FicheStatus status);
     List<Fiche> findByProduit(Produit produit);
     List<Fiche> findByZone(Zone zone);
+    List<Fiche> findByZoneAndStatus(Zone zone , Fiche.FicheStatus status);
 }

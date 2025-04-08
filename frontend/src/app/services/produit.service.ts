@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Produit } from '../models/Produit';
@@ -13,12 +13,22 @@ export class ProduitService {
   getAll(): Observable<Produit[]> {
         return this.http.get<Produit[]>(`${this.apiUrl}/activeProducts`);
   }
-  deleteProduit(idProduit: number | undefined, idSupprimateur: number | undefined): Observable<any> {
-    return this.http.delete( `${this.apiUrl}/delete/${idProduit}/${idSupprimateur}`);
+  deleteProduit(idProduit: number | undefined, idSupprimateur: number ): Observable<any> {
+    const params = new HttpParams()
+              .set('idActionneur',idSupprimateur);
+    return this.http.delete( `${this.apiUrl}/delete/${idProduit}`, { params });
   }
 
   addProduit(produit: Produit, idFamille: number, idActionneur: number): Observable<Produit> {
-    const url = `${this.apiUrl}/addProduit/${idFamille}/${idActionneur}`;
-    return this.http.post<Produit>(url, produit);
+    const params = new HttpParams()
+              .set('idActionneur',idActionneur);
+    const url = `${this.apiUrl}/addProduit/${idFamille}`;
+    return this.http.post<Produit>(url, produit , { params });
+  }
+  updateProduit(produit : Produit ,idFamille : number , idProduit : number | undefined , idActionneur: number): Observable<Produit> {
+    const params = new HttpParams()
+              .set('idActionneur',idActionneur)
+              .set('idFamille',idFamille);
+    return this.http.put<Produit>(`${this.apiUrl}/update/${idProduit}`, produit , { params }) ;
   }
 }

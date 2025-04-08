@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Zone } from '../models/Zone';
 import { Observable } from 'rxjs';
@@ -14,6 +14,19 @@ export class ZoneService {
       return this.http.get<Zone[]>(`${this.apiUrl}/activeZones`);
   }
   deleteZone(idZone: number | undefined, idSupprimateur: number): Observable<any> {
-    return this.http.delete( `${this.apiUrl}/delete/${idZone}/${idSupprimateur}`); 
+    const params = new HttpParams()
+                  .set('idActionneur',idSupprimateur);
+    return this.http.delete( `${this.apiUrl}/delete/${idZone}`, { params }); 
+  }
+  addZone(zone: Zone, idActionneur: number): Observable<Zone> {
+    const params = new HttpParams()
+          .set('idActionneur',idActionneur);
+    const url = `${this.apiUrl}/addZone`;
+    return this.http.post<Zone>(url,zone, { params });
+  }
+  updateZone(zone : Zone, idZone : number | undefined , idActionneur: number): Observable<Zone> {
+    const params = new HttpParams()
+          .set('idActionneur',idActionneur);
+    return this.http.put<Zone>(`${this.apiUrl}/update/${idZone}`, zone , { params }) ;
   }
 }

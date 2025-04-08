@@ -13,32 +13,27 @@ import java.util.List;
 public class FamilleController {
     @Autowired
     private FamilleService familleService;
-    @PostMapping("/addFamille/{idActionneur}")
-    public ResponseEntity<?> addFamille(@RequestBody Famille famille, @PathVariable Long idActionneur) {
-        ResponseEntity<?> response = familleService.addFamille(famille, idActionneur);
-        if (response.getStatusCode() == HttpStatus.CONFLICT || response.getStatusCode() == HttpStatus.BAD_REQUEST) {
-            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-        }
-        return ResponseEntity.ok().body(response.getBody());
+    @PostMapping("/addFamille")
+    public ResponseEntity<?> addFamille(@RequestBody Famille famille, @RequestParam Long idActionneur) {
+        return familleService.addFamille(famille, idActionneur);
     }
     @GetMapping("/getAll")
     public ResponseEntity<List<Famille>> getFamilles(){
         return familleService.getFamilles();
     }
-    @PutMapping("/update/{idFam}/{idActionneur}")
-    public ResponseEntity<String> updateFamily(
+    @PutMapping("/update/{idFam}")
+    public ResponseEntity<?> updateFamily(
             @PathVariable Long idFam,
             @RequestBody Famille newFamillyData,
-            @PathVariable Long idActionneur) {
+            @RequestParam Long idActionneur) {
         try {
-            familleService.updateFamily(idFam, newFamillyData, idActionneur);
-            return ResponseEntity.ok("Famille mis à jour avec succès !");
+            return familleService.updateFamily(idFam, newFamillyData, idActionneur);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-    @DeleteMapping("/delete/{idFam}/{idActionneur}")
-    public ResponseEntity<?> DeleteFamily(@PathVariable Long idFam , @PathVariable Long idActionneur) {
+    @DeleteMapping("/delete/{idFam}")
+    public ResponseEntity<?> DeleteFamily(@PathVariable Long idFam , @RequestParam Long idActionneur) {
         try {
             familleService.DeleteFamily(idFam , idActionneur);
             return ResponseEntity.ok(null);
