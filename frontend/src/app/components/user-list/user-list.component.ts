@@ -1,13 +1,8 @@
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
+import { AfterViewInit,ChangeDetectorRef,Component,ElementRef,
   HostListener,
   OnDestroy,
-  ViewChild,
-} from '@angular/core';
+  ViewChild,} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { forkJoin, map } from 'rxjs';

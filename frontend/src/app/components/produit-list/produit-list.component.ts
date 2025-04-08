@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostListener,
-  ViewChild,
-} from '@angular/core';
+import {ChangeDetectorRef,Component,ElementRef,HostListener, ViewChild,} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Famille } from '../../models/Famille';
@@ -19,14 +13,7 @@ import { DeleteConfirmComponent } from '../delete-confirm/delete-confirm.compone
 @Component({
   selector: 'app-produit-list',
   standalone: true,
-  imports: [
-    NgxPaginationModule,
-    CommonModule,
-    FormsModule,
-    DeleteConfirmComponent,
-    AddProduitFormComponent,
-    FilterPipe,
-  ],
+  imports: [NgxPaginationModule,CommonModule,FormsModule,DeleteConfirmComponent,AddProduitFormComponent,FilterPipe,],
   templateUrl: './produit-list.component.html',
   styleUrl: './produit-list.component.css',
 })
