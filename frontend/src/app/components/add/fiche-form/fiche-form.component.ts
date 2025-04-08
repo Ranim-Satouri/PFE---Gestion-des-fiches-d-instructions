@@ -10,6 +10,7 @@ import {FicheService} from '../../../services/fiche.service';
 import { Fiche, FicheAction, FicheStatus } from '../../../models/Fiche';
 import { User } from '../../../models/User';
 import { AddProduitFormComponent } from "../add-produit-form/add-produit-form.component";
+import { AddZoneFormComponent } from "../add-zone-form/add-zone-form.component";
 @Component({
   selector: 'app-fiche-form',
   standalone: true,
@@ -17,7 +18,8 @@ import { AddProduitFormComponent } from "../add-produit-form/add-produit-form.co
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    AddProduitFormComponent
+    AddProduitFormComponent,
+    AddZoneFormComponent
 ],
   templateUrl: './fiche-form.component.html',
   styleUrl: './fiche-form.component.css'
@@ -268,5 +270,5 @@ export class FicheFormComponent {
     this.produitSearch = `${produit.nomProduit} (${produit.ref} - ${produit.indice})`;
     this.produitNames.push(produit.nomProduit);
   }
-
+  
 }

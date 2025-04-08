@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {  User } from '../../models/User';
-import { UserService } from '../../services/user.service';
-import { UserZoneService } from '../../services/user-zone.service';
+import {  User } from '../../../models/User';
+import { UserService } from '../../../services/user.service';
+import { UserZoneService } from '../../../services/user-zone.service';
 import { forkJoin, map } from 'rxjs';
 
 @Component({

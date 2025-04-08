@@ -1,10 +1,10 @@
 import {Component, EventEmitter, Output, inject, HostListener, ViewChild, ElementRef} from '@angular/core';
 import {FormGroup, FormControl, Validators, ReactiveFormsModule, FormBuilder, FormArray} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Zone } from '../../models/Zone';
-import { ZoneService } from '../../services/zone.service';
-import {UserService} from '../../services/user.service';
-import {Genre, Role, User, UserStatus} from '../../models/User';
+import { Zone } from '../../../models/Zone';
+import { ZoneService } from '../../../services/zone.service';
+import {UserService} from '../../../services/user.service';
+import {Genre, Role, User, UserStatus} from '../../../models/User';
 
 @Component({
   selector: 'app-register-form',

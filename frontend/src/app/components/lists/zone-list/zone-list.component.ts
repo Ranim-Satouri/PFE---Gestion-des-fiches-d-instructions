@@ -1,16 +1,16 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { Zone } from '../../models/Zone';
-import { ZoneService } from '../../services/zone.service';
+import { Zone } from '../../../models/Zone';
+import { ZoneService } from '../../../services/zone.service';
 import { CommonModule } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FormsModule } from '@angular/forms';
-import { User } from '../../models/User';
-import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
-import { UserZoneAssignComponent } from "../user-zone-assign/user-zone-assign.component";
-import { FilterPipe } from '../../pipes/filter.pipe';
+import { User } from '../../../models/User';
+import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
+import { UserZoneAssignComponent } from "../../add/user-zone-assign/user-zone-assign.component";
+import { FilterPipe } from '../../../pipes/filter.pipe';
 import { Console } from 'console';
-import { UpdateZoneComponent } from "../update/update-zone/update-zone.component";
-import { AddZoneFormComponent } from "../add/add-zone-form/add-zone-form.component";
+import { UpdateZoneComponent } from "../../update/update-zone/update-zone.component";
+import { AddZoneFormComponent } from "../../add/add-zone-form/add-zone-form.component";
 
 @Component({
   selector: 'app-zone-list',

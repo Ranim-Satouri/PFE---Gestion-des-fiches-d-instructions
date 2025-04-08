@@ -8,15 +8,15 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { Famille } from '../../models/Famille';
-import { Produit } from '../../models/Produit';
-import { User } from '../../models/User';
-import { FilterPipe } from '../../pipes/filter.pipe';
-import { FamilleService } from '../../services/famille.service';
-import { ProduitService } from '../../services/produit.service';
-import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
-import { AddProduitFormComponent } from '../add/add-produit-form/add-produit-form.component';
-import { UpdateProduitComponent } from "../update/update-produit/update-produit.component";
+import { Famille } from '../../../models/Famille';
+import { Produit } from '../../../models/Produit';
+import { User } from '../../../models/User';
+import { FilterPipe } from '../../../pipes/filter.pipe';
+import { FamilleService } from '../../../services/famille.service';
+import { ProduitService } from '../../../services/produit.service';
+import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
+import { AddProduitFormComponent } from '../../add/add-produit-form/add-produit-form.component';
+import { UpdateProduitComponent } from "../../update/update-produit/update-produit.component";
 @Component({
   selector: 'app-produit-list',
   standalone: true,
