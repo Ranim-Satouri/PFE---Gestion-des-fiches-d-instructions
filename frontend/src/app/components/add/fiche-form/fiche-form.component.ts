@@ -19,7 +19,6 @@ import { AddZoneFormComponent } from "../add-zone-form/add-zone-form.component";
     ReactiveFormsModule,
     CommonModule,
     AddProduitFormComponent,
-    AddZoneFormComponent
 ],
   templateUrl: './fiche-form.component.html',
   styleUrl: './fiche-form.component.css'
@@ -55,6 +54,10 @@ export class FicheFormComponent {
   ngOnInit() {
     this.loadProduits(); // Charger les produits lors de l'initialisation
     this.loadZones();
+    const userFromLocalStorage = localStorage.getItem('user');
+    if (userFromLocalStorage) {
+      this.userConnected = JSON.parse(userFromLocalStorage);
+    }
   }
 
   loadProduits() {
@@ -183,10 +186,7 @@ export class FicheFormComponent {
       const produit: Produit = this.Form.value.produit;
       const zone: Zone = this.Form.value.zone;
       const file: File = this.Form.value.fichier;
-      const userFromLocalStorage = localStorage.getItem('user');
-      if (userFromLocalStorage) {
-        this.userConnected = JSON.parse(userFromLocalStorage);
-      }
+     
   
     const fiche : Fiche = {
       status: FicheStatus.PENDING,
@@ -269,6 +269,47 @@ export class FicheFormComponent {
     this.Form.get('produit')?.setValue(produit);
     this.produitSearch = `${produit.nomProduit} (${produit.ref} - ${produit.indice})`;
     this.produitNames.push(produit.nomProduit);
+  }
+
+  createZone() {
+   
+    const newZone: Zone = {
+      nom: this.zoneSearch,
+      actionneur: this.userConnected
+    };
+
+    this.zoneService.addZone(newZone, this.userConnected.idUser!).subscribe({
+      next: (zone) => {
+        this.errorMessage = '';
+        this.successMessage = `Zone "${zone.nom}" ajoutée avec succès !`; 
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 3000);
+        this.zones.push(zone);
+        this.filteredZones = this.zones;
+        this.Form.get('zone')?.setValue(zone);
+        this.zoneSearch = zone.nom;
+        this.zoneNames.push(zone.nom);
+        this.showZoneDropdown = false; 
+      },
+      error: (err) => {
+        this.successMessage = '';
+        console.error('Erreur lors de l’ajout :', err);
+
+        if (err.status === 404) {
+          this.errorMessage = "Actionneur introuvable. Veuillez vous reconnecter.";
+        } else if (err.status === 409) {
+          this.errorMessage = "Une zone avec ce nom existe déjà.";
+        } else {
+          this.errorMessage = "Une erreur inattendue est survenue.";
+        }
+
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 4000);
+      }
+    });
+      
   }
   
 }

@@ -22,7 +22,6 @@ export class AddZoneFormComponent {
   successMessage: string = '';
   successMessage1: string = '';
   errorMessage = '';
-  @Input() newZone !: String ; 
   
   zoneForm : FormGroup =  new FormGroup({
     nom: new FormControl( '',[ Validators.required])
