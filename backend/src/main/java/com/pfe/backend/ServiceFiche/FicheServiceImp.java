@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.crypto.SecretKey;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,6 +58,10 @@ public class FicheServiceImp implements FicheService {
         fiche.setActionneur(actionneur);
         fiche.setAction(Fiche.FicheAction.INSERT);
         fiche.setStatus(Fiche.FicheStatus.PENDING);
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        // Ajouter 24 heures
+        LocalDateTime expirationDate = currentDateTime.plusHours(24);
+        fiche.setExpirationDate(expirationDate);
         //nService.notifyIPDFAboutFicheInjection(fiche);
         List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
         for(User u : superUsers){
@@ -134,7 +141,16 @@ public class FicheServiceImp implements FicheService {
         //if(!exisitingFiche.getStatus().equals(Fiche.FicheStatus.PENDING) && !actionneur.getRole().equals(Role.SUPERUSER)){
           //  throw new RuntimeException("Interdit de Modifier une fiche deja Approuver sans etre un SUPERUSR");
         //}
-        exisitingFiche.setPdf(fiche.getPdf());
+        System.out.println(exisitingFiche.getPdf());
+        System.out.println(fiche.getPdf());
+        if(!exisitingFiche.getPdf().equals(fiche.getPdf())){
+            System.out.println("dkhalna");
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            // Ajouter 24 heures
+            LocalDateTime expirationDate = currentDateTime.plusHours(24);
+            exisitingFiche.setExpirationDate(expirationDate);
+            exisitingFiche.setPdf(fiche.getPdf());
+        }
         exisitingFiche.setIPDF(ipdf);
         exisitingFiche.setIQP(iqp);
         exisitingFiche.setPreparateur(preparateur);
@@ -166,7 +182,10 @@ public class FicheServiceImp implements FicheService {
         fiche.setStatus(status);
         fiche.setActionneur(actionneur);
         fiche.setAction(Fiche.FicheAction.APPROUVE);
-
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        // Ajouter 24 heures
+        LocalDateTime expirationDate = currentDateTime.plusHours(24);
+        fiche.setExpirationDate(expirationDate);
         List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
         if(status.equals(Fiche.FicheStatus.ACCEPTEDIPDF)){
             //nService.notifyPreparateurAboutIPDFAcceptance(fiche);
@@ -184,20 +203,18 @@ public class FicheServiceImp implements FicheService {
     }
 
     @Override
-    public Fiche ValidationIQP(long idFiche, long idIQP , Fiche.FicheStatus status , MultipartFile file) {
+    public Fiche ValidationIQP(long idFiche, long idIQP , Fiche.FicheStatus status ,String ficheAql, String commentaire ) {
         Fiche fiche = ficheRepository.findById(idFiche).orElseThrow(() -> new RuntimeException("fiche introuvable"));
         User actionneur = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("actionneur introuvable"));
-        //khallit status en cas ou el iqp tla3 zeda ynajjem yrejecti ficha
         fiche.setStatus(status);
-        // Traitement du fichier si présent
-        if (file != null && !file.isEmpty()) {
-            try{
-                String pdfPath = saveFile(file);
-                fiche.setFicheAQL(pdfPath);
-            }catch (Exception e){
-                throw new RuntimeException("Problème lors du stockage du fichier PDF : " + e.getMessage(), e);
-            }
+        if(status.equals(Fiche.FicheStatus.REJECTEDIQP)){
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            // Ajouter 24 heures
+            LocalDateTime expirationDate = currentDateTime.plusHours(24);
+            fiche.setExpirationDate(expirationDate);
         }
+        fiche.setFicheAQL(ficheAql);
+        fiche.setCommentaire(commentaire);
         fiche.setActionneur(actionneur);
         fiche.setAction(Fiche.FicheAction.APPROUVE);
         //nService.notifyPreparateurAboutFicheFinalValidation(fiche);
@@ -258,6 +275,18 @@ public class FicheServiceImp implements FicheService {
             fiches.addAll(ficheRepository.findByZone(u.getZone()));
         }
         return  fiches;
+    }
+
+    @Override
+    @Async
+    @Scheduled(fixedRate = 86400000) // Exécution tous les 24h
+    public void verifierEtMettreAJourFichesExpirées() {
+        List<Fiche> fichesExpirées = ficheRepository.findByExpirationDateBefore(LocalDateTime.now());
+        System.out.println("test");
+        for (Fiche fiche : fichesExpirées) {
+            fiche.setStatus(Fiche.FicheStatus.EXPIRED);
+            ficheRepository.save(fiche);
+        }
     }
 
 }

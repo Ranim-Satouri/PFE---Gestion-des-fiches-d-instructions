@@ -13,7 +13,7 @@ public interface FicheService {
     Fiche updateFiche(Fiche fiche );
     Fiche deleteFiche(long idFiche , long idSupprimateur );
     Fiche ValidationIPDF(long idFiche, long idIPDF , Fiche.FicheStatus Status , String commentaire);
-    Fiche ValidationIQP(long idFiche, long idIQP , Fiche.FicheStatus status , MultipartFile file);
+    Fiche ValidationIQP(long idFiche, long idIQP , Fiche.FicheStatus status ,String ficheAql,String commentaire);
     List<Fiche> getFichesByPreparateur(Long idPreparateur);
     List<Fiche> getFichesSheetByIPDF(Long idIPDF);
     List<Fiche> getFichesSheetByIQP(Long idIQP);
@@ -21,4 +21,5 @@ public interface FicheService {
     Resource loadPdf(String filename) throws Exception;
     List<Fiche> getFichesSheetByOperateur(Long idOperateur);
     List<Fiche> getFichesSheetByAdmin(Long idAdmin);
+    void verifierEtMettreAJourFichesExpirées();
 }

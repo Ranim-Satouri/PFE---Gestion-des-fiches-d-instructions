@@ -119,16 +119,17 @@ public class FicheController {
         }
     }
 
-    @PutMapping("/validationIQP/{idFiche}/{idIQP}")
+    @PutMapping("/validationIQP/{idFiche}")
     public ResponseEntity<?> validationIQP(
             @PathVariable long idFiche,
-            @PathVariable long idIQP,
+            @RequestParam long idIQP,
             @RequestParam String status,
-            @RequestPart("ficheAQL") MultipartFile ficheAQL) {
+            @RequestParam String ficheAql,
+            @RequestParam String commentaire)  {
         Fiche.FicheStatus ficheStatus = Fiche.FicheStatus.valueOf(status.toUpperCase());
 
         try {
-            return ResponseEntity.ok().body(ficheService.ValidationIQP(idFiche, idIQP, ficheStatus, ficheAQL));
+            return ResponseEntity.ok().body(ficheService.ValidationIQP(idFiche, idIQP, ficheStatus,ficheAql,commentaire));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

@@ -7,6 +7,7 @@ import com.pfe.backend.Model.Zone;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -18,4 +19,5 @@ public interface FicheRepository extends JpaRepository<Fiche,Long> {
     List<Fiche> findByProduit(Produit produit);
     List<Fiche> findByZone(Zone zone);
     List<Fiche> findByZoneAndStatus(Zone zone , Fiche.FicheStatus status);
+    List<Fiche> findByExpirationDateBefore(LocalDateTime expirationDate);
 }
