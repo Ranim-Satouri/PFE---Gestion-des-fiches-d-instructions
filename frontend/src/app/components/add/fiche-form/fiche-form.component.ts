@@ -179,9 +179,6 @@ export class FicheFormComponent {
   }
 
   onSubmit() {
-    console.log('✅ Produit sélectionné :', this.Form.get('produit')?.value);
-    console.log('✅ Zone sélectionnée :', this.Form.get('zone')?.value);
-    console.log('✅ Fichier sélectionné :', this.Form.get('fichier')?.value);
     if (this.Form.valid) {
       const produit: Produit = this.Form.value.produit;
       const zone: Zone = this.Form.value.zone;
@@ -222,7 +219,6 @@ export class FicheFormComponent {
         commentaire: '',
         ficheAQL: '',
         pdf: '',
-        expirationDate: new Date(),
         action: FicheAction.INSERT,
         produit: produit,
         zone: zone,

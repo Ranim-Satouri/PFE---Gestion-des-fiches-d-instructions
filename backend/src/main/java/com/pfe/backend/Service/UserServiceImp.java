@@ -125,7 +125,6 @@ public class UserServiceImp implements UserIservice{
     @Override
     public List<Object[]> getUserHistory(Long userId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
-
         return auditReader.createQuery()
                 .forRevisionsOfEntity(User.class, false, true)
                 .add(AuditEntity.id().eq(userId)) // Filtrer par ID de l'utilisateur

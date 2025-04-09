@@ -94,7 +94,7 @@
                         <span *ngSwitchCase="'PENDING'" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-700">En attente</span>
                         <span *ngSwitchCase="'EXPIRED'" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">Expirée</span>
                     </th>             
-                    <th *ngIf="userConnected.role === role.IPDF || userConnected.role === role.IQP || userConnected.role === role.SUPERUSER"  scope="col" class=" py-3 font-medium" >                       
+                    <th *ngIf="userConnected.role === role.IPDF || userConnected.role === role.IQP || userConnected.role === role.SUPERUSER "  scope="col" class=" py-3 font-medium" >                       
                         <app-fiche-validation [fiche]="fiche" (ficheUpdated)="getFiches()"></app-fiche-validation>
                     </th>                 
                     <th *ngIf="userConnected.role !== role.OPERATEUR" scope="col" class="px-5 py-2 font-medium">{{fiche.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>

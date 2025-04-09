@@ -139,13 +139,7 @@ export class AddProduitFormComponent {
           console.error('Erreur backend:', err);
 
           if (err.status === 404) {
-            if (err.error === 'Famille introuvable') {
-              this.errorMessage = 'La famille sélectionnée est introuvable.';
-            } else if (err.error === 'Actionneur introuvable') {
-              this.errorMessage = 'Utilisateur non autorisé à effectuer cette action.';
-            } else {
-              this.errorMessage = 'Ressource introuvable.';
-            }
+            this.errorMessage = 'famille ou actionneur introuvable.';
           } else if (err.status === 409) {
             this.errorMessage = 'Un produit avec le même indice et référence existe déjà.';
           } else {

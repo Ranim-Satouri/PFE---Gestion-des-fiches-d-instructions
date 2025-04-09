@@ -75,7 +75,8 @@ export class ProduitListComponent {
     }
     this.getProduits();
     this.getFamilles();
-  } // Fetch the list of Famille
+  }
+   // Fetch the list of Famille
   // ---------------fitrage-------------------------------------------------
   applyFilters() {
     let filtered = [...this.produits];

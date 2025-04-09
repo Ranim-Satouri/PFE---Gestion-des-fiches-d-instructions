@@ -35,7 +35,7 @@ export class UpdateZoneComponent {
   }
 
 
-  createZone() {
+  updateZone() {
     if (this.zoneForm.valid) {
           if(this.zone.nom != this.zoneForm.value.nom) {
             this.newZone = { ...this.zone };
@@ -50,12 +50,13 @@ export class UpdateZoneComponent {
                   this.successMessage = '';
                   this.close.emit();
                 }, 1000);
-            
               },
               error: (err) => {
                 this.successMessage = '';
                 console.error('Erreur lors de l’ajout :', err);
-                if (err.status === 409) {
+                if (err.status === 404) {
+                  this.errorMessage = "Actionneur introuvable";
+                } else if (err.status === 409) {
                   this.errorMessage = "Une zone avec ce nom existe déjà.";
                 } else {
                   this.errorMessage = "Une erreur inattendue est survenue.";

@@ -142,6 +142,7 @@ export class ZoneListComponent {
   openUpdateForm(zone : Zone) {
     this.zoneToUpdate = zone;
     this.showUpdateZoneForm  = true;
+    this.dropdownOpen = null;
   }
 
   closeUpdateForm() {

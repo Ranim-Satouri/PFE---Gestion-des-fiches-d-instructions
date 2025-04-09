@@ -94,4 +94,7 @@ export class FicheService {
     const url = `http://localhost:8080/ficheAudit/getFicheAudit/${id}`;
     return this.http.get(url);
   }
+  checkFicheStatusUpdate(): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/updateStatus`);
+  }
 }

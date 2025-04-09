@@ -11,9 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.crypto.SecretKey;
@@ -25,7 +22,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -59,7 +55,6 @@ public class FicheServiceImp implements FicheService {
         fiche.setAction(Fiche.FicheAction.INSERT);
         fiche.setStatus(Fiche.FicheStatus.PENDING);
         LocalDateTime currentDateTime = LocalDateTime.now();
-        // Ajouter 24 heures
         LocalDateTime expirationDate = currentDateTime.plusHours(24);
         fiche.setExpirationDate(expirationDate);
         //nService.notifyIPDFAboutFicheInjection(fiche);
@@ -120,8 +115,6 @@ public class FicheServiceImp implements FicheService {
         }
     }
 
-
-
     @Override
     public List<Fiche> getFiches() {
         return ficheRepository.findByStatusNot(Fiche.FicheStatus.DELETED);
@@ -141,12 +134,9 @@ public class FicheServiceImp implements FicheService {
         //if(!exisitingFiche.getStatus().equals(Fiche.FicheStatus.PENDING) && !actionneur.getRole().equals(Role.SUPERUSER)){
           //  throw new RuntimeException("Interdit de Modifier une fiche deja Approuver sans etre un SUPERUSR");
         //}
-        System.out.println(exisitingFiche.getPdf());
-        System.out.println(fiche.getPdf());
+
         if(!exisitingFiche.getPdf().equals(fiche.getPdf())){
-            System.out.println("dkhalna");
             LocalDateTime currentDateTime = LocalDateTime.now();
-            // Ajouter 24 heures
             LocalDateTime expirationDate = currentDateTime.plusHours(24);
             exisitingFiche.setExpirationDate(expirationDate);
             exisitingFiche.setPdf(fiche.getPdf());
@@ -158,7 +148,7 @@ public class FicheServiceImp implements FicheService {
         exisitingFiche.setZone(zone);
         exisitingFiche.setActionneur(actionneur);
         exisitingFiche.setStatus(fiche.getStatus());
-        exisitingFiche.setAction(Fiche.FicheAction.UPDATE); // najmou nahiwha fel mba3d kif na3mlou el frontend w nabaathouha direct maa el data JSON
+        exisitingFiche.setAction(Fiche.FicheAction.UPDATE);
         return ficheRepository.save(exisitingFiche);
     }
 
@@ -183,7 +173,6 @@ public class FicheServiceImp implements FicheService {
         fiche.setActionneur(actionneur);
         fiche.setAction(Fiche.FicheAction.APPROUVE);
         LocalDateTime currentDateTime = LocalDateTime.now();
-        // Ajouter 24 heures
         LocalDateTime expirationDate = currentDateTime.plusHours(24);
         fiche.setExpirationDate(expirationDate);
         List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
@@ -209,7 +198,6 @@ public class FicheServiceImp implements FicheService {
         fiche.setStatus(status);
         if(status.equals(Fiche.FicheStatus.REJECTEDIQP)){
             LocalDateTime currentDateTime = LocalDateTime.now();
-            // Ajouter 24 heures
             LocalDateTime expirationDate = currentDateTime.plusHours(24);
             fiche.setExpirationDate(expirationDate);
         }
@@ -228,7 +216,6 @@ public class FicheServiceImp implements FicheService {
     @Override
     public List<Fiche> getFichesByPreparateur(Long idPreparateur) {
         User preparateur = userRepository.findById(idPreparateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        System.out.println(preparateur.getRole());
         if(preparateur.getRole().equals(Role.PREPARATEUR ) || preparateur.getRole().equals(Role.SUPERUSER)){
             return ficheRepository.findFicheByPreparateurAndActionNot(preparateur , Fiche.FicheAction.DELETE);
         }else{
@@ -239,7 +226,6 @@ public class FicheServiceImp implements FicheService {
     @Override
     public List<Fiche> getFichesSheetByIPDF(Long idIPDF) {
         User ipdf = userRepository.findById(idIPDF).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        System.out.println(ipdf.getRole());
         if(ipdf.getRole().equals(Role.IPDF) || ipdf.getRole().equals(Role.SUPERUSER) ){
             return ficheRepository.findFicheByIPDFAndActionNot(ipdf , Fiche.FicheAction.DELETE );
         }
@@ -249,7 +235,6 @@ public class FicheServiceImp implements FicheService {
     @Override
     public List<Fiche> getFichesSheetByIQP(Long idIQP) {
         User iqp = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        System.out.println(iqp.getRole());
         if(iqp.getRole().equals(Role.IQP) || iqp.getRole().equals(Role.SUPERUSER)){
             return  ficheRepository.findFicheByIQPAndActionNotAndStatusNot(iqp , Fiche.FicheAction.DELETE , Fiche.FicheStatus.REJECTEDIPDF );
         }else{
@@ -278,15 +263,16 @@ public class FicheServiceImp implements FicheService {
     }
 
     @Override
-    @Async
-    @Scheduled(fixedRate = 86400000) // Exécution tous les 24h
-    public void verifierEtMettreAJourFichesExpirées() {
-        List<Fiche> fichesExpirées = ficheRepository.findByExpirationDateBefore(LocalDateTime.now());
-        System.out.println("test");
-        for (Fiche fiche : fichesExpirées) {
-            fiche.setStatus(Fiche.FicheStatus.EXPIRED);
-            ficheRepository.save(fiche);
+    public boolean verifierEtMettreAJourFichesExpirees() {
+        List<Fiche> fichesExpirees = ficheRepository.findByStatusNotAndExpirationDateBefore(Fiche.FicheStatus.EXPIRED,LocalDateTime.now());
+        boolean updated = false;
+        if(!fichesExpirees.isEmpty()){
+            for (Fiche fiche : fichesExpirees) {
+                fiche.setStatus(Fiche.FicheStatus.EXPIRED);
+                ficheRepository.save(fiche);
+            }
+            updated = true;
         }
+        return updated;
     }
-
 }

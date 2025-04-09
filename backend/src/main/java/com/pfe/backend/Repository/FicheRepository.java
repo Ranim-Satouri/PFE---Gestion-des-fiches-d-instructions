@@ -19,5 +19,5 @@ public interface FicheRepository extends JpaRepository<Fiche,Long> {
     List<Fiche> findByProduit(Produit produit);
     List<Fiche> findByZone(Zone zone);
     List<Fiche> findByZoneAndStatus(Zone zone , Fiche.FicheStatus status);
-    List<Fiche> findByExpirationDateBefore(LocalDateTime expirationDate);
+    List<Fiche> findByStatusNotAndExpirationDateBefore(Fiche.FicheStatus status ,LocalDateTime expirationDate);
 }

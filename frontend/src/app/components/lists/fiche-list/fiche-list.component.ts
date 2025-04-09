@@ -42,7 +42,7 @@ export class FicheListComponent {
       this.userConnected = JSON.parse(userFromLocalStorage);      
     }
     this.getFiches();
-   
+    this.checkFicheStatusPeriodically();
   }
   getFiches() {//
 
@@ -164,7 +164,17 @@ export class FicheListComponent {
       });
     }
   }
-
+  checkFicheStatusPeriodically() {
+    setInterval(() => {
+      this.FicheService.checkFicheStatusUpdate().subscribe(updated => {
+        if (updated) {
+          if(updated === true){
+            window.location.reload();
+          }
+        }
+      });
+    }, 60000); 
+  }
 
   deleteFiche(idFiche: number | undefined ): void {
     

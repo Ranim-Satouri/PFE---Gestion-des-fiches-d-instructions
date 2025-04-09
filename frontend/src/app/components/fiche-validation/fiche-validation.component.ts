@@ -102,8 +102,6 @@ export class FicheValidationComponent {
     this.aqlFile = null;
     this.ficheToApprove = undefined!;
     this.ficheUpdated.emit();  
-
-    //this.getFiches();
   }
 
   onFileSelected(event: Event) {
