@@ -21,5 +21,5 @@ public interface FicheService {
     Resource loadPdf(String filename) throws Exception;
     List<Fiche> getFichesSheetByOperateur(Long idOperateur);
     List<Fiche> getFichesSheetByAdmin(Long idAdmin);
-    void verifierEtMettreAJourFichesExpirées();
+    boolean verifierEtMettreAJourFichesExpirees();
 }

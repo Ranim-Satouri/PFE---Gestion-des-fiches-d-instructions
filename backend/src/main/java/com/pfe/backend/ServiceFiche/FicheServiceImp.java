@@ -278,15 +278,21 @@ public class FicheServiceImp implements FicheService {
     }
 
     @Override
-    @Async
-    @Scheduled(fixedRate = 86400000) // Exécution tous les 24h
-    public void verifierEtMettreAJourFichesExpirées() {
-        List<Fiche> fichesExpirées = ficheRepository.findByExpirationDateBefore(LocalDateTime.now());
+    //@Async
+    //@Scheduled(fixedRate = 60000)
+    public boolean verifierEtMettreAJourFichesExpirees() {
+        List<Fiche> fichesExpirees = ficheRepository.findByStatusNotAndExpirationDateBefore(Fiche.FicheStatus.EXPIRED,LocalDateTime.now());
         System.out.println("test");
-        for (Fiche fiche : fichesExpirées) {
-            fiche.setStatus(Fiche.FicheStatus.EXPIRED);
-            ficheRepository.save(fiche);
+        boolean updated = false;
+        if(!fichesExpirees.isEmpty()){
+            for (Fiche fiche : fichesExpirees) {
+                fiche.setStatus(Fiche.FicheStatus.EXPIRED);
+                ficheRepository.save(fiche);
+            }
+            updated = true;
         }
+        return updated;
+
     }
 
 }

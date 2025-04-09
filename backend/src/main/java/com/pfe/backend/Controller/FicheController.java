@@ -167,7 +167,9 @@ public class FicheController {
         }catch(RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-    } @GetMapping("/getFichesSheetByAdmin/{idAdmin}")
+    }
+
+    @GetMapping("/getFichesSheetByAdmin/{idAdmin}")
     public ResponseEntity<?> getFichesSheetByAdmin(@PathVariable Long idAdmin) {
         try{
             return new ResponseEntity<>(ficheService.getFichesSheetByAdmin(idAdmin), HttpStatus.OK);
@@ -175,5 +177,12 @@ public class FicheController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @GetMapping("/updateStatus")
+    public ResponseEntity<Boolean> checkFicheStatusUpdate() {
+        boolean updated = ficheService.verifierEtMettreAJourFichesExpirees();
+        return ResponseEntity.ok(updated);
+    }
+
 
 }
