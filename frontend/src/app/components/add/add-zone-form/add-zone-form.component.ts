@@ -61,7 +61,7 @@ export class AddZoneFormComponent {
               console.error('Erreur lors de l’ajout :', err);
       
               if (err.status === 404) {
-                this.errorMessage = "Actionneur introuvable. Veuillez vous reconnecter.";
+                this.errorMessage = "Actionneur introuvable";
               } else if (err.status === 409) {
                 this.errorMessage = "Une zone avec ce nom existe déjà.";
               } else {

@@ -33,6 +33,7 @@ public class Famille {
     @OneToMany(mappedBy = "famille", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Produit> produits;
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "idActionneur", nullable = false)
     private User actionneur;

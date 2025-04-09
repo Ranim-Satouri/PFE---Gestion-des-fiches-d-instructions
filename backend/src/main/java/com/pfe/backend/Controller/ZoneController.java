@@ -29,7 +29,11 @@ public class ZoneController {
     @PostMapping("addZone")
     public ResponseEntity<?> addZone(@RequestBody Zone zone,@RequestParam Long idActionneur)
     {
-        return zoneService.addZone(zone,idActionneur);
+        try {
+            return zoneService.addZone(zone,idActionneur);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
     @DeleteMapping("/delete/{idZone}")
     public ResponseEntity<?> DeleteZone(@PathVariable Long idZone, @RequestParam Long idActionneur) {
@@ -42,7 +46,11 @@ public class ZoneController {
     }
     @PutMapping("/update/{idZone}")
     public ResponseEntity<?> updateZone(@PathVariable Long idZone, @RequestBody Zone updatedZone,@RequestParam Long idActionneur) {
-        return zoneService.updateZone(idZone, updatedZone,idActionneur);
+        try {
+            return zoneService.updateZone(idZone, updatedZone,idActionneur);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
     @GetMapping("/zone-users/{idZone}")
     public Set<UserZone> getZoneUsers(@PathVariable Long idZone) {

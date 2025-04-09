@@ -92,6 +92,17 @@ constructor(private familleService: FamilleService,private produitService: Produ
       },
       error: (err) => {
         console.error('Erreur lors de l’ajout :', err);
+        this.successMessage = '';
+        if (err.status === 404) {
+          this.errorMessage = "Actionneur introuvable";
+        } else if (err.status === 409) {
+          this.errorMessage = "Une famille avec ce nom existe déjà.";
+        } else {
+          this.errorMessage = "Une erreur inattendue est survenue.";
+        }
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 4000);
       }
     });
   }
@@ -132,13 +143,7 @@ constructor(private familleService: FamilleService,private produitService: Produ
               console.error('Erreur backend:', err);
     
               if (err.status === 404) {
-                if (err.error === 'Famille introuvable') {
-                  this.errorMessage = 'La famille sélectionnée est introuvable.';
-                } else if (err.error === 'Actionneur introuvable') {
-                  this.errorMessage = 'Utilisateur non autorisé à effectuer cette action.';
-                } else {
-                  this.errorMessage = 'Ressource introuvable.';
-                }
+                this.errorMessage = 'famille ou actionneur introuvable.';
               } else if (err.status === 409) {
                 this.errorMessage = 'Un produit avec le même indice et référence existe déjà.';
               } else {

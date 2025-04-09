@@ -47,7 +47,7 @@
     </button>
 
     <!-- Title -->
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Ajouter un Produit</h2>
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Modifier le Produit</h2>
 
   
     
@@ -63,7 +63,6 @@
           formControlName="nom"
           class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:ring-1 focus:outline-none  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
           dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
-        
         />
         <div *ngIf="productForm.get('nom')?.invalid && productForm.get('nom')?.touched && formSubmitted" class="text-red-500 dark:text-red-400 text-sm mt-1">
           Le nom du produit est requis.
@@ -79,6 +78,10 @@
           formControlName="reference"
           class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800  dark:text-white border-2  text-sm transition   focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
           dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
+          [ngClass]="{
+            'border-red-500 ring-red-500': productForm.get('reference')?.invalid && productForm.get('reference')?.touched && formSubmitted,
+            'border-gray-400 dark:border-gray-700': !(productForm.get('reference')?.invalid && productForm.get('reference')?.touched)
+          }"
         />
         <div *ngIf="productForm.get('reference')?.invalid && productForm.get('reference')?.touched && formSubmitted" class="text-red-500 dark:text-red-400 text-sm mt-1">
           La référence est requise.

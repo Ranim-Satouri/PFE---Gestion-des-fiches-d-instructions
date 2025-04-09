@@ -26,23 +26,6 @@ public class FicheController {
     @Autowired
     private FicheService ficheService;
 
-
-   /* @PostMapping("/addFiche")
-    public ResponseEntity<?> addFiche(@RequestPart("fiche") String ficheJson ,@RequestPart("filePDF") MultipartFile filePDF ){
-        try {
-            System.out.println("aaslema");
-            System.out.println(ficheJson);
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new JavaTimeModule()); // ✅ Supporte LocalDateTime
-            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Recommandé
-            Fiche fiche = objectMapper.readValue(ficheJson, Fiche.class); //  String --> Fiche
-
-            return ResponseEntity.ok().body(ficheService.addFiche(fiche , filePDF));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }*/
     @PostMapping("/addFiche")
     public ResponseEntity<?> addFiche(@RequestBody Fiche fiche) {
         Fiche saved = ficheService.addFiche(fiche);
@@ -62,12 +45,8 @@ public class FicheController {
             error.put("error", "Erreur lors de l'enregistrement du fichier");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
-
     }
 
-    //fel front inshallah kif yenzel el user aala telcharger uen fiche walla cansulter , nekhdhou akal filename w naamlou getPDF
-    // w nabaathouh lel front fi wa9tha , haja behya lel performance ya3ni nab9awech nabaathou fel les pdfs el kol lel frontend
-    // awka selon el besoin njibou el pdf w zid securisé bien sur
     @GetMapping("/getPdf/{filename}")
     public ResponseEntity<?> getPdf(@PathVariable String filename) {
         try {

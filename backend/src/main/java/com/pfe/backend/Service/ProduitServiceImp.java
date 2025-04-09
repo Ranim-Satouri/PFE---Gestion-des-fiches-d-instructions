@@ -27,19 +27,8 @@ public class ProduitServiceImp implements ProduitService{
 
     @Override
     public ResponseEntity<?> addProduit(Produit produit, Long idFamille, Long idActionneur) {
-        Optional<Famille> familleOpt = familleRepository.findById(idFamille);
-        if (familleOpt.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body("Famille introuvable");
-        }
-
-        Optional<User> actionneurOpt = userRepo.findById(idActionneur);
-        if (actionneurOpt.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body("Actionneur introuvable");
-        }
+        Famille famille = familleRepository.findById(idFamille).orElseThrow(()-> new RuntimeException("Famille introuvable ! "));
+        User actionneur = userRepo.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
 
         if (produit.getNomProduit() == null || produit.getNomProduit().isEmpty()) {
             produit.setNomProduit(produit.getRef() + "-" + produit.getIndice());
@@ -51,9 +40,8 @@ public class ProduitServiceImp implements ProduitService{
                     .status(HttpStatus.CONFLICT)
                     .body("Un produit avec le même nom existe déjà");
         }
-
-        produit.setFamille(familleOpt.get());
-        produit.setActionneur(actionneurOpt.get());
+        produit.setFamille(famille);
+        produit.setActionneur(actionneur);
         Produit savedProduit = produitRepository.save(produit);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProduit);
@@ -66,36 +54,22 @@ public class ProduitServiceImp implements ProduitService{
       @Override
        public ResponseEntity<?> updateProduit(Long idProduit, Long idFamille, Produit newProduitData ,Long idActionneur)
         {
-            Optional<Produit> produitOpt = produitRepository.findById(idProduit);
-            if(produitOpt.isEmpty()){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produitne introuvable");
-            }
-            Produit produit = produitOpt.get();
-            Optional<User> actionneur = userRepo.findById(idActionneur);
-            if (actionneur.isEmpty()) {
-                return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body("Actionneur introuvable");
-            }
+            Famille famille = familleRepository.findById(idFamille).orElseThrow(()-> new RuntimeException("Famille introuvable ! "));
+            Produit produit = produitRepository.findById(idProduit).orElseThrow(() -> new RuntimeException("Produit introuvable"));;
+            User actionneur = userRepo.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+
             Optional<Produit> existingProduit = produitRepository.findByIndiceAndRefAndIsDeleted(newProduitData.getIndice(),newProduitData.getRef(),false);
             if (existingProduit.isPresent() && existingProduit.get().getIdProduit() != idProduit) {
                 return ResponseEntity
                         .status(HttpStatus.CONFLICT)
                         .body("Un produit avec le même indice et reference existe déjà");
             }
-            Optional<Famille> familleOpt = familleRepository.findById(idFamille);
-            if (familleOpt.isEmpty()) {
-                return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body("Famille introuvable");
-            }
+
             if(newProduitData.getNomProduit()!=null ) produit.setNomProduit(newProduitData.getNomProduit());
             if(newProduitData.getRef()!=null ) produit.setRef(newProduitData.getRef());
             if(newProduitData.getIndice()!=null ) produit.setIndice(newProduitData.getIndice());
-            produit.setFamille(familleOpt.get());
-            newProduitData.setIdProduit(idProduit);
-            newProduitData.setActionneur(actionneur.get());
-            //System.out.println(produitRepository.save(newProduitData));
+            produit.setFamille(famille);
+            produit.setActionneur(actionneur);
             return ResponseEntity.status(HttpStatus.CREATED).body(produitRepository.save(produit));
         }
         @Override

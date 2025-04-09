@@ -23,12 +23,8 @@ public class FamilleServiceImp implements FamilleService{
 
     @Override
     public ResponseEntity<?> addFamille(Famille famille, Long idActionneur) {
-        Optional<User> actionneurOpt = userRepository.findById(idActionneur);
-        if (actionneurOpt.isEmpty()) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body("Actionneur introuvable");
-        }
+        User actionneur = userRepository.findById(idActionneur)
+                .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
 
         Optional<Famille> existingFamille = familleRepository.findByNomFamilleAndIsDeleted(famille.getNomFamille(), false);
         if (existingFamille.isPresent()) {
@@ -36,12 +32,11 @@ public class FamilleServiceImp implements FamilleService{
                     .status(HttpStatus.CONFLICT)
                     .body("Une famille avec le même nom existe déjà");
         }
-
-        famille.setActionneur(actionneurOpt.get());
+        famille.setActionneur(actionneur);
         Famille savedFamille = familleRepository.save(famille);
 
         return ResponseEntity
-                .status(HttpStatus.CREATED) // 201 Created, plus approprié ici
+                .status(HttpStatus.CREATED)
                 .body(savedFamille);
     }
 
@@ -53,8 +48,7 @@ public class FamilleServiceImp implements FamilleService{
     public ResponseEntity<?> updateFamily(Long idFam, Famille NewfamilyData , Long idActionneur)
     {
         Famille famille = familleRepository.findById(idFam).orElseThrow(()-> new RuntimeException("Famille introuvable ! "));
-        User actionneur = userRepository.findById(idActionneur)
-                .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+        User actionneur = userRepository.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
         Optional<Famille> existingFamille = familleRepository.findByNomFamilleAndIsDeleted(NewfamilyData.getNomFamille(), false);
         if (existingFamille.isPresent()) {
             return ResponseEntity
@@ -81,7 +75,7 @@ public class FamilleServiceImp implements FamilleService{
         famille.setDeleted(true);
         familleRepository.save(famille);
 
-}
+    }
     @Override
     public List<Famille> getActiveFamilies() {
         return familleRepository.findByIsDeletedFalse();

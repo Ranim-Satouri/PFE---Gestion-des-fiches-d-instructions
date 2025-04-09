@@ -15,7 +15,11 @@ public class FamilleController {
     private FamilleService familleService;
     @PostMapping("/addFamille")
     public ResponseEntity<?> addFamille(@RequestBody Famille famille, @RequestParam Long idActionneur) {
-        return familleService.addFamille(famille, idActionneur);
+        try {
+            return familleService.addFamille(famille, idActionneur);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
     @GetMapping("/getAll")
     public ResponseEntity<List<Famille>> getFamilles(){
