@@ -24,6 +24,10 @@ export const routes: Routes = [
       path: 'access-denied',
       component: AccessDeniedComponent
     },
+  {
+    path: 'form',
+    component: RegisterFormComponent
+  },
     {
         path: '',
         component: LayoutComponent,
