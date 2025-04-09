@@ -186,22 +186,51 @@ export class FicheFormComponent {
       const produit: Produit = this.Form.value.produit;
       const zone: Zone = this.Form.value.zone;
       const file: File = this.Form.value.fichier;
-     
-  
-    const fiche : Fiche = {
-      status: FicheStatus.PENDING,
-      commentaire: '',
-      ficheAQL: '',
-      pdf: '',
-      expirationDate: new Date(),
-      action: FicheAction.INSERT,
-      produit: produit,
-      zone: zone,
-      preparateur: this.userConnected,
-      ipdf: this.userConnected,
-      iqp: this.userConnected,
-      actionneur: this.userConnected
-    }
+
+      const ipdf: any = {
+        idUser : 3,
+        nom: '',
+        prenom: '',
+        genre: "FEMME",
+        email: '',
+        matricule: '',
+        password: "123456",  // Correction de la majuscule
+        num: '',
+        actionneur: this.userConnected.idUser!, // Correction de la majuscule
+        status: 'ACTIVE',
+        role: 'IPDF', // Ajout d'une valeur par défaut
+        // zones: Array.isArray(this.registerForm.value.zones) ? this.registerForm.value.zones : [],
+        // modifieLe: new Date(),
+      };
+      const iqp: any = {
+        idUser : 4,
+        nom: '',
+        prenom: '',
+        genre: "FEMME",
+        email: '',
+        matricule: '',
+        password: "123456",  // Correction de la majuscule
+        num: '',
+        actionneur: this.userConnected.idUser!, // Correction de la majuscule
+        status: 'ACTIVE',
+        role: 'IQP', // Ajout d'une valeur par défaut
+        // zones: Array.isArray(this.registerForm.value.zones) ? this.registerForm.value.zones : [],
+        // modifieLe: new Date(),
+      };
+      const fiche : Fiche = {
+        status: FicheStatus.PENDING,
+        commentaire: '',
+        ficheAQL: '',
+        pdf: '',
+        expirationDate: new Date(),
+        action: FicheAction.INSERT,
+        produit: produit,
+        zone: zone,
+        preparateur: this.userConnected,
+        ipdf: ipdf,
+        iqp: iqp,
+        actionneur: this.userConnected
+      }
          
       console.log(fiche);
       this.FicheService.uploadPDF( file).subscribe({

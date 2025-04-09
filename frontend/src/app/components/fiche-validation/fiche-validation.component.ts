@@ -120,32 +120,48 @@ export class FicheValidationComponent {
       next: () => {
         this.isRejetModalOpen = false;
         this.ficheUpdated.emit();  
-
-       // this.getFiches();
       },
       error: err => {
         console.error('Erreur lors du rejet', err);
       }
     });
   }
-  approuverFicheAvecAQL(status: FicheStatus) {
-    if(this.ficheToApprove.status == FicheStatus.REJECTEDIQP && !this.rejetComment.trim() ) return ;
-    this.FicheService.validationIQP(this.ficheToApprove.idFiche, this.userConnected.idUser!, status ,this.aqlFile! ).subscribe({
-      next: () => {
-        this.isRejetModalOpen = false;
-        this.isUploadAQLModalOpen = false;
-        this.ficheUpdated.emit();  
-
-       // this.getFiches();
-      },
-      error: err => {
-        console.error('Erreur lors du rejet', err);
-      }
-    });
+  approuverFicheAvecAQL(status: string) {
+    if(this.ficheToApprove.status == FicheStatus.REJECTEDIQP && !this.rejetComment.trim() ) return ;    
+    if(this.aqlFile){
+      this.FicheService.uploadPDF( this.aqlFile).subscribe({
+        next: (response) => {
+          console.log('Fichier pdf stocker avec succès !', response);
+          this.FicheService.validationIQP(this.ficheToApprove.idFiche, this.userConnected.idUser!, status , response.fileName ,'' ).subscribe({
+            next: () => {
+              this.isRejetModalOpen = false;
+              this.isUploadAQLModalOpen = false;
+              this.ficheUpdated.emit();  
+            },
+            error: err => {
+              console.error('Erreur lors du rejet', err);
+            }
+          });
+        },
+        error: (err) => {
+          console.error('Erreur lors de la modification de la fiche !', err);
+        }
+      });
+    }else{
+      this.FicheService.validationIQP(this.ficheToApprove.idFiche, this.userConnected.idUser!, status , '', this.rejetComment ).subscribe({
+        next: () => {
+          this.isRejetModalOpen = false;
+          this.isUploadAQLModalOpen = false;
+          this.ficheUpdated.emit();  
+        },
+        error: err => {
+          console.error('Erreur lors du rejet', err);
+        }
+      });
+    }
   }
   openCommentModal(commentaire: string) {
     this.rejetComment = commentaire;
     this.isCommentModalOpen = true;
   }
-  
 }

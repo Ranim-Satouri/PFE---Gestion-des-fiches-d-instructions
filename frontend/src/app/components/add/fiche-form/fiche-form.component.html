@@ -284,7 +284,7 @@
     [ngClass]="{
       'border-red-500 ring-red-500': Form.get('zone')?.invalid && Form.get('zone')?.touched,
       'border-gray-400 dark:border-gray-700': !(Form.get('zone')?.invalid && Form.get('zone')?.touched)
-    }"(change)="onFileSelected($event)"/>
+    }" (change)="onFileSelected($event)"/>
     <div *ngIf="Form.get('fichier')?.invalid && Form.get('fichier')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
     Veuillez sélectionner une fiche d'instruction au format PDF.
     </div>
