@@ -25,9 +25,20 @@ export class UserService {
       `${this.apiUrl2}/register`, user, { params } );
   }
   
-  getAll(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/getUsers`);
-  }
+  getAll(): Observable<User[]> {return this.http.get<User[]>(`${this.apiUrl}/getUsers`); }
+
+
+updateUser(idUser:number, user:User , idActionneur:number):Observable<any>
+{
+  return this.http.put<User>(`${this.apiUrl}/update/${idUser}?idActionneur=${idActionneur}`, user); 
+}
+removeZone(idUser: number, idZone: number, idActionneur: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/retirerZoneAUser/${idUser}/${idZone}/${idActionneur}`);
+}
+
+
+
+
 
   attribuerZone(idUser: number, idZone:number,idActionneur:number):Observable<any>
     {

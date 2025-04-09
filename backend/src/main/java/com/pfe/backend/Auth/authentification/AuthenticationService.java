@@ -1,18 +1,13 @@
 package com.pfe.backend.Auth.authentification;
-
-
 import com.pfe.backend.Auth.Config.JwtService;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
-
 import com.pfe.backend.Repository.UserRepository;
-import com.pfe.backend.Repository.ZoneRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

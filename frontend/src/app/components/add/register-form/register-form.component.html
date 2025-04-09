@@ -7,7 +7,7 @@
     <button
       (click)="closeForm()" type="button"
       class="absolute top-[5px] right-1 text-gray-400 bg-transparent hover:bg-blue-100 hover:text-gray-500 rounded-lg text-sm w-8 h-8 
-      inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white
+      inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white border-none
       dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500 dark:border-none 
       dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500"
       data-modal-hide="default-modal" >
@@ -47,20 +47,20 @@
       <!-- End Stepper Nav -->
       <!-- Stepper Content -->
       <div class="mt-5 sm:mt-8">
-        <div  class="flex flex-row justify-around p-2 border-gray-200 rounded-xl  w-full min-w-[400px] h-auto
+        <div  class="flex flex-row justify-around p-2 border-none rounded-xl  w-full min-w-[400px] h-auto
           dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
           dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 ">
           <form
             [formGroup]="registerForm"
              (ngSubmit)="submitForm()"
             class="w-fit max-w-md mx-auto z-40  dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
-            dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 dark:border-none transition-all duration-200">
+            dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 dark:border-none border-none">
             <!-- First Content -->
             <div
               *ngIf="currentStep === 1"
               data-hs-stepper-content-item='{  "index": 1 }' >
               <!-- Nom et Prénom sur la même ligne -->
-              <div class="flex flex-row space-x-3 bg-white rounded-lg w-full dark:bg-gray-700 dark:border-none ">
+              <div class="flex flex-row space-x-3 bg-white border-none rounded-lg w-full dark:bg-gray-700 dark:border-none ">
                 
               <!-- Nom -->
                 <div class="relative bg-inherit w-fit ">
@@ -79,7 +79,7 @@
                         registerForm.get('nom')?.touched)}" />
 
                   <label for="Nom" class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white px-1 peer-placeholder-shown:text-base
-                     peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 
+                     peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 border-none
                      peer-focus:text-sm transition-all dark:bg-gray-700 dark:text-white border dark:shadow-gray-900 dark:focus:ring-blue-500 dark:border-none
                      dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 duration-200">Nom</label>
                 </div>
@@ -97,7 +97,7 @@
                       'border-gray-400 dark:border-gray-700': !( registerForm.get('nom')?.invalid && registerForm.get('prenom')?.touched ) }" />
 
                   <label for="Prénom"
-                    class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white px-1 peer-placeholder-shown:text-base
+                    class="absolute border-none cursor-text left-2 -top-3 text-sm text-gray-500 bg-white px-1 peer-placeholder-shown:text-base
                      peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 
                      peer-focus:text-sm transition-all dark:border-none 
                      dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
@@ -120,7 +120,7 @@
                       registerForm.get('matricule')?.invalid && registerForm.get('matricule')?.touched)}" />
 
                 <label for="matricule"
-                  class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white px-1 peer-placeholder-shown:text-base
+                  class="absolute cursor-text border-none left-2 -top-3 text-sm text-gray-500 bg-white px-1 peer-placeholder-shown:text-base
                   peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 
                   peer-focus:text-sm transition-all dark:border-none 
                   dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500 dark:border-gray-600 
@@ -151,7 +151,7 @@
             <!-- End First Content -->
             <!-- Second Content -->
             <div
-              *ngIf="currentStep === 2" class="border-gray-200 rounded-xl w-full min-w-[400px] h-auto dark:bg-gray-700 dark:border-none" >
+              *ngIf="currentStep === 2" class="border-gray-200 rounded-xl w-full min-w-[400px] h-auto dark:bg-gray-700 dark:border-none border-none" >
               <div class="relative bg-white mt-3.5 rounded-lg w-full dark:bg-gray-700 dark:border-none">
                 <input
                   type="text"
@@ -171,7 +171,7 @@
 
                 <label for="email"
                   class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white w-fit pl-0.5 px-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3
-                   peer-focus:text-sky-600 peer-focus:text-sm transition-all
+                   peer-focus:text-sky-600 peer-focus:text-sm transition-all border-none
                    dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-none 
                    dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500" > Email</label>
               </div>
@@ -188,7 +188,7 @@
                     'border-gray-400 dark:border-gray-700': !(  registerForm.get('numero')?.invalid && registerForm.get('numero')?.touched) }" />
 
                 <label  for="numero" class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white w-fit pl-0.5 px-4 peer-placeholder-shown:text-base
-                   peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600
+                   peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-sky-600 border-none
                     peer-focus:text-sm transition-all dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-none
                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500"> Numéro</label><br />
               </div> <br />
@@ -254,12 +254,12 @@
                     class="flex items-center justify-between border-b border-gray-300 pb-1 text-gray-700 transition-colors hover:border-gray-400 hover:text-gray-900 w-full">
                     <span class="text-sm font-medium dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 
-                    transition-all duration-200 dark:border-none">
+                    transition-all duration-200 dark:border-none border-none">
                     Zone</span>
                     <span class="transition-transform group-open:-rotate-180 dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
-                    dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 dark:border-none">
+                    dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 dark:border-none border-none">
                       <svg xmlns="http://www.w3.org/2000/svg"
-                        fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="size-4" >
+                        fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="size-4" border="none">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg></span>
                   </summary>
                   <!-- Dropdown -->
@@ -269,10 +269,10 @@
                      dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 transition-all duration-200"
                   >
                     <div class="flex items-center justify-between px-3 py-2">
-                      <span class="text-sm text-gray-700
+                      <span class="text-sm text-gray-700 
                       dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
-                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 transition-all duration-200 dark:border-none"
-                        >{{ registerForm.get("zones")?.value }} Selected</span>
+                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 border-none"
+                        >{{ (registerForm.get("zones")?.value || []).length }} sélectionnées</span>
                     </div>
                     <fieldset class="p-3">
                       <legend class="sr-only" id="zone">Checkboxes</legend>
@@ -281,20 +281,18 @@
                         <label
                           *ngFor="let zone of zones"
                           class="inline-flex items-center gap-3
-                          dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
-                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 transition-all duration-200"
-                        >
+                          dark:bg-gray-700 dark:text-white border-none dark:shadow-gray-900  dark:border-none">
                           <input
                             type="checkbox"
                             class="size-5 rounded border-gray-300 shadow-sm
-                            dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
-                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 transition-all duration-200"
+                            dark:bg-gray-700 dark:text-white border dark:shadow-gray-900
+                             dark:border-none"
+                            [checked]="(registerForm.get('zones')?.value || []).includes(zone.idZone)"
                             [value]="zone.idZone"
-                            (change)="toggleZoneSelection(zone.idZone || 1)"
-                          />
-                          <span class="text-sm font-medium text-gray-700
-                          dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
-                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 transition-all duration-200">{{ zone.nom}}</span>
+                            (change)="toggleZoneSelection(zone.idZone || 1)"/>
+                          <span class="text-sm font-medium text-gray-700 border-none
+                          dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500 dark:border-none  ">
+                          {{ zone.nom}}</span>
                         </label>
                       </div>
                     </fieldset>

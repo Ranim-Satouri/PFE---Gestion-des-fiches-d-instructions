@@ -187,7 +187,11 @@
           dark:bg-gray-700 dark:text-white border
            dark:focus:ring-blue-500 dark:focus:border-blue-500  dark:focus:shadow-blue-500 transition-all duration-200 "
       /> -->
-    <app-register-form  *ngIf="showForm" (close)="hideRegisterForm()" (submit)="onUserRegistered($event)"></app-register-form>
+    <app-register-form  *ngIf="showForm" (close)="hideRegisterForm()" 
+    (submit)="onUserRegistered($event)"
+    [userToUpdate]="selectedUser"
+    (userUpdated)="onUserUpdated()"
+    ></app-register-form>
 
     <div class="relative z-10  mb-2 shadow-md rounded-lg max-h-[calc(100%-132px)] custom-scrollbar-container overflow-auto " (scroll)="onScroll()">
         <table class=" w-full text-xs text-left rtl:text-right text-gray-700 dark:text-gray-400 ">
@@ -309,15 +313,12 @@
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 font-medium space-y-1">
 
                                 <li>
-                                    <a class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                    <a (click)="openUpdateForm(user)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                         <!-- Pencil Icon -->
                                         <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                                             <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
-                                            <path d="M13.5 6.5l4 4"></path>
-                                            <path d="M16 19h6"></path>
-                                        </svg>
-                                        Modifier
-                                    </a>
+                                            <path d="M13.5 6.5l4 4"></path><path d="M16 19h6"></path></svg>
+                                        Modifier</a>
                                 </li>
                                 <li>
                                 <a class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
@@ -387,7 +388,7 @@
         [title]="'cet utilisateur'"
         [message1]="'Vous êtes sur le point de supprimer un utilisateur du système.'"
         [message2]="'Cette action est importante et aura un impact permanent.'"
-        (onConfirm)="ChangeUserStatus(selectedUser , UserStatus.DELETED)"
+        (onConfirm)="selectedUser ? ChangeUserStatus(selectedUser.idUser, UserStatus.DELETED) : null"
         (onCancel)="closeDeleteModel()">
     </app-delete-confirm>
 

@@ -188,7 +188,7 @@ export class FicheFormComponent {
       const file: File = this.Form.value.fichier;
 
       const ipdf: any = {
-        idUser : 3,
+        idUser : 2,
         nom: '',
         prenom: '',
         genre: "FEMME",
@@ -203,7 +203,7 @@ export class FicheFormComponent {
         // modifieLe: new Date(),
       };
       const iqp: any = {
-        idUser : 4,
+        idUser : 3,
         nom: '',
         prenom: '',
         genre: "FEMME",

@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, ViewChild,
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, ViewChild,} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { forkJoin, map } from 'rxjs';
@@ -18,8 +17,7 @@ import { RegisterFormComponent } from '../../add/register-form/register-form.com
   standalone: true,
   imports: [NgxPaginationModule, CommonModule, FormsModule, RegisterFormComponent, DeleteConfirmComponent,FilterPipe],
   templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css'
-})
+  styleUrl: './user-list.component.css'})
 export class UserListComponent implements AfterViewInit, OnDestroy {
   @ViewChild('roleInput', { static: false }) roleInput?: ElementRef;
   @ViewChild('roleDropdown', { static: false }) roleDropdown?: ElementRef;
@@ -28,16 +26,9 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
 
   private observer?: MutationObserver;
 
-  constructor(
-    private userService: UserService,
-    private userZoneService: UserZoneService,
-    private zoneService: ZoneService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor( private userService: UserService, private userZoneService: UserZoneService, private zoneService: ZoneService, private cdr: ChangeDetectorRef ) {}
 
-  users: any[] = [];
-  dropdownOpen: number | null = null;
-  page: number = 1;
+  users: any[] = []; dropdownOpen: number | null = null; page: number = 1;
   itemsPerPage: number = 5;
   Role!: Role;
   userConnected!: User;
@@ -46,7 +37,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   displayAbove = false;
   UserStatus = UserStatus;
   isDeleteModelOpen: boolean = false;
-  selectedUser !: number ;
+  selectedUser!: User | null;
   isFiltrageOpen: boolean = false;
   showDropdown = false;
   roles: Role[] = [];
@@ -59,6 +50,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   zones: Zone[] = [];
   selectedZones: number[] = [];
   selectedStatus: string = '';
+
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
@@ -73,11 +65,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
         this.zones = zones;
         console.log('Zones loaded:', this.zones);
       },
-      error: (error: any) => {
-        console.error('Fetching zones error:', error);
-      },
-    });
-  }
+      error: (error: any) => { console.error('Fetching zones error:', error) ; },});}
   onZonesChange() {
     console.log('Selected zones:', this.selectedZones);
     // Filter users based on selected zones
@@ -100,11 +88,9 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
     });
   }
   zoneDropdownOpen = false;
-
   toggleZoneDropdown() {
     this.zoneDropdownOpen = !this.zoneDropdownOpen;
   }
-
   onCheckboxChange(event: any) {
     const value = +event.target.value;
     if (event.target.checked) {
@@ -319,7 +305,18 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
       this.showDropdown = false;
     }
   }
-
+  openUpdateForm(user: User) {
+    this.selectedUser=user;
+    this.showForm = true;
+    }
+    closeRegisterForm() {
+      this.hideRegisterForm();
+      this.selectedUser=null;
+    }
+    onUserUpdated() {
+      this.getUsers(); // Refresh the user list after update
+      this.closeRegisterForm();
+    }
   getUsers() {
     this.userService.getAll().subscribe({
       next: (users: User[]) => {
@@ -372,14 +369,11 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
 
     this.userService.ChangeRole(user.idUser || undefined , this.userConnected.idUser || undefined , user.role).subscribe({
       next : (response :any[]) => {
-        console.log('Role changed successuly  ');
-      },
-      error : (error : any) => {
-        console.error('changing user Role error:', error);
+        console.log('Role changed successuly'); },
+      error : (error : any) => {console.error('changing user Role error:', error);
       }
     });
   }
-
   onStatusToggleChange(user: User, event: any) {
       console.log("status", user.status);
       if(user.status === UserStatus.ACTIVE){
@@ -390,7 +384,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
      this.ChangeUserStatus(user.idUser,user.status)
   }
   openDeleteModel(user : User){
-      this.selectedUser = user.idUser!  ;
+      this.selectedUser = user;
       this.dropdownOpen = null;
       this.isDeleteModelOpen = true;
     }
@@ -460,11 +454,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
     }
   }
   showForm = false;
-
-  showRegisterForm() {
-    this.showForm = true;
-  }
-
+  showRegisterForm() {this.showForm = true;}
   hideRegisterForm() {
     this.getUsers();
     this.showForm = false;
@@ -476,3 +466,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   }
 
 }
+
+
+
+
