@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserZoneAssignComponent } from "../../user-zone-assign/user-zone-assign.component";
+import { UserZoneAssignComponent } from "../user-zone-assign/user-zone-assign.component";
 import { Zone } from '../../../models/Zone';
 import { CommonModule } from '@angular/common';
 import { ZoneService } from '../../../services/zone.service';
@@ -53,6 +53,7 @@ export class AddZoneFormComponent {
               } else {
                 this.zoneForm.reset();
               }
+             
               
             },
             error: (err) => {

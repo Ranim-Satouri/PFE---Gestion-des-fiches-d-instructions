@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, Input } from '@angular/core';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { FicheService } from '../../services/fiche.service';
-import { Fiche, FicheStatus } from '../../models/Fiche';
+import { FicheService } from '../../../services/fiche.service';
+import { Fiche, FicheStatus } from '../../../models/Fiche';
 import { FormsModule } from '@angular/forms';
-import {FicheFormComponent} from '../add/fiche-form/fiche-form.component';
-import { Role, User } from '../../models/User';
- import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
-import { UpdateFicheComponent } from "../update/update-fiche/update-fiche.component";
-import { FicheValidationComponent } from "../fiche-validation/fiche-validation.component";
+import {FicheFormComponent} from '../../add/fiche-form/fiche-form.component';
+import { Role, User } from '../../../models/User';
+ import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
+import { UpdateFicheComponent } from "../../update/update-fiche/update-fiche.component";
+import { FicheValidationComponent } from "../../fiche-validation/fiche-validation.component";
 @Component({
   selector: 'app-fiche-list',
   standalone: true,

@@ -58,12 +58,14 @@ export class FicheService {
   }
 
    // Méthode pour valider l'IQP
-   validationIQP(idFiche: number | undefined, idIQP: number, status: string, ficheAQL: File): Observable<any> {
-    const formData: FormData = new FormData();
-    formData.append('ficheAQL', ficheAQL);
-    formData.append('status', status);
-
-    return this.http.put(`${this.apiUrl}/validationIQP/${idFiche}/${idIQP}`, formData);
+   validationIQP(idFiche: number | undefined, idIQP: number, status: string ,  ficheAql : string , commentaire : string): Observable<any> {
+    console.log(idFiche, idIQP, status);  
+    const params = new HttpParams()
+    .set('commentaire', commentaire)
+    .set('status', status)
+    .set('ficheAql', ficheAql)
+    .set('idIQP', idIQP);
+    return this.http.put(`${this.apiUrl}/validationIQP/${idFiche}`,null, {params});
   }
 
    // Récupérer les fiches par préparateur

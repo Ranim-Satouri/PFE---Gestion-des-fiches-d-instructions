@@ -4,15 +4,15 @@ import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, O
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { forkJoin, map } from 'rxjs';
-import { Role, User, UserStatus } from '../../models/User';
-import { User_Zone } from '../../models/User_Zone';
-import { Zone } from '../../models/Zone';
-import { FilterPipe } from '../../pipes/filter.pipe';
-import { UserZoneService } from '../../services/user-zone.service';
-import { UserService } from '../../services/user.service';
-import { ZoneService } from '../../services/zone.service';
-import { DeleteConfirmComponent } from '../delete-confirm/delete-confirm.component';
-import { RegisterFormComponent } from '../register-form/register-form.component';
+import { Role, User, UserStatus } from '../../../models/User';
+import { User_Zone } from '../../../models/User_Zone';
+import { Zone } from '../../../models/Zone';
+import { FilterPipe } from '../../../pipes/filter.pipe';
+import { UserZoneService } from '../../../services/user-zone.service';
+import { UserService } from '../../../services/user.service';
+import { ZoneService } from '../../../services/zone.service';
+import { DeleteConfirmComponent } from '../../delete-confirm/delete-confirm.component';
+import { RegisterFormComponent } from '../../add/register-form/register-form.component';
 @Component({
   selector: 'app-user-list',
   standalone: true,

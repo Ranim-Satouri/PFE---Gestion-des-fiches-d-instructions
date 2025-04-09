@@ -262,7 +262,7 @@
           </li>
           <li
             *ngIf="zoneSearch && !zoneNames.includes(zoneSearch)"
-            
+            (click)="createZone()"
             class="px-4 py-2 m-2 rounded-lg text-blue-600 dark:text-blue-400 hover:bg-blue-600/20 dark:hover:bg-blue-600/20 cursor-pointer flex flex-row gap-2 "
           >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" stroke-width="2" class="mt-[3px]">
@@ -284,8 +284,8 @@
       <input type="file"
       class="rounded-lg bg-gray-50  dark:bg-gray-800 w-full text-slate-500 font-medium text-sm border-2  file:cursor-pointer cursor-pointer border file:border-0 file:py-2 file:px-4 file:mr-4 
       file:bg-gray-900 file:hover:bg-gray-900/80 file:text-gray-100 rounded  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
-      dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200" />
-        
+      dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
+      (change)="onFileSelected($event)" />       
       <div *ngIf="Form.get('fichier')?.invalid && Form.get('fichier')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
       Veuillez sélectionner une fiche d'instruction au format PDF.
       </div>

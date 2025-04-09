@@ -1,14 +1,14 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { User } from '../../models/User';
+import { User } from '../../../models/User';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { FilterPipe } from '../../pipes/filter.pipe';
-import { FamilleService } from '../../services/famille.service';
-import { Famille } from '../../models/Famille';
-import { DeleteConfirmComponent } from "../delete-confirm/delete-confirm.component";
-import { AddFamilleFormComponent } from "../add/add-famille-form/add-famille-form.component";
-import { UpdateFamilleComponent } from "../update/update-famille/update-famille.component";
+import { FilterPipe } from '../../../pipes/filter.pipe';
+import { FamilleService } from '../../../services/famille.service';
+import { Famille } from '../../../models/Famille';
+import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
+import { AddFamilleFormComponent } from "../../add/add-famille-form/add-famille-form.component";
+import { UpdateFamilleComponent } from "../../update/update-famille/update-famille.component";
 @Component({
   selector: 'app-famille-list',
   standalone: true,

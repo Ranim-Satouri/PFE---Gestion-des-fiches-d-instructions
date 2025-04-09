@@ -16,7 +16,7 @@ public class NotificationServiceImp implements NotificationService {
         String preparateurName = fiche.getPreparateur().getPrenom() + " " + fiche.getPreparateur().getNom();
         String produitName = fiche.getProduit().getNomProduit();
         String zoneName = fiche.getZone().getNom();
-        String expirationDate = fiche.getExpirationDate();
+        String expirationDate = fiche.getExpirationDate().toString();
         String ipdfEmail = fiche.getIPDF().getEmail();
         String ipdfName = fiche.getIPDF().getPrenom();
         String indice = fiche.getProduit().getIndice();
@@ -44,7 +44,7 @@ public class NotificationServiceImp implements NotificationService {
         String preparateurName = fiche.getPreparateur().getPrenom() + " " + fiche.getPreparateur().getNom();
         String produitName = fiche.getProduit().getNomProduit();
         String zoneName = fiche.getZone().getNom();
-        String expirationDate = fiche.getExpirationDate();
+        String expirationDate = fiche.getExpirationDate().toString();
         String iqpEmail = fiche.getIQP().getEmail();
         String iqpName = fiche.getIQP().getPrenom();
         String validatorName = fiche.getActionneur().getNom();
@@ -73,7 +73,7 @@ public class NotificationServiceImp implements NotificationService {
         String preparateurName = fiche.getPreparateur().getPrenom() + " " + fiche.getPreparateur().getNom();
         String produitName = fiche.getProduit().getNomProduit();
         String zoneName = fiche.getZone().getNom();
-        String expirationDate = fiche.getExpirationDate();
+        String expirationDate = fiche.getExpirationDate().toString();
         String preparateurEmail = fiche.getPreparateur().getEmail();
         String commentaire = fiche.getCommentaire();
         String rejectedBy = fiche.getActionneur().getPrenom() + " " +fiche.getActionneur().getNom();
@@ -103,7 +103,7 @@ public class NotificationServiceImp implements NotificationService {
         String preparateurName = fiche.getPreparateur().getPrenom() + " " + fiche.getPreparateur().getNom();
         String produitName = fiche.getProduit().getNomProduit();
         String zoneName = fiche.getZone().getNom();
-        String validationDate = fiche.getExpirationDate();
+        String validationDate = fiche.getExpirationDate().toString();
         String preparateurEmail = fiche.getPreparateur().getEmail();
         String indice = fiche.getProduit().getIndice();
         String ref = fiche.getProduit().getRef();
@@ -128,7 +128,7 @@ public class NotificationServiceImp implements NotificationService {
         String preparateurName = fiche.getPreparateur().getPrenom() + " " + fiche.getPreparateur().getNom();
         String produitName = fiche.getProduit().getNomProduit();
         String zoneName = fiche.getZone().getNom();
-        String expirationDate = fiche.getExpirationDate();
+        String expirationDate = fiche.getExpirationDate().toString();
         String preparateurEmail = fiche.getPreparateur().getEmail();
         String ipdfName = fiche.getIPDF().getPrenom() + " " +fiche.getIPDF().getNom();
         String indice = fiche.getProduit().getIndice();

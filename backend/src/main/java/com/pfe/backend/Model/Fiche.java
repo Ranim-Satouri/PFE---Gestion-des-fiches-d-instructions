@@ -33,7 +33,7 @@ public class Fiche {
 
     private String commentaire;
 
-    private String expirationDate;
+    private LocalDateTime expirationDate;
 
     //@Lob
     //@Column(columnDefinition = "LONGBLOB")

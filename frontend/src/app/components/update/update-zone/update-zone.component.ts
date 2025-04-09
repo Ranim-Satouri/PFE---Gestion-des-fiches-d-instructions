@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { UserZoneAssignComponent } from '../../user-zone-assign/user-zone-assign.component';
+import { UserZoneAssignComponent } from '../../add/user-zone-assign/user-zone-assign.component';
 import { Zone } from '../../../models/Zone';
 import { ZoneService } from '../../../services/zone.service';
 import { User } from '../../../models/User';

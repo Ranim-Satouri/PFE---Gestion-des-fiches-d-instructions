@@ -263,5 +263,44 @@ export class UpdateFicheComponent {
   closeForm() {
     this.close.emit();
   }
-  
+  createZone() {
+   
+    const newZone: Zone = {
+      nom: this.zoneSearch,
+      actionneur: this.userConnected
+    };
+
+    this.zoneService.addZone(newZone, this.userConnected.idUser!).subscribe({
+      next: (zone) => {
+        this.errorMessage = '';
+        this.successMessage = `Zone "${zone.nom}" ajoutée avec succès !`; 
+        setTimeout(() => {
+          this.successMessage = '';
+        }, 3000);
+        this.zones.push(zone);
+        this.filteredZones = this.zones;
+        this.Form.get('zone')?.setValue(zone);
+        this.zoneSearch = zone.nom;
+        this.zoneNames.push(zone.nom);
+        this.showZoneDropdown = false; 
+      },
+      error: (err) => {
+        this.successMessage = '';
+        console.error('Erreur lors de l’ajout :', err);
+
+        if (err.status === 404) {
+          this.errorMessage = "Actionneur introuvable. Veuillez vous reconnecter.";
+        } else if (err.status === 409) {
+          this.errorMessage = "Une zone avec ce nom existe déjà.";
+        } else {
+          this.errorMessage = "Une erreur inattendue est survenue.";
+        }
+
+        setTimeout(() => {
+          this.errorMessage = '';
+        }, 4000);
+      }
+    });
+      
+  }
 }
