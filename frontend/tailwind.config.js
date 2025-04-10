@@ -10,7 +10,13 @@ module.exports = {
         navBluelight : "#60a5fa", 
         navBluedark : '#092d47',
         hoverColor : "#212b38",
-        hoverColor2 : "#4f5966"
+        hoverColor2 : "#4f5966",
+        boeingBleu :"#4169E1",
+        sky: "#62cff4" ,
+        sky2:"#2c67f2",
+        sky3:"#3c8ce7",
+        sky4:"#736efe"
+        
       },
       keyframes: {
         slideFromTop: {

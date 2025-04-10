@@ -1,5 +1,9 @@
-
-<nav   class="z-20 fixed top-0 w-full bg-navBluelight border-b border-gray-200 dark:bg-navBluedark dark:border-gray-700 h-16 transition-all transition-discrete duration-700 ease-in-out">
+<!-- <nav  class="z-20 fixed top-0 w-full h-16 transition-all transition-discrete duration-700 ease-in-out
+ bg-navBluelight border-b border-gray-200 dark:bg-navBluedark dark:border-gray-700 "> -->
+<nav  class="z-20 fixed top-0 w-full h-16 transition-all transition-discrete duration-700 ease-in-out 
+border-solid border-b shadow-md
+ bg-gradient-to-r from-white to-blue-400
+ dark:bg-navBluedark dark:from-transparent dark:to-transparent dark:bg-none dark:bg-opacity-100 dark:border-gray-700">
     <div class="p-3 lg:px-5 lg:pl-3 h-full ">
       <div class="flex items-center justify-between h-full">
         <div class="flex items-center justify-start rtl:justify-end">
@@ -9,17 +13,18 @@
                     <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
                 </svg>
             </button>
-            <a href="https://flowbite.com" class="flex sm:ms-2 md:me-24 ">
+            <a href="" class="flex sm:ms-2 md:me-24 ">
                 <img src="assets\logo.png" class="sm:h-14 sm:w-14 h-12 w-12 me-1 " alt="Sagemcom Logo" />
-                <span class="pb-1 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white ">SagemCom</span>
+                <!-- <span class="pb-1 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white ">SagemCom</span> -->
+                <span class="pb-1 self-center  sm:text-2xl text-xl font-bold text-blue-700 dark:text-white whitespace-nowrap">SagemCom</span>
             </a>
         </div>
         <div class="flex items-center">
             <button (click)="toggleDarkMode()" data-tooltip-target="tooltip-toggle" type="button" class="text-gray-900 inline-flex items-center justify-center dark:text-gray-400 hover:bg-gray-400 w-10 h-10 dark:hover:bg-gray-700 focus:outline-none  dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 ">
-                <svg *ngIf="!isDarkMode"  class=" w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                <svg *ngIf="!isDarkMode"  class=" w-6 h-6 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
                 <path d="M17.8 13.75a1 1 0 0 0-.859-.5A7.488 7.488 0 0 1 10.52 2a1 1 0 0 0 0-.969A1.035 1.035 0 0 0 9.687.5h-.113a9.5 9.5 0 1 0 8.222 14.247 1 1 0 0 0 .004-.997Z"></path>
                 </svg>
-                <svg *ngIf="isDarkMode"  class="text-white w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <svg *ngIf="isDarkMode"  class="text-white w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0-11a1 1 0 0 0 1-1V1a1 1 0 0 0-2 0v2a1 1 0 0 0 1 1Zm0 12a1 1 0 0 0-1 1v2a1 1 0 1 0 2 0v-2a1 1 0 0 0-1-1ZM4.343 5.757a1 1 0 0 0 1.414-1.414L4.343 2.929a1 1 0 0 0-1.414 1.414l1.414 1.414Zm11.314 8.486a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM4 10a1 1 0 0 0-1-1H1a1 1 0 0 0 0 2h2a1 1 0 0 0 1-1Zm15-1h-2a1 1 0 1 0 0 2h2a1 1 0 0 0 0-2ZM4.343 14.243l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414a1 1 0 0 0-1.414-1.414ZM14.95 6.05a1 1 0 0 0 .707-.293l1.414-1.414a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 .707 1.707Z"></path>
                 </svg>
                 <span class="sr-only">Toggle dark mode</span>
@@ -27,14 +32,17 @@
             <div class="flex items-center ms-3" (click)="closeDropdown($event)">
               <div class="relative">
                 <button (click)="openList()" type="button" class=" flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
-                  <span class="sr-only">Open user menu</span>
+                    <!-- svg user -->
+                    <span class="sr-only">Open user menu</span>
                   <!-- <img class="w-8 h-8 rounded-full " src="images/profil2.png" alt="user photo">  -->
-                  <svg class="bi bi-person-circle w-8 h-8 bg-navBluelight dark:bg-navBluedark dark:text-white rounded-full"  xmlns="http://www.w3.org/2000/svg"  fill="currentColor" viewBox="0 0 16 16">
+                  <svg class="bi bi-person-circle w-8 h-8 bg-blue-400 hover:text-gray-100  dark:bg-navBluedark dark:text-white rounded-full"  xmlns="http://www.w3.org/2000/svg"  fill="currentColor" viewBox="0 0 16 16">
                     <path  d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                     <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
                   </svg>
                 </button>
+                
               </div>
+              <div class="ml-2 dark:text-white font-semibold"> {{currentUser.matricule}}</div>
               <div *ngIf="isListOpen" class="z-50 absolute top-6 right-10 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-sm shadow-sm dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
                 <div class="px-4 py-3" role="none">
                   <p class="text-sm text-gray-900 dark:text-white" role="none">
@@ -63,7 +71,8 @@
     </div>
 </nav>
 
-<aside id="logo-sidebar" [ngClass]="{'sm:w-16 ': !isSideBarOpen ,'sm:w-60 w-60  max-sm:left-3': isSideBarOpen, 'translate-x-0 w-[94%] max-sm:left-4': !isSideBarHidden , '-translate-x-[700px] ': isSideBarHidden }"  class="fixed sm:left-4 bottom-4 left-0  overflow-y-auto h-[calc(100%-96px)] px-3 py-4 rounded-lg  -translate-x-full transition-all transition-discrete duration-700 ease-in-out sm:translate-x-0 bg-navBluelight dark:bg-navBluedark  overflow-x-hidden " aria-label="Sidebar">
+<aside id="logo-sidebar" [ngClass]="{'sm:w-16 ': !isSideBarOpen ,'sm:w-60 w-60  max-sm:left-3': isSideBarOpen, 'translate-x-0 w-[94%] max-sm:left-4': !isSideBarHidden , '-translate-x-[700px] ': isSideBarHidden }"  class="fixed sm:left-4 bottom-4 left-0  overflow-y-auto h-[calc(100%-96px)] px-3 py-4 rounded-lg
+  -translate-x-full transition-all transition-discrete duration-700 ease-in-out sm:translate-x-0 bg-blue-400  dark:bg-navBluedark  overflow-x-hidden " aria-label="Sidebar">
     <button (click)="toggleSidebar()" class="hidden sm:block mb-4 p-1 rounded-md bg-gray-300 hover:bg-gray-100 dark:bg-gray-700 absolute right-4 dark:hover:bg-gray-600">
         <svg *ngIf="!isSideBarOpen"  class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 16 4-4-4-4m6 8 4-4-4-4"/>
