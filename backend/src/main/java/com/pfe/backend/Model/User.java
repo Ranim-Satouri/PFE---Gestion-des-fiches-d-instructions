@@ -48,30 +48,23 @@ public class User implements UserDetails {
     }
     @Enumerated(EnumType.STRING)
     private Role role;
-//    @ManyToMany
-//    @JoinTable(
-//            name = "user_zone",
-//            joinColumns = @JoinColumn(name = "idUser"),
-//            inverseJoinColumns = @JoinColumn(name = "idZone")
-//    )
-//    private Set<Zone> zones = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserZone> userZones = new HashSet<>();
+
     public void addZone(Zone zone, Long idActionneur) {
         UserZone userZone = new UserZone();
         userZone.setUser(this);
         userZone.setZone(zone);
         userZone.setIdActionneur(idActionneur);
-        this.userZones.add(userZone);
-    }
+        this.userZones.add(userZone);}
+
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private UserGenre genre;
-    public enum UserGenre{
-        FEMME , HOMME;
-    }
+    public enum UserGenre { FEMME , HOMME ; }
+
     @UpdateTimestamp
     @Column(name = "modifie_le", nullable = false)
     private LocalDateTime modifieLe = LocalDateTime.now(); // Ajoute une valeur par défaut
@@ -81,10 +74,13 @@ public class User implements UserDetails {
     @JoinColumn(name = "actionneur")
     private User actionneur;
 
+    @ManyToOne
+    @JoinColumn(name = "idGroupe")
+    private Groupe groupe;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
+        return List.of(new SimpleGrantedAuthority(role.name()));}
 
     @Override
     public String getUsername() {

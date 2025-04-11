@@ -37,9 +37,18 @@ public class Zone {
     @JsonIgnore
     @OneToMany(mappedBy = "zone", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserZone> userZones = new HashSet<>();
+
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idActionneur", nullable = false)
     private User actionneur;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "zone", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ligne> ligne;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "idFamille", nullable = false)
+    private Famille famille;
 
 }
