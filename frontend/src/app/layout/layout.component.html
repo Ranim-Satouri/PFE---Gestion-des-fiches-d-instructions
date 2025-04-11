@@ -43,9 +43,9 @@ border-solid border-b shadow-md
                 
               </div>
               <div class="ml-2 dark:text-white font-semibold"> {{currentUser.matricule}}</div>
-              <div *ngIf="isListOpen" class="z-50 absolute top-10 right-24  my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
+              <div *ngIf="isListOpen" class="z-50 absolute top-10 right-24  my-4 text-base list-none divide-y divide-gray-100 rounded-lg shadow-sm  bg-white dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
                 <div class="px-4 py-3" role="none">
-                  <p class="text-sm text-gray-900 dark:text-white" role="none">
+                  <p class="text-sm text-gray-900 dark:text-white" role="none"> 
                     {{ currentUser.matricule }}                 </p>
                   <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
                     {{ currentUser.email }}                  </p>

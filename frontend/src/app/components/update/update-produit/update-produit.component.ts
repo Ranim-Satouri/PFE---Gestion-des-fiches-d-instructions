@@ -162,7 +162,9 @@ constructor(private familleService: FamilleService,private produitService: Produ
   }
 
   toggleDropdown() {
-    this.filteredFamilles = this.families
+    this.filteredFamilles = this.families.filter(f =>
+      f.nomFamille.toLowerCase().includes(this.familleSearch.toLowerCase())
+    );
     this.showDropdown = !this.showDropdown;
   }
 

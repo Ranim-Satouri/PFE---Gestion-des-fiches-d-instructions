@@ -20,7 +20,7 @@ export class AddProduitFormComponent {
   families: Famille[] = [];
   familleNames: string[] = [];
   filteredFamilles: Famille[] = [];
-  familleSearch = '';
+  familleSearch = ''; // kif tselectionni famille bech nhot el nom te3ha fel variable hedhy bech tetaficha fel input
   showDropdown = false;
   userConnected !: User;
   successMessage: string = '';
@@ -54,7 +54,7 @@ export class AddProduitFormComponent {
           console.error('fetching familles error:', error);
         }
       });
-    }
+  }
 
   onFamilleSearchChange(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -100,8 +100,6 @@ export class AddProduitFormComponent {
     this.filteredFamilles = this.families;
     this.showDropdown = false;
   }
-
-
 
   onSubmit() {
     this.formSubmitted = true;
@@ -158,7 +156,9 @@ export class AddProduitFormComponent {
   }
 
   toggleDropdown() {
-    this.filteredFamilles = this.families
+    this.filteredFamilles = this.families.filter(f =>
+      f.nomFamille.toLowerCase().includes(this.familleSearch.toLowerCase())
+    );
     this.showDropdown = !this.showDropdown;
   }
 

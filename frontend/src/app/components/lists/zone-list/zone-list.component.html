@@ -1,7 +1,7 @@
 
 <div class="h-full flex flex-col" >
 
-    <div class="h-16 w-full bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 flex items-center px-2 justify-end">
+    <div class="h-16 w-full bg-gray-300/80 dark:bg-gray-800 rounded-lg mb-4 flex items-center px-2 justify-end">
         <div class="flex items-center justify-between w-full px-3">
             <div class="relative form-outline">
               <!-- Search Bar  --->
@@ -54,7 +54,7 @@
 
     <div class="mb-2 overflow-x-auto shadow-md rounded-lg max-h-[calc(100%-136px)] overflow-y-auto custom-scrollbar-container " (scroll)="onScroll()">
         <table class="w-full text-xs text-left rtl:text-right text-gray-700 dark:text-gray-400 ">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-gray-400 sticky-top">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-300/80 dark:bg-gray-700 dark:text-gray-400 sticky-top">
                 <tr>
                     <th scope="col" class="px-6 py-3 ">
                         <div class="flex items-center">
@@ -167,7 +167,7 @@
             <form class="max-w-sm mx-auto flex flex-row gap-3 items-center ">
                 <label for="countries" class="block text-sm font-medium text-slate-500">Élément par page</label>
                 <div class="relative">
-                <select id="countries" [(ngModel)]="itemsPerPage" name="itemsPerPage"  class="bg-gray-50 border-2 border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 h-8 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400  dark:focus:border-blue-500">
+                <select id="countries" [(ngModel)]="itemsPerPage" name="itemsPerPage"  class="bg-gray-50 border-2 border-gray-300 text-gray-700 text-sm rounded-lg focus:outline-none  focus:ring-blue-500 focus:border-blue-500 block w-16 h-8 px-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400  dark:focus:border-blue-500">
                     <option value="5" selected>5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>

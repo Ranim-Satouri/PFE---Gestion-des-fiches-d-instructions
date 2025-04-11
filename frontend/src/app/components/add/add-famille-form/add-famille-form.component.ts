@@ -15,7 +15,6 @@ import { FamilleService } from '../../../services/famille.service';
 export class AddFamilleFormComponent {
   @Output() close = new EventEmitter<void>();
   constructor(private familleService: FamilleService) {}
-  //@Output() familyAdded = new EventEmitter<{ name: string }>();
   userConnected !: User;
   successMessage: string = '';
   errorMessage = '';
