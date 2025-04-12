@@ -1,6 +1,6 @@
 <div class="fixed inset-0 flex items-center justify-center bg-black/50 bg-opacity-50 z-[100]">
     <!-- Conteneur principal avec position relative -->
-    <div class="bg-white p-6 rounded-lg shadow-lg w-fit relative h-[80vh] overflow-y-auto
+    <div class="bg-white p-6 rounded-lg shadow-lg w-fit relative h-[77vh] overflow-y-auto
     dark:bg-gray-900 border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500  w-[70%] ">
       <!-- Bouton X avec z-index élevé et position fixe -->
@@ -17,131 +17,502 @@
         <span class="sr-only">Close modal</span>
       </button>
       <!-- Stepper -->
-      <div class="flex flex-col justify-between h-full"> 
+      <div class="flex flex-col justify-between h-full "> 
   
         <!-- Stepper Nav -->
-        <ol class="mt-4 flex items-center justify-between w-full p-3 space-x-2 text-sm font-medium text-center text-gray-500 bg-white border
-            border-gray-200 rounded-lg shadow-xs sm:text-base sm:p-4 sm:space-x-4 rtl:space-x-reverse
-            dark:bg-gray-900 dark:text-white dark:shadow-gray-900 dark:focus:ring-blue-500 dark:border-gray-600 
+        <ol class="mt-4 flex items-center justify-between w-full p-2 space-x-2 text-sm font-medium text-center text-gray-500 bg-white border-2
+            dark:border-gray-700 border-gray-400 rounded-lg shadow-xs sm:text-base  sm:space-x-4 rtl:space-x-reverse
+            dark:bg-gray-900 dark:text-white dark:shadow-gray-900 dark:focus:ring-blue-500 
             dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500">
-        <li
-            *ngFor="let step of steps; let i = index" 
-            class="cursor-pointer py-2 px-4 text-sm font-medium rounded-md"
-            [ngClass]="{
-            'bg-blue-600 text-white': currentStep === i + 1, 
-            'text-gray-500 dark:text-gray-400': currentStep !== i + 1, 
-            'hover:bg-blue-100 dark:hover:bg-gray-700': currentStep !== i + 1}">
-            
-            <!-- Texte de l'étape (Tab) -->
-            <span (click)="setStep(i + 1)">
-            {{ step }}
-            </span>
-        </li>
+            <li
+                *ngFor="let step of steps; let i = index" 
+                class="cursor-pointer py-2 px-4 text-sm font-medium rounded-md"
+                [ngClass]="{
+                'bg-blue-600 text-white': currentStep === i + 1, 
+                'text-gray-500 dark:text-gray-400': currentStep !== i + 1, 
+                'hover:bg-blue-100 dark:hover:bg-gray-700': currentStep !== i + 1}"
+                (click)="setStep(i + 1)">
+                
+                <!-- Texte de l'étape (Tab) -->
+                <span >
+                {{ step }}
+                </span>
+            </li>
         </ol>
         <!-- End Stepper Nav -->
         
         <!-- Stepper Content -->
-        <div class="mt-5 sm:mt-8 flex-grow"> <!-- flex-grow pour occuper l'espace restant -->
-          
-          <div class="p-2 flex-grow">
+        <div class="flex-grow mt-4 "> <!-- flex-grow pour occuper l'espace restant -->  
+          <div class="flex-grow">
             <!-- First Content -->
             <div *ngIf="currentStep === 1" class="w-full h-auto" data-hs-stepper-content-item='{ "index": 1 }'>
-              <form (ngSubmit)="onGroupNameSubmit()">
+              <form (ngSubmit)="onGroupNameSubmit()" [formGroup]="groupeForm" >
                 <div class="mb-4">
-                  <label for="groupName" class="block text-sm font-medium text-gray-700 dark:text-white">Nom du groupe</label>
-                  <input
-                    id="groupName"
+                    <label class="text-sm text-black dark:text-gray-300 mb-1 block">Nom du groupe</label>
+                    <input
                     type="text"
-                    [(ngModel)]="groupName"
-                    name="groupName"
-                    required
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                    formControlName="nom"
+                    class="w-full p-2 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white 
+                    border border-2  text-sm transition focus:outline-none 
+                    focus:ring-0 focus:border-blue-500 dark:focus:border-blue-500 dark:focus:ring-blue-500
+                    focus:shadow-sm dark:shadow-gray-900 focus:shadow-md transition-all duration-200"
                     placeholder="Entrez le nom du groupe"
+                    [ngClass]="{
+                        'border-red-500 ring-red-500': groupeForm.get('nom')?.invalid && groupeForm.get('nom')?.touched ,
+                        'border-gray-400 dark:border-gray-700': !(groupeForm.get('nom')?.invalid && groupeForm.get('nom')?.touched)
+                      }"
                   />
+                  <div *ngIf="groupeForm.get('nom')?.invalid && groupeForm.get('nom')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
+                    Le nom du groupe est requis.
+                  </div>
                 </div>
               </form>
             </div>
-            <!-- End First Content -->
       
             <!-- Second Content -->
-            <div *ngIf="currentStep === 2" class="w-full h-auto">
-              <!-- Liste utilisateurs -->
-              <div class="overflow-auto h-[39vh]">
-                <table class="w-full text-sm text-left text-gray-800 dark:text-gray-200">
-                  <thead class="sticky-top text-xs uppercase bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                    <tr>
-                      <th class="px-4 py-2">Affecté</th>
-                      <th class="px-4 py-2">Matricule</th>
-                      <th class="px-4 py-2">Nom</th>
-                      <th class="px-4 py-2">Prénom</th>
-                      <th class="px-4 py-2">Rôle</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let user of users" class="border-b dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800">
-                      <td class="px-4 py-2 ">
-                        <div class="inline-flex items-center ml-3">
-                          <label class="flex items-center cursor-pointer relative">
-                            <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-blue-600 checked:border-blue-600" id="check1" />
-                            <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                              </svg>
-                            </span>
-                          </label>
+            <div *ngIf="currentStep === 2" class="w-full h-auto ">
+                 <!-- filtre -->
+                <div class="flex flex-col md:flex-row gap-3 mb-4">
+                    <!-- Selection Dropdown -->
+                    <div class="relative w-full md:w-[22%] z-50">
+                        <input
+                        type="text"
+                        id="Affectation-input"
+                        readonly
+                        (click)="showSelectorDropdown = !showSelectorDropdown"
+                        [value]="selectedState ? selectedState : 'Tous'"
+                        class="w-full p-2 border-gray-400 dark:border-gray-700 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:outline-none focus:ring-0 focus:border-blue-500 dark:focus:border-blue-500 dark:focus:ring-blue-500
+                        focus:shadow-sm dark:shadow-gray-900 focus:shadow-md transition-all duration-200"
+                        />                   
+                        <!-- Toggle icon -->
+                        <div
+                        class="absolute top-[20px] right-3 mt-[1px]  -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
+                        (click)="showSelectorDropdown = !showSelectorDropdown"
+                        >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="m7 10 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                         </div>
-                      </td>
-                      <td class="px-4 py-2">{{ user.matricule }}</td>
-                      <td class="px-4 py-2">{{ user.nom }}</td>
-                      <td class="px-4 py-2">{{ user.prenom }}</td>
-                      <td class="px-4 py-2">{{ user.role }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                        <div class="absolute right-10 top-5 -translate-y-1/2  select-none">
+                            <div class="h-5 w-[2px] bg-gray-500 hover:bg-gray-700 dark:hover:bg-white"></div>
+                        </div>
+                    
+                        <!-- Dropdown -->
+                        <ul
+                        *ngIf="showSelectorDropdown"
+                        id="dropdownAffectation"
+                        class="absolute z-10 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg "            >
+                            <li
+                            (click)="selectState('')"
+                            class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+                            >
+                            Tous
+                            </li>
+                            <li 
+                            (click)="selectState('Affectés')"
+                            class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+                            >
+                            <div class="inline-flex items-center mr-1">
+                                <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" checked disabled class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1" />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                </span>
+                                </label>
+                            </div>
+                            Affectés
+                            </li>
+                            <li 
+                            (click)="selectState('Non affectés')"
+                            class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+                            >
+                            <div class="inline-flex items-center mr-1">
+                                <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" disabbled class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1" />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                </span>
+                                </label>
+                            </div>
+                            Non affectés
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- recherche -->
+                    <div class="w-full ">
+                        <div class="relative flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="absolute w-5 h-5 top-2.5 left-2.5 text-slate-600">
+                            <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
+                            </svg>
+                        
+                            <input
+                            type="text"
+                            [(ngModel)]="userSearchText"
+                            class="w-full pl-10 pr-3 py-2  rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition   focus:outline-none  border-gray-400 dark:border-gray-700  focus:ring-0 focus:border-blue-500 dark:focus:border-blue-500 dark:focus:ring-blue-500
+                            focus:shadow-sm dark:shadow-gray-900 focus:shadow-md transition-all duration-200"
+                            placeholder="Rechercher (matricule, nom, prénom)"
+                            />
+                        </div>
+                    </div>
+                </div> 
+                <!-- Liste utilisateurs -->
+                <div class="overflow-auto h-[39vh]">
+                    <table class="w-full text-sm text-left text-gray-800 dark:text-gray-200">
+                    <thead class="sticky-top text-xs uppercase bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                        <tr>
+                        <th class="px-4 py-2">
+                            <div class="inline-flex items-center ml-3">
+                                <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check2" />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                                </label>
+                            </div>
+                        </th>
+                        <th class="px-4 py-2">Matricule</th>
+                        <th class="px-4 py-2">Nom</th>
+                        <th class="px-4 py-2">Prénom</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of filteredUsers" class="border-b dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <td class="px-4 py-2 ">
+                            <div class="inline-flex items-center ml-3">
+                            <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1" />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                </span>
+                            </label>
+                            </div>
+                        </td>
+                        <td class="px-4 py-2">{{ user.matricule }}</td>
+                        <td class="px-4 py-2">{{ user.nom }}</td>
+                        <td class="px-4 py-2">{{ user.prenom }}</td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
             </div>
-            <!-- End Second Content -->
-            
+             
+            <!-- third Content - Menus -->
+            <div *ngIf="currentStep === 3" class="w-full h-auto">
+                 <!-- filtre -->
+                 <div class="flex flex-col md:flex-row gap-3 mb-4">
+                    <!-- Selection Dropdown -->
+                    <div class="relative w-full md:w-[22%] z-50">
+                        <input
+                        type="text"
+                        id="Affectation-input"
+                        readonly
+                        (click)="showSelectorDropdown = !showSelectorDropdown"
+                        [value]="selectedState ? selectedState : 'Tous'"
+                        class="w-full p-2 border-gray-400 dark:border-gray-700 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:outline-none focus:ring-0 focus:border-blue-500 dark:focus:border-blue-500 dark:focus:ring-blue-500
+                        focus:shadow-sm dark:shadow-gray-900 focus:shadow-md transition-all duration-200"
+                        />                   
+                        <!-- Toggle icon -->
+                        <div
+                        class="absolute top-[20px] right-3 mt-[1px]  -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
+                        (click)="showSelectorDropdown = !showSelectorDropdown"
+                        >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="m7 10 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        </div>
+                        <div class="absolute right-10 top-5 -translate-y-1/2  select-none">
+                            <div class="h-5 w-[2px] bg-gray-500 hover:bg-gray-700 dark:hover:bg-white"></div>
+                        </div>
+                    
+                        <!-- Dropdown -->
+                        <ul
+                        *ngIf="showSelectorDropdown"
+                        id="dropdownAffectation"
+                        class="absolute z-10 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg "            >
+                            <li
+                            (click)="selectState('')"
+                            class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+                            >
+                            Tous
+                            </li>
+                            <li 
+                            (click)="selectState('Affectés')"
+                            class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+                            >
+                            <div class="inline-flex items-center mr-1">
+                                <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" checked disabled class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1" />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                </span>
+                                </label>
+                            </div>
+                            Affectés
+                            </li>
+                            <li 
+                            (click)="selectState('Non affectés')"
+                            class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+                            >
+                            <div class="inline-flex items-center mr-1">
+                                <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" disabbled class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1" />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                </span>
+                                </label>
+                            </div>
+                            Non affectés
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- recherche -->
+                    <div class="w-full ">
+                        <div class="relative flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="absolute w-5 h-5 top-2.5 left-2.5 text-slate-600">
+                            <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
+                            </svg>
+                        
+                            <input
+                            type="text"
+                            [(ngModel)]="menuSearchText"
+                            class="w-full pl-10 pr-3 py-2  rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition   focus:outline-none  border-gray-400 dark:border-gray-700  focus:ring-0 focus:border-blue-500 dark:focus:border-blue-500 dark:focus:ring-blue-500
+                            focus:shadow-sm dark:shadow-gray-900 focus:shadow-md transition-all duration-200"
+                       
+                            placeholder="Rechercher (nom)"
+                            />
+                        </div>
+                    </div>
+                </div> 
+                <!-- Liste Menus -->
+                <div class="overflow-auto h-[39vh] ">
+                <table class="w-full text-sm text-left text-gray-800 dark:text-gray-200">
+                    <thead class="sticky-top text-xs uppercase bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                    <tr>
+                        <th class="px-4 ">
+                            <div class="inline-flex items-center ml-3">
+                                <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check2" />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                                </label>
+                            </div>
+                        </th>
+                        <th class="px-4 py-2">Nom</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let menu of filteredMenus" class="border-b dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <td class="px-4 py-2 ">
+                        <div class="inline-flex items-center ml-3">
+                            <label class="flex items-center cursor-pointer relative">
+                            <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1" />
+                            <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                            </span>
+                            </label>
+                        </div>
+                        </td>
+                        <td class="px-4 py-2">{{ menu.nom }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+
+            <!-- forth Content - Permissions -->
+            <div *ngIf="currentStep === 4" class="w-full h-auto">
+                  <!-- filtre -->
+                  <div class="flex flex-col md:flex-row gap-3 mb-4">
+                    <!-- Selection Dropdown -->
+                    <div class="relative w-full md:w-[22%] z-50">
+                        <input
+                        type="text"
+                        id="Affectation-input"
+                        readonly
+                        (click)="showSelectorDropdown = !showSelectorDropdown"
+                        [value]="selectedState ? selectedState : 'Tous'"
+                        class="w-full p-2 border-gray-400 dark:border-gray-700 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:outline-none focus:ring-0 focus:border-blue-500 dark:focus:border-blue-500 dark:focus:ring-blue-500
+                        focus:shadow-sm dark:shadow-gray-900 focus:shadow-md transition-all duration-200"
+                        />                   
+                        <!-- Toggle icon -->
+                        <div
+                        class="absolute top-[20px] right-3 mt-[1px]  -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
+                        (click)="showSelectorDropdown = !showSelectorDropdown"
+                        >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="m7 10 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        </div>
+                        <div class="absolute right-10 top-5 -translate-y-1/2  select-none">
+                            <div class="h-5 w-[2px] bg-gray-500 hover:bg-gray-700 dark:hover:bg-white"></div>
+                        </div>
+                    
+                        <!-- Dropdown -->
+                        <ul
+                        *ngIf="showSelectorDropdown"
+                        id="dropdownAffectation"
+                        class="absolute z-10 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg "            >
+                            <li
+                            (click)="selectState('')"
+                            class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+                            >
+                            Tous
+                            </li>
+                            <li 
+                            (click)="selectState('Affectés')"
+                            class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+                            >
+                            <div class="inline-flex items-center mr-1">
+                                <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" checked disabled class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1" />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                </span>
+                                </label>
+                            </div>
+                            Affectés
+                            </li>
+                            <li 
+                            (click)="selectState('Non affectés')"
+                            class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
+                            >
+                            <div class="inline-flex items-center mr-1">
+                                <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" disabbled class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1" />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                </span>
+                                </label>
+                            </div>
+                            Non affectés
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- recherche -->
+                    <div class="w-full ">
+                        <div class="relative flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="absolute w-5 h-5 top-2.5 left-2.5 text-slate-600">
+                            <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
+                            </svg>
+                        
+                            <input
+                            type="text"
+                            [(ngModel)]="permessionSearchText"
+                            class="w-full pl-10 pr-3 py-2  rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition   focus:outline-none  border-gray-400 dark:border-gray-700  focus:ring-0 focus:border-blue-500 dark:focus:border-blue-500 dark:focus:ring-blue-500
+                            focus:shadow-sm dark:shadow-gray-900 focus:shadow-md transition-all duration-200"
+                       
+                            placeholder="Rechercher (code, nom)"
+                            />
+                        </div>
+                    </div>
+                </div> 
+                <!-- Liste Permissions -->
+                <div class="overflow-auto h-[39vh]">
+                <table class="w-full text-sm text-left text-gray-800 dark:text-gray-200">
+                    <thead class="sticky-top text-xs uppercase bg-gray-300/70 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                    <tr>
+                        <th class="px-4 py-2">
+                            <div class="inline-flex items-center ml-3">
+                                <label class="flex items-center cursor-pointer relative">
+                                <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check2" />
+                                <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </span>
+                                </label>
+                            </div>
+                        </th>
+                        <th class="px-4 py-2">code</th>
+                        <th class="px-4 py-2">Nom</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let permission of filteredPermissions" class="border-b dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <td class="px-4 py-2 ">
+                        <div class="inline-flex items-center ml-3">
+                            <label class="flex items-center cursor-pointer relative">
+                            <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check2" />
+                            <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                            </span>
+                            </label>
+                        </div>
+                        </td>
+                        <td class="px-4 py-2">{{ permission.idPermission }}</td>
+                        <td class="px-4 py-2">{{ permission.nom }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+  
           </div>
         </div>
         <!-- End Stepper Content -->
       
         <!-- Button Group -->
-<div class="flex justify-between items-center gap-x-2 px-2">
-    <!-- Bouton Retour -->
-    <button
-      *ngIf="currentStep > 1"
-      (click)="goToPreviousStep()"
-      type="button"
-      class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-600 dark:border-neutral-500 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
-      data-hs-stepper-back-btn=""
-    >
-      <svg class="shrink-0 size-4"
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round">
-        <path d="m15 18-6-6 6-6"></path>
-      </svg> Retour
-    </button>
-  
-    <!-- Bouton Suivant -->
-    <button
-      (click)="goToNextStep()"
-      type="button"
-      class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none ml-auto"
-      data-hs-stepper-next-btn="">
-      {{ currentStep === 4 ? "Enregistrer" : "Suivant" }}
-      <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-        width="24" height="24" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
-    </button>
-  </div>
+        <div class="flex justify-between items-center gap-x-2">
+            <!-- Bouton Retour -->
+            <button
+            *ngIf="currentStep > 1"
+            (click)="goToPreviousStep()"
+            type="button"
+            class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border-2 border-gray-400 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-600 dark:border-neutral-500 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+            data-hs-stepper-back-btn=""
+            >
+            <svg class="shrink-0 size-4"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="m15 18-6-6 6-6"></path>
+            </svg> Retour
+            </button>
+        
+            <!-- Bouton Suivant -->
+            <button
+            (click)="goToNextStep()"
+            type="button"
+            class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none ml-auto"
+            data-hs-stepper-next-btn="">
+            {{ currentStep === 4 ? "Enregistrer" : "Suivant" }}
+            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+            </button>
+        </div>
   
         <!-- End Button Group -->
       

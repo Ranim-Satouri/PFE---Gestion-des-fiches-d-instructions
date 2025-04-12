@@ -31,7 +31,6 @@ export class UserZoneAssignComponent {
   originalAssignedUsers = new Set<number>(); // contient les idUser au début (avant modif)
   selectedUsers = new Set<number>(); // modifiable par checkboxes
   selectedState: string = '';
-
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
