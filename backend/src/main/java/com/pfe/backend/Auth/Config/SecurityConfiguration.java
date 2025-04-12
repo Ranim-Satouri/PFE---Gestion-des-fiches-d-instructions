@@ -37,6 +37,11 @@ public class SecurityConfiguration {
                                 .requestMatchers("/ficheAudit/**").permitAll()
                                 .requestMatchers("/zone/**").permitAll()
                                 .requestMatchers("/user/**").permitAll()
+                                .requestMatchers("/groupe/**").permitAll()
+                                .requestMatchers("/ligne/**").permitAll()
+                                .requestMatchers("/operation/**").permitAll()
+                                .requestMatchers("/menus/**").permitAll()
+                                .requestMatchers("/permissions/**").permitAll()
                                 .anyRequest().authenticated()
                 );
         http.addFilterBefore(jwtAuthFilter,UsernamePasswordAuthenticationFilter.class);

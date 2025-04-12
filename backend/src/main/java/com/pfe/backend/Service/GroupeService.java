@@ -1,4 +1,14 @@
 package com.pfe.backend.Service;
 
+import com.pfe.backend.Model.Groupe;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+
 public interface GroupeService {
+    ResponseEntity<?> addGroupe(Groupe groupe , Long idActionneur);
+    ResponseEntity<?> updateGroupe(Long idGroupe, Groupe NewGroupeData , Long idActionneur);
+    void DeleteGroupe(Long idGroupe ,Long idActionneur);
+    List<Groupe> getActiveGroupes();
+    List<Groupe> getGroupes();
 }

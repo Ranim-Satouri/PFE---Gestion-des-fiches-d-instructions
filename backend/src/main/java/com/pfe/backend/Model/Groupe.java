@@ -31,17 +31,19 @@ public class Groupe {
     @Column(name = "modifie_le", nullable = false)
     private LocalDateTime modifieLe = LocalDateTime.now();
 
-//    les relations
-@JsonIgnore
-@OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL, orphanRemoval = true)
-private List<User> users;
+    //    les relations
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<User> users;
+
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "groupe_permissions",joinColumns = @JoinColumn(name = "idGroupe"),
             inverseJoinColumns = @JoinColumn(name = "idPermission"))
     private List<Permission> permission;
-
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "groupe_menus",joinColumns = @JoinColumn(name = "idGroupe"),
