@@ -10,8 +10,7 @@ import { FamilleListComponent } from './components/lists/famille-list/famille-li
 import { ZoneListComponent } from './components/lists/zone-list/zone-list.component';
 import { ProduitListComponent } from './components/lists/produit-list/produit-list.component';
 import {RegisterFormComponent} from './components/add/register-form/register-form.component';
-import {FicheFormComponent} from './components/add/fiche-form/fiche-form.component';
-import { AddProduitFormComponent } from './components/add/add-produit-form/add-produit-form.component';
+import { GroupeListComponent } from './components/lists/groupe-list/groupe-list.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
@@ -36,7 +35,8 @@ export const routes: Routes = [
             { path: 'famillelist', component: FamilleListComponent },
             { path: 'zonelist', component: ZoneListComponent },
             { path: 'produitlist', component: ProduitListComponent },
-            { path: 'userlist', component: UserListComponent }
+            { path: 'userlist', component: UserListComponent },
+            { path: 'groupelist', component: GroupeListComponent }
         ]
     },
     {
