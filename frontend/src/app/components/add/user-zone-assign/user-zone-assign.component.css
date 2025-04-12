@@ -14,3 +14,8 @@
     background-color: transparent !important; /* Fond clair */
   }
     
+  thead  {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }

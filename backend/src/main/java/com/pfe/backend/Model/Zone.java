@@ -48,7 +48,7 @@ public class Zone {
     private List<Ligne> ligne;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "idFamille", nullable = false)
+    @JoinColumn(name = "idFamille") // nullable false nahitha khater taaml erreur taw
     private Famille famille;
 
 }
