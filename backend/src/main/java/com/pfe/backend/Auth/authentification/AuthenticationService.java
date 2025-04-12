@@ -1,6 +1,6 @@
 package com.pfe.backend.Auth.authentification;
 import com.pfe.backend.Auth.Config.JwtService;
-import com.pfe.backend.Model.Role;
+
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +33,8 @@ public class AuthenticationService {
             // Créer le premier utilisateur sans actionneur
             user = User.builder().nom(request.getNom()).prenom(request.getPrenom()).matricule(request.getMatricule())
                     .email(request.getEmail())
+                    .groupe(request.getGroupe())
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.SUPERUSER) // Attribuer un rôle spécifique (par exemple, ADMIN)
                     .genre(request.getGenre()).num(request.getNum())
                     .status(request.getStatus() != null ? request.getStatus() : User.UserStatus.ACTIVE)
                     .actionneur(null) // Pas d'actionneur pour le premier utilisateur
@@ -43,7 +43,6 @@ public class AuthenticationService {
             // Récupérer l'utilisateur créateur (actionneur)
             User creator = repository.findById(idCreator)
                     .orElseThrow(() -> new RuntimeException("Créateur du compte introuvable"));
-
             // Créer un utilisateur normal avec un actionneur
             user = User.builder()
                     .nom(request.getNom())
@@ -51,7 +50,7 @@ public class AuthenticationService {
                     .matricule(request.getMatricule())
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(request.getRole() != null ? request.getRole() : Role.OPERATEUR) // Valeur par défaut
+                    .groupe(request.getGroupe())
                     .genre(request.getGenre())
                     .num(request.getNum())
                     .status(request.getStatus() != null ? request.getStatus() : User.UserStatus.ACTIVE)
@@ -63,7 +62,7 @@ public class AuthenticationService {
             var jwtToken = jwtService.generateToken(user);
             //we need to encode our pwd before saving it so we neeed to inject our passwordencoder Service
         return AuthenticationResponse.builder()
-                    .token(jwtToken).user(user).role(user.getRole()).build();
+                    .token(jwtToken).user(user). groupe(user.getGroupe().getNom()).build();
 
     }
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -82,7 +81,7 @@ public class AuthenticationService {
     return AuthenticationResponse.builder()
             .token(jwtToken)
             .user(user)
-            .role(user.getRole())
+            .groupe(user.getGroupe().getNom())
             .build();
 }
 

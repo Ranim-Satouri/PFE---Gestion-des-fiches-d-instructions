@@ -43,11 +43,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private UserStatus status;
-    public enum UserStatus{
-        ACTIVE, INACTIVE ,DELETED;
-    }
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    public enum UserStatus{ ACTIVE, INACTIVE ,DELETED ; }
+//    @Enumerated(EnumType.STRING)
+//    private Role role;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -78,20 +76,20 @@ public class User implements UserDetails {
     @JoinColumn(name = "idGroupe")
     private Groupe groupe;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));}
-
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return List.of(new SimpleGrantedAuthority(role.name()));}
+@Override
+public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of(new SimpleGrantedAuthority(groupe.getNom()));}
     @Override
     public String getUsername() {
         return matricule;
     }
     @Override
     public boolean isAccountNonExpired() {
-        return true; //lezmemha tebda true otherwise we won't
-        //be able to connect our user
+        return true; //lezmemha tebda true otherwise we won't //be able to connect our user
     }
-
     @Override
     public boolean isAccountNonLocked() {
         return true;
