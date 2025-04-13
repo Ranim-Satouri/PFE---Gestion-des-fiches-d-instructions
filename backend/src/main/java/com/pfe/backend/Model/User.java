@@ -75,13 +75,19 @@ public class User implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "idGroupe")
     private Groupe groupe;
-
+    public void setGroupe(Groupe groupe) {this.groupe = groupe ;}
 //    @Override
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
 //        return List.of(new SimpleGrantedAuthority(role.name()));}
 @Override
 public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(groupe.getNom()));}
+    if (groupe == null) {
+        return List.of(); // Return an empty list if no group is assigned
+    }
+    return List.of(new SimpleGrantedAuthority(groupe.getNom()));
+}
+//        return List.of(new SimpleGrantedAuthority(groupe.getNom()));
+
     @Override
     public String getUsername() {
         return matricule;

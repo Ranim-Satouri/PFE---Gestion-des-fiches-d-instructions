@@ -17,7 +17,7 @@ public class RegisterRequest {
     private String matricule;
     private String email;
     private String password;
-    private Groupe groupe;
+    private Long idGroupe;
     private User.UserGenre genre;
     private String num;
     private User.UserStatus status;

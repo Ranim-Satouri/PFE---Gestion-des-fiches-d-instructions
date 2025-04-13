@@ -17,5 +17,6 @@ public class AuthenticationResponse {
 
     private User user;
     private String token;
+    @JsonIgnore
     private String groupe;
 }

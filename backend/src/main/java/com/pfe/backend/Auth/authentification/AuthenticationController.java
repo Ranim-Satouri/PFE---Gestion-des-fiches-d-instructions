@@ -28,6 +28,7 @@ public ResponseEntity<AuthenticationResponse> register(
     System.out.println("d5alna");
     System.out.println(request);
     try {
+        System.out.println("hani f try");
         AuthenticationResponse response = Aservice.register(request, idCreator);
         return ResponseEntity.ok(response);
     } catch (ResponseStatusException e) {

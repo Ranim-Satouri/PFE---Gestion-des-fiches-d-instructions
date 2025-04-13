@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     List<User> findByStatusNot(User.UserStatus status);
-    List<User> findByRole(Role role);
+//    List<User> findByGroupe(String nom);
     Optional<User> findByMatricule(String matricule);
     boolean existsByMatricule(String matricule);
 }

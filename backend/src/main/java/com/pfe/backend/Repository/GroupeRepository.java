@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface GroupeRepository extends JpaRepository<Groupe,Long> {
     Optional<Groupe> findBynomAndIsDeleted(String nomGroupe, boolean deleted);
     List<Groupe> findByIsDeletedFalse();
+    Groupe findByNom(String nom);
 
 }

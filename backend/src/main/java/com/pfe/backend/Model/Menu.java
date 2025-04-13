@@ -1,5 +1,6 @@
 package com.pfe.backend.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.envers.Audited;
@@ -18,7 +19,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idMenu;
     private String nom;
-
+    @JsonIgnore
     @ManyToMany(mappedBy = "menus", fetch = FetchType.LAZY)
     private List<Groupe> groupes;
 }

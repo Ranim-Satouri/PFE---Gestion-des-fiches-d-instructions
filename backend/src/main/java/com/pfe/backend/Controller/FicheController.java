@@ -25,143 +25,143 @@ import java.util.Map;
 public class FicheController {
     @Autowired
     private FicheService ficheService;
-
-    @PostMapping("/addFiche")
-    public ResponseEntity<?> addFiche(@RequestBody Fiche fiche) {
-        Fiche saved = ficheService.addFiche(fiche);
-        return ResponseEntity.ok(saved);
-    }
-
-    @PostMapping("/uploadPDF")
-    public ResponseEntity<Map<String, String>> uploadPDF(@RequestParam("file") MultipartFile file) {
-        try{
-            String result = ficheService.saveFile(file);
-            Map<String, String> response = new HashMap<>();
-            response.put("fileName", result);
-            return ResponseEntity.ok(response);
-        }catch (Exception e) {
-            e.printStackTrace();
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "Erreur lors de l'enregistrement du fichier");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-        }
-    }
-
-    @GetMapping("/getPdf/{filename}")
-    public ResponseEntity<?> getPdf(@PathVariable String filename) {
-        try {
-            Resource resource = ficheService.loadPdf(filename);
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
-                    .body(resource);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/getAllFiches")
-    public ResponseEntity<List<Fiche>> getAllFiches(){
-        return ResponseEntity.ok().body(ficheService.getFiches());
-    }
-    @PutMapping("/updateFiche")
-    public ResponseEntity<?> updateFiche(@RequestBody Fiche fiche ){
-        try{
-            return ResponseEntity.ok().body(ficheService.updateFiche(fiche));
-        }catch(RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @PutMapping("/deleteFiche/{idFiche}")
-    public ResponseEntity<?> deleteFiche(@PathVariable long idFiche, @RequestParam long idActionneur){
-        try {
-            return ResponseEntity.ok().body(ficheService.deleteFiche(idFiche , idActionneur));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @PutMapping("/validationIPDF/{idFiche}")
-    public ResponseEntity<?> validationIPDF(
-            @PathVariable long idFiche,
-            @RequestParam long idIPDF,
-            @RequestParam String status,
-            @RequestParam String commentaire) {
-        Fiche.FicheStatus ficheStatus = Fiche.FicheStatus.valueOf(status.toUpperCase());
-
-        try {
-            return ResponseEntity.ok().body(ficheService.ValidationIPDF(idFiche, idIPDF, ficheStatus, commentaire));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @PutMapping("/validationIQP/{idFiche}")
-    public ResponseEntity<?> validationIQP(
-            @PathVariable long idFiche,
-            @RequestParam long idIQP,
-            @RequestParam String status,
-            @RequestParam String ficheAql,
-            @RequestParam String commentaire)  {
-        Fiche.FicheStatus ficheStatus = Fiche.FicheStatus.valueOf(status.toUpperCase());
-
-        try {
-            return ResponseEntity.ok().body(ficheService.ValidationIQP(idFiche, idIQP, ficheStatus,ficheAql,commentaire));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-    @GetMapping("/getFichesByPreparateur/{idPreparateur}")
-    public ResponseEntity<?> getFichesByPreparateur(@PathVariable Long idPreparateur) {
-        try{
-            return new ResponseEntity<>(ficheService.getFichesByPreparateur(idPreparateur), HttpStatus.OK);
-        }catch(RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/getFichesSheetByIPDF/{idIPDF}")
-    public ResponseEntity<?> getFichesSheetByIPDF(@PathVariable Long idIPDF) {
-        try {
-            return new ResponseEntity<>(ficheService.getFichesSheetByIPDF(idIPDF), HttpStatus.OK);
-        }catch(RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/getFichesSheetByIQP/{idIQP}")
-    public ResponseEntity<?> getFichesSheetByIQP(@PathVariable Long idIQP) {
-        try{
-            return new ResponseEntity<>(ficheService.getFichesSheetByIQP(idIQP), HttpStatus.OK);
-        }catch(RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-    @GetMapping("/getFichesSheetByOperateur/{idOperateur}")
-    public ResponseEntity<?> getFichesSheetByOperateur(@PathVariable Long idOperateur) {
-        try{
-            return new ResponseEntity<>(ficheService.getFichesSheetByOperateur(idOperateur), HttpStatus.OK);
-        }catch(RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/getFichesSheetByAdmin/{idAdmin}")
-    public ResponseEntity<?> getFichesSheetByAdmin(@PathVariable Long idAdmin) {
-        try{
-            return new ResponseEntity<>(ficheService.getFichesSheetByAdmin(idAdmin), HttpStatus.OK);
-        }catch(RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/updateStatus")
-    public ResponseEntity<Boolean> checkFicheStatusUpdate() {
-        boolean updated = ficheService.verifierEtMettreAJourFichesExpirees();
-        return ResponseEntity.ok(updated);
-    }
+//
+//    @PostMapping("/addFiche")
+//    public ResponseEntity<?> addFiche(@RequestBody Fiche fiche) {
+//        Fiche saved = ficheService.addFiche(fiche);
+//        return ResponseEntity.ok(saved);
+//    }
+//
+//    @PostMapping("/uploadPDF")
+//    public ResponseEntity<Map<String, String>> uploadPDF(@RequestParam("file") MultipartFile file) {
+//        try{
+//            String result = ficheService.saveFile(file);
+//            Map<String, String> response = new HashMap<>();
+//            response.put("fileName", result);
+//            return ResponseEntity.ok(response);
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//            Map<String, String> error = new HashMap<>();
+//            error.put("error", "Erreur lors de l'enregistrement du fichier");
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+//        }
+//    }
+//
+//    @GetMapping("/getPdf/{filename}")
+//    public ResponseEntity<?> getPdf(@PathVariable String filename) {
+//        try {
+//            Resource resource = ficheService.loadPdf(filename);
+//
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.APPLICATION_PDF)
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+//                    .body(resource);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//
+//    @GetMapping("/getAllFiches")
+//    public ResponseEntity<List<Fiche>> getAllFiches(){
+//        return ResponseEntity.ok().body(ficheService.getFiches());
+//    }
+//    @PutMapping("/updateFiche")
+//    public ResponseEntity<?> updateFiche(@RequestBody Fiche fiche ){
+//        try{
+//            return ResponseEntity.ok().body(ficheService.updateFiche(fiche));
+//        }catch(RuntimeException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//
+//    @PutMapping("/deleteFiche/{idFiche}")
+//    public ResponseEntity<?> deleteFiche(@PathVariable long idFiche, @RequestParam long idActionneur){
+//        try {
+//            return ResponseEntity.ok().body(ficheService.deleteFiche(idFiche , idActionneur));
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//
+//    @PutMapping("/validationIPDF/{idFiche}")
+//    public ResponseEntity<?> validationIPDF(
+//            @PathVariable long idFiche,
+//            @RequestParam long idIPDF,
+//            @RequestParam String status,
+//            @RequestParam String commentaire) {
+//        Fiche.FicheStatus ficheStatus = Fiche.FicheStatus.valueOf(status.toUpperCase());
+//
+//        try {
+//            return ResponseEntity.ok().body(ficheService.ValidationIPDF(idFiche, idIPDF, ficheStatus, commentaire));
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//
+//    @PutMapping("/validationIQP/{idFiche}")
+//    public ResponseEntity<?> validationIQP(
+//            @PathVariable long idFiche,
+//            @RequestParam long idIQP,
+//            @RequestParam String status,
+//            @RequestParam String ficheAql,
+//            @RequestParam String commentaire)  {
+//        Fiche.FicheStatus ficheStatus = Fiche.FicheStatus.valueOf(status.toUpperCase());
+//
+//        try {
+//            return ResponseEntity.ok().body(ficheService.ValidationIQP(idFiche, idIQP, ficheStatus,ficheAql,commentaire));
+//        } catch (RuntimeException e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//    @GetMapping("/getFichesByPreparateur/{idPreparateur}")
+//    public ResponseEntity<?> getFichesByPreparateur(@PathVariable Long idPreparateur) {
+//        try{
+//            return new ResponseEntity<>(ficheService.getFichesByPreparateur(idPreparateur), HttpStatus.OK);
+//        }catch(RuntimeException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//
+//    @GetMapping("/getFichesSheetByIPDF/{idIPDF}")
+//    public ResponseEntity<?> getFichesSheetByIPDF(@PathVariable Long idIPDF) {
+//        try {
+//            return new ResponseEntity<>(ficheService.getFichesSheetByIPDF(idIPDF), HttpStatus.OK);
+//        }catch(RuntimeException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//
+//    @GetMapping("/getFichesSheetByIQP/{idIQP}")
+//    public ResponseEntity<?> getFichesSheetByIQP(@PathVariable Long idIQP) {
+//        try{
+//            return new ResponseEntity<>(ficheService.getFichesSheetByIQP(idIQP), HttpStatus.OK);
+//        }catch(RuntimeException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//    @GetMapping("/getFichesSheetByOperateur/{idOperateur}")
+//    public ResponseEntity<?> getFichesSheetByOperateur(@PathVariable Long idOperateur) {
+//        try{
+//            return new ResponseEntity<>(ficheService.getFichesSheetByOperateur(idOperateur), HttpStatus.OK);
+//        }catch(RuntimeException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//
+//    @GetMapping("/getFichesSheetByAdmin/{idAdmin}")
+//    public ResponseEntity<?> getFichesSheetByAdmin(@PathVariable Long idAdmin) {
+//        try{
+//            return new ResponseEntity<>(ficheService.getFichesSheetByAdmin(idAdmin), HttpStatus.OK);
+//        }catch(RuntimeException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//
+//    @GetMapping("/updateStatus")
+//    public ResponseEntity<Boolean> checkFicheStatusUpdate() {
+//        boolean updated = ficheService.verifierEtMettreAJourFichesExpirees();
+//        return ResponseEntity.ok(updated);
+//    }
 
 
 }
