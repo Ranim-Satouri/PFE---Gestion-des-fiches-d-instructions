@@ -1,7 +1,5 @@
 package com.pfe.backend.Service.ServiceUser;
-import com.pfe.backend.DTO.UserDTO;
-import com.pfe.backend.Model.Groupe;
-import com.pfe.backend.Model.User;
+import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.GroupeRepository;
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.UserZoneRepository;
@@ -15,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
-
+import java.util.Set;
 @Service
 public class UserServiceImp implements UserIservice {
     @Autowired
@@ -28,44 +25,44 @@ public class UserServiceImp implements UserIservice {
     @Autowired
     private GroupeRepository groupeRepo;
 
-//    @Override
-//    public void attribuerZoneAUser(Long idUser, Long idZone, Long idActionneur) {
-//
-//    User user = userRepo.findById(idUser)
-//                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-//        Zone zone = zoneRepo.findById(idZone)
-//                .orElseThrow(() -> new RuntimeException("Zone introuvable"));
-//        // Vérifier si la zone est déjà attribuée à l'utilisateur
-//        boolean zoneDejaAttribuee = user.getUserZones().stream()
-//                .anyMatch(userZone -> userZone.getZone().getIdZone()== idZone);
-//        if (zoneDejaAttribuee) {
-//            throw new RuntimeException("La zone est déjà attribuée à cet utilisateur");
-//        }
-//        user.addZone(zone, idActionneur);
-//        userRepo.save(user);
-//    }
-//    public void retirerZoneAUser(Long idUser, Long idZone, Long idActionneur) {
-//        // Vérifier si les entités existent
-//        User user = userRepo.findById(idUser)
-//                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-//        Zone zone = zoneRepo.findById(idZone)
-//                .orElseThrow(() -> new RuntimeException("Zone introuvable"));
-//
-//        var userZoneOpt = userZoneRepository.findByUserAndZone(user, zone);
-//
-//        if (userZoneOpt.isEmpty()) {
-//            throw new RuntimeException("Aucune liaison entre cet utilisateur et cette zone");
-//        }
-//        userZoneRepository.delete(userZoneOpt.get());
-//    }
-//    @Override
-//    public Set<UserZone> getUserZones(Long idUser) {
-//
-//        User user = userRepo.findById(idUser)
-//                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-//        return user.getUserZones();
-//    }
-//
+    @Override
+    public void attribuerZoneAUser(Long idUser, Long idZone, Long idActionneur) {
+
+    User user = userRepo.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        Zone zone = zoneRepo.findById(idZone)
+                .orElseThrow(() -> new RuntimeException("Zone introuvable"));
+        // Vérifier si la zone est déjà attribuée à l'utilisateur
+        boolean zoneDejaAttribuee = user.getUserZones().stream()
+                .anyMatch(userZone -> userZone.getZone().getIdZone()== idZone);
+        if (zoneDejaAttribuee) {
+            throw new RuntimeException("La zone est déjà attribuée à cet utilisateur");
+        }
+        user.addZone(zone, idActionneur);
+        userRepo.save(user);
+    }
+    public void retirerZoneAUser(Long idUser, Long idZone, Long idActionneur) {
+        // Vérifier si les entités existent
+        User user = userRepo.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        Zone zone = zoneRepo.findById(idZone)
+                .orElseThrow(() -> new RuntimeException("Zone introuvable"));
+
+        var userZoneOpt = userZoneRepository.findByUserAndZone(user, zone);
+
+        if (userZoneOpt.isEmpty()) {
+            throw new RuntimeException("Aucune liaison entre cet utilisateur et cette zone");
+        }
+        userZoneRepository.delete(userZoneOpt.get());
+    }
+    @Override
+    public Set<UserZone> getUserZones(Long idUser) {
+
+        User user = userRepo.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        return user.getUserZones();
+    }
+
     @Override
     public void ModifyUserGroupe(long idUser, long idGroupe, long idActionneur)
     {
@@ -90,32 +87,16 @@ public class UserServiceImp implements UserIservice {
         }
     }
     @Override
-    public ResponseEntity<List<UserDTO>> getAllUsers()
+    public ResponseEntity<List<User>> getAllUsers()
     {
-        List<User>users=userRepo.findAll();
-        List<UserDTO>userDTOs = users.stream().map(this::convertToDTO).collect(Collectors.toList());
-        return ResponseEntity.ok().body(userDTOs);
-    }
-    private UserDTO convertToDTO(User user) {
-        return UserDTO.builder()
-                .idUser(user.getIdUser())
-                .matricule(user.getMatricule())
-                .nom(user.getNom())
-                .prenom(user.getPrenom())
-                .email(user.getEmail())
-                .num(user.getNum())
-                .status(user.getStatus())
-                .genre(user.getGenre())
-                .modifieLe(user.getModifieLe())
-                .groupeNom(user.getGroupe() != null ? user.getGroupe().getNom() : null)
-                .build();
+        List<User>users = userRepo.findAll();
+        return ResponseEntity.ok().body(users);
     }
     @Override
-    public ResponseEntity<List<UserDTO>> getUsers()
+    public ResponseEntity<List<User>> getUsers()
     {
         List<User>users=userRepo.findByStatusNot(User.UserStatus.DELETED);
-        List<UserDTO>userDTOS=users.stream().map(this::convertToDTO).collect(Collectors.toList());
-        return ResponseEntity.ok().body(userDTOS);
+        return ResponseEntity.ok().body(users);
     }
     @PersistenceContext
     private EntityManager entityManager; // Permet d'utiliser Hibernate Envers
@@ -144,11 +125,17 @@ public class UserServiceImp implements UserIservice {
         existingUser.setActionneur(actionneur);
        return userRepo.save(existingUser);
     }
-//    @Override
-//    public List<User> findByGroupe(Role role)
-//    {
-//        return userRepo.findByRole(Role.SUPERUSER);
-//    }
+    @Override
+    public ResponseEntity<List<User>> findByGroupe(String nom)
+    {
+       Groupe groupe = groupeRepo.findByNom(nom);
+       return ResponseEntity.ok().body(userRepo.findByGroupe(groupe));
+    }
 
-
+    @Override
+    public ResponseEntity<List<User>> findByIdGroupe(long idGroupe)
+    {
+        Groupe groupe = groupeRepo.findById(idGroupe).orElseThrow(()->new RuntimeException("Groupe introuvable"));
+        return ResponseEntity.ok().body(userRepo.findByGroupe(groupe));
+    }
 }

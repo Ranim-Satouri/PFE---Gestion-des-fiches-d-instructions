@@ -1,7 +1,7 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Genre, Role, User, UserStatus} from '../models/User';
-import {map, Observable} from 'rxjs';
+import {catchError, map, Observable, tap} from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -28,8 +28,19 @@ export class UserService {
       `${this.apiUrl2}/register`, user, { params } );
   }
   
-  getAll(): Observable<User[]> {return this.http.get<User[]>(`${this.apiUrl}/getUsers`); }
-
+  // getAll(): Observable<User[]> {
+  //   return this.http.get<User[]>(`${this.apiUrl}/getUsers`); 
+  // }
+  getAll(): Observable<User[]> {
+    console.log('Appel de getAll vers:', `${this.apiUrl}/getUsers`);
+    return this.http.get<User[]>(`${this.apiUrl}/getUsers`).pipe(
+        tap(users => console.log('Utilisateurs reçus:', users)),
+        catchError(error => {
+            console.error('Erreur lors de la récupération des utilisateurs:', error);
+            throw error;
+        })
+    );
+}
 
 updateUser(idUser:number, user:User , idActionneur:number):Observable<any>
 {
@@ -39,7 +50,9 @@ removeZone(idUser: number, idZone: number, idActionneur: number): Observable<any
   return this.http.delete(`${this.apiUrl}/retirerZoneAUser/${idUser}/${idZone}/${idActionneur}`);
 }
 
-
+//  getZoneUsers(idZone: number): Observable<User_Zone[]> {
+//     return this.http.get<User_Zone[]>(`${this.apiUrl2}/zone-users/${idZone}`);
+//   }
 
 
 

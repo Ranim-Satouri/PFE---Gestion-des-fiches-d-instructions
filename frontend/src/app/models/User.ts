@@ -35,4 +35,3 @@ export interface User {
     FEMME = "FEMME",
     HOMME = "HOMME"
   }
-

@@ -333,7 +333,6 @@ GroupeNom!: string;
             })
           )
         );
-
         // Exécuter toutes les requêtes en parallèle et mettre à jour this.users une fois terminé
         forkJoin(zoneRequests).subscribe({
           next: (updatedUsers: User[]) => {

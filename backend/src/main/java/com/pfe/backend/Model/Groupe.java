@@ -34,7 +34,7 @@ public class Groupe {
     //    les relations
 
     @JsonIgnore
-    @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
     private List<User> users;
 //il faut les initialize = new ArrayList<>() pour eviter l'exception NullPointerException,to ensure they are never null.
 

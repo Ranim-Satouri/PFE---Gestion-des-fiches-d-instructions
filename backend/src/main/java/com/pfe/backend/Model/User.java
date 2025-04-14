@@ -43,8 +43,8 @@ public class User implements UserDetails {
     @Column(length = 10)
     private UserStatus status;
     public enum UserStatus{ ACTIVE, INACTIVE ,DELETED ; }
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserZone> userZones = new HashSet<>();

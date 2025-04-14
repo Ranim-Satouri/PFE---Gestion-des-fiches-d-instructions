@@ -50,4 +50,16 @@ public class GroupeController {
     public ResponseEntity<List<Groupe>> getActiveGroupes() {
         return ResponseEntity.ok(groupeService.getActiveGroupes());
     }
+    @PostMapping("/addRelationsToGroup")
+    public ResponseEntity<?> addRelationsToGroup(@RequestParam Long groupId,
+                                                      @RequestParam List<Long> menuIds,
+                                                      @RequestParam List<Long> permissionIds,
+                                                      @RequestParam List<Long> userIds) {
+        try {
+            Groupe result = groupeService.addRelationsToGroup(groupId, menuIds, permissionIds, userIds);
+            return ResponseEntity.ok(result);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'ajout des relations : " + e.getMessage());        }
+    }
 }

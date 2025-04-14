@@ -2,22 +2,21 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { Groupe } from '../../../models/Groupe';
 import { User } from '../../../models/User';
-import { GroupeService } from '../../../services/groupe.service';
-import { AddGroupeComponent } from '../../add/add-groupe/add-groupe.component';
-import { DeleteConfirmComponent } from '../../delete-confirm/delete-confirm.component';
-
+import { Ligne } from '../../../models/Ligne';
+import { LigneService } from '../../../services/ligne.service';
+import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 @Component({
-  selector: 'app-groupe-list',
+  selector: 'app-ligne-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, AddGroupeComponent,DeleteConfirmComponent],
-  templateUrl: './groupe-list.component.html',
-  styleUrl: './groupe-list.component.css'
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent],
+  templateUrl: './ligne-list.component.html',
+  styleUrl: './ligne-list.component.css'
 })
-export class GroupeListComponent {
- constructor(private groupeService: GroupeService) {}
-  groupes: Groupe[] = [];
+export class LigneListComponent {
+
+ constructor(private ligneService: LigneService) {}
+  lignes: Ligne[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 5;
@@ -25,71 +24,69 @@ export class GroupeListComponent {
   displayAbove = false;
   userConnected !: User ;
   isDeleteModelOpen : boolean = false;
-  selectedGroupe !: number ;
-  GroupeToUpdate : Groupe | undefined ;
+  selectedLigne !: number ;
+  LigneToUpdate : Ligne | undefined ;
   showAddModal = false;
   showUpdateModal = false;
 
   ngOnInit(){
-    this.getGroupes();
+    this.getLignes();
   }
-
-  getGroupes() {
-    this.groupeService.getAll().subscribe({
-      next : (response :Groupe[]) => {
-        this.groupes = response.sort((a, b) => b.idGroupe! - a.idGroupe!);
-        console.log('groupes:', this.groupes);
-      },
-      error: (error: any) => {
-        console.error('fetching groupes error:', error);
-      },
-    });
-  }
-
-  deleteGroupe(idGroupe: number): void {
+  deleteLigne(idLigne: number): void {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
-    this.groupeService.deleteGroupe(idGroupe! , this.userConnected.idUser! ).subscribe({
+    this.ligneService.deleteLigne(idLigne! , this.userConnected.idUser! ).subscribe({
       next: () => {
-        console.log('Groupe supprimée');
+        console.log('Ligne supprimée');
         this.dropdownOpen = null;
-        this.getGroupes()
+        this.getLignes()
       },
       error: err => {
-        console.error('Erreur suppression Groupe', err);
+        console.error('Erreur suppression Ligne', err);
       }
     });
     this.closeDeleteModel()
   }
+  getLignes() {
+    this.ligneService.getAll().subscribe({
+      next : (response :Ligne[]) => {
+        this.lignes = response.sort((a, b) => b.idLigne! - a.idLigne!);
+        console.log('lignes:', this.lignes);
+      },
+      error: (error: any) => {
+        console.error('fetching lignes error:', error);
+      },
+    });
+  }
 
-  OpenAddGroupePopUp(){
-    console.log(this.GroupeToUpdate);
+  OpenAddLignePopUp(){
+    console.log(this.LigneToUpdate);
     this.showAddModal = true;
   }
-  closeAddGroupePopUp() {   
-    this.getGroupes();
+  closeAddLignePopUp() {   
+    this.getLignes();
     this.showAddModal = false; 
-    this.GroupeToUpdate = undefined ; // aamltha bech kif naawd nhel add marra okhra yabda el groupe undefined
+    this.LigneToUpdate = undefined ; // aamltha bech kif naawd nhel add marra okhra yabda el ligne undefined
   }
-  openDeleteModel(groupe : Groupe) {
-    this.selectedGroupe = groupe.idGroupe!;
-    this.dropdownOpen = null;
-    this.isDeleteModelOpen = true;
-  }
+  openDeleteModel(ligne : Ligne) {
+    this.selectedLigne = ligne.idLigne!;
+      this.dropdownOpen = null;
+      this.isDeleteModelOpen = true;
+    }
   closeDeleteModel(){
     this.isDeleteModelOpen = false;
   }
 
-  OpenUpdateGroupePopUp(groupe : Groupe){
-    console.log('groupe to update:', groupe);
-    this.GroupeToUpdate = groupe;
+  OpenUpdateLignePopUp(ligne : Ligne){
+    console.log('ligne to update:', ligne);
+    this.LigneToUpdate = ligne;
     this.dropdownOpen = null;
     this.showAddModal = true;
   }
-  closeUpdateGroupePopUp() {
-    this.getGroupes();
+  closeUpdateLignePopUp() {
+    this.getLignes();
     this.showAddModal = false;
   }
 

@@ -1,7 +1,7 @@
 <div class="h-full flex flex-col" >  
     <div class="h-16 w-full bg-gray-300/80 dark:bg-gray-800 mb-4 rounded-lg flex items-center px-2 justify-end">
-        <button (click)="OpenAddGroupePopUp()"  class="w-40 h-8 px-4 py-2 text-sm text-center font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-          Ajouter un groupe</button>
+        <button (click)="OpenAddLignePopUp()"  class="w-40 h-8 px-4 py-2 text-sm text-center font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+          Ajouter une ligne</button>
     </div>
     <div class="mb-2 overflow-x-auto shadow-md rounded-lg max-h-[calc(100%-136px)] overflow-y-auto custom-scrollbar-container"  (scroll)="onScroll()">
         <table class="w-full text-xs text-left rtl:text-right text-gray-700 dark:text-gray-400 ">
@@ -15,9 +15,9 @@
                     <th scope="col" class="px-6 py-3 ">
                         <div class="flex items-center">
                             Nom  
-                            <!-- <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"/>
-                            </svg></a> -->
+                            </svg></a>
                         </div>
                     </th>
                     <th scope="col" class="px-5 py-3 ">
@@ -32,11 +32,11 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let groupe of groupes | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index" 
+                <tr *ngFor="let ligne of lignes | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index" 
                     class="bg-gray-50 border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 dark:hover:bg-hoverColor hover:bg-gray-100">
-                    <th scope="col" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white ">{{groupe.idGroupe}}</th>
-                    <th scope="col" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white ">{{groupe.nom}}</th>
-                    <th scope="col" class="px-5 py-2 font-medium">{{groupe.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
+                    <th scope="col" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white ">{{ligne.idLigne}}</th>
+                    <th scope="col" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white ">{{ligne.nom}}</th>
+                    <th scope="col" class="px-5 py-2 font-medium">{{ligne.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
                     
                     <th class="px-4 py-2 text-right relative">
                         <div class="relative inline-block text-left">
@@ -58,7 +58,7 @@
 
                                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 font-medium space-y-1">
                                 <li>
-                                <a  (click)="OpenUpdateGroupePopUp(groupe)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                <a  (click)="OpenUpdateLignePopUp(ligne)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- Pencil Icon -->
                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                                         <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
@@ -81,7 +81,7 @@
                                 </li>
                                 <li>
                                 <a class="flex items-center  mx-1 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-600 hover:text-red-700 dark:hover:text-white rounded-lg cursor-pointer transition-all"
-                                (click)="openDeleteModel(groupe)">
+                                (click)="openDeleteModel(ligne)">
                                     <!-- Trash Icon -->    
                                     <svg class="w-5 h-5 mr-3  " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                                         <path d="M4 7l16 0"></path>
@@ -105,7 +105,7 @@
     <!-- Pagination Controls -->
     <div class="flex sm:flex-row justify-between items-center px-4  rounded-lg h-10 flex-col gap-4">
         <div class="text-sm text-slate-500">
-            Affichage <b>{{ (page - 1) * itemsPerPage + 1 }}</b> - <b>{{ (page * itemsPerPage > groupes.length ? groupes.length : page * itemsPerPage) }}</b> de <b>{{ groupes.length }}</b> éléments
+            Affichage <b>{{ (page - 1) * itemsPerPage + 1 }}</b> - <b>{{ (page * itemsPerPage > lignes.length ? lignes.length : page * itemsPerPage) }}</b> de <b>{{ lignes.length }}</b> éléments
         </div>
     <div class="flex space-x-3 flex-row sm:flex-row flex-col">
             
@@ -117,7 +117,7 @@
                         <option value="10">10</option>
                         <option value="15">15</option>
                         <option value="20">20</option>
-                        <option *ngIf="groupes.length > 20" value="{{groupes.length}}">{{groupes.length}}</option>
+                        <option *ngIf="lignes.length > 20" value="{{lignes.length}}">{{lignes.length}}</option>
                     </select>
                     <!-- Flèche SVG personnalisée -->
                     <svg class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -133,15 +133,11 @@
 
 <app-delete-confirm 
     [isOpen]="isDeleteModelOpen"
-    [title]="'ce groupe'"
-    [message1]="'Toutes les utilsateurs associées à ce groupe ne seront pas associé a un groupe.'"
-    (onConfirm)="deleteGroupe(selectedGroupe)"
+    [title]="'cette ligne de production'"
+    [message1]="'Toutes les operations associées à cette ligne de production seront également supprimées.'"
+    [message2]="'Pour les conserver, vous devez les réaffecter à une autre ligne avant de procéder.'"
+    (onConfirm)="deleteLigne(selectedLigne)"
     (onCancel)="closeDeleteModel()">
 </app-delete-confirm>
 
-<app-add-groupe
-*ngIf="showAddModal"
-(close)="closeAddGroupePopUp()"
-[groupe]="GroupeToUpdate!"
->
-</app-add-groupe>
+

@@ -81,7 +81,7 @@ public class DataInitializer implements CommandLineRunner {
                     .modifieLe(LocalDateTime.now())
                     .users(new ArrayList<>())
                     .menus(new ArrayList<>()) // Initialize here
-                    .permission(new ArrayList<>()) // Initialize here
+                    .permissions(new ArrayList<>()) // Initialize here
                     .isDeleted(false)
                     .build();
 
