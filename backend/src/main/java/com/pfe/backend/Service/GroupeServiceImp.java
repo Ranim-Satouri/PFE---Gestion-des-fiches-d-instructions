@@ -1,8 +1,12 @@
 package com.pfe.backend.Service;
 
 import com.pfe.backend.Model.Groupe;
+import com.pfe.backend.Model.Menu;
+import com.pfe.backend.Model.Permission;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Repository.GroupeRepository;
+import com.pfe.backend.Repository.MenuRepository;
+import com.pfe.backend.Repository.PermissionRepository;
 import com.pfe.backend.Repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,8 @@ public class GroupeServiceImp implements GroupeService{
     @Autowired
     private UserRepository userRepository;
     private GroupeRepository groupeRepository;
+    private MenuRepository menuRepository;
+    private PermissionRepository permissionRepository;
     public ResponseEntity<?> addGroupe(Groupe groupe , Long idActionneur){
         User actionneur = userRepository.findById(idActionneur)
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
@@ -39,7 +45,7 @@ public class GroupeServiceImp implements GroupeService{
     {
         Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow(()-> new RuntimeException("Groupe introuvable ! "));
         User actionneur = userRepository.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-        Optional<Groupe> existingGroupe = groupeRepository.findBynomAndIsDeleted(groupe.getNom(), false);
+        Optional<Groupe> existingGroupe = groupeRepository.findBynomAndIsDeleted(NewGroupeData.getNom(), false);
         if(existingGroupe.isPresent()){
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
@@ -58,7 +64,12 @@ public class GroupeServiceImp implements GroupeService{
        Groupe groupe = groupeRepository.findById(idGroupe).orElseThrow(()-> new RuntimeException("Groupe introuvable ! "));
         User actionneur = userRepository.findById(idActionneur)
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-
+        List<User> users = userRepository.findByGroupe(groupe);
+        for (User user : users) {
+            user.setGroupe(null);
+            user.setActionneur(actionneur);
+            userRepository.save(user);
+        }
         groupe.setActionneur(actionneur);
         groupe.setDeleted(true);
         groupeRepository.save(groupe);
@@ -72,5 +83,34 @@ public class GroupeServiceImp implements GroupeService{
     @Override
     public List<Groupe> getGroupes() {
         return groupeRepository.findAll();
+    }
+
+    public Groupe addRelationsToGroup(Long groupId, List<Long> menuIds, List<Long> permissionIds, List<Long> userIds) {
+        Groupe groupe = groupeRepository.findById(groupId)
+                .orElseThrow(() -> new RuntimeException("Groupe non trouvé"));
+
+        List<Menu> selectedMenus = menuRepository.findAllById(menuIds);
+        groupe.setMenus(selectedMenus);
+
+        List<Permission> selectedPermissions = permissionRepository.findAllById(permissionIds);
+        groupe.setPermissions(selectedPermissions);
+
+        // Find users who are currently assigned to the group but are not in the new user list
+        List<User> usersInGroup = groupe.getUsers();
+        for (User user : usersInGroup) {
+            if (!userIds.contains(user.getIdUser())) {
+                // Set the group to null for users who are no longer part of the group
+                user.setGroupe(null);
+                user.setActionneur(groupe.getActionneur());
+                userRepository.save(user);  // Save the changes
+            }
+        }
+        List<User> selectedUsers = userRepository.findAllById(userIds);
+        for (User user : selectedUsers) {
+            user.setGroupe(groupe);
+        }
+        groupe.setUsers(selectedUsers);
+
+        return groupeRepository.save(groupe);
     }
 }

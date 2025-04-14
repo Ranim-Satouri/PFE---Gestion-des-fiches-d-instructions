@@ -31,21 +31,37 @@ export class AddGroupeComponent {
   showSelectorDropdown : Boolean = false;
   affectationFilter: string = ''; // '', 'assigned', 'not-assigned'
   selectedState: string = '';
-  selectedUsers = new Set<number>();
   menuSearchText: string = '';
   groupeForm !: FormGroup;
+  selectedUsers = new Set<number>();
+  selectedMenus = new Set<number>();
+  selectedPermissions = new Set<number>();
+  @Input() groupe !: Groupe ;
+  isNewGroup: boolean = true;
+  successMessage: string = '';
+  errorMessage = '';
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
-    this.groupeForm =  new FormGroup({
-      nom: new FormControl('', [Validators.required])
-    });
     this.getUsers(); 
     this.getMenus();
     this.getPermissions();
-    
+    if (this.groupe && this.groupe.idGroupe) {
+      this.isNewGroup = false;
+      this.groupeForm = new FormGroup({
+        nom: new FormControl(this.groupe.nom, [Validators.required])
+      });
+      this.selectedMenus = new Set(this.groupe.menus?.map(menu => menu.idMenu!));
+      this.selectedPermissions = new Set(this.groupe.permissions?.map(permission => permission.idPermission!));
+
+    } else {
+      // Initialize form for new group
+      this.groupeForm = new FormGroup({
+        nom: new FormControl('', [Validators.required])
+      });
+    }
   }
   goToPreviousStep() {
     if (this.currentStep > 1) {
@@ -57,29 +73,109 @@ export class AddGroupeComponent {
     this.close.emit();
   }
   // Méthode appelée lors de la soumission du formulaire
-  onGroupNameSubmit(): void {
+  onGroupNameSubmit(buttonType: string): void {
     if (this.groupeForm.valid) {
       const newGroupe: Groupe = {
         nom: this.groupeForm.value.nom,
         actionneur: this.userConnected
       };
         
-      // this.groupeService.addGroupe(newGroupe, this.userConnected.idUser!).subscribe({
-      //   next: (response) => {
-            //this.goToNextStep();  // Passe à l'étape suivante si le nom est valide
-
-      //   },
-      //   error: (err) => {
-          
-      //   }
-      // });
+      this.groupeService.addGroupe(newGroupe, this.userConnected.idUser!).subscribe({
+        next: (response) => {
+            console.log(response); 
+            this.groupe = response; 
+            this.isNewGroup = false;
+            this.errorMessage = '';
+           
+            if (buttonType === 'create') {
+              // this.successMessage = `Groupe "${response.nom}" ajoutée avec succès !`;
+    
+              // setTimeout(() => {
+                this.closeForm();
+              //   this.successMessage = '';
+              // }, 2000);
+            } else if (buttonType === 'createAndAssign') {
+              this.goToNextStep();
+            }
+      },
+        error: (err) => {
+          this.successMessage = '';
+          console.error('Erreur lors de l’ajout :', err);
+  
+          if (err.status === 404) {
+            this.errorMessage = "Actionneur introuvable";
+          } else if (err.status === 409) {
+            this.errorMessage = "Un groupe avec ce nom existe déjà.";
+          } else {
+            this.errorMessage = "Une erreur inattendue est survenue.";
+          }
+  
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 2000);
+        }
+      });
     } else {
       this.groupeForm.markAllAsTouched();
     }
+    
   }
+  onGroupNameUpdate(buttonType: string): void {
+    if (this.groupeForm.valid) {
+      console.log(this.groupeForm.value.nom)
+      const newGroupe: Groupe = {
+        nom: this.groupeForm.value.nom,
+        actionneur: this.userConnected
+      };
+        
+      this.groupeService.updateGroupe(newGroupe, this.groupe.idGroupe ,this.userConnected.idUser!).subscribe({
+        next: (response) => {
+            console.log(response); 
+            this.groupe = response; 
+            this.isNewGroup = false;    
+            this.errorMessage = '';
+           
+            if (buttonType === 'create') {
+              this.successMessage = `Groupe "${response.nom}" modifiée avec succès !`;   
+              setTimeout(() => {
+                this.closeForm();
+                this.successMessage = '';
+              }, 2000);
+            } else if (buttonType === 'createAndAssign') {
+              this.goToNextStep();
+            }
+        },
+        error: (err) => {
+         
+          this.successMessage = '';
+          console.error('Erreur lors de l’ajout :', err);
+  
+          if (err.status === 404) {
+            this.errorMessage = "Actionneur introuvable";
+          } else if (err.status === 409) {
+            this.errorMessage = "Un groupe avec ce nom existe déjà.";
+          } else {
+            this.errorMessage = "Une erreur inattendue est survenue.";
+          }
+  
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 2000);
+        }
+      });
+    } else {
+      this.groupeForm.markAllAsTouched();
+    }
+    
+  }
+
   // Méthode pour définir l'étape active
   setStep(step: number) {
-    this.currentStep = step;
+    if (this.groupeForm.valid && this.groupe.nom === this.groupeForm.value.nom ) {
+      this.currentStep = step;
+    } else {
+      this.groupeForm.markAllAsTouched();
+    }
   }
 
   // Méthode pour passer à l'étape suivante
@@ -117,6 +213,7 @@ export class AddGroupeComponent {
     this.userService.getAll().subscribe(
       (data: User[]) => {
         this.users = data;  
+        this.selectedUsers = new Set(this.users?.filter(user => user.groupe?.idGroupe === this.groupe.idGroupe).map(user => user.idUser!)); // hatytha lenna mech fel ngOninit khater feha this.users wel fel oninit mazelt null 
       },
       (error) => {
         console.error('Erreur lors de la récupération des utilisateurs', error);
@@ -146,7 +243,7 @@ export class AddGroupeComponent {
         `${permission.nom}`.toLowerCase().includes(this.permessionSearchText.toLowerCase());
   
     
-      const isAssigned = this.selectedUsers.has(permission.idPermission!);
+      const isAssigned = this.selectedPermissions.has(permission.idPermission!);
   
       const matchesAffectation = this.affectationFilter === 'Affectés'
         ? isAssigned
@@ -163,7 +260,7 @@ export class AddGroupeComponent {
         `${menu.nom}`.toLowerCase().includes(this.menuSearchText.toLowerCase());
   
     
-      const isAssigned = this.selectedUsers.has(menu.idMenu!);
+      const isAssigned = this.selectedMenus.has(menu.idMenu!);
   
       const matchesAffectation = this.affectationFilter === 'Affectés'
         ? isAssigned
@@ -178,6 +275,46 @@ export class AddGroupeComponent {
     this.selectedState = state;
     this.affectationFilter = state;
     this.showSelectorDropdown = false;
+  }
+  // Méthode pour ajouter les relations (menus, permissions, utilisateurs) après l'enregistrement du groupe
+  addRelationsToGroup(): void {
+
+    this.groupeService.addRelationsToGroup(this.groupe.idGroupe!, Array.from(this.selectedMenus), Array.from(this.selectedPermissions), Array.from(this.selectedUsers))
+      .subscribe(response => {
+        console.log('Relations ajoutées avec succès:', response);
+        // this.successMessage = `Groupe "${this.groupe.nom}" ajoutée avec succès !`;
+    
+        // setTimeout(() => {
+          this.closeForm();
+        //   this.successMessage = '';
+        // }, 2000);
+      }, error => {
+        console.error('Erreur lors de l\'ajout des relations:', error);
+      });
+  }
+ // Sélectionner un utilisateur
+  toggleUserSelection(userId: number) {
+    if (this.selectedUsers.has(userId)) {
+      this.selectedUsers.delete(userId);
+    } else {
+      this.selectedUsers.add(userId);
+    }
+  }
+  // Sélectionner un menu
+  toggleMenuSelection(menuId: number) {
+    if (this.selectedMenus.has(menuId)) {
+      this.selectedMenus.delete(menuId);
+    } else {
+      this.selectedMenus.add(menuId);
+    }
+  }
+  // Sélectionner une permission
+  togglePermissionSelection(permissionId: number) {
+    if (this.selectedPermissions.has(permissionId)) {
+      this.selectedPermissions.delete(permissionId);
+    } else {
+      this.selectedPermissions.add(permissionId);
+    }
   }
   @HostListener('document:click', ['$event'])
   closeDropdown(event: MouseEvent) {

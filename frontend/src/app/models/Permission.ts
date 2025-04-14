@@ -1,5 +1,9 @@
+import { Groupe } from "./Groupe";
+
 export interface Permission {
     idPermission: number;
-    nom: string;  
+    nom: string; 
+    groupes: Groupe[];
+     
   }
   

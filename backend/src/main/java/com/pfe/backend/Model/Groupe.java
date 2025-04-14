@@ -23,6 +23,7 @@ public class Groupe {
     private String nom;
     private boolean isDeleted = false;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "idActionneur", nullable = false)
     private User actionneur;
@@ -34,16 +35,16 @@ public class Groupe {
     //    les relations
 
     @JsonIgnore
-    @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
     private List<User> users;
 
-    @JsonIgnore
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "groupe_permissions",joinColumns = @JoinColumn(name = "idGroupe"),
             inverseJoinColumns = @JoinColumn(name = "idPermission"))
-    private List<Permission> permission;
-    @JsonIgnore
+    private List<Permission> permissions;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "groupe_menus",joinColumns = @JoinColumn(name = "idGroupe"),

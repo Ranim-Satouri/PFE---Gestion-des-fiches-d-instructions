@@ -1,5 +1,6 @@
 package com.pfe.backend.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.envers.Audited;
@@ -20,6 +21,7 @@ public class Permission {
     private long idPermission;
     private String nom;
 
-    @ManyToMany(mappedBy = "permission", fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
     private List<Groupe> groupes;
 }

@@ -1,3 +1,4 @@
+import { Groupe } from "./Groupe";
 import { User_Zone } from "./User_Zone";
 import { Zone } from "./Zone";
 
@@ -15,6 +16,7 @@ export interface User {
     actionneur: User | number |null;
     modifieLe?: Date;
     zones?: Zone[];
+    groupe: Groupe;
   }
 
   export enum UserStatus {

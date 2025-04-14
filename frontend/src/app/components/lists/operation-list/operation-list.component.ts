@@ -2,22 +2,21 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { Groupe } from '../../../models/Groupe';
 import { User } from '../../../models/User';
-import { GroupeService } from '../../../services/groupe.service';
-import { AddGroupeComponent } from '../../add/add-groupe/add-groupe.component';
-import { DeleteConfirmComponent } from '../../delete-confirm/delete-confirm.component';
-
+import { Operation } from '../../../models/Operation';
+import { OperationService } from '../../../services/operation.service';
+import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 @Component({
-  selector: 'app-groupe-list',
+  selector: 'app-operation-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, AddGroupeComponent,DeleteConfirmComponent],
-  templateUrl: './groupe-list.component.html',
-  styleUrl: './groupe-list.component.css'
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent],
+  templateUrl: './operation-list.component.html',
+  styleUrl: './operation-list.component.css'
 })
-export class GroupeListComponent {
- constructor(private groupeService: GroupeService) {}
-  groupes: Groupe[] = [];
+export class OperationListComponent {
+
+ constructor(private operationService: OperationService) {}
+  operations: Operation[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
   itemsPerPage: number = 5;
@@ -25,71 +24,69 @@ export class GroupeListComponent {
   displayAbove = false;
   userConnected !: User ;
   isDeleteModelOpen : boolean = false;
-  selectedGroupe !: number ;
-  GroupeToUpdate : Groupe | undefined ;
+  selectedOperation !: number ;
+  OperationToUpdate : Operation | undefined ;
   showAddModal = false;
   showUpdateModal = false;
 
   ngOnInit(){
-    this.getGroupes();
+    this.getOperations();
   }
 
-  getGroupes() {
-    this.groupeService.getAll().subscribe({
-      next : (response :Groupe[]) => {
-        this.groupes = response.sort((a, b) => b.idGroupe! - a.idGroupe!);
-        console.log('groupes:', this.groupes);
+  getOperations() {
+    this.operationService.getAll().subscribe({
+      next : (response :Operation[]) => {
+        this.operations = response.sort((a, b) => b.idOperation! - a.idOperation!);
+        console.log('operations:', this.operations);
       },
       error: (error: any) => {
-        console.error('fetching groupes error:', error);
+        console.error('fetching operations error:', error);
       },
     });
   }
-
-  deleteGroupe(idGroupe: number): void {
+  deleteOperation(idOperation: number): void {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
-    this.groupeService.deleteGroupe(idGroupe! , this.userConnected.idUser! ).subscribe({
+    this.operationService.deleteOperation(idOperation! , this.userConnected.idUser! ).subscribe({
       next: () => {
-        console.log('Groupe supprimée');
+        console.log('Operation supprimée');
         this.dropdownOpen = null;
-        this.getGroupes()
+        this.getOperations()
       },
       error: err => {
-        console.error('Erreur suppression Groupe', err);
+        console.error('Erreur suppression Operation', err);
       }
     });
     this.closeDeleteModel()
   }
-
-  OpenAddGroupePopUp(){
-    console.log(this.GroupeToUpdate);
+  OpenAddOperationPopUp(){
+    console.log(this.OperationToUpdate);
     this.showAddModal = true;
   }
-  closeAddGroupePopUp() {   
-    this.getGroupes();
+  closeAddOperationPopUp() {   
+    this.getOperations();
     this.showAddModal = false; 
-    this.GroupeToUpdate = undefined ; // aamltha bech kif naawd nhel add marra okhra yabda el groupe undefined
+    this.OperationToUpdate = undefined ; // aamltha bech kif naawd nhel add marra okhra yabda el operation undefined
   }
-  openDeleteModel(groupe : Groupe) {
-    this.selectedGroupe = groupe.idGroupe!;
-    this.dropdownOpen = null;
-    this.isDeleteModelOpen = true;
-  }
+  openDeleteModel(operation : Operation) {
+    this.selectedOperation = operation.idOperation!;
+      this.dropdownOpen = null;
+      this.isDeleteModelOpen = true;
+    }
   closeDeleteModel(){
     this.isDeleteModelOpen = false;
   }
 
-  OpenUpdateGroupePopUp(groupe : Groupe){
-    console.log('groupe to update:', groupe);
-    this.GroupeToUpdate = groupe;
+  OpenUpdateOperationPopUp(operation : Operation){
+    console.log('operation to update:', operation);
+    this.OperationToUpdate = operation;
     this.dropdownOpen = null;
     this.showAddModal = true;
   }
-  closeUpdateGroupePopUp() {
-    this.getGroupes();
+  closeUpdateOperationPopUp() {
+    this.getOperations();
     this.showAddModal = false;
   }
 

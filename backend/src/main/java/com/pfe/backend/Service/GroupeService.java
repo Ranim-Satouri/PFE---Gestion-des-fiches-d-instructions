@@ -11,4 +11,5 @@ public interface GroupeService {
     void DeleteGroupe(Long idGroupe ,Long idActionneur);
     List<Groupe> getActiveGroupes();
     List<Groupe> getGroupes();
+    Groupe addRelationsToGroup(Long groupId, List<Long> menuIds, List<Long> permissionIds, List<Long> userIds);
 }

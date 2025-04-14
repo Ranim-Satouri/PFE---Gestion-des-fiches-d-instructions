@@ -1,5 +1,6 @@
 package com.pfe.backend.Repository;
 
+import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByRole(Role role);
     Optional<User> findByMatricule(String matricule);
     boolean existsByMatricule(String matricule);
+    List<User> findByGroupe(Groupe groupe);
 }

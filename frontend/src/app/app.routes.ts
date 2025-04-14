@@ -11,6 +11,8 @@ import { ZoneListComponent } from './components/lists/zone-list/zone-list.compon
 import { ProduitListComponent } from './components/lists/produit-list/produit-list.component';
 import {RegisterFormComponent} from './components/add/register-form/register-form.component';
 import { GroupeListComponent } from './components/lists/groupe-list/groupe-list.component';
+import { LigneListComponent } from './components/lists/ligne-list/ligne-list.component';
+import { OperationListComponent } from './components/lists/operation-list/operation-list.component';
 
 export const routes: Routes = [
     { path: '', component: LoginComponent },
@@ -36,7 +38,9 @@ export const routes: Routes = [
             { path: 'zonelist', component: ZoneListComponent },
             { path: 'produitlist', component: ProduitListComponent },
             { path: 'userlist', component: UserListComponent },
-            { path: 'groupelist', component: GroupeListComponent }
+            { path: 'groupelist', component: GroupeListComponent },
+            { path: 'lignelist', component: LigneListComponent },
+            { path: 'operationlist', component: OperationListComponent }
         ]
     },
     {

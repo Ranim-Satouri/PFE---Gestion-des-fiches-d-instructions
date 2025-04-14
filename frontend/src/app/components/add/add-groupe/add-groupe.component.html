@@ -1,6 +1,40 @@
 <div class="fixed inset-0 flex items-center justify-center bg-black/50 bg-opacity-50 z-[100]">
+    <div
+        *ngIf="successMessage"
+        class="fixed top-4 -translate-x-1/2 z-50 w-fit max-w-md flex items-start justify-between gap-3 p-3 rounded-lg border border-green-400 bg-green-50 dark:bg-green-900/10 dark:border-green-700 text-green-800 dark:text-green-300 text-sm animate-slideFromTop shadow-lg"
+    >
+    <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+        <path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95"></path>
+        <path d="M3.69 8.56a9 9 0 0 0 -.69 3.44"></path>
+        <path d="M3.69 15.44a9 9 0 0 0 1.95 2.92"></path>
+        <path d="M8.56 20.31a9 9 0 0 0 3.44 .69"></path>
+        <path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95"></path>
+        <path d="M20.31 15.44a9 9 0 0 0 .69 -3.44"></path>
+        <path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92"></path>
+        <path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69"></path>
+        <path d="M9 12l2 2l4 -4"></path>
+        </svg>
+        {{successMessage }}
+    </div>
+
+    </div>
+    <!-- Message d'erreur (style cohérent avec success) -->
+    <div
+    *ngIf="errorMessage"
+    class="fixed top-4 -translate-x-1/2 z-50 w-fit max-w-md flex items-start justify-between gap-3 p-3 rounded-lg border border-red-400 bg-red-50 dark:bg-red-900/10 dark:border-red-700 text-red-800 dark:text-red-300 text-sm animate-slideFromTop shadow-lg"
+    >
+    <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+        <path d="M12 9v4"></path>
+        <path d="M12 16v.01"></path>
+        </svg>
+        {{ errorMessage }}
+    </div>
+    </div>
     <!-- Conteneur principal avec position relative -->
-    <div class="bg-white p-6 rounded-lg shadow-lg w-fit relative h-[77vh] overflow-y-auto
+    <div class="bg-white p-6 rounded-lg shadow-lg relative h-[77vh] overflow-y-auto
     dark:bg-gray-900 border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500  w-[70%] ">
       <!-- Bouton X avec z-index élevé et position fixe -->
@@ -46,7 +80,7 @@
           <div class="flex-grow">
             <!-- First Content -->
             <div *ngIf="currentStep === 1" class="w-full h-auto" data-hs-stepper-content-item='{ "index": 1 }'>
-              <form (ngSubmit)="onGroupNameSubmit()" [formGroup]="groupeForm" >
+              <form  [formGroup]="groupeForm" >
                 <div class="mb-4">
                     <label class="text-sm text-black dark:text-gray-300 mb-1 block">Nom du groupe</label>
                     <input
@@ -67,6 +101,7 @@
                   </div>
                 </div>
               </form>
+             
             </div>
       
             <!-- Second Content -->
@@ -187,7 +222,9 @@
                         <td class="px-4 py-2 ">
                             <div class="inline-flex items-center ml-3">
                             <label class="flex items-center cursor-pointer relative">
-                                <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1" />
+                                <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1"
+                                [checked]="selectedUsers.has(user.idUser!)"
+                                (click)="toggleUserSelection(user.idUser!)" />
                                 <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
@@ -322,7 +359,9 @@
                         <td class="px-4 py-2 ">
                         <div class="inline-flex items-center ml-3">
                             <label class="flex items-center cursor-pointer relative">
-                            <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1" />
+                            <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check1"
+                            [checked]="selectedMenus.has(menu.idMenu!)"
+                            (click)="toggleMenuSelection(menu.idMenu!)"/>
                             <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
@@ -456,7 +495,9 @@
                         <td class="px-4 py-2 ">
                         <div class="inline-flex items-center ml-3">
                             <label class="flex items-center cursor-pointer relative">
-                            <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check2" />
+                            <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check2" 
+                            [checked]="selectedPermissions.has(permission.idPermission!)"
+                            (click)="togglePermissionSelection(permission.idPermission!)"/>
                             <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
@@ -476,44 +517,81 @@
           </div>
         </div>
         <!-- End Stepper Content -->
-      
-        <!-- Button Group -->
-        <div class="flex justify-between items-center gap-x-2">
-            <!-- Bouton Retour -->
+    
+        <div class="flex justify-end  items-center gap-x-2" *ngIf="currentStep === 1">
             <button
-            *ngIf="currentStep > 1"
-            (click)="goToPreviousStep()"
-            type="button"
-            class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border-2 border-gray-400 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-600 dark:border-neutral-500 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
-            data-hs-stepper-back-btn=""
+                *ngIf="isNewGroup"
+                (click)="onGroupNameSubmit('create')"
+                type="button"
+                [disabled]="groupeForm.invalid"
+                class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
             >
-            <svg class="shrink-0 size-4"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="m15 18-6-6 6-6"></path>
-            </svg> Retour
+                Créer
             </button>
         
-            <!-- Bouton Suivant -->
             <button
-            (click)="goToNextStep()"
-            type="button"
-            class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none ml-auto"
-            data-hs-stepper-next-btn="">
-            {{ currentStep === 4 ? "Enregistrer" : "Suivant" }}
-            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg"
-                width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+                *ngIf="!isNewGroup"
+                (click)="onGroupNameUpdate('create')"
+                type="button"
+                [disabled]="groupeForm.invalid"
+                class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+            >
+                Modifier
+            </button>
+        
+            <!-- Create and Assign Buttons -->
+            <button
+                *ngIf="isNewGroup"
+                (click)="onGroupNameSubmit('createAndAssign')"
+                type="button"
+                [disabled]="groupeForm.invalid"
+                class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+            >
+                Créer et Affecter
+                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"></path>
+                  </svg>
+            </button>
+        
+            <button
+                *ngIf="!isNewGroup"
+                (click)="onGroupNameUpdate('createAndAssign')"
+                type="button"
+                [disabled]="groupeForm.invalid"
+                class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+            >
+                Modifier et Affecter
+                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"></path>
+                  </svg>
             </button>
         </div>
-  
+        <div class="flex justify-between items-center gap-x-2">
+            <!-- Step 2 and Step 3: "Suivant" Button -->
+            <button
+              *ngIf="currentStep === 2 || currentStep === 3"
+              (click)="goToNextStep()"
+              type="button"
+              class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none ml-auto"
+              data-hs-stepper-next-btn=""
+            >
+              Suivant
+              <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                <path d="m9 18 6-6-6-6"></path>
+              </svg>
+            </button>
+          
+            <!-- Step 4: "Enregistrer" Button -->
+            <button
+              *ngIf="currentStep === 4"
+              (click)="addRelationsToGroup()"
+              type="button"
+              class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none ml-auto"
+              data-hs-stepper-next-btn=""
+            >
+              Enregistrer
+            </button>
+        </div>
         <!-- End Button Group -->
       
       </div>

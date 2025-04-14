@@ -32,8 +32,8 @@ public class Famille {
     private LocalDateTime modifieLe = LocalDateTime.now(); // Ajoute une valeur par défaut
 
     // fetch = FetchType.LAZY zedtha besh trajali les donnees mnadhmin f fichier mais mazedthch f produit kolt intesti kn tamali mechekl f front
-    @OneToMany(mappedBy = "famille", fetch = FetchType.LAZY)
     @JsonIgnore
+    @OneToMany(mappedBy = "famille", fetch = FetchType.LAZY)
     private List<Produit> produits;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
