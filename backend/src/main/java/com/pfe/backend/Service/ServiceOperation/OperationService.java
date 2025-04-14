@@ -1,6 +1,5 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.Service.ServiceOperation;
 
-import com.pfe.backend.Model.Operation;
 import com.pfe.backend.Model.Operation;
 import org.springframework.http.ResponseEntity;
 

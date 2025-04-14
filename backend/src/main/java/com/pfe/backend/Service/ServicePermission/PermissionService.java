@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.Service.ServicePermission;
 
 import com.pfe.backend.Model.Permission;
 

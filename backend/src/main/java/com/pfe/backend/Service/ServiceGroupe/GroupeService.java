@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.Service.ServiceGroupe;
 
 import com.pfe.backend.Model.Groupe;
 import org.springframework.http.ResponseEntity;

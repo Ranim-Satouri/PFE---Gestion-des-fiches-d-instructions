@@ -1,33 +1,62 @@
 // src/app/services/access-control.service.ts
 import { Injectable } from '@angular/core';
-import { Role } from '../models/User';
+import {Groupe} from '../models/Groupe';
 
 @Injectable({ providedIn: 'root' })
 export class AccessControlService {
-  private currentRole?: Role;
+  private currentGroupe?: Groupe;
 
-  // Configuration unique des accès par rôle
-  private readonly roleAccessMap: Record<Role, string[]> = {
-    [Role.SUPERUSER]: ['/fichelist'],
-    [Role.ADMIN]: ['/fichelist'],
-    [Role.PREPARATEUR]: ['/fichelist'],
-    [Role.IPDF]: ['/fichelist'],
-    [Role.IQP]: ['/fichelist'],
-    [Role.OPERATEUR]: ['/fichelist']
+  // Configuration des accès par nom de groupe (chaîne)
+  private readonly groupeAccessMap: Record<string, string[]> = {
+    'SUPERUSER': ['userlist','/fichelist'],
+    'ADMIN': ['/fichelist'],
+    'PREPARATEUR': ['/fichelist'],
+    'IPDF': ['/fichelist'],
+    'IQP': ['/fichelist'],
+    'OPERATEUR': ['/fichelist']
   };
-  setCurrentRole(role: Role): void {
-    this.currentRole = role;
-  }
 
-  getAllowedInterfaces(): string[] {
-    return this.currentRole ? [...this.roleAccessMap[this.currentRole]] : [];
-  }
+ // Définir le groupe courant
+ setCurrentGroupe(groupe: Groupe): void {
+  this.currentGroupe = groupe;
+}
 
-  canAccess(path: string): boolean {
-    return this.getAllowedInterfaces().some(route => path.startsWith(route));
+// Obtenir les interfaces autorisées (routes)
+getAllowedInterfaces(): string[] {
+  if (!this.currentGroupe || !this.currentGroupe.nom) {
+    return [];
+  }
+  return [...this.groupeAccessMap[this.currentGroupe.nom.toUpperCase()]];
+}
 
-  }
-  getCurrentRole(): Role | undefined {
-    return this.currentRole;
-  }
+// Vérifier si l'utilisateur peut accéder au chemin
+canAccess(path: string): boolean {
+  return this.getAllowedInterfaces().some(route => path.startsWith(route));
+}
+
+// // Vérifier si l'utilisateur a une permission spécifique
+// hasPermission(permissionNom: string): boolean {
+//   if (!this.currentGroupe || !this.currentGroupe.permission) {
+//     return false;
+//   }
+//   return this.currentGroupe.permission.some(p => p.nom === permissionNom);
+// }
+
+// // Obtenir les menus autorisés pour le groupe
+// getMenus(): string[] {
+//   if (!this.currentGroupe || !this.currentGroupe.menus) {
+//     return [];
+//   }
+//   return this.currentGroupe.menus.map(m => m.nom);
+// }
+
+// Obtenir le groupe courant
+getCurrentGroupe(): Groupe | undefined {
+  return this.currentGroupe;
+}
+
+// Méthode temporaire pour la compatibilité avec l'ancienne logique
+getCurrentGroupeNom(): string | undefined {
+  return this.currentGroupe?.nom;
+}
 }

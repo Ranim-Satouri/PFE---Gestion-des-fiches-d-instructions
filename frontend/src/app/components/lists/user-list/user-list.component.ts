@@ -33,7 +33,6 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   Role!: Role;
   userConnected!: User;
   dropdownPosition = { top: 0, left: 0 };
-
   displayAbove = false;
   UserStatus = UserStatus;
   isDeleteModelOpen: boolean = false;
@@ -50,6 +49,8 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   zones: Zone[] = [];
   selectedZones: number[] = [];
   selectedStatus: string = '';
+// les groupes
+GroupeNom!: string;
 
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');

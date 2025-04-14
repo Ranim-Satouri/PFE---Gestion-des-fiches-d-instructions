@@ -2,7 +2,7 @@ package com.pfe.backend.Controller;
 
 
 import com.pfe.backend.Model.Ligne;
-import com.pfe.backend.Service.LigneService;
+import com.pfe.backend.Service.ServiceLigne.LigneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

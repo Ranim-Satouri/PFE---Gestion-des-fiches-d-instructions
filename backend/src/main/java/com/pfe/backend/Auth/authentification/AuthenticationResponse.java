@@ -1,6 +1,7 @@
 package com.pfe.backend.Auth.authentification;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.pfe.backend.DTO.UserDTO;
 import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
@@ -17,6 +18,5 @@ public class AuthenticationResponse {
 
     private User user;
     private String token;
-    @JsonIgnore
     private String groupe;
 }

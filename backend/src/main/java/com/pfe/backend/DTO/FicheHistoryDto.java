@@ -21,7 +21,6 @@ public class FicheHistoryDto {
         this.type = type;
         this.fiche = fiche;
     }
-
     private String convertTimestamp(long timestamp) {
         return java.time.Instant.ofEpochMilli(timestamp).toString();
     }

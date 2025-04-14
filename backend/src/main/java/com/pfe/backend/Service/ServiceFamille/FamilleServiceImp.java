@@ -1,8 +1,7 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.Service.ServiceFamille;
 import com.pfe.backend.Model.Famille;
 import com.pfe.backend.Model.Produit;
 import com.pfe.backend.Model.User;
-import com.pfe.backend.Model.Zone;
 import com.pfe.backend.Repository.FamilleRepository;
 import com.pfe.backend.Repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class FamilleServiceImp implements FamilleService{
+public class FamilleServiceImp implements FamilleService {
     @Autowired
     private FamilleRepository familleRepository;
     @Autowired

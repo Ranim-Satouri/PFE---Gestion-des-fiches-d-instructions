@@ -19,6 +19,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idMenu;
     private String nom;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "menus", fetch = FetchType.LAZY)
     private List<Groupe> groupes;

@@ -1,7 +1,7 @@
 package com.pfe.backend.Controller;
 
 import com.pfe.backend.Model.Groupe;
-import com.pfe.backend.Service.GroupeService;
+import com.pfe.backend.Service.ServiceGroupe.GroupeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

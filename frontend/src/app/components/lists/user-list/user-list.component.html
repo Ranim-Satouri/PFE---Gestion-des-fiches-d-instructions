@@ -27,8 +27,8 @@
               height="513px"
             >
               <path
-                d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23 s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92 c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17 s-17-7.626-17-17S14.61,6,23.984,6z"
-              />
+                d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,
+                23 s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92 c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17 s-17-7.626-17-17S14.61,6,23.984,6z"/>
             </svg>
           </button>
                  <!-- Custom X button (only shown if searchbar not empty) -->
@@ -66,10 +66,8 @@
                 </svg>
               </button>
               </div>
-        
             <!-- Input Filtrage -->
         <div *ngIf="isFiltrageOpen" id="divFiltrage" class=" px-2 pb-4">
-          
          <!-- New div for filter buttons and reset button -->
          <div class="flex justify-between items-center px-2">
           <!-- Filter Buttons (Zone, Status, Role) -->
@@ -81,27 +79,21 @@
                 class="cursor-pointer py-2.5 px-4 h-10 block w-[full] border border-gray-300 rounded-lg text-sm bg-white
                  focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 dark:text-gray-400
                   dark:bg-gray-700 dark:focus:border-blue-300 dark:border-gray-600 dark:shadow-gray-900
-                   dark:focus:ring-blue-500 dark:focus:border dark:focus:shadow-blue-500 transition-all duration-200"
-              >
+                   dark:focus:ring-blue-500 dark:focus:border dark:focus:shadow-blue-500 transition-all duration-200" >
                 {{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Sélectionner des zones' }}
               </div>
               <div
                 *ngIf="zoneDropdownOpen"
-                class="absolute z-[1001] mt-2 bg-white dark:bg-gray-800 border rounded-lg shadow-lg w-full max-h-60 overflow-y-scroll"
-              >
+                class="absolute z-[1001] mt-2 bg-white dark:bg-gray-800 border rounded-lg shadow-lg w-full max-h-60 overflow-y-scroll">
                 <label
                   *ngFor="let zone of zones"
-                  class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
+                  class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                   <input
                     type="checkbox"
                     [value]="zone.idZone"
                     (change)="onCheckboxChange($event)"
                     [checked]="zone.idZone !== undefined && selectedZones.includes(zone.idZone)"
-                    class="mr-2"
-                  />
-                  {{ zone.nom }}
-                </label>
+                    class="mr-2" />{{ zone.nom }} </label>
               </div>
             </div>
       

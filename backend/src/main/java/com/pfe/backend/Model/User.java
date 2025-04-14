@@ -38,7 +38,6 @@ public class User implements UserDetails {
     private String email;
     @JsonIgnore
     private String password;
-
     private String num;
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
@@ -46,18 +45,15 @@ public class User implements UserDetails {
     public enum UserStatus{ ACTIVE, INACTIVE ,DELETED ; }
 //    @Enumerated(EnumType.STRING)
 //    private Role role;
-
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserZone> userZones = new HashSet<>();
-
     public void addZone(Zone zone, Long idActionneur) {
         UserZone userZone = new UserZone();
         userZone.setUser(this);
         userZone.setZone(zone);
         userZone.setIdActionneur(idActionneur);
         this.userZones.add(userZone);}
-
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private UserGenre genre;
@@ -87,7 +83,6 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of(new SimpleGrantedAuthority(groupe.getNom()));
 }
 //        return List.of(new SimpleGrantedAuthority(groupe.getNom()));
-
     @Override
     public String getUsername() {
         return matricule;
@@ -97,23 +92,14 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
         return true; //lezmemha tebda true otherwise we won't //be able to connect our user
     }
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
-    @Override
-    public String getPassword()
-    {
-        return password;
-    }
+    public boolean isEnabled() { return true; }
 
+    @Override
+    public String getPassword() { return password; }
 }

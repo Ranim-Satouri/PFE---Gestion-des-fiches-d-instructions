@@ -1,6 +1,6 @@
 package com.pfe.backend.Auth.authentification;
 import com.pfe.backend.Auth.Config.JwtService;
-
+import com.pfe.backend.DTO.UserDTO;
 import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Repository.GroupeRepository;
@@ -14,9 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -84,16 +81,15 @@ public class AuthenticationService {
             var jwtToken = jwtService.generateToken(user);
             //we need to encode our pwd before saving it so we neeed to inject our passwordencoder Service
         String groupeNom = user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe";
-
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .user(user)
-                .groupe( groupe.getNom())
+                .user(user).groupe(user.getGroupe().getNom())
                 .build();
 
     }
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        try {
+ public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        try
+        {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getMatricule(), request.getPassword())
         );
@@ -107,21 +103,17 @@ public class AuthenticationService {
     var jwtToken = jwtService.generateToken(user);
     return AuthenticationResponse.builder()
             .token(jwtToken)
-            .user(user)
-            .groupe(user.getGroupe().getNom())
+            .user(user).groupe(user.getGroupe().getNom())
             .build();
 }
 
     public void updatePassword(Long idUser, String newPassword, Long idActionneur) {
         User user = repository.findById(idUser)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-
         User actionneur = repository.findById(idActionneur)
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setActionneur(actionneur);
-
         repository.save(user);
     }
 }

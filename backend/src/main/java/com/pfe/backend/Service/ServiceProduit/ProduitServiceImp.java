@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.Service.ServiceProduit;
 import com.pfe.backend.Model.Famille;
 import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.Produit;
@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ProduitServiceImp implements ProduitService{
+public class ProduitServiceImp implements ProduitService {
     @Autowired
     private ProduitRepository produitRepository;
     private FamilleRepository familleRepository;

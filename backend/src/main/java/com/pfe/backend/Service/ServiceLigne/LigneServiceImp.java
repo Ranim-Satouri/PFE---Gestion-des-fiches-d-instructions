@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.Service.ServiceLigne;
 
 
 import com.pfe.backend.Model.Ligne;
@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class LigneServiceImp implements LigneService{
+public class LigneServiceImp implements LigneService {
     @Autowired
     private UserRepository userRepository;
     private LigneRepository ligneRepository;

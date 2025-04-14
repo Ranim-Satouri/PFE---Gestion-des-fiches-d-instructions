@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { ParticlesComponent } from '../../components/particles/particles.component';
 import {UserService} from '../../services/user.service';
 import { FormsModule } from '@angular/forms';
-import {Role} from '../../models/User';
 import {Router} from '@angular/router';
 import {AccessControlService} from '../../services/access-control.service';
 declare var particlesJS: any;
@@ -20,43 +19,49 @@ export class LoginComponent {
   matricule: string = "";
   password: string = "";
 
-  constructor(
-    private userService: UserService,
-    private router: Router,
-    private accessControlService: AccessControlService
-  ) {}
+  constructor( private userService: UserService, private router: Router, private accessControlService: AccessControlService ) {}
 
   authenticate() {
     this.userService.Login(this.matricule, this.password).subscribe({
-      next: (response: any) => {
-        console.log('Connexion réussie:', response);
+    next: (user) => { // Réponse typée comme User
+      console.log('Connexion réussie:', user);
 
-        // Stockage du token et du rôle
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user_role', response.role);
-        this.accessControlService.setCurrentRole(response.role);
-        localStorage.setItem('user', JSON.stringify(response.user));
-        this.redirectToRoleDashboard(response.role); // C'est ici que la redirection se passe
-      },
-      error: (err) => console.error('Erreur de connexion', err)
-    });
-  }
+      // Le token est déjà stocké dans localStorage par UserService
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('Token non trouvé dans localStorage');
+        this.router.navigate(['/login']);
+        return;
+      }
 
-  private redirectToRoleDashboard(role: Role) {
-    const roleRoutes = {
-      [Role.SUPERUSER]: '/fichelist', // À adapter selon vos besoins
-      [Role.ADMIN]: '/fichelist',
-      [Role.PREPARATEUR]: '/fichelist',
-      [Role.IPDF]: '/fichelist',
-      [Role.IQP]: '/fichelist',
-      [Role.OPERATEUR]: '/fichelist'
+// Stockage du groupe et de l'utilisateur
+const groupe = user.groupe || { nom: 'OPERATEUR', idGroupe: 6, isDeleted: false, modifieLe: new Date().toISOString() };
+localStorage.setItem('groupeNom', groupe.nom); // Conserver pour la compatibilité
+localStorage.setItem('groupe', JSON.stringify(groupe));
+// this.accessControlService.setCurrentGroupe(groupe); // Utiliser l'objet groupe
+localStorage.setItem('user', JSON.stringify(user));
+this.redirectToGroupeDashboard(groupe.nom);
+},
+error: (err) => console.error('Erreur de connexion', err)
+});
+}
+
+  private redirectToGroupeDashboard(groupeNom: string) {
+    const groupeRoutes: Record<string, string> = {
+      'SUPERUSER': '/userlist',
+      'ADMIN': '/fichelist',
+      'PREPARATEUR': '/fichelist',
+      'IPDF': '/fichelist',
+      'IQP': '/fichelist',
+      'OPERATEUR': '/fichelist'
     };
-    const route = roleRoutes[role];
+    const route = groupeRoutes[groupeNom];
     if (!route) {
-      console.error(`Aucune route définie pour le rôle : ${role}`);
-      this.router.navigate(['/role-error']);
+      console.error(`Aucune route définie pour le groupe : ${groupeNom}`);
+      this.router.navigate(['/access-denied']);
       return;
     }
     this.router.navigate([route]);
+  }
 
-  }}
+  }

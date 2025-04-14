@@ -1,7 +1,7 @@
 package com.pfe.backend.Controller;
 
 import com.pfe.backend.Model.Menu;
-import com.pfe.backend.Service.MenuService;
+import com.pfe.backend.Service.ServiceMenu.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

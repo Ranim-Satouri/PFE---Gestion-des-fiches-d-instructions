@@ -1,11 +1,9 @@
 package com.pfe.backend.Model;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,16 +37,17 @@ public class Groupe {
     @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<User> users;
 //il faut les initialize = new ArrayList<>() pour eviter l'exception NullPointerException,to ensure they are never null.
-    @JsonIgnore
+
+//    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "groupe_permissions",joinColumns = @JoinColumn(name = "idGroupe"),
             inverseJoinColumns = @JoinColumn(name = "idPermission"))
-    private List<Permission> permission= new ArrayList<>();
-    @JsonIgnore
+    private List<Permission> permissions= new ArrayList<>();
+
+//    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "groupe_menus",joinColumns = @JoinColumn(name = "idGroupe"),
+    @JoinTable(name = "groupe_menus",joinColumns = @JoinColumn(name = "idGroupe"),
             inverseJoinColumns = @JoinColumn(name = "idMenu"))
     private List<Menu> menus = new ArrayList<>();;
    //helper methods , for bette functionning
@@ -56,16 +55,14 @@ public class Groupe {
         users.add(user);
         user.setGroupe(this);
     }
-
     public void removeUser(User user) {
         users.remove(user);
         user.setGroupe(null);
     }
     public void addPermission(Permission permission) {
-        this.permission.add(permission);
+        this.permissions.add(permission);
         permission.getGroupes().add(this);
     }
-
     public void addMenu(Menu menu) {
         this.menus.add(menu);
         menu.getGroupes().add(this);

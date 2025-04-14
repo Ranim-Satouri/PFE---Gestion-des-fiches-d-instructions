@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.Service.ServiceMenu;
 
 import com.pfe.backend.Model.Menu;
 import com.pfe.backend.Repository.MenuRepository;

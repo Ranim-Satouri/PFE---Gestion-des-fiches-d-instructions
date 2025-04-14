@@ -22,6 +22,6 @@ public class Permission {
     private String nom;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "permission", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
     private List<Groupe> groupes;
 }

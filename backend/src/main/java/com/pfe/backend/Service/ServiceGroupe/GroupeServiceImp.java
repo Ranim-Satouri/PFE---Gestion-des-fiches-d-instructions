@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.Service.ServiceGroupe;
 
 import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Model.User;
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class GroupeServiceImp implements GroupeService{
+public class GroupeServiceImp implements GroupeService {
     @Autowired
     private UserRepository userRepository;
     private GroupeRepository groupeRepository;

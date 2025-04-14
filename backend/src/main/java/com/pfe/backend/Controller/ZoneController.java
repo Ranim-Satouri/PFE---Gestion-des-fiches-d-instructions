@@ -3,7 +3,7 @@ package com.pfe.backend.Controller;
 
 import com.pfe.backend.Model.UserZone;
 import com.pfe.backend.Model.Zone;
-import com.pfe.backend.Service.ZoneService;
+import com.pfe.backend.Service.ServiceZone.ZoneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

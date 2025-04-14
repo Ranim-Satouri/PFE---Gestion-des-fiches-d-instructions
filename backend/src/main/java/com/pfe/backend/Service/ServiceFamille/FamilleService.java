@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.Service.ServiceFamille;
 
 import com.pfe.backend.Model.Famille;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,7 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Genre, Role, User, UserStatus} from '../models/User';
-import {Observable} from 'rxjs';
+import {map, Observable} from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,12 +10,15 @@ export class UserService {
   private apiUrl2 = 'http://localhost:8080/api/v1/auth';
   constructor(private http: HttpClient) { }
 
-  Login(matricule: string, password: string): Observable<any> {
+  Login(matricule: string, password: string): Observable<User> {
     const body = { matricule, password };
-    return this.http.post<{ token: string, role: Role ,user : User }>(
-      `${this.apiUrl2}/authenticate`,
-      { matricule, password }
-    );
+    return this.http.post<{ token: string; user: User; groupe: string }>(
+        `${this.apiUrl2}/authenticate`, body ).pipe(
+          map(response => {
+              localStorage.setItem('token', response.token);
+              return response.user; // Pas besoin de mapToUser
+          })
+      );
   }
 
   Register(user: User, idActionneur: number): Observable<any> {

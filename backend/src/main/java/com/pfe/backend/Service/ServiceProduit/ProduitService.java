@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.Service.ServiceProduit;
 
 import com.pfe.backend.Model.Produit;
 import org.springframework.http.ResponseEntity;

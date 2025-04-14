@@ -1,4 +1,4 @@
-package com.pfe.backend.Service;
+package com.pfe.backend.Service.ServiceZone;
 
 import com.pfe.backend.Model.UserZone;
 import com.pfe.backend.Model.Zone;

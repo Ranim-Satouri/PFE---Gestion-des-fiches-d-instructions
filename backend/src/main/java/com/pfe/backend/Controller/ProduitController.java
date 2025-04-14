@@ -1,7 +1,7 @@
 package com.pfe.backend.Controller;
 
 import com.pfe.backend.Model.Produit;
-import com.pfe.backend.Service.ProduitService;
+import com.pfe.backend.Service.ServiceProduit.ProduitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
