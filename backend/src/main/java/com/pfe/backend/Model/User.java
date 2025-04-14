@@ -84,9 +84,7 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
 }
 //        return List.of(new SimpleGrantedAuthority(groupe.getNom()));
     @Override
-    public String getUsername() {
-        return matricule;
-    }
+    public String getUsername() {return matricule;}
     @Override
     public boolean isAccountNonExpired() {
         return true; //lezmemha tebda true otherwise we won't //be able to connect our user

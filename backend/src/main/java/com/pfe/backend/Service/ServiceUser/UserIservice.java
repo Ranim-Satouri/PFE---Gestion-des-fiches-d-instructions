@@ -4,6 +4,7 @@ import com.pfe.backend.DTO.UserDTO;
 import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Model.UserZone;
+import com.pfe.backend.Model.Zone;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
