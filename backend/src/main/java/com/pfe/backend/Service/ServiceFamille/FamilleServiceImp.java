@@ -70,6 +70,7 @@ public class FamilleServiceImp implements FamilleService {
             produit.setDeleted(true);
             produit.setActionneur(actionneur);
         }
+        famille.getZones().clear();
         famille.setActionneur(actionneur);
         famille.setDeleted(true);
         familleRepository.save(famille);

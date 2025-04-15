@@ -76,35 +76,29 @@
             </div>     
     
             <!-- Submit -->
-            <div class="text-right flex gap-3 justify-end mt-4">
-                <!-- Créer uniquement -->
-                <button
-                  type="button"
+            <div class="flex justify-end  items-center gap-x-2">
+              <button
                   (click)="createZone(false)"
-                  class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 active:bg-green-800 text-white font-semibold text-sm px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ease-in-out"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                  Créer
-                </button>
-              
-                <!-- Créer et affecter -->
-                <button
                   type="button"
+                  [disabled]="zoneForm.invalid"
+                  class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+              >
+                  Créer
+              </button>
+                                  
+              <!-- Create and Assign Buttons -->
+              <button
                   (click)="createZone(true)"
-                  class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 ease-in-out"
-                >
-                <svg class="w-5 h-5 " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
-                    <path d="M5 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
-                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4c.96 0 1.84 .338 2.53 .901"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    <path d="M16 19h6"></path>
-                    <path d="M19 16v6"></path>
-                </svg>
-                  Créer & Affecter
-                </button>
-              </div>
+                  type="button"
+                  [disabled]="zoneForm.invalid"
+                  class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+              >
+                  Créer et Affecter
+                  <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                      <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+              </button>
+          </div>
               
         </form>
        </div>

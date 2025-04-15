@@ -135,4 +135,18 @@ export class GroupeListComponent {
       this.dropdownOpen = null; // Ferme le dropdown
     }
   }
+  isDescending: boolean = true;
+  sortByDate() {
+    this.isDescending = !this.isDescending; // Alterner entre croissant et décroissant
+
+    this.groupes.sort((a, b) => {
+      // Comparaison des dates
+      const dateA = new Date(a.modifieLe!);
+      const dateB = new Date(b.modifieLe!);
+
+      return this.isDescending
+        ? dateB.getTime() - dateA.getTime()  // Tri décroissant
+        : dateA.getTime() - dateB.getTime();  // Tri croissant
+    });
+  }
 }

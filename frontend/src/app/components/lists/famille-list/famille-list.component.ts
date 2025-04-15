@@ -31,6 +31,7 @@ export class FamilleListComponent {
   FamilleToUpdate : Famille | undefined;
   showAddModal = false;
   showUpdateModal = false;
+  step : number = 1;  //men ajl el update 
 
   ngOnInit(){
     this.getFamilles();
@@ -78,12 +79,13 @@ export class FamilleListComponent {
     this.selectedFamille = famille.idFamille!;
       this.dropdownOpen = null;
       this.isDeleteModelOpen = true;
-    }
+  }
   closeDeleteModel(){
     this.isDeleteModelOpen = false;
   }
 
-  OpenUpdateFamillePopUp(famille : Famille){
+  OpenUpdateFamillePopUp(famille : Famille , step : number ){
+    this.step = step;
     this.FamilleToUpdate = famille;
     this.dropdownOpen = null;
     this.showAddModal = true;
@@ -158,7 +160,19 @@ export class FamilleListComponent {
       this.dropdownOpen = null; // Ferme le dropdown
     }
   }
+  isDescending: boolean = true;
+  sortByDate() {
+    this.isDescending = !this.isDescending; // Alterner entre croissant et décroissant
 
+    this.familles.sort((a, b) => {
+      // Comparaison des dates
+      const dateA = new Date(a.modifieLe!);
+      const dateB = new Date(b.modifieLe!);
 
+      return this.isDescending
+        ? dateB.getTime() - dateA.getTime()  // Tri décroissant
+        : dateA.getTime() - dateB.getTime();  // Tri croissant
+    });
+  }
 
 }

@@ -18,7 +18,7 @@
       {{successMessage }}
     </div>
   </div>
-  <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg w-full max-w-3xl p-6 max-h-[71.5vh] overflow-y-auto ">
+  <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg w-[60%] p-6 max-h-[71.5vh] overflow-y-auto ">
       <button
           (click)="close.emit()"
           type="button"
@@ -29,12 +29,12 @@
           d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
       </svg>
       </button>
-      <div class="flex justify-between items-center mb-4">      
+      <!-- <div class="flex justify-between items-center mb-4">      
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Gestion des utilisateurs de la zone</h2>
-      </div>
+      </div> -->
 
       <!-- Barre de recherche & filtre -->
-      <div class="flex flex-col md:flex-row gap-3 mb-4">
+      <div class="flex flex-col md:flex-row gap-3 mb-4 mt-4 ">
             <!-- Selection Dropdown -->
           <div class="relative w-full md:w-[22%]">
               <input
@@ -63,7 +63,7 @@
               <ul
               *ngIf="showSelectorDropdown"
               id="dropdownAffectation"
-              class="absolute z-10 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg "            >
+              class="absolute z-50 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg "            >
                   <li
                   (click)="selectState('')"
                   class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"

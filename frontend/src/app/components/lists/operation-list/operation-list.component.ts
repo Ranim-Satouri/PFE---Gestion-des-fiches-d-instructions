@@ -6,10 +6,11 @@ import { User } from '../../../models/User';
 import { Operation } from '../../../models/Operation';
 import { OperationService } from '../../../services/operation.service';
 import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
+import { AddOperationComponent } from "../../add/add-operation/add-operation.component";
 @Component({
   selector: 'app-operation-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddOperationComponent],
   templateUrl: './operation-list.component.html',
   styleUrl: './operation-list.component.css'
 })
@@ -131,5 +132,20 @@ export class OperationListComponent {
     if (this.dropdownOpen !== null && dropdown && !dropdown.contains(target) && !button) {
       this.dropdownOpen = null; // Ferme le dropdown
     }
+  }
+
+  isDescending: boolean = true;
+  sortByDate() {
+    this.isDescending = !this.isDescending; // Alterner entre croissant et décroissant
+
+    this.operations.sort((a, b) => {
+      // Comparaison des dates
+      const dateA = new Date(a.modifieLe!);
+      const dateB = new Date(b.modifieLe!);
+
+      return this.isDescending
+        ? dateB.getTime() - dateA.getTime()  // Tri décroissant
+        : dateA.getTime() - dateB.getTime();  // Tri croissant
+    });
   }
 }

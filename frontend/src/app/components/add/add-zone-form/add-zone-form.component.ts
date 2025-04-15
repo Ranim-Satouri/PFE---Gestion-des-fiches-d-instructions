@@ -41,17 +41,18 @@ export class AddZoneFormComponent {
       
           this.zoneService.addZone(newZone, this.userConnected.idUser!).subscribe({
             next: (zone) => {
-              this.errorMessage = '';
-              this.successMessage = `Zone "${zone.nom}" ajoutée avec succès !`; 
-              setTimeout(() => {
-                this.successMessage = '';
-              }, 3000);
+              
               this.createdZone = zone;
 
               if (assignAfterCreate) {
                 this.showAffectation = true;
               } else {
-                this.zoneForm.reset();
+                this.errorMessage = '';
+                this.successMessage = `Zone "${zone.nom}" ajoutée avec succès !`; 
+                setTimeout(() => {
+                  this.close.emit();
+                  this.successMessage = '';
+                }, 2000);
               }
              
               
@@ -70,7 +71,7 @@ export class AddZoneFormComponent {
       
               setTimeout(() => {
                 this.errorMessage = '';
-              }, 4000);
+              }, 2000);
             }
           });
         } else {

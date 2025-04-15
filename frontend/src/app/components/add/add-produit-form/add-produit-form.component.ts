@@ -123,14 +123,13 @@ export class AddProduitFormComponent {
           this.successMessage = `Produit "${response.nomProduit}" ajouté avec succès !`;
           this.errorMessage=''
           setTimeout(() => {
+            this.close.emit(); 
             this.successMessage = '';
-          }, 3000);
+          }, 2000);
           if(this.newProduit){
             this.produitAdded.emit(response); // <-- ICI on retourne le produit au parent
-            this.close.emit(); 
           }
           this.familleSearch = '';
-          this.productForm.reset();
         },
         error: (err) => {
           this.successMessage = '';

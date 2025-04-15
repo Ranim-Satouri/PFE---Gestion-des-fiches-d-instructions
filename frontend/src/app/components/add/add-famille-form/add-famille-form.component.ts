@@ -20,8 +20,7 @@ export class AddFamilleFormComponent {
   userConnected !: User;
   successMessage: string = '';
   errorMessage = '';
-  currentStep : number = 1;
-  steps = ["Famille", "Zones"];
+  @Input() currentStep : number = 1;
   isNewFamille: boolean = true;
   zones: Zone[] = [];
   showSelectorDropdown : Boolean = false;
@@ -53,18 +52,10 @@ export class AddFamilleFormComponent {
       });
     }
   }
-  setStep(step: number) {
-    if (this.familyForm.valid && this.famille.nomFamille === this.familyForm.value.nom ) {
-      this.currentStep = step;
-    } else {
-      this.familyForm.markAllAsTouched();
-    }
-  }
+
   getZones() {
     this.zoneService.getAll().subscribe({
       next : (response :Zone[]) => {
-        console.log('fetching zones success:', response);
-
         this.zones = response.sort((a, b) => b.idZone! - a.idZone!);
       },
       error : (error : any) => {
@@ -94,8 +85,8 @@ export class AddFamilleFormComponent {
          
           if (buttonType === 'create') {
               this.close.emit();
-          } else if (buttonType === 'createAndAssign') {
-            this.goToNextStep();
+          } else if (buttonType === 'createAndAssign') {  
+              this.currentStep++;
           }
         },
         error: (err) => {
@@ -119,17 +110,8 @@ export class AddFamilleFormComponent {
       this.familyForm.markAllAsTouched();
     }
   }
-  goToNextStep() {
-    if (this.currentStep < this.steps.length) {
-      this.currentStep++;
-    }
-  }
+ 
   
-  goToPreviousStep() {
-    if (this.currentStep > 1) {
-      this.currentStep--;
-    }
-  }
   onClose() {
     this.close.emit();
   }
