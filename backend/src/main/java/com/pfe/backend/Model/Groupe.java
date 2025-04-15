@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder // Assurez-vous que cette annotation est bien après les constructeurs
 @Audited
+@EqualsAndHashCode(exclude = "users") //zedtha bech n7el el erreur ta3 stakc overflow
 public class Groupe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +50,7 @@ public class Groupe {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "groupe_menus",joinColumns = @JoinColumn(name = "idGroupe"),
             inverseJoinColumns = @JoinColumn(name = "idMenu"))
-    private List<Menu> menus = new ArrayList<>();;
+    private List<Menu> menus = new ArrayList<>();
    //helper methods , for bette functionning
     public void addUser(User user) {
         users.add(user);

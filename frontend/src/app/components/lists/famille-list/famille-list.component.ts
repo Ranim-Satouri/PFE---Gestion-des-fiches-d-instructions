@@ -12,7 +12,7 @@ import { UpdateFamilleComponent } from "../../update/update-famille/update-famil
 @Component({
   selector: 'app-famille-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent,FilterPipe, UpdateFamilleComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent,FilterPipe],
   templateUrl: './famille-list.component.html',
   styleUrl: './famille-list.component.css'
 })
@@ -28,7 +28,7 @@ export class FamilleListComponent {
   userConnected !: User ;
   isDeleteModelOpen : boolean = false;
   selectedFamille !: number ;
-  FamilleToUpdate !: Famille;
+  FamilleToUpdate : Famille | undefined;
   showAddModal = false;
   showUpdateModal = false;
 
@@ -71,6 +71,8 @@ export class FamilleListComponent {
   closeAddForm() {
     this.getFamilles();
     this.showAddModal = false;
+    this.FamilleToUpdate = undefined ; // aamltha bech kif naawd nhel add marra okhra yabda el groupe undefined
+
   }
   openDeleteModel(famille : Famille) {
     this.selectedFamille = famille.idFamille!;
@@ -84,7 +86,7 @@ export class FamilleListComponent {
   OpenUpdateFamillePopUp(famille : Famille){
     this.FamilleToUpdate = famille;
     this.dropdownOpen = null;
-    this.showUpdateModal = true;
+    this.showAddModal = true;
   }
   closeUpdateForm() {
     this.getFamilles();
@@ -156,5 +158,7 @@ export class FamilleListComponent {
       this.dropdownOpen = null; // Ferme le dropdown
     }
   }
+
+
 
 }

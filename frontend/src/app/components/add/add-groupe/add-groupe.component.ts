@@ -40,6 +40,8 @@ export class AddGroupeComponent {
   isNewGroup: boolean = true;
   successMessage: string = '';
   errorMessage = '';
+  select: boolean = false;
+
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
@@ -299,6 +301,7 @@ export class AddGroupeComponent {
     } else {
       this.selectedUsers.add(userId);
     }
+    this.select = true;
   }
   // Sélectionner un menu
   toggleMenuSelection(menuId: number) {
@@ -307,6 +310,7 @@ export class AddGroupeComponent {
     } else {
       this.selectedMenus.add(menuId);
     }
+    this.select = true;
   }
   // Sélectionner une permission
   togglePermissionSelection(permissionId: number) {
@@ -315,6 +319,7 @@ export class AddGroupeComponent {
     } else {
       this.selectedPermissions.add(permissionId);
     }
+    this.select = true;
   }
   @HostListener('document:click', ['$event'])
   closeDropdown(event: MouseEvent) {
@@ -328,4 +333,35 @@ export class AddGroupeComponent {
       this.showSelectorDropdown = false; // Ferme le dropdown
     }
   }
+
+  selectAllPermissions(event: Event ) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    if (isChecked) {
+      this.permissions.forEach(permission => this.selectedPermissions.add(permission.idPermission!));
+    } else {
+      this.selectedPermissions.clear();
+    }
+    this.select = true;
+  }
+  selectAllUsers(event: Event ) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    if (isChecked) {
+      this.users.forEach(user => this.selectedUsers.add(user.idUser!));
+    } else {
+      this.selectedUsers.clear();
+    }
+    this.select = true;
+  }
+  selectAllMenus(event: Event ) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    if (isChecked) {
+      this.menus.forEach(menu => this.selectedMenus.add(menu.idMenu!));
+    } else {
+      this.selectedMenus.clear();
+    }
+    this.select = true;
+  }
+
+
+
 }

@@ -1,5 +1,6 @@
 package com.pfe.backend.Controller;
 import com.pfe.backend.Model.Famille;
+import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Service.ServiceFamille.FamilleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,17 @@ public class FamilleController {
     @GetMapping("/activeFamilies")
     public ResponseEntity<List<Famille>> getActiveFamilies() {
         return ResponseEntity.ok(familleService.getActiveFamilies());
+    }
+    @PostMapping("/addZonesToFamille")
+    public ResponseEntity<?> addZonesToFamille(@RequestParam Long familleId,
+                                               @RequestParam List<Long> zoneIds) {
+        try {
+            Famille result = familleService.addZonesToFamille(familleId, zoneIds);
+            return ResponseEntity.ok(result);
+        }catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'ajout des zones : " + e.getMessage());
+        }
     }
 }
 

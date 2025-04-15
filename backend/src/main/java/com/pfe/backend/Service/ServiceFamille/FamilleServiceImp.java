@@ -1,9 +1,8 @@
 package com.pfe.backend.Service.ServiceFamille;
-import com.pfe.backend.Model.Famille;
-import com.pfe.backend.Model.Produit;
-import com.pfe.backend.Model.User;
+import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.FamilleRepository;
 import com.pfe.backend.Repository.UserRepository;
+import com.pfe.backend.Repository.ZoneRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +18,7 @@ public class FamilleServiceImp implements FamilleService {
     private FamilleRepository familleRepository;
     @Autowired
     private UserRepository userRepository;
+    private ZoneRepository zoneRepository;
 
     @Override
     public ResponseEntity<?> addFamille(Famille famille, Long idActionneur) {
@@ -79,5 +79,12 @@ public class FamilleServiceImp implements FamilleService {
     public List<Famille> getActiveFamilies() {
         return familleRepository.findByIsDeletedFalse();
     }
-
+    public Famille addZonesToFamille(Long familleId, List<Long> zoneIds) {
+        Famille famille = familleRepository.findById(familleId)
+                .orElseThrow(() -> new RuntimeException("Famille non trouvé"));
+        List<Zone> selectedZones = zoneRepository.findAllById(zoneIds);
+        famille.setZones(selectedZones);
+        famille.setZones(selectedZones);
+        return familleRepository.save(famille);
+    }
 }

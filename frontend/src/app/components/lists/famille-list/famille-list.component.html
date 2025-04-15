@@ -191,12 +191,13 @@
 </app-delete-confirm>
 
 <app-add-famille-form
+    [famille]="FamilleToUpdate!"
     *ngIf="showAddModal"
     (close)="closeAddForm()"
 ></app-add-famille-form>
 
-<app-update-famille
+<!-- <app-update-famille
     *ngIf="showUpdateModal"
     [famille]="FamilleToUpdate"
     (close)="closeUpdateForm()"
-></app-update-famille>
+></app-update-famille> -->
