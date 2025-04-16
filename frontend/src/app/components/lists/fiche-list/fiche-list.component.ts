@@ -9,10 +9,12 @@ import { Role, User } from '../../../models/User';
  import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { UpdateFicheComponent } from "../../update/update-fiche/update-fiche.component";
 import { FicheValidationComponent } from "../../fiche-validation/fiche-validation.component";
+import { Ligne } from '../../../models/Ligne';
+import { Operation } from '../../../models/Operation';
 @Component({
   selector: 'app-fiche-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, FicheFormComponent, DeleteConfirmComponent, UpdateFicheComponent, FicheValidationComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, FicheFormComponent, DeleteConfirmComponent,FicheValidationComponent],
   templateUrl: './fiche-list.component.html',
   styleUrl: './fiche-list.component.css'
 })
@@ -30,10 +32,10 @@ export class FicheListComponent {
   userConnected !: User;
   isDeleteModelOpen : boolean = false;
   selectedFiche !: number ;
-  showUpdateForm : boolean = false;
-  ficheToUpdate !: Fiche ;
+  ficheToUpdate : Fiche | undefined; ;
   rejetComment: string = '';
   isCommentModalOpen: boolean = false;
+  showForm=false;
 
   
   ngOnInit() {
@@ -44,7 +46,7 @@ export class FicheListComponent {
     this.getFiches();
     this.checkFicheStatusPeriodically();
   }
-  getFiches() {//
+  getFiches() {
 
     if(this.userConnected.role == Role.SUPERUSER){ 
       this.FicheService.getAllFiches().subscribe({
@@ -251,26 +253,46 @@ export class FicheListComponent {
       window.URL.revokeObjectURL(url); // Libère l'URL après le téléchargement
     });
   }
-  showForm=false;
   showFicheForm(){
     this.showForm=true;
   }
   hideForm(){
     this.getFiches();
     this.showForm=false;
+    this.ficheToUpdate = undefined ;
   }
   openUpdateForm(fiche : Fiche){
+    const ligne : Ligne = { // pour tester
+      idLigne: 0,
+      nom: 'ligne 1',
+    };
+    const operation : Operation = {
+      idOperation: 0,
+      nom: 'operation 1',
+    }
+    fiche.ligne = ligne;
+    fiche.operation = operation;
     this.dropdownOpen = null
     this.ficheToUpdate = fiche;
-    this.showUpdateForm = true;
+    this.showForm = true;
   }
-  closeUpdateForm(){
-    this.showUpdateForm = false;
-    this.getFiches(); 
-  }
+
   openCommentModal(commentaire: string) {
     this.rejetComment = commentaire;
     this.isCommentModalOpen = true;
   }
+  isDescending: boolean = true;
+  sortByDate() {
+    this.isDescending = !this.isDescending; // Alterner entre croissant et décroissant
 
+    this.fiches.sort((a, b) => {
+      // Comparaison des dates
+      const dateA = new Date(a.modifieLe!);
+      const dateB = new Date(b.modifieLe!);
+
+      return this.isDescending
+        ? dateB.getTime() - dateA.getTime()  // Tri décroissant
+        : dateA.getTime() - dateB.getTime();  // Tri croissant
+    });
+  }
 }

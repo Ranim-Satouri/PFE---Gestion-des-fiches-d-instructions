@@ -39,7 +39,7 @@ public class OperationServiceImp implements OperationService {
     {
         Operation operation = operationRepository.findById(idOperation).orElseThrow(()-> new RuntimeException("Operation introuvable ! "));
         User actionneur = userRepository.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-        Optional<Operation> existingOperation = operationRepository.findBynomAndIsDeleted(operation.getNom(), false);
+        Optional<Operation> existingOperation = operationRepository.findBynomAndIsDeleted(NewOperationData.getNom(), false);
         if(existingOperation.isPresent()){
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)

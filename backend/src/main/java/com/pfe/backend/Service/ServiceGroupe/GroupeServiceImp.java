@@ -8,12 +8,14 @@ import com.pfe.backend.Repository.GroupeRepository;
 import com.pfe.backend.Repository.MenuRepository;
 import com.pfe.backend.Repository.PermissionRepository;
 import com.pfe.backend.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,30 +87,32 @@ public class GroupeServiceImp implements GroupeService {
         return groupeRepository.findAll();
     }
 
+    //@Transactional //zedtha bech n7el el erreur ta3 stack overflow
+    @Override
     public Groupe addRelationsToGroup(Long groupId, List<Long> menuIds, List<Long> permissionIds, List<Long> userIds) {
         Groupe groupe = groupeRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Groupe non trouvé"));
 
+        // 1. Menus & Permissions (ça va bien)
         List<Menu> selectedMenus = menuRepository.findAllById(menuIds);
         groupe.setMenus(selectedMenus);
 
         List<Permission> selectedPermissions = permissionRepository.findAllById(permissionIds);
         groupe.setPermissions(selectedPermissions);
 
-        // Find users who are currently assigned to the group but are not in the new user list
-        List<User> usersInGroup = groupe.getUsers();
-        for (User user : usersInGroup) {
+        List<User> currentUsers = new ArrayList<>(groupe.getUsers());
+        for (User user : currentUsers) {
             if (!userIds.contains(user.getIdUser())) {
-                // Set the group to null for users who are no longer part of the group
                 user.setGroupe(null);
-                user.setActionneur(groupe.getActionneur());
-                userRepository.save(user);  // Save the changes
+                userRepository.save(user);
             }
         }
+
         List<User> selectedUsers = userRepository.findAllById(userIds);
         for (User user : selectedUsers) {
             user.setGroupe(groupe);
         }
+
         groupe.setUsers(selectedUsers);
 
         return groupeRepository.save(groupe);

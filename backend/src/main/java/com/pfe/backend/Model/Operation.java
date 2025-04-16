@@ -29,6 +29,6 @@ public class Operation {
     private User actionneur;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "idLigne", nullable = false)
+    @JoinColumn(name = "idLigne")
     private Ligne ligne ;
 }

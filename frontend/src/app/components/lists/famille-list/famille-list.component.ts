@@ -12,7 +12,7 @@ import { UpdateFamilleComponent } from "../../update/update-famille/update-famil
 @Component({
   selector: 'app-famille-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent,FilterPipe, UpdateFamilleComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent,FilterPipe],
   templateUrl: './famille-list.component.html',
   styleUrl: './famille-list.component.css'
 })
@@ -28,9 +28,10 @@ export class FamilleListComponent {
   userConnected !: User ;
   isDeleteModelOpen : boolean = false;
   selectedFamille !: number ;
-  FamilleToUpdate !: Famille;
+  FamilleToUpdate : Famille | undefined;
   showAddModal = false;
   showUpdateModal = false;
+  step : number = 1;  //men ajl el update 
 
   ngOnInit(){
     this.getFamilles();
@@ -71,20 +72,23 @@ export class FamilleListComponent {
   closeAddForm() {
     this.getFamilles();
     this.showAddModal = false;
+    this.FamilleToUpdate = undefined ; // aamltha bech kif naawd nhel add marra okhra yabda el groupe undefined
+
   }
   openDeleteModel(famille : Famille) {
     this.selectedFamille = famille.idFamille!;
       this.dropdownOpen = null;
       this.isDeleteModelOpen = true;
-    }
+  }
   closeDeleteModel(){
     this.isDeleteModelOpen = false;
   }
 
-  OpenUpdateFamillePopUp(famille : Famille){
+  OpenUpdateFamillePopUp(famille : Famille , step : number ){
+    this.step = step;
     this.FamilleToUpdate = famille;
     this.dropdownOpen = null;
-    this.showUpdateModal = true;
+    this.showAddModal = true;
   }
   closeUpdateForm() {
     this.getFamilles();
@@ -155,6 +159,20 @@ export class FamilleListComponent {
     if (this.dropdownOpen !== null && dropdown && !dropdown.contains(target) && !button) {
       this.dropdownOpen = null; // Ferme le dropdown
     }
+  }
+  isDescending: boolean = true;
+  sortByDate() {
+    this.isDescending = !this.isDescending; // Alterner entre croissant et décroissant
+
+    this.familles.sort((a, b) => {
+      // Comparaison des dates
+      const dateA = new Date(a.modifieLe!);
+      const dateB = new Date(b.modifieLe!);
+
+      return this.isDescending
+        ? dateB.getTime() - dateA.getTime()  // Tri décroissant
+        : dateA.getTime() - dateB.getTime();  // Tri croissant
+    });
   }
 
 }

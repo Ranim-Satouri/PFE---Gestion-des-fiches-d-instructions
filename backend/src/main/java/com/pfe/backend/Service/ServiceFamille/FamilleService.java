@@ -11,4 +11,5 @@ public interface FamilleService {
     ResponseEntity<?> updateFamily(Long idFam, Famille newFamillyData ,Long idActionneur);
     void DeleteFamily(Long idFam , Long idActionneur);
     List<Famille> getActiveFamilies();
+    Famille addZonesToFamille(Long familleId, List<Long> zoneIds);
 }

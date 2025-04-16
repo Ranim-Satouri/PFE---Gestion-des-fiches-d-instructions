@@ -203,10 +203,13 @@
                         <th class="px-4 py-2">
                             <div class="inline-flex items-center ml-3">
                                 <label class="flex items-center cursor-pointer relative">
-                                <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check2" />
+                                <input type="checkbox"
+                                [checked]="users.length > 0 && selectedUsers.size === users.length"
+                                (change)="selectAllUsers($event)"
+                                class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300 checked:bg-blue-600 checked:border-blue-600" id="check2" />
                                 <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                     </svg>
                                 </span>
                                 </label>
@@ -342,7 +345,10 @@
                         <th class="px-4 ">
                             <div class="inline-flex items-center ml-3">
                                 <label class="flex items-center cursor-pointer relative">
-                                <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check2" />
+                                <input type="checkbox" 
+                                [checked]="menus.length > 0 && selectedMenus.size === menus.length"
+                                (change)="selectAllMenus($event)"
+                                class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check2" />
                                 <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
@@ -477,7 +483,10 @@
                         <th class="px-4 py-2">
                             <div class="inline-flex items-center ml-3">
                                 <label class="flex items-center cursor-pointer relative">
-                                <input type="checkbox" class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check2" />
+                                <input type="checkbox"
+                                [checked]="permissions.length > 0 && selectedPermissions.size === permissions.length"
+                                (change)="selectAllPermissions($event)"
+                                class="peer h-[14px] w-[14px] cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-400 checked:bg-blue-600 checked:border-blue-600" id="check2" />
                                 <span class="absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
@@ -533,7 +542,7 @@
                 *ngIf="!isNewGroup"
                 (click)="onGroupNameUpdate('create')"
                 type="button"
-                [disabled]="groupeForm.invalid"
+                [disabled]="groupeForm.invalid || groupe.nom === groupeForm.value.nom "
                 class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
             >
                 Modifier
@@ -557,7 +566,7 @@
                 *ngIf="!isNewGroup"
                 (click)="onGroupNameUpdate('createAndAssign')"
                 type="button"
-                [disabled]="groupeForm.invalid"
+                [disabled]="groupeForm.invalid || groupe.nom === groupeForm.value.nom"
                 class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
             >
                 Modifier et Affecter
@@ -585,6 +594,7 @@
             <button
               *ngIf="currentStep === 4"
               (click)="addRelationsToGroup()"
+              [disabled]="!select"
               type="button"
               class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none ml-auto"
               data-hs-stepper-next-btn=""

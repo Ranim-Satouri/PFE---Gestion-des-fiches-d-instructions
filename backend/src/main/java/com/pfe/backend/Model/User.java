@@ -27,6 +27,7 @@ import lombok.Data;
 @Audited
 @Entity
 @JsonIgnoreProperties({"authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
+@EqualsAndHashCode(exclude = "groupe") //zedtha bech n7el el erreur ta3 stakc overflow
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

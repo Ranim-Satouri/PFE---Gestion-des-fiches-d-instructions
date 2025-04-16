@@ -47,8 +47,11 @@ public class Zone {
     @OneToMany(mappedBy = "zone", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ligne> ligne;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "idFamille") // nullable false nahitha khater taaml erreur taw
-    private Famille famille;
+    //@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@JoinColumn(name = "idFamille") // nullable false nahitha khater taaml erreur taw
+    //private Famille famille;
 
+    @JsonIgnore
+    @ManyToMany(mappedBy = "zones", fetch = FetchType.LAZY)
+    private List<Famille> familles;
 }

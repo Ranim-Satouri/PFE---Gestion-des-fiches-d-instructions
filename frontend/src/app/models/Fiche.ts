@@ -1,3 +1,5 @@
+import { Ligne } from "./Ligne";
+import { Operation } from "./Operation";
 import { Produit } from "./Produit";
 import { User } from "./User";
 import { Zone } from "./Zone";
@@ -19,6 +21,8 @@ export interface Fiche {
   ipdf?: User;
   iqp?: User;
   actionneur: User;
+  ligne : Ligne;
+  operation : Operation;
 }
 
 export enum FicheStatus {

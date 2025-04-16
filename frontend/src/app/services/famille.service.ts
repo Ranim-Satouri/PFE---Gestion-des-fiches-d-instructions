@@ -28,4 +28,11 @@ export class FamilleService {
                   .set('idActionneur',idActionneur);
     return this.http.put<Famille>(`${this.apiUrl}/update/${idFamille}`, famille , { params }) ;
   }
+  addZonesToFamille(familleId: number, zoneIds: number[]) {
+    const params = new HttpParams()
+      .set('familleId', familleId.toString())
+      .set('zoneIds', zoneIds.join(','));
+    
+    return this.http.post(`${this.apiUrl}/addZonesToFamille`, null, { params });
+  }
 }

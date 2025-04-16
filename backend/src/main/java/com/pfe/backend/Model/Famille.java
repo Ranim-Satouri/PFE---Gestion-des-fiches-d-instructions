@@ -9,6 +9,7 @@ import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,8 +41,13 @@ public class Famille {
     @JoinColumn(name = "idActionneur", nullable = false)
     private User actionneur;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "famille", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Zone> zones;
+    //@JsonIgnore
+    //@OneToMany(mappedBy = "famille", cascade = CascadeType.ALL, orphanRemoval = true)
+    //private List<Zone> zones;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "famille-zones",joinColumns = @JoinColumn(name = "idFamille"),
+            inverseJoinColumns = @JoinColumn(name = "idZone"))
+    private List<Zone> zones ;
 
 }

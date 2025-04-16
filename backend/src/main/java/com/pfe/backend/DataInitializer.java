@@ -44,10 +44,50 @@ public class DataInitializer implements CommandLineRunner {
         addMenuIfNotExists("operations");
 
         // Vérifier et insérer les permissions
-        addPermissionIfNotExists("view_user");
-        addPermissionIfNotExists("delete_user");
-        addPermissionIfNotExists("create_user");
-        addPermissionIfNotExists("update_user");
+        addPermissionIfNotExists("consulter_famille");
+        addPermissionIfNotExists("creer_famille");
+        addPermissionIfNotExists("modifier_famille");
+        addPermissionIfNotExists("supprimer_famille");
+
+        addPermissionIfNotExists("consulter_produit");
+        addPermissionIfNotExists("creer_produit");
+        addPermissionIfNotExists("modifier_produit");
+        addPermissionIfNotExists("supprimer_produit");
+
+        addPermissionIfNotExists("consulter_zone");
+        addPermissionIfNotExists("creer_zone");
+        addPermissionIfNotExists("modifier_zone");
+        addPermissionIfNotExists("supprimer_zone");
+
+        addPermissionIfNotExists("consulter_fiche");
+        addPermissionIfNotExists("creer_fiche");
+        addPermissionIfNotExists("modifier_fiche");
+        addPermissionIfNotExists("supprimer_fiche");
+        addPermissionIfNotExists("valider_fiche_IQP");
+        addPermissionIfNotExists("valider_fiche_IPDF");
+
+        addPermissionIfNotExists("consulter_utilisateur");
+        addPermissionIfNotExists("creer_utilisateur");
+        addPermissionIfNotExists("modifier_utilisateur");
+        addPermissionIfNotExists("supprimer_utilisateur");
+        addPermissionIfNotExists("activer_desactiver_utilisateur");
+
+        addPermissionIfNotExists("consulter_groupe");
+        addPermissionIfNotExists("creer_groupe");
+        addPermissionIfNotExists("modifier_groupe");
+        addPermissionIfNotExists("supprimer_groupe");
+
+        addPermissionIfNotExists("consulter_ligne");
+        addPermissionIfNotExists("creer_ligne");
+        addPermissionIfNotExists("modifier_ligne");
+        addPermissionIfNotExists("supprimer_ligne");
+
+        addPermissionIfNotExists("consulter_operation");
+        addPermissionIfNotExists("creer_operation");
+        addPermissionIfNotExists("modifier_operation");
+        addPermissionIfNotExists("supprimer_operation");
+
+        addPermissionIfNotExists("consulter_historique");
         addSuperuserGroupIfNotExists();
     }
 
