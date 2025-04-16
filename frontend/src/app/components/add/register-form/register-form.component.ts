@@ -6,6 +6,9 @@ import { Zone } from '../../../models/Zone';
 import { ZoneService } from '../../../services/zone.service';
 import {UserService} from '../../../services/user.service';
 import {Genre, Role, User, UserStatus} from '../../../models/User';
+import {Groupe} from '../../../models/Groupe';
+import {GroupeService} from '../../../services/groupe.service';
+import { error, group } from 'console';
 
 @Component({
   selector: 'app-register-form',
@@ -15,13 +18,13 @@ import {Genre, Role, User, UserStatus} from '../../../models/User';
   styleUrl: './register-form.component.css',
 })
 export class RegisterFormComponent {
-  @ViewChild('roleInput', { static: false }) roleInput!: ElementRef;
-  @ViewChild('roleDropdown', { static: false }) roleDropdown!: ElementRef;
+  @ViewChild('groupeInput', { static: false }) groupeInput!: ElementRef;
+  @ViewChild('groupeDropdown', { static: false }) groupeDropdown!: ElementRef;
   //event pour l'update
   @Input() userToUpdate: User | null = null;
   @Output() close = new EventEmitter<void>();
   @Output() userUpdated = new EventEmitter<void>();
-  constructor(private userService:UserService,private zoneService: ZoneService) {}
+  constructor(private userService:UserService,private zoneService: ZoneService,private groupeService: GroupeService) {}
   
   userConnected !: User;
   ngOnInit() {
@@ -30,11 +33,32 @@ export class RegisterFormComponent {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
     this.loadZones();
-    // Populate roles from the Role enum
-    this.roles = Object.values(Role);
-    this.filteredRoles = this.roles; // Initially show all roles
+    this.loadGroupes(); // Charger les groupes depuis le backend
   }
-
+  loadGroupes() {
+    this.groupeService.getAll().subscribe({
+      next: (groupes) => {
+        this.groupes = groupes;
+        this.filteredGroupes = this.groupes;
+        console.log('Groupes chargés depuis le backend:', this.groupes);
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des groupes:', error);
+      }
+    });
+  }
+    steps = ["Informations Personnelles", "Coordonnées", "Profil Utilisateur"];
+    currentStep = 1;
+    showDropdown = false;
+    // Liste des zones
+    zones: Zone[] = [];
+    groupes: Groupe[] = [];
+    selectedGroupe?: Groupe;
+    filteredGroupes: Groupe[] = [];
+    searchText:string ="" ;
+    filteredRoles: Role[] = [];
+    role?:Role;
+  
   private fb =inject(FormBuilder);
   // Définition du formulaire
   registerForm : FormGroup =this.fb.group({
@@ -45,10 +69,34 @@ export class RegisterFormComponent {
     // password : ['',Validators.required],
     numero :[''],
     genre: [''],
-    role: [null, Validators.required] ,
-    zones: this.fb.array([])  ,  status : ['']
+    role: [''] ,
+    zones: this.fb.array([])  ,  status : [''] , 
+    groupe: ['']
   });
 
+
+  // aleeeeeeeeerrtt
+   showSuccessAlert: boolean = false;
+   showEchecAlert : boolean = false;
+   hideAlert(){
+    this.showSuccessAlert = false;
+    this.showEchecAlert = false;
+   }
+  showAlertAndClose() 
+  {
+    this.showSuccessAlert = true;
+    setTimeout(()=>
+    {
+      this.hideAlert();
+      this.closeForm();
+    },3500);
+  }
+  showFailAlert() 
+  {
+    this.showEchecAlert = true;
+    setTimeout(()=>
+    { this.hideAlert();},3500);
+  }
   ngOnChanges() {
     console.log('ngOnChanges triggered, userToUpdate:', this.userToUpdate);
     if (this.userToUpdate) {
@@ -60,10 +108,15 @@ export class RegisterFormComponent {
         numero: this.userToUpdate.num || '',
         genre: this.userToUpdate.genre || '',
         role: this.userToUpdate.role || null,
+        groupe: this.userToUpdate.groupe || null,
         status: this.userToUpdate.status || ''
       });
-  
-      // Pre-fill zones
+
+      if (this.userToUpdate.groupe) {
+        this.searchText = this.userToUpdate.groupe.nom;
+        this.selectedGroupe = this.userToUpdate.groupe;
+      }
+       // Pre-fill zones
       const zonesArray = this.registerForm.get('zones') as FormArray;
       zonesArray.clear();
       if (this.userToUpdate.zones) {
@@ -74,7 +127,23 @@ export class RegisterFormComponent {
       console.log('Form value after patchValue:', this.registerForm.value);
     }
   }
-
+   // Grouuuuuuuuuuuuuuuuuuuupe
+  filterGroupes() {
+    if (!this.searchText) {
+      this.filteredGroupes = this.groupes;
+      return;
+    }
+    this.filteredGroupes = this.groupes.filter((groupe) =>
+      groupe.nom.toLowerCase().includes(this.searchText.toLowerCase())
+    );
+  }
+  selectGroupe(groupe: Groupe) {
+    console.log('✅ Groupe sélectionné :', groupe);
+    this.searchText = groupe.nom;
+    this.selectedGroupe = groupe;
+    this.registerForm.get('groupe')?.setValue(groupe);
+    this.showDropdown = false;
+}
   toggleZoneSelection(idZone: number) {
     const zonesArray: FormArray = this.registerForm.get('zones') as FormArray;
     const index = zonesArray.controls.findIndex((control) => control.value === idZone);
@@ -93,21 +162,13 @@ export class RegisterFormComponent {
       this.zones = zones;}); }
   selectedZones: number[] = []; // Stocker les zones sélectionnées
 
-  steps = ["Informations Personnelles", "Coordonnées", "Profil Utilisateur"];
-  currentStep = 1;
-  showDropdown = false;
-  // Liste des zones
-  zones: Zone[] = [];
-  roles: Role[] = [];
-  searchText:string ="" ;
-  filteredRoles: Role[] = [];
-  role?:Role;
+
   
   // Dynamically position the dropdown above the input
   adjustDropdownPosition() {
-    if (this.roleInput && this.roleDropdown) {
-      const input = this.roleInput.nativeElement;
-      const dropdown = this.roleDropdown.nativeElement;
+    if (this.groupeInput && this.groupeDropdown) {
+      const input = this.groupeInput.nativeElement;
+      const dropdown = this.groupeDropdown.nativeElement;
 
       const rect = input.getBoundingClientRect();
       const dropdownHeight = dropdown.offsetHeight;
@@ -117,36 +178,18 @@ export class RegisterFormComponent {
       dropdown.style.width = `${rect.width}px`;
     }
   }
-  filterRoles() {
-    if (!this.searchText) {
-      this.filteredRoles = this.roles; // Si aucun texte n'est saisi, afficher tous les produits
-      return;
-    }
-
-    this.filteredRoles = this.roles.filter((r) =>
-      r.toLowerCase().includes(this.searchText.toLowerCase())
-    );
-  }
-
-  selectRole(role: Role) {
-    console.log('✅ Rôle sélectionné :', role);
-    this.searchText = role;
-    this.role = role;
-    this.registerForm.get('role')?.setValue(role);
-    this.showDropdown = false;
-  }
   // Gérer l'événement de saisie dans l'input
   onSearchChange(event: Event) {
     const input = event.target as HTMLInputElement;
     this.searchText = input.value; // Update searchText with the input value
-    this.filterRoles();
+    this.filterGroupes();
     this.showDropdown = true;
   }
 
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
     if (this.showDropdown) {
-      this.filterRoles();
+      this.filterGroupes();
       this.adjustDropdownPosition(); // Adjust position when opening
     }
   }
@@ -160,7 +203,6 @@ export class RegisterFormComponent {
       this.showDropdown = false; }}
   //Zone
   // Charger les zones depuis le service
-
   // Navigation entre les étapes
   goToNextStep() {
     if (this.currentStep < 3) {
@@ -174,7 +216,6 @@ export class RegisterFormComponent {
       this.currentStep--;
     }
   }
-
   // Fermer le formulaire
   closeForm() {
     this.close.emit();
@@ -245,13 +286,15 @@ export class RegisterFormComponent {
         next: () => {
           console.log('✅ Zones ajoutées avec succès');
           this.userUpdated.emit();
-          this.close.emit();
+          this.showAlertAndClose();
         },
-        error: (error) => {console.error('❌ Erreur lors de l\'ajout des zones', error);}
+        error: (error) => {
+          this.showFailAlert();
+          console.error('❌ Erreur lors de l\'ajout des zones', error);}
       });
     } else {
       // If no zones to add, emit events to close the form
-      this.userUpdated.emit();this.close.emit(); }}
+      this.userUpdated.emit();this.showAlertAndClose(); }}
   // Soumettre le formulaire
   submitForm() {
     if (this.userToUpdate) {
@@ -270,7 +313,7 @@ export class RegisterFormComponent {
         num: this.registerForm.value.numero,
         actionneur: this.userConnected.idUser!, // Correction de la majuscule
         status: this.registerForm.value.status,
-        role: this.registerForm.value.role.toUpperCase() || null, // Ajout d'une valeur par défaut
+        role:  "ADMIN",
         // zones: Array.isArray(this.registerForm.value.zones) ? this.registerForm.value.zones : [],
         // modifieLe: new Date(),
       };
@@ -279,15 +322,52 @@ export class RegisterFormComponent {
       this.userService.Register(user, idActionneur).subscribe({
         next: (response) => {
           console.log('✅ Utilisateur ajouté avec succès', response);
-          const selectedZone = this.registerForm.get('zones')?.value;
-          console.log(selectedZone);
-          selectedZone.forEach((zoneId: number) => {
-            console.log(zoneId)
-            this.userService.attribuerZone(response.user.idUser, zoneId,idActionneur).subscribe({
-              next:(response) =>{ console.log('Zone attribuée avec succès:', response);},
-              error: (error) => {console.error('❌ Erreur lors de l\'ajout de l\'Userzone', error);}});});
-            },
-        error: (error) => {console.error('❌ Erreur lors de l\'ajout de l\'utilisateur', error);}       
+          const selectedGroupe = this.registerForm.get('groupe')?.value;
+          if (selectedGroupe && selectedGroupe.idGroupe) {
+            this.userService.attribuerGroupe(response.user.idUser, selectedGroupe.idGroupe, idActionneur).subscribe({
+              next: () => {
+                console.log('✅ Groupe attribué avec succès');
+                this.assignZones(response.user.idUser, idActionneur);
+              },
+              error: (error) => {
+                this.showFailAlert();
+                console.error('❌ Erreur lors de l\'attribution du groupe', error);
+              }
+            });
+          } else {
+            this.assignZones(response.user.idUser, idActionneur);
+          }
+        },
+        error: (error) => {
+          this.showFailAlert();
+          console.error('❌ Erreur lors de l\'ajout de l\'utilisateur', error);
+        }
       });
-      console.log("Données soumises :", user);} else { console.log("❌ Formulaire invalide !"); }}
-}}
+      console.log("Données soumises :", user);
+    } else {
+      this.showFailAlert();
+      console.log("❌ Formulaire invalide !");
+    }
+  }
+}
+assignZones(userId: number, idActionneur: number) {
+  const selectedZone = this.registerForm.get('zones')?.value;
+  if (selectedZone && selectedZone.length > 0) {
+    const zoneObservables = selectedZone.map((zoneId: number) => {
+      return this.userService.attribuerZone(userId, zoneId, idActionneur);
+    });
+    forkJoin(zoneObservables).subscribe({
+      next: () => {
+        console.log('✅ Zones attribuées avec succès');
+        this.showAlertAndClose();
+      },
+      error: (error) => {
+        this.showFailAlert();
+        console.error('❌ Erreur lors de l\'ajout des zones', error);
+      }
+    });
+  } else {
+    this.showAlertAndClose();
+  }
+}
+}

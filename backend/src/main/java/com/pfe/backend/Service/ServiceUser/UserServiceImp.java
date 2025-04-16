@@ -41,6 +41,19 @@ public class UserServiceImp implements UserIservice {
         user.addZone(zone, idActionneur);
         userRepo.save(user);
     }
+    @Override
+    public void attribuerGroupe(long idUser,long idGroupe,long idActionneur)
+    {
+        User user = userRepo.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        User actionneur = userRepo.findById(idActionneur)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        Groupe grp = groupeRepo.findById(idGroupe)
+                .orElseThrow(() -> new RuntimeException("Groupe introuvable"));
+        user.setGroupe(grp);
+        user.setActionneur(actionneur);
+        userRepo.save(user);
+    }
     public void retirerZoneAUser(Long idUser, Long idZone, Long idActionneur) {
         // Vérifier si les entités existent
         User user = userRepo.findById(idUser)

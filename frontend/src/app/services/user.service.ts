@@ -1,7 +1,7 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {Genre, Role, User, UserStatus} from '../models/User';
-import {catchError, map, Observable, tap} from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { Role, User, UserStatus } from '../models/User';
 @Injectable({
   providedIn: 'root'
 })
@@ -24,23 +24,23 @@ export class UserService {
   Register(user: User, idActionneur: number): Observable<any> {
     const params = new HttpParams()
       .set('idCreator', idActionneur);
-    return this.http.post<{ token: string, role: Role ,user : User }>(
+    return this.http.post<{ token: string; user: User; groupe: string }>(
       `${this.apiUrl2}/register`, user, { params } );
   }
   
-  // getAll(): Observable<User[]> {
-  //   return this.http.get<User[]>(`${this.apiUrl}/getUsers`); 
-  // }
   getAll(): Observable<User[]> {
-    console.log('Appel de getAll vers:', `${this.apiUrl}/getUsers`);
-    return this.http.get<User[]>(`${this.apiUrl}/getUsers`).pipe(
-        tap(users => console.log('Utilisateurs reçus:', users)),
-        catchError(error => {
-            console.error('Erreur lors de la récupération des utilisateurs:', error);
-            throw error;
-        })
-    );
-}
+    return this.http.get<User[]>(`${this.apiUrl}/getUsers`); 
+  }
+  
+  attribuerGroupe(idUser: number, idGroupe: number, idActionneur: number): Observable<any>
+  {
+    console.log("user",idUser);
+    console.log("Grp",idGroupe);
+    console.log("act",idActionneur);
+  return this.http.put<User>
+  (`${this.apiUrl}/attribuer-groupe/${idUser}?idGroupe=${idGroupe}&idActionneur=${idActionneur}`, null);
+
+  }
 
 updateUser(idUser:number, user:User , idActionneur:number):Observable<any>
 {

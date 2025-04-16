@@ -32,7 +32,8 @@ public class AuthenticationService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Un utilisateur avec ce matricule existe déjà.");
         }
         User user;
-        Groupe groupe;
+        Groupe groupe= null;
+
         if (isDatabaseEmpty) {
             //step 1 , il faut creer d'abord le grp superuser since no user exists db is empty
             groupe = groupeRepository.findByNom("SUPERUSER");
@@ -52,13 +53,11 @@ public class AuthenticationService {
             groupe.setActionneur(user);
             groupeRepository.save(groupe);
         } else {
-            if (request.getIdGroupe() == null) {
-                throw new IllegalArgumentException("L'ID du groupe est requis.");
+            // Groupe peut être null ici
+            if (request.getIdGroupe() != null) {
+                groupe = groupeRepository.findById(request.getIdGroupe())
+                        .orElse(null); // on ne lève pas d'exception
             }
-            groupe = groupeRepository.findById(request.getIdGroupe())
-                    .orElseThrow(() -> new RuntimeException("Groupe non trouvé"));
-
-            // Récupérer l'utilisateur créateur (actionneur)
             User creator = repository.findById(idCreator)
                     .orElseThrow(() -> new RuntimeException("Créateur du compte introuvable"));
             // Créer un utilisateur normal avec un actionneur
@@ -73,17 +72,18 @@ public class AuthenticationService {
                     .status(request.getStatus() != null ? request.getStatus() : User.UserStatus.ACTIVE)
                     .actionneur(creator)
                     .build();
-            groupe.addUser(user);
+              if (groupe != null) {
+                  groupe.addUser(user); // uniquement si groupe non null
+              }
             user = repository.save(user);
         }
-        repository.save(user);
-
             var jwtToken = jwtService.generateToken(user);
             //we need to encode our pwd before saving it so we neeed to inject our passwordencoder Service
         String groupeNom = user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe";
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .user(user).groupe(user.getGroupe().getNom())
+                .user(user)
+                .groupe(user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe")
                 .build();
 
     }

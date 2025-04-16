@@ -56,6 +56,15 @@ public class userController {
             @RequestParam Long idActionneur)
     {    User updated = userIservice.updateUser(idUser, updatedUser, idActionneur);
         return ResponseEntity.ok(updated);    }
+    @PutMapping("/attribuer-groupe/{idUser}")
+    public ResponseEntity<?> attribuerGroupe(
+            @PathVariable Long idUser,
+            @RequestParam Long idGroupe,
+            @RequestParam Long idActionneur) {
+
+        userIservice.attribuerGroupe(idUser, idGroupe, idActionneur);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/history/{id}")
     public List<Object[]> getUserHistory(@PathVariable Long id) {

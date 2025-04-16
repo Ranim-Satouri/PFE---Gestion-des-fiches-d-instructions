@@ -4,15 +4,33 @@
     <div class="min-w-fit flex-col border bg-white px-6 py-14 shadow-md rounded-[4px] ">
       <div class="mb-8 flex justify-center">
         <img class="w-24" src="/assets/sagemcom.png" alt="logo" />      </div>
+        
+        <span *ngIf="loginError" 
+        class="text-red-500 text-xs flex items-center gap-1 py-2 px-2 transition-opacity duration-400 opacity-100">
+          <svg class="shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+          </svg>{{ loginError }}
+        </span>
       <div class="flex flex-col text-sm rounded-md">
-        <input [(ngModel)]="matricule" class="mb-5 rounded-[4px] border p-3 hover:outline-none focus:outline-none hover:border-blue-500 " type="text" placeholder="entrez votre matricule " />
-        <input [(ngModel)]="password" class="border rounded-[4px] p-3 hover:outline-none focus:outline-none hover:border-blue-500" type="password" placeholder="mot de passe" />
+        <input   #matriculeInput
+        [(ngModel)]="matricule" (ngModelChange)="clearError()"
+        (mouseenter)="focusInput(matriculeInput)" (mouseleave)="blurInput(matriculeInput)" [ngClass]="{'border-red-500': loginError}"
+        class="mb-5 rounded-[4px] border p-3 ring-1 px-2 ring-gray-100 focus:ring-blue-500 
+         focus:outline-none hover:outline-none  hover:border-blue-400 " 
+        type="text" placeholder="entrez votre matricule " />
+       
+        <input   #passwordInput
+         [(ngModel)]="password"   (ngModelChange)="clearError()" 
+        (mouseenter)="focusInput(passwordInput)"
+        (mouseleave)="blurInput(passwordInput)" [ngClass]="{'border-red-500': loginError}"
+        class="border rounded-[4px] p-3 ring-1 px-2 ring-gray-100 focus:ring-blue-500 
+        focus:outline-none hover:outline-none  hover:border-blue-400" type="password" placeholder="mot de passe" />
       </div>
       <button (click)="authenticate()" class="mt-5 w-full border p-2 bg-gradient-to-r from-[#018ef9] to-blue-300 text-white rounded-[4px]
-    hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-400 scale-105 duration-300" type="submit">Sign in</button>
-      <div class="mt-5 flex justify-between text-sm text-gray-600">
-        <a href="#">Forgot password?</a>
-      </div>
+    hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-400 scale-105 duration-300" type="submit">S'identifier</button>
+      <!-- <div class="mt-5 flex justify-between text-sm text-gray-600">
+        <a href="#">Mot de passe oublié ?</a>
+      </div> -->
       <div class="mt-5 flex text-center text-sm text-gray-400">
         <p>
           This site is protected by reCAPTCHA and the Google <br />
