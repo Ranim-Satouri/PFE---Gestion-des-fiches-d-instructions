@@ -12,21 +12,21 @@ import { UserService } from '../../../services/user.service';
 import { ZoneService } from '../../../services/zone.service';
 import { DeleteConfirmComponent } from '../../delete-confirm/delete-confirm.component';
 import { RegisterFormComponent } from '../../add/register-form/register-form.component';
-@Component({
-  selector: 'app-user-list',
-  standalone: true,
+import { GroupeService } from '../../../services/groupe.service';
+import { Groupe } from '../../../models/Groupe';
+@Component({selector: 'app-user-list', standalone: true,
   imports: [NgxPaginationModule, CommonModule, FormsModule, RegisterFormComponent, DeleteConfirmComponent,FilterPipe],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css'})
 export class UserListComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('roleInput', { static: false }) roleInput?: ElementRef;
-  @ViewChild('roleDropdown', { static: false }) roleDropdown?: ElementRef;
+  @ViewChild('groupeInput', { static: false }) groupeInput!: ElementRef;
+  @ViewChild('groupeDropdown', { static: false }) groupeDropdown!: ElementRef;
   @ViewChild('arrowButton', { static: false }) arrowButton?: ElementRef;
   @ViewChild('divFiltrage', { static: false }) divFiltrage?: ElementRef;
 
   private observer?: MutationObserver;
 
-  constructor( private userService: UserService, private userZoneService: UserZoneService, private zoneService: ZoneService, private cdr: ChangeDetectorRef ) {}
+  constructor( private userService: UserService, private userZoneService: UserZoneService, private zoneService: ZoneService, private groupeService: GroupeService ,private cdr: ChangeDetectorRef ) {}
 
   users: any[] = []; dropdownOpen: number | null = null; page: number = 1;
   itemsPerPage: number = 5;
@@ -37,7 +37,6 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   UserStatus = UserStatus;
   isDeleteModelOpen: boolean = false;
   selectedUser!: User | null;
-  isFiltrageOpen: boolean = false;
   showDropdown = false;
   roles: Role[] = [];
   searchText: string = '';
@@ -49,45 +48,48 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
   zones: Zone[] = [];
   selectedZones: number[] = [];
   selectedStatus: string = '';
-// les groupes
-GroupeNom!: string;
-
+  // les groupes
+    groupes: Groupe[] = [];
+    GroupeNom!: string;
+    selectedGroupe: Groupe | null | undefined;
+    filteredGroupes: Groupe[] = [];
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
       this.Role=this.userConnected.role;
-    }
+      this.loadGroupes();
+     }
     this.getUsers();
-    this.roles = Object.values(Role);
-    this.filteredRoles = this.roles;
     this.zoneService.getAll().subscribe({
       next: (zones: Zone[]) => {
         this.zones = zones;
-        console.log('Zones loaded:', this.zones);
-      },
+        console.log('Zones loaded:', this.zones);},
       error: (error: any) => { console.error('Fetching zones error:', error) ; },});}
-  onZonesChange() {
+onZonesChange() {
     console.log('Selected zones:', this.selectedZones);
     // Filter users based on selected zones
     this.filterUsersByZones();
   }
-
-  filterUsersByZones() {
+loadGroupes() {
+  this.groupeService.getAll().subscribe({
+    next: (groupes) => {
+      this.groupes = groupes;
+      this.filteredGroupes = this.groupes;
+      console.log('Groupes chargés depuis le backend:', this.groupes);
+}, error: (error) => { console.error('Erreur lors du chargement des groupes:', error);}}); }
+ 
+filterUsersByZones() {
     if (this.selectedZones.length === 0) {
       this.filteredUsers = [...this.users]; // Show all users if no zones are selected
-      return;
-    }
-
+      return; }
     this.filteredUsers = this.users.filter((user) => {
       if (!user.zones || user.zones.length === 0) return false;
       // Check if the user has at least one zone that matches the selected zones
       return user.zones.some(
         (zone: Zone) =>
           zone.idZone !== undefined && this.selectedZones.includes(zone.idZone)
-      );
-    });
-  }
+      ); });}
   zoneDropdownOpen = false;
   toggleZoneDropdown() {
     this.zoneDropdownOpen = !this.zoneDropdownOpen;
@@ -103,18 +105,17 @@ GroupeNom!: string;
     }
     this.applyFilters();
   }
-  clearFilters() {
-    this.selectedZones = [];
-    this.selectedStatus = '';
-    this.role = undefined;
-    this.searchText = '';
-    this.applyFilters();
-  }
+  clearFilters() {  this.selectedZones = [];
+                    this.selectedStatus = '';
+                    this.selectedGroupe = null;
+                    this.searchText = '';
+                    this.applyFilters();
+                  }
   ngAfterViewInit() {
     // Set up a MutationObserver to watch for changes to divFiltrage
     if (this.divFiltrage) {
       this.observer = new MutationObserver(() => {
-        if (this.showDropdown && this.isFiltrageOpen) {
+        if (this.showDropdown) {
           console.log(
             'MutationObserver: divFiltrage changed, adjusting dropdown position'
           );
@@ -124,122 +125,68 @@ GroupeNom!: string;
       this.observer.observe(this.divFiltrage.nativeElement, {
         childList: true,
         subtree: true,
-        attributes: true,
-      });
-    }
+        attributes: true, });}
 
-    if (this.showDropdown && this.isFiltrageOpen) {
+    if (this.showDropdown) {
       console.log('ngAfterViewInit: Adjusting dropdown position');
-      this.adjustDropdownPosition();
-    }
-  }
+      this.adjustDropdownPosition(); }}
 
-  ngOnDestroy() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-  }
-
-  toggleFiltrage() {
-    this.isFiltrageOpen = !this.isFiltrageOpen;
-    console.log('isFiltrageOpen:', this.isFiltrageOpen);
-    this.cdr.detectChanges(); // Force change detection to update the DOM
-    if (this.showDropdown && this.isFiltrageOpen) {
-      setTimeout(() => {
-        console.log('toggleFiltrage: Adjusting dropdown position');
-        this.adjustDropdownPosition();
-      }, 100); // Increased delay to ensure DOM is fully updated
-    }
-  }
+  ngOnDestroy() { if (this.observer) {this.observer.disconnect();}}
 
   adjustDropdownPosition() {
-    if (!this.isFiltrageOpen) {
-      console.log(
-        'adjustDropdownPosition: Filtrage section is not open, skipping positioning'
-      );
-      return;
-    }
-
-    if (!this.arrowButton || !this.roleDropdown || !this.roleInput) {
+    if (!this.arrowButton || !this.groupeDropdown || !this.groupeInput) {
       console.log(
         'adjustDropdownPosition: One or more elements are undefined',
-        {
-          arrowButton: this.arrowButton,
-          roleDropdown: this.roleDropdown,
-          roleInput: this.roleInput,
-        }
-      );
-      return;
+        { arrowButton: this.arrowButton,
+          groupeDropdown: this.groupeDropdown,
+          groupeInput: this.groupeInput,}); return;
     }
-
     const arrow = this.arrowButton.nativeElement;
-    const dropdown = this.roleDropdown.nativeElement;
-    const input = this.roleInput.nativeElement;
-
+    const dropdown = this.groupeDropdown.nativeElement;
+    const input = this.groupeInput.nativeElement;
     const arrowRect = arrow.getBoundingClientRect();
     const inputRect = input.getBoundingClientRect();
-
     console.log('Arrow button position:', arrowRect);
     console.log('Input position:', inputRect);
 
     if (arrowRect.top === 0 && arrowRect.left === 0) {
-      console.warn(
-        'adjustDropdownPosition: Arrow button is not visible in the viewport'
-      );
-      return;
-    }
-
+      console.warn('adjustDropdownPosition: Arrow button is not visible in the viewport');
+      return;}
     // Position the dropdown below the SVG, but align its left edge with the input's left edge
     dropdown.style.top = `${arrowRect.bottom + window.scrollY + 4}px`;
     dropdown.style.left = `${inputRect.left + window.scrollX}px`;
     dropdown.style.width = `${inputRect.width}px`;
-
-    console.log('Dropdown positioned at:', {
-      top: dropdown.style.top,
-      left: dropdown.style.left,
-      width: dropdown.style.width,
-    });
-
+    console.log('Dropdown positioned at:', {top: dropdown.style.top,left: dropdown.style.left, width: dropdown.style.width,});
     // Make the dropdown visible after positioning
     this.isDropdownPositioned = true;
-    this.cdr.detectChanges();
-  }
-  // Role filter handlers
-  filterRoles() {
+    this.cdr.detectChanges();}
+  // Groupe filter handlers
+  filterGroupes() {
     if (!this.searchText) {
-      this.filteredRoles = this.roles;
+      this.filteredGroupes = this.groupes;
       return;
     }
-
-    this.filteredRoles = this.roles.filter((r) =>
-      r.toLowerCase().includes(this.searchText.toLowerCase())
+    this.filteredGroupes = this.groupes.filter((groupe) =>
+      groupe.nom?.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
-
-  selectRole(role: Role) {
-    console.log('✅ Rôle sélectionné :', role);
-    this.searchText = role;
-    this.role = role;
+  selectGroupe(groupe: Groupe) {
+    console.log('✅ Groupe sélectionné :', groupe);
+    this.searchText = groupe.nom;
+    this.selectedGroupe = groupe;
     this.showDropdown = false;
     this.applyFilters();
   }
-
   onSearchChange(event: Event) {
     const input = event.target as HTMLInputElement;
     this.searchText = input.value;
-    this.filterRoles();
+    this.filterGroupes();
     this.showDropdown = true;
-    if (this.isFiltrageOpen) {
       setTimeout(() => {
         console.log('onSearchChange: Adjusting dropdown position');
-        this.adjustDropdownPosition();
-      }, 100);
-    }
-  }
-
+        this.adjustDropdownPosition(); }, 100);}
   applyFilters() {
     let filtered = [...this.users];
-
     // Filter by Zone
     if (this.selectedZones.length > 0) {
       filtered = filtered.filter((user) => {
@@ -247,64 +194,46 @@ GroupeNom!: string;
         return user.zones.some(
           (zone: Zone) =>
             zone.idZone !== undefined &&
-            this.selectedZones.includes(zone.idZone)
-        );
-      });
-    }
-
+            this.selectedZones.includes(zone.idZone));});}
     // Filter by Status
     if (this.selectedStatus) {
       filtered = filtered.filter((user) => user.status === this.selectedStatus);
     }
 
-    // Filter by Role
-    if (this.role) {
-      filtered = filtered.filter((user) => user.role === this.role);
+    // Filter by Groupe
+    if (this.selectedGroupe) {
+      filtered = filtered.filter(
+        (user) => user.groupe?.idGroupe === this.selectedGroupe?.idGroupe);
     }
-
     this.filteredUsers = filtered;
-    this.cdr.detectChanges(); // Ensure UI updates
+    this.cdr.detectChanges();
   }
-
   getSelectedZoneNames(): string {
     if (this.selectedZones.length === 0) {
       return 'Sélectionner des zones';
     }
     const selected = this.zones.filter(
       (z) => z.idZone !== undefined && this.selectedZones.includes(z.idZone)
-    );
-    return selected.map((z) => z.nom).join(', ');
-  }
-
+    ); return selected.map((z) => z.nom).join(', ');}
   // Status filter handler
-  onStatusChange() {
-    this.applyFilters();
-  }
-
+  onStatusChange() {this.applyFilters(); }
+  
   toggleDropdown2() {
     this.showDropdown = !this.showDropdown;
-    if (this.showDropdown && this.isFiltrageOpen) {
-      this.filterRoles();
-      setTimeout(() => {
-        console.log('toggleDropdown2: Adjusting dropdown position');
-        this.adjustDropdownPosition();
-      }, 100);
-    }
-  }
+    if (this.showDropdown) {
+      this.filterGroupes();
+        setTimeout(() => { console.log('toggleDropdown2: Adjusting dropdown position');
+        this.adjustDropdownPosition();}, 100);}}
+
   @HostListener('document:click', ['$event'])
   closeDropdown2(event: MouseEvent) {
     const target = event.target as HTMLElement;
     const dropdown = document.getElementById('dropDown');
     const button = target.closest('button');
 
-    if (
-      this.showDropdown &&
-      dropdown &&
-      !dropdown.contains(target) &&
-      !button
-    ) {
-      this.showDropdown = false;
-    }
+    if ( this.showDropdown &&
+      dropdown && !dropdown.contains(target) &&!button)
+       {this.showDropdown = false; }
   }
   openUpdateForm(user: User) {
     this.selectedUser=user;

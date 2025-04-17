@@ -9,14 +9,11 @@ import {Genre, Role, User, UserStatus} from '../../../models/User';
 import {Groupe} from '../../../models/Groupe';
 import {GroupeService} from '../../../services/groupe.service';
 import { error, group } from 'console';
-
-@Component({
-  selector: 'app-register-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+import { FormsModule } from '@angular/forms';
+@Component({ selector: 'app-register-form',standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './register-form.component.html',
-  styleUrl: './register-form.component.css',
-})
+  styleUrl: './register-form.component.css',})
 export class RegisterFormComponent {
   @ViewChild('groupeInput', { static: false }) groupeInput!: ElementRef;
   @ViewChild('groupeDropdown', { static: false }) groupeDropdown!: ElementRef;
@@ -41,24 +38,18 @@ export class RegisterFormComponent {
         this.groupes = groupes;
         this.filteredGroupes = this.groupes;
         console.log('Groupes chargés depuis le backend:', this.groupes);
-      },
-      error: (error) => {
-        console.error('Erreur lors du chargement des groupes:', error);
-      }
-    });
-  }
+  }, error: (error) => { console.error('Erreur lors du chargement des groupes:', error);}}); }
     steps = ["Informations Personnelles", "Coordonnées", "Profil Utilisateur"];
     currentStep = 1;
     showDropdown = false;
     // Liste des zones
     zones: Zone[] = [];
     groupes: Groupe[] = [];
-    selectedGroupe?: Groupe;
+    selectedGroupe: Groupe | null | undefined;
     filteredGroupes: Groupe[] = [];
     searchText:string ="" ;
     filteredRoles: Role[] = [];
-    role?:Role;
-  
+    role?:Role; 
   private fb =inject(FormBuilder);
   // Définition du formulaire
   registerForm : FormGroup =this.fb.group({
@@ -71,32 +62,8 @@ export class RegisterFormComponent {
     genre: [''],
     role: [''] ,
     zones: this.fb.array([])  ,  status : [''] , 
-    groupe: ['']
-  });
-
-
-  // aleeeeeeeeerrtt
-   showSuccessAlert: boolean = false;
-   showEchecAlert : boolean = false;
-   hideAlert(){
-    this.showSuccessAlert = false;
-    this.showEchecAlert = false;
-   }
-  showAlertAndClose() 
-  {
-    this.showSuccessAlert = true;
-    setTimeout(()=>
-    {
-      this.hideAlert();
-      this.closeForm();
-    },3500);
-  }
-  showFailAlert() 
-  {
-    this.showEchecAlert = true;
-    setTimeout(()=>
-    { this.hideAlert();},3500);
-  }
+    groupe: [null],
+  });  
   ngOnChanges() {
     console.log('ngOnChanges triggered, userToUpdate:', this.userToUpdate);
     if (this.userToUpdate) {
@@ -112,9 +79,12 @@ export class RegisterFormComponent {
         status: this.userToUpdate.status || ''
       });
 
-      if (this.userToUpdate.groupe) {
+      if (this.userToUpdate.groupe?.nom) {
         this.searchText = this.userToUpdate.groupe.nom;
         this.selectedGroupe = this.userToUpdate.groupe;
+      }else {
+        this.searchText = '';
+        this.selectedGroupe = null;
       }
        // Pre-fill zones
       const zonesArray = this.registerForm.get('zones') as FormArray;
@@ -139,11 +109,11 @@ export class RegisterFormComponent {
   }
   selectGroupe(groupe: Groupe) {
     console.log('✅ Groupe sélectionné :', groupe);
-    this.searchText = groupe.nom;
-    this.selectedGroupe = groupe;
-    this.registerForm.get('groupe')?.setValue(groupe);
-    this.showDropdown = false;
-}
+      this.registerForm.get('groupe')?.setValue(groupe); // valeur réelle
+      this.searchText = groupe.nom;                      // valeur affichée
+      this.showDropdown = false;
+    }
+
   toggleZoneSelection(idZone: number) {
     const zonesArray: FormArray = this.registerForm.get('zones') as FormArray;
     const index = zonesArray.controls.findIndex((control) => control.value === idZone);
@@ -161,31 +131,22 @@ export class RegisterFormComponent {
     this.zoneService.getAll().subscribe(zones => {
       this.zones = zones;}); }
   selectedZones: number[] = []; // Stocker les zones sélectionnées
-
-
   
-  // Dynamically position the dropdown above the input
-  adjustDropdownPosition() {
-    if (this.groupeInput && this.groupeDropdown) {
-      const input = this.groupeInput.nativeElement;
-      const dropdown = this.groupeDropdown.nativeElement;
-
-      const rect = input.getBoundingClientRect();
-      const dropdownHeight = dropdown.offsetHeight;
-
-      dropdown.style.top = `${rect.top + window.scrollY - dropdownHeight - 4}px`; // 4px margin above
-      dropdown.style.left = `${rect.left + window.scrollX}px`;
-      dropdown.style.width = `${rect.width}px`;
-    }
-  }
   // Gérer l'événement de saisie dans l'input
-  onSearchChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.searchText = input.value; // Update searchText with the input value
-    this.filterGroupes();
+  // onSearchChange(event: Event) {
+  //   const input = event.target as HTMLInputElement;
+  //   this.searchText = input.value; // Update searchText with the input value
+  //   this.filterGroupes();
+  //   this.showDropdown = true;
+    
+  // }
+  onSearchChange(value: string) {
+    this.searchText = value;
+    this.filteredGroupes = this.groupes.filter(groupe =>
+      groupe.nom.toLowerCase().includes(value.toLowerCase())
+    );
     this.showDropdown = true;
   }
-
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
     if (this.showDropdown) {
@@ -220,12 +181,19 @@ export class RegisterFormComponent {
   closeForm() {
     this.close.emit();
   }
+
   //l update
   updateUser() {
     if (!this.userToUpdate || !this.userToUpdate.idUser) {
       console.error('Utilisateur à mettre à jour non défini ou ID manquant');
+      this.showFailAlert(); // Alerte d'échec si userToUpdate est invalide
+      return;
+    }if (!this.userConnected || !this.userConnected.idUser) {
+      console.error('Utilisateur connecté non défini ou ID manquant');
       return;
     }
+    const groupeValue = this.registerForm.get('groupe')?.value;
+    console.log('Valeur du contrôle groupe avant mise à jour :', groupeValue);
     const updatedUser: User = {
       ...this.userToUpdate,
       nom: this.registerForm.value.nom,
@@ -234,14 +202,34 @@ export class RegisterFormComponent {
       email: this.registerForm.value.email,
       num: this.registerForm.value.numero,
       genre: this.registerForm.value.genre.toUpperCase(),
-      role: this.registerForm.value.role.toUpperCase(),
-      status: this.registerForm.value.status,
+      role: this.registerForm.value.role ? this.registerForm.value.role.toUpperCase() : null,
+      groupe: groupeValue && typeof groupeValue === 'object' && groupeValue.idGroupe ? groupeValue : null,      status: this.registerForm.value.status,
       zones: this.registerForm.value.zones.map((zoneId: number) => ({ idZone: zoneId } as Zone))};
+      
+      const idActionneur = this.userConnected.idUser!;
+      const selectedGroupe = this.registerForm.get('groupe')?.value;
+      const previousGroupe = this.userToUpdate.groupe;
 
-    const idActionneur = this.userConnected.idUser!;
+      // Vérifier si le groupe a changé (en tenant compte que les deux peuvent être null)
+      if (
+        selectedGroupe?.idGroupe !== previousGroupe?.idGroupe &&
+        (selectedGroupe || previousGroupe) // S'assurer qu'au moins l'un des deux est défini
+      ) {
+        this.userService.attribuerGroupe(this.userToUpdate.idUser, selectedGroupe?.idGroupe || null, idActionneur).subscribe({
+          next: () => {
+            console.log('✅ Groupe mis à jour avec succès');
+            this.userUpdated.emit();
+            
+          },
+          error: (error) => {
+            console.error('❌ Erreur lors de la mise à jour du groupe', error);
+            this.showFailAlert();
+          }
+        });}
     this.userService.updateUser(this.userToUpdate.idUser, updatedUser, idActionneur).subscribe({
       next: (response) => {
         console.log('✅ Utilisateur mis à jour avec succès', response);
+        this.showSuccessAlert = true; // Alerte de succès pour la mise à jour de l'utilisateur
         // Compare old zones with new zones
         const oldZoneIds = this.userToUpdate!.zones?.map(zone => zone.idZone) || [];
         const newZoneIds = this.registerForm.get('zones')?.value || [];
@@ -268,11 +256,12 @@ export class RegisterFormComponent {
             },
             error: (error: any) => {
               console.error('❌ Erreur lors de la suppression des zones', error);
-            }
-          });
+            }});
+
         } else {
           // If no zones to remove, proceed to add new zones
           this.addZones(zonesToAdd, idActionneur);
+          
         }
       },
       error: (error) => {console.error('❌ Erreur lors de la mise à jour de l\'utilisateur', error);}
@@ -370,4 +359,40 @@ assignZones(userId: number, idActionneur: number) {
     this.showAlertAndClose();
   }
 }
+// aleeeeeeeeerrtt
+showSuccessAlert: boolean = false;
+showEchecAlert : boolean = false;
+hideAlert(){
+ this.showSuccessAlert = false;
+ this.showEchecAlert = false;
+}
+showAlertAndClose() 
+{
+ this.showSuccessAlert = true;
+ setTimeout(()=>
+ {
+   this.hideAlert();
+   this.closeForm();
+ },2000);
+}
+showFailAlert() 
+{
+ this.showEchecAlert = true;
+ setTimeout(()=>
+ { this.hideAlert();},3500);
+}
+  // Dynamically position the dropdown above the input
+  adjustDropdownPosition() {
+    if (this.groupeInput && this.groupeDropdown) {
+      const input = this.groupeInput.nativeElement;
+      const dropdown = this.groupeDropdown.nativeElement;
+
+      const rect = input.getBoundingClientRect();
+      const dropdownHeight = dropdown.offsetHeight;
+
+      dropdown.style.top = `${rect.top + window.scrollY - dropdownHeight - 4}px`; // 4px margin above
+      dropdown.style.left = `${rect.left + window.scrollX}px`;
+      dropdown.style.width = `${rect.width}px`;
+    }
+  }
 }
