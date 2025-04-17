@@ -131,8 +131,14 @@ public class UserServiceImp implements UserIservice {
         if (updatedUser.getPrenom() != null) existingUser.setPrenom(updatedUser.getPrenom());
         if (updatedUser.getEmail() != null) existingUser.setEmail(updatedUser.getEmail());
         if (updatedUser.getMatricule() != null) existingUser.setMatricule(updatedUser.getMatricule());
-        if (updatedUser.getGroupe() != null) existingUser.setGroupe(updatedUser.getGroupe());
-        if (updatedUser.getGenre() != null) existingUser.setGenre(updatedUser.getGenre());
+        if (updatedUser.getGroupe() != null) {
+            Long idGroupe = updatedUser.getGroupe().getIdGroupe();
+            Groupe groupeFromDb = groupeRepo.findById(idGroupe)
+                    .orElseThrow(() -> new RuntimeException("Groupe introuvable"));
+            existingUser.setGroupe(groupeFromDb);
+        } else {
+            existingUser.setGroupe(null); // Cas où on veut retirer le groupe
+        }        if (updatedUser.getGenre() != null) existingUser.setGenre(updatedUser.getGenre());
         if (updatedUser.getNum() != null) existingUser.setNum(updatedUser.getNum());
         if (updatedUser.getStatus() != null) existingUser.setStatus(updatedUser.getStatus());
         existingUser.setActionneur(actionneur);
