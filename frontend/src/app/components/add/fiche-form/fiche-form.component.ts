@@ -85,8 +85,8 @@ export class FicheFormComponent {
       this.Form = new FormGroup({
         produit: new FormControl(this.fiche.produit, [Validators.required]),
         zone: new FormControl(this.fiche.zone, [Validators.required]),
-        ligne: new FormControl(this.fiche.ligne, [Validators.required]),
-        operation: new FormControl(this.fiche.operation, [Validators.required]),
+        ligne: new FormControl(this.fiche.ligne, []),
+        operation: new FormControl(this.fiche.operation, []),
         fichier: new FormControl(null),
       });
     } else {
@@ -95,8 +95,8 @@ export class FicheFormComponent {
       this.Form = new FormGroup({
         produit: new FormControl('', [Validators.required]),
         zone: new FormControl('', [Validators.required]),
-        ligne: new FormControl('', [Validators.required]),
-        operation: new FormControl('', [Validators.required]),
+        ligne: new FormControl('', []),
+        operation: new FormControl('', []),
         fichier: new FormControl('' , [Validators.required]),
       });
     }

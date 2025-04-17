@@ -6,6 +6,8 @@ import { User } from '../../../models/User';
 import { OperationService } from '../../../services/operation.service';
 import { Zone } from '../../../models/Zone';
 import { ZoneService } from '../../../services/zone.service';
+import { Ligne } from '../../../models/Ligne';
+import { LigneService } from '../../../services/ligne.service';
 
 @Component({
   selector: 'app-add-operation',
@@ -16,7 +18,7 @@ import { ZoneService } from '../../../services/zone.service';
 })
 export class AddOperationComponent {
  @Output() close = new EventEmitter<void>();
-  constructor(private operationService: OperationService,private zoneService: ZoneService) {}
+  constructor(private operationService: OperationService,private ligneService : LigneService) {}
   userConnected !: User;
   successMessage: string = '';
   errorMessage = '';
@@ -24,35 +26,51 @@ export class AddOperationComponent {
   @Input() operation !: Operation ;
   operationForm !: FormGroup ;
   select: boolean = false;
+  showLigneDropdown = false;
+  lignes : Ligne []=[];
+  filteredLignes: Ligne[] = [];
+  ligneSearch = '';
+  ligneNames: string[] = [];
+
 
   ngOnInit(){
     const userFromLocalStorage = localStorage.getItem('user');
       if (userFromLocalStorage) {
         this.userConnected = JSON.parse(userFromLocalStorage);
       }
-   
+    this.loadLignes();
+
     if (this.operation && this.operation.idOperation) {
+      this.ligneSearch = this.operation.ligne.nom;
       this.isNewOperation = false;
       this.operationForm = new FormGroup({
-        nom: new FormControl(this.operation.nom, [Validators.required])
+        nom: new FormControl(this.operation.nom, [Validators.required]),
+        ligne: new FormControl(this.operation.ligne, [Validators.required])
       });
 
     } else {
       // Initialize form for new group
       this.operationForm = new FormGroup({
-        nom: new FormControl('', [Validators.required])
+        nom: new FormControl('', [Validators.required]),
+        ligne: new FormControl('', [Validators.required])
       });
     }
   }
-
+  loadLignes() {
+    this.ligneService.getAll().subscribe(lignes => {
+      this.lignes = lignes;
+      this.filteredLignes = lignes; // Initialiser avec tous les lignes
+      this.ligneNames= lignes.map(ligne => ligne.nom);
+  })};
 
   addOperation() {
     if (this.operationForm.valid) {
       const newOperation: Operation = {
         nom: this.operationForm.value.nom,
-        actionneur: this.userConnected
+        actionneur: this.userConnected,
+        ligne: this.operationForm.value.ligne,
       };
-  
+      console.log('Nouvelle operation:', newOperation);
       this.operationService.addOperation(newOperation, this.userConnected.idUser!).subscribe({
         next: (operation) => {
           this.operation = operation;
@@ -97,9 +115,12 @@ export class AddOperationComponent {
 
   updateOperation() {
     if (this.operationForm.valid) { 
-      if(this.operationForm.value.nom !== this.operation.nom){
+      console.log('operationForm.value.nom',this.operationForm.value.ligne.nom);
+      console.log('operationForm.value.nom',this.operation.ligne.nom);
+      if(this.operationForm.value.nom !== this.operation.nom || this.operationForm.value.ligne.nom !== this.operation.ligne.nom) {
         //this.newOperation = { ...this.operation }; // bech yaaml copie mennou ma yekhouhouchhowa bidou , kahter ayy changement ysir fi hedha ysir fi hedhaw mech hakka lezem ysir
         this.operation.nom = this.operationForm.value.nom;
+        this.operation.ligne = this.operationForm.value.ligne;
         this.operationService.updateOperation(this.operation,this.operation.idOperation, this.userConnected.idUser!).subscribe({
           next: (operation) => {
             console.log('Operation modifiée avec succès', operation);
@@ -128,6 +149,40 @@ export class AddOperationComponent {
     } else {
       this.operationForm.markAllAsTouched();
     }
+  }
+  clearLigneSearch() {
+    this.ligneSearch = '';
+    this.operationForm.get('ligne')?.setValue(null);
+    this.filteredLignes = this.lignes;
+    this.showLigneDropdown = false;
+  }
+  toggleLigneDropdown() {
+    this.showLigneDropdown = !this.showLigneDropdown;
+    if (this.showLigneDropdown) {
+      this.filteredLignes=this.lignes;
+    }
+  }
+  selectLigne(ligne : Ligne) {
+    this.operationForm.get('ligne')?.setValue(ligne);
+    console.log('✅ Ligne sélectionné :', ligne);
+    this.ligneSearch = ligne.nom;
+    console.log('✅ Ligne sélectionné :', this.operationForm.get('ligne')?.value);
+    this.showLigneDropdown = false; // Fermer le dropdown
+
+  }
+  onLigneSearchChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    this.ligneSearch = value;
+    if (!this.ligneSearch) {
+      this.filteredLignes = this.lignes; // Si aucun texte n'est saisi, afficher tous les produits
+      return;
+    }
+
+    this.filteredLignes = this.lignes.filter(z =>
+      z.nom.toLowerCase().includes(this.ligneSearch.toLowerCase()) // Filtrage insensible à la casse
+    );
+    this.showLigneDropdown = true; // Afficher la liste déroulante
   }
 
   

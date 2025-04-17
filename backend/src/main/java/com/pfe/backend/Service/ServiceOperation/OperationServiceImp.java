@@ -1,7 +1,9 @@
 package com.pfe.backend.Service.ServiceOperation;
 
+import com.pfe.backend.Model.Ligne;
 import com.pfe.backend.Model.Operation;
 import com.pfe.backend.Model.User;
+import com.pfe.backend.Repository.LigneRepository;
 import com.pfe.backend.Repository.OperationRepository;
 import com.pfe.backend.Repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -19,16 +21,21 @@ public class OperationServiceImp implements OperationService {
     @Autowired
     private UserRepository userRepository;
     private OperationRepository operationRepository;
+    private LigneRepository ligneRepository;
     public ResponseEntity<?> addOperation(Operation operation , Long idActionneur){
         User actionneur = userRepository.findById(idActionneur)
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+        Ligne ligne = ligneRepository.findById(operation.getLigne().getIdLigne())
+                .orElseThrow(() -> new RuntimeException("ligne introuvable"));
         Optional<Operation> existingOperation = operationRepository.findBynomAndIsDeleted(operation.getNom(), false);
         if(existingOperation.isPresent()){
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body("une operation avec le même nom existe déjà");
         }
+
         operation.setActionneur(actionneur);
+        operation.setLigne(ligne);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(operationRepository.save(operation));
@@ -40,6 +47,8 @@ public class OperationServiceImp implements OperationService {
         Operation operation = operationRepository.findById(idOperation).orElseThrow(()-> new RuntimeException("Operation introuvable ! "));
         User actionneur = userRepository.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
         Optional<Operation> existingOperation = operationRepository.findBynomAndIsDeleted(NewOperationData.getNom(), false);
+        Ligne ligne = ligneRepository.findById(NewOperationData.getLigne().getIdLigne())
+                .orElseThrow(() -> new RuntimeException("ligne introuvable"));
         if(existingOperation.isPresent()){
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
@@ -47,6 +56,7 @@ public class OperationServiceImp implements OperationService {
         }
         if(NewOperationData.getNom()!=null ) operation.setNom(NewOperationData.getNom());
         operation.setActionneur(actionneur);
+        operation.setLigne(ligne);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(operationRepository.save(operation));

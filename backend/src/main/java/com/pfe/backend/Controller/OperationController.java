@@ -20,6 +20,7 @@ public class OperationController {
         try {
             return operationService.addOperation(operation, idActionneur);
         } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
