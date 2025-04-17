@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostListener,
-  ViewChild,
-} from '@angular/core';
+import {ChangeDetectorRef,Component,ElementRef,HostListener,ViewChild,} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Famille } from '../../../models/Famille';
@@ -18,22 +12,16 @@ import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.comp
 import { AddProduitFormComponent } from '../../add/add-produit-form/add-produit-form.component';
 import { UpdateProduitComponent } from "../../update/update-produit/update-produit.component";
 @Component({
-  selector: 'app-produit-list',
-  standalone: true,
+  selector: 'app-produit-list',standalone: true,
   imports: [NgxPaginationModule, CommonModule,FilterPipe, FormsModule, DeleteConfirmComponent, AddProduitFormComponent, UpdateProduitComponent],
-  templateUrl: './produit-list.component.html',
-  styleUrl: './produit-list.component.css'
+  templateUrl: './produit-list.component.html', styleUrl: './produit-list.component.css'
 })
 export class ProduitListComponent {
   @ViewChild('familleInput', { static: false }) familleInput?: ElementRef;
   @ViewChild('familleDropdown', { static: false }) familleDropdown?: ElementRef;
   @ViewChild('familleArrowButton', { static: false })
   familleArrowButton?: ElementRef;
-  constructor(
-    private produitService: ProduitService,
-    private cdr: ChangeDetectorRef,
-    private familleService: FamilleService
-  ) {}
+  constructor(private produitService: ProduitService, private cdr: ChangeDetectorRef, private familleService: FamilleService) {}
 
   searchbar: string = '';
   produits: Produit[] = [];
@@ -63,16 +51,14 @@ export class ProduitListComponent {
   isDropdownPositioned = false;
   isFamilleDropdownPositioned = false;
   dropdownPosition = { top: 0, left: 0 };
-  isFiltrageOpen: boolean = false;
+  // isFiltrageOpen: boolean = false;
   showDropdown = false;
   showFamilleDropdown = false;
 
 
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
-    if (userFromLocalStorage) {
-      this.userConnected = JSON.parse(userFromLocalStorage);
-    }
+    if (userFromLocalStorage) { this.userConnected = JSON.parse(userFromLocalStorage); }
     this.getProduits();
     this.getFamilles();
   }
@@ -82,23 +68,20 @@ export class ProduitListComponent {
     let filtered = [...this.produits];
     if (this.refSearchText) {
       filtered = filtered.filter((produit) =>
-        produit.ref.toLowerCase().includes(this.refSearchText.toLowerCase())
-      );
+        produit.ref.toLowerCase().includes(this.refSearchText.toLowerCase()) );
     }
     // Filter by Indice
     if (this.indiceSearchText) {
       filtered = filtered.filter((produit) =>
         produit.indice
           .toLowerCase()
-          .includes(this.indiceSearchText.toLowerCase())
-      );
+          .includes(this.indiceSearchText.toLowerCase()));
     }
     // Filter by Famille
     if (this.selectedFamille) {
       filtered = filtered.filter(
         (produit) =>
-          produit.famille.idFamille === this.selectedFamille?.idFamille
-      );
+          produit.famille.idFamille === this.selectedFamille?.idFamille);
     }
     this.filteredProducts = filtered;
     this.cdr.detectChanges(); // Ensure UI updates
@@ -109,77 +92,54 @@ export class ProduitListComponent {
     this.familleSearchText = '';
     this.selectedFamille = undefined;
     this.filteredFamilles = this.familles;
-    this.applyFilters();
-  }
+    this.applyFilters();}
   //--------------tousskiyé dropdown--------------------
   // Famille Dropdown Handlers
   filterFamilles() {
     if (!this.familleSearchText) {
       this.filteredFamilles = this.familles;
-      return;
-    }
-
+      return;}
     this.filteredFamilles = this.familles.filter((f) =>
       f.nomFamille.toLowerCase().includes(this.familleSearchText.toLowerCase())
-    );
-  }
+    );}
 
   selectFamille(famille: Famille) {
     console.log('✅ Famille sélectionnée :', famille);
     this.familleSearchText = famille.nomFamille;
     this.selectedFamille = famille;
     this.showFamilleDropdown = false;
-    this.applyFilters();
-  }
+    this.applyFilters(); }
 
   onFamilleSearchChange(event: Event) {
     const input = event.target as HTMLInputElement;
     this.familleSearchText = input.value;
     this.filterFamilles();
     this.showFamilleDropdown = true;
-    if (this.isFiltrageOpen) {
-      setTimeout(() => {
-        console.log('onFamilleSearchChange: Adjusting dropdown position');
-        this.adjustFamilleDropdownPosition();
-      }, 100);
-    }
+    setTimeout(() => {
+      console.log('onFamilleSearchChange: Adjusting dropdown position');
+      this.adjustFamilleDropdownPosition();
+    }, 0);
   }
 
   toggleFamilleDropdown() {
     this.showFamilleDropdown = !this.showFamilleDropdown;
-    if (this.showFamilleDropdown && this.isFiltrageOpen) {
+    if (this.showFamilleDropdown) {
       this.filterFamilles();
       setTimeout(() => {
         console.log('toggleFamilleDropdown: Adjusting dropdown position');
-        this.adjustFamilleDropdownPosition();
-      }, 100);
-    }
+        this.adjustFamilleDropdownPosition();}, 100);
+   }
   }
 
   adjustFamilleDropdownPosition() {
-    if (!this.isFiltrageOpen) {
-      console.log(
-        'adjustFamilleDropdownPosition: Filtrage section is not open, skipping positioning'
-      );
+    if (!this.familleArrowButton || !this.familleDropdown || !this.familleInput) {
+      console.log('adjustFamilleDropdownPosition: One or more elements are undefined', {
+        familleArrowButton: this.familleArrowButton,
+        familleDropdown: this.familleDropdown,
+        familleInput: this.familleInput,
+      });
       return;
-    }
-
-    if (
-      !this.familleArrowButton ||
-      !this.familleDropdown ||
-      !this.familleInput
-    ) {
-      console.log(
-        'adjustFamilleDropdownPosition: One or more elements are undefined',
-        {
-          familleArrowButton: this.familleArrowButton,
-          familleDropdown: this.familleDropdown,
-          familleInput: this.familleInput,
-        }
-      );
-      return;
-    }
-
+    } 
     const arrow = this.familleArrowButton.nativeElement;
     const dropdown = this.familleDropdown.nativeElement;
     const input = this.familleInput.nativeElement;
@@ -192,8 +152,7 @@ export class ProduitListComponent {
 
     if (arrowRect.top === 0 && arrowRect.left === 0) {
       console.warn(
-        'adjustFamilleDropdownPosition: Arrow button is not visible in the viewport'
-      );
+        'adjustFamilleDropdownPosition: Arrow button is not visible in the viewport');
       return;
     }
 
@@ -211,19 +170,6 @@ export class ProduitListComponent {
     // Make the dropdown visible after positioning
     this.isFamilleDropdownPositioned = true;
     this.cdr.detectChanges();
-  }
-
-  // Tousskiyé Dropdown
-  toggleFiltrage() {
-    this.isFiltrageOpen = !this.isFiltrageOpen;
-    console.log('isFiltrageOpen:', this.isFiltrageOpen);
-    this.cdr.detectChanges();
-    if (this.showFamilleDropdown && this.isFiltrageOpen) {
-      setTimeout(() => {
-        console.log('toggleFiltrage: Adjusting dropdown position');
-        this.adjustFamilleDropdownPosition();
-      }, 100);
-    }
   }
   getFamilles() {
     this.familleService.getAll().subscribe({
@@ -269,7 +215,6 @@ export class ProduitListComponent {
       }
     });
   }
-
   toggleDropdown(index: number, event: MouseEvent): void {
     const target = event.target as HTMLElement;
     const button = target.closest("button");

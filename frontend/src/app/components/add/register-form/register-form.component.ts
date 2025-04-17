@@ -10,13 +10,10 @@ import {Groupe} from '../../../models/Groupe';
 import {GroupeService} from '../../../services/groupe.service';
 import { error, group } from 'console';
 import { FormsModule } from '@angular/forms';
-@Component({
-  selector: 'app-register-form',
-  standalone: true,
+@Component({ selector: 'app-register-form',standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './register-form.component.html',
-  styleUrl: './register-form.component.css',
-})
+  styleUrl: './register-form.component.css',})
 export class RegisterFormComponent {
   @ViewChild('groupeInput', { static: false }) groupeInput!: ElementRef;
   @ViewChild('groupeDropdown', { static: false }) groupeDropdown!: ElementRef;
@@ -191,8 +188,7 @@ export class RegisterFormComponent {
       console.error('Utilisateur à mettre à jour non défini ou ID manquant');
       this.showFailAlert(); // Alerte d'échec si userToUpdate est invalide
       return;
-    }
-    if (!this.userConnected || !this.userConnected.idUser) {
+    }if (!this.userConnected || !this.userConnected.idUser) {
       console.error('Utilisateur connecté non défini ou ID manquant');
       return;
     }

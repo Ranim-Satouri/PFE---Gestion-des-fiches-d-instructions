@@ -54,10 +54,10 @@
                 <option value="ACTIVE">ACTIVE</option>
                 <option value="INACTIVE">INACTIVE</option>
               </select>
-              <!-- Role Input and Dropdown -->
+              <!-- groupe Input and Dropdown -->
               <div class="relative w-[200px]">
                 <input
-                  #roleInput
+                   #groupeInput
                   class="py-2.5 px-4 h-10 block w-full border border-gray-300 rounded-lg text-sm focus:border-blue-400
                    focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40
                     dark:text-gray-400 dark:bg-gray-700 dark:focus:border-blue-300 dark:border-gray-600 dark:shadow-gray-900
@@ -65,20 +65,16 @@
                   type="text"
                   [value]="searchText"
                   (input)="onSearchChange($event)"
-                  placeholder="Role" name="searchText" />
+                  placeholder="Groupe" name="searchText" />
                 <div #arrowButton class="absolute top-1/2 end-3 -translate-y-1/2 cursor-pointer" (click)="toggleDropdown2()" >
                   <svg class="shrink-0 size-3.5 text-gray-500" xmlns="http://www.w3.org/2000/svg"
-                    width="24" height="24"
-                    viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
+                    width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round"> <path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path>
                   </svg>
                 </div>
               </div>
-            <!-- Reset Filters Button    class="w-fit mx-5 px-2 h-10 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition ease-in-out duration-200" > <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2.25"> <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path> </svg>  </button>-->
-            <button
-            (click)="clearFilters()"
+            <!-- Reset Filters Button class="w-fit mx-5 px-2 h-10 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition ease-in-out duration-200" > <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2.25"> <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path> </svg>  </button>-->
+            <button (click)="clearFilters()"
             class="w-fit mx-5 px-1 h-10 bg-gray-trans text-gray-500 rounded-lg hover:bg-gray-500 transition ease-in-out duration-200" > <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="30" height="31" stroke-width="2.25"> <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path> </svg>  </button>
            
             <button (click)="showRegisterForm()"
@@ -89,13 +85,16 @@
           <!-- </div>         -->
         <!-- Role Dropdown (Moved Outside divFiltrage) -->
         <div
-          *ngIf="showDropdown" id="dropDown" #roleDropdown
-          class="fixed bg-white shadow-md w-fit dark:bg-gray-700 border border-gray-50 rounded-lg max-h-40 overflow-y-auto z-[1001] mb-3"
-          [ngClass]="{'invisible': !isDropdownPositioned}" >
-          <div
-            *ngFor="let r of filteredRoles" (click)="selectRole(r)"
-            class="cursor-pointer py-2 px-4 text-sm text-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600"> {{ r }}
-          </div>
+        *ngIf="showDropdown"
+        id="dropDown"
+        #groupeDropdown
+        class="fixed z-[1001] bg-white shadow-md w-fit dark:bg-gray-700 border border-gray-50 rounded-lg max-h-40 overflow-y-auto"
+        [ngClass]="{'invisible': !isDropdownPositioned}">
+        <div
+          *ngFor="let groupe of filteredGroupes"
+          (click)="selectGroupe(groupe)"
+          class="cursor-pointer py-2 px-4 text-sm text-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600"
+        >{{ groupe.nom }}</div>
         </div></div></div>
       <!-- class="px-6 py-2 w-full rounded-md flex-1 outline-none bg-white
         border-gray-300 focus:ring-2  focus:ring-blue-400 focus:border-blue-400 focus:shadow-md focus:shadow-blue-200
