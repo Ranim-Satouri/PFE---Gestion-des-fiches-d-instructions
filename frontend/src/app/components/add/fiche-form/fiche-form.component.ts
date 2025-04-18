@@ -14,21 +14,14 @@ import { Operation } from '../../../models/Operation';
 import { LigneService } from '../../../services/ligne.service';
 import { OperationService } from '../../../services/operation.service';
 @Component({
-  selector: 'app-fiche-form',
-  standalone: true,
-    imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    CommonModule
-],
-  templateUrl: './fiche-form.component.html',
-  styleUrl: './fiche-form.component.css'
-})
+  selector: 'app-fiche-form', standalone: true,
+  imports: [FormsModule,ReactiveFormsModule, CommonModule],
+  templateUrl: './fiche-form.component.html',styleUrl: './fiche-form.component.css'})
 export class FicheFormComponent {
   constructor(private produitService: ProduitService,private zoneService: ZoneService,private FicheService: FicheService , private ligneService : LigneService, private operationService: OperationService) {}
 
   @Output() close = new EventEmitter<void>();
-  @Input( ) fiche!: Fiche;
+  @Input() fiche!: Fiche;
   userConnected !: User;
   successMessage: string = '';
   errorMessage = '';
@@ -59,8 +52,6 @@ export class FicheFormComponent {
   zoneNames: string[] = [];
   ligneNames: string[] = [];
   operationNames: string[] = [];
-
- 
 
   ngOnInit() {
     this.loadProduits(); // Charger les produits lors de l'initialisation
@@ -97,8 +88,7 @@ export class FicheFormComponent {
         zone: new FormControl('', [Validators.required]),
         ligne: new FormControl('', [Validators.required]),
         operation: new FormControl('', [Validators.required]),
-        fichier: new FormControl('' , [Validators.required]),
-      });
+        fichier: new FormControl('' , [Validators.required]),});
     }
   }
 
