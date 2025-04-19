@@ -21,7 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Audited
 @ToString
-
+@EqualsAndHashCode(exclude = "userZones")
 public class Zone {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

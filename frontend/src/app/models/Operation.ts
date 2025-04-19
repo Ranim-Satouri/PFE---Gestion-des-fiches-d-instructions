@@ -1,3 +1,4 @@
+import { Ligne } from "./Ligne";
 import { User } from "./User";
 
 export interface Operation {
@@ -5,4 +6,5 @@ export interface Operation {
     nom: string;  
     modifieLe?: Date;
     actionneur?: User;
+    ligne: Ligne;
 }

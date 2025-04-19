@@ -269,6 +269,7 @@ export class FicheListComponent {
     const operation : Operation = {
       idOperation: 0,
       nom: 'operation 1',
+      ligne: ligne,
     }
     fiche.ligne = ligne;
     fiche.operation = operation;

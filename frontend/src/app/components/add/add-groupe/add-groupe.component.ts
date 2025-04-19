@@ -40,7 +40,6 @@ export class AddGroupeComponent {
   isNewGroup: boolean = true;
   successMessage: string = '';
   errorMessage = '';
-  select: boolean = false;
 
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
@@ -215,7 +214,9 @@ export class AddGroupeComponent {
     this.userService.getAll().subscribe(
       (data: User[]) => {
         this.users = data;  
-        this.selectedUsers = new Set(this.users?.filter(user => user.groupe?.idGroupe === this.groupe.idGroupe).map(user => user.idUser!)); // hatytha lenna mech fel ngOninit khater feha this.users wel fel oninit mazelt null 
+        if (this.groupe && this.groupe.idGroupe) {
+          this.selectedUsers = new Set(this.users?.filter(user => user.groupe?.idGroupe === this.groupe.idGroupe).map(user => user.idUser!)); // hatytha lenna mech fel ngOninit khater feha this.users wel fel oninit mazelt null 
+        }
       },
       (error) => {
         console.error('Erreur lors de la récupération des utilisateurs', error);
@@ -280,8 +281,16 @@ export class AddGroupeComponent {
   }
   // Méthode pour ajouter les relations (menus, permissions, utilisateurs) après l'enregistrement du groupe
   addRelationsToGroup(): void {
+    const array1 = Array.from(new Set(this.groupe.permissions?.map(p => p.idPermission!)));
+    const array2 = Array.from(this.selectedPermissions);
+    const array3 = Array.from(new Set(this.groupe.menus?.map(m => m.idMenu!)));
+    const array4 = Array.from(this.selectedMenus);
+    const array5 = Array.from(new Set(this.users?.filter(user => user.groupe?.idGroupe === this.groupe.idGroupe).map(user => user.idUser!)));
+    const array6 = Array.from(this.selectedUsers);
 
-    this.groupeService.addRelationsToGroup(this.groupe.idGroupe!, Array.from(this.selectedMenus), Array.from(this.selectedPermissions), Array.from(this.selectedUsers))
+    if(!array1.every(item => array2.includes(item)) || !array2.every(item => array1.includes(item)) || !array3.every(item => array4.includes(item)) 
+      || !array4.every(item => array3.includes(item))|| !array5.every(item => array6.includes(item)) || !array6.every(item => array5.includes(item)) ){
+      this.groupeService.addRelationsToGroup(this.groupe.idGroupe!, Array.from(this.selectedMenus), Array.from(this.selectedPermissions), Array.from(this.selectedUsers))
       .subscribe(response => {
         console.log('Relations ajoutées avec succès:', response);
         // this.successMessage = `Groupe "${this.groupe.nom}" ajoutée avec succès !`;
@@ -293,6 +302,9 @@ export class AddGroupeComponent {
       }, error => {
         console.error('Erreur lors de l\'ajout des relations:', error);
       });
+    }else{
+      this.closeForm();
+    }
   }
  // Sélectionner un utilisateur
   toggleUserSelection(userId: number) {
@@ -301,7 +313,6 @@ export class AddGroupeComponent {
     } else {
       this.selectedUsers.add(userId);
     }
-    this.select = true;
   }
   // Sélectionner un menu
   toggleMenuSelection(menuId: number) {
@@ -310,7 +321,6 @@ export class AddGroupeComponent {
     } else {
       this.selectedMenus.add(menuId);
     }
-    this.select = true;
   }
   // Sélectionner une permission
   togglePermissionSelection(permissionId: number) {
@@ -319,7 +329,6 @@ export class AddGroupeComponent {
     } else {
       this.selectedPermissions.add(permissionId);
     }
-    this.select = true;
   }
   @HostListener('document:click', ['$event'])
   closeDropdown(event: MouseEvent) {
@@ -341,7 +350,6 @@ export class AddGroupeComponent {
     } else {
       this.selectedPermissions.clear();
     }
-    this.select = true;
   }
   selectAllUsers(event: Event ) {
     const isChecked = (event.target as HTMLInputElement).checked;
@@ -350,7 +358,6 @@ export class AddGroupeComponent {
     } else {
       this.selectedUsers.clear();
     }
-    this.select = true;
   }
   selectAllMenus(event: Event ) {
     const isChecked = (event.target as HTMLInputElement).checked;
@@ -359,7 +366,6 @@ export class AddGroupeComponent {
     } else {
       this.selectedMenus.clear();
     }
-    this.select = true;
   }
 
 

@@ -181,7 +181,6 @@ adjustGrpDropdownPosition() {
       this.adjustGrpDropdownPosition();
     }, 0); // Reduced delay for faster response
   }
-
   getSelectedZoneNames(): string {
     if (this.selectedZones.length === 0) {
       return 'Sélectionner des zones';

@@ -21,7 +21,7 @@ export class FicheFormComponent {
   constructor(private produitService: ProduitService,private zoneService: ZoneService,private FicheService: FicheService , private ligneService : LigneService, private operationService: OperationService) {}
 
   @Output() close = new EventEmitter<void>();
-  @Input() fiche!: Fiche;
+  @Input( ) fiche!: Fiche;
   userConnected !: User;
   successMessage: string = '';
   errorMessage = '';
@@ -58,7 +58,7 @@ export class FicheFormComponent {
     this.loadZones();
     this.loadOperations();
     this.loadLignes();
-    
+
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
@@ -76,8 +76,8 @@ export class FicheFormComponent {
       this.Form = new FormGroup({
         produit: new FormControl(this.fiche.produit, [Validators.required]),
         zone: new FormControl(this.fiche.zone, [Validators.required]),
-        ligne: new FormControl(this.fiche.ligne, [Validators.required]),
-        operation: new FormControl(this.fiche.operation, [Validators.required]),
+        ligne: new FormControl(this.fiche.ligne, []),
+        operation: new FormControl(this.fiche.operation, []),
         fichier: new FormControl(null),
       });
     } else {
@@ -86,9 +86,10 @@ export class FicheFormComponent {
       this.Form = new FormGroup({
         produit: new FormControl('', [Validators.required]),
         zone: new FormControl('', [Validators.required]),
-        ligne: new FormControl('', [Validators.required]),
-        operation: new FormControl('', [Validators.required]),
-        fichier: new FormControl('' , [Validators.required]),});
+        ligne: new FormControl('', []),
+        operation: new FormControl('', []),
+        fichier: new FormControl('' , [Validators.required]),
+      });
     }
   }
 
@@ -133,7 +134,7 @@ export class FicheFormComponent {
       String(p.ref).toLowerCase().includes(this.produitSearch.toLowerCase()) ||
       String(p.indice).toLowerCase().includes(this.produitSearch.toLowerCase())
     );
-    
+
     this.showProduitDropdown = true; // Afficher la liste déroulante
   }
   onLigneSearchChange(event: Event) {
@@ -289,28 +290,28 @@ export class FicheFormComponent {
       const target = event.target as HTMLElement;
       const dropdown = document.getElementById(`dropdownProduit`);
       const button = target.closest('produit-input');
-  
+
       // Vérifiez si le clic est en dehors du dropdown et du bouton
       if (this.showProduitDropdown  && dropdown && !dropdown.contains(target) && !button) {
-        this.showProduitDropdown = false; 
+        this.showProduitDropdown = false;
       }
       const dropdown1 = document.getElementById(`dropdownZone`);
       const button1 = target.closest('zone-input');
-  
+
       // Vérifiez si le clic est en dehors du dropdown et du bouton
       if (this.showZoneDropdown  && dropdown1 && !dropdown1.contains(target) && !button1) {
         this.showZoneDropdown = false; // Ferme le dropdown
       }
       const dropdown2 = document.getElementById(`dropdownLigne`);
       const button2 = target.closest('ligne-input');
-  
+
       // Vérifiez si le clic est en dehors du dropdown et du bouton
       if (this.showLigneDropdown  && dropdown2 && !dropdown2.contains(target) && !button2) {
         this.showLigneDropdown = false; // Ferme le dropdown
       }
       const dropdown3 = document.getElementById(`dropdownOperation`);
       const button3 = target.closest('operation-input');
-  
+
       // Vérifiez si le clic est en dehors du dropdown et du bouton
       if (this.showOperationDropdown  && dropdown3 && !dropdown3.contains(target) && !button3) {
         this.showOperationDropdown = false; // Ferme le dropdown
@@ -340,7 +341,7 @@ export class FicheFormComponent {
         ligne : ligne,
         operation : operation,
       }
-         
+
       console.log(fiche);
       this.FicheService.uploadPDF( file).subscribe({
         next: (response) => {
@@ -357,7 +358,7 @@ export class FicheFormComponent {
             }, 2000);
             this.Form.reset();
             // this.pdfFilename = response.pdf; // si backend renvoie un nom ou une URL
-           
+
             // this.produitSearch = '';
             // this.zoneSearch = '';
             // this.filteredProduits = this.produits;
@@ -367,7 +368,7 @@ export class FicheFormComponent {
             //   fileInput.value = '';
             // }
             },
-            error: (err) => { 
+            error: (err) => {
               this.successMessage = '';
               console.error('Erreur lors de l’upload du fichier', err)
               this.errorMessage = 'Une erreur inattendue est survenue.';
@@ -377,13 +378,13 @@ export class FicheFormComponent {
               }, 4000);
             }
           });
-          
+
         },
         error: (err) => {
           console.error('Erreur lors de la création de la fiche !', err);
         }
       });
-      
+
     } else {
       console.warn('Formulaire invalide.');
       this.Form.markAllAsTouched();
@@ -401,7 +402,7 @@ export class FicheFormComponent {
       const file: File = this.Form.value.fichier;
       const ligne: Ligne = this.Form.value.ligne;
       const operation: Operation = this.Form.value.operation;
-      if(produit != this.fiche.produit || zone != this.fiche.zone || file != null){ 
+      if(produit != this.fiche.produit || zone != this.fiche.zone || file != null){
         const fiche = { ...this.fiche };
         fiche.produit = produit;
         fiche.zone = zone;
@@ -424,7 +425,7 @@ export class FicheFormComponent {
           this.updateFiche(fiche);
         }
       }
-      
+
     } else {
       console.warn('Formulaire invalide.');
       this.Form.markAllAsTouched();
@@ -437,12 +438,12 @@ export class FicheFormComponent {
         this.successMessage = `Fiche d'instruction modifié avec succès !`;
         this.errorMessage=''
         setTimeout(() => {
-          this.close.emit(); 
+          this.close.emit();
           this.successMessage = '';
         }, 1000);
-      
+
       },
-      error: (err) => { 
+      error: (err) => {
         this.successMessage = '';
         console.error('Erreur lors de l’upload du fichier', err)
         this.errorMessage = 'Une erreur inattendue est survenue.';

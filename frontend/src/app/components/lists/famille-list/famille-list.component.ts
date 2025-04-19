@@ -67,6 +67,7 @@ export class FamilleListComponent {
   }
 
   OpenAddFamillePopUp(){
+    this.step = 1;
     this.showAddModal = true;
   }
   closeAddForm() {

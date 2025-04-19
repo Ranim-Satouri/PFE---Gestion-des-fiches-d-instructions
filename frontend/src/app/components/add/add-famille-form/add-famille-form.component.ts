@@ -30,7 +30,6 @@ export class AddFamilleFormComponent {
   zoneSearchText: string = '';
   @Input() famille !: Famille ;
   familyForm !: FormGroup ;
-  select: boolean = false;
 
   ngOnInit(){
     const userFromLocalStorage = localStorage.getItem('user');
@@ -143,7 +142,6 @@ export class AddFamilleFormComponent {
     } else {
       this.selectedZones.add(zoneId);
     }
-    this.select = true;
     console.log('Selected zones 2:', Array.from(this.selectedZones));
   }
   selectAllZones(event: Event ) {
@@ -153,7 +151,6 @@ export class AddFamilleFormComponent {
     } else {
       this.selectedZones.clear();
     }
-    this.select = true;
   }
   
   @HostListener('document:click', ['$event'])
@@ -205,9 +202,14 @@ export class AddFamilleFormComponent {
 
   addZonesToFamille(): void {
     console.log('Selected zones:', Array.from(this.selectedZones));
-    this.familleService.addZonesToFamille(this.famille.idFamille!, Array.from(this.selectedZones))
+
+    const array1 = Array.from(new Set(this.famille.zones?.map(zone => zone.idZone!)));
+    const array2 = Array.from(this.selectedZones)
+
+    if(!array1.every(item => array2.includes(item)) || !array2.every(item => array1.includes(item))){ // bech ma yaamlch enregistrer w howa ma selecta chay
+      this.familleService.addZonesToFamille(this.famille.idFamille!, Array.from(this.selectedZones))
       .subscribe(response => {
-        console.log('Zoness ajoutées avec succès:', response);
+        console.log('Zones ajoutées avec succès:', response);
         // this.successMessage = `Famille "${this.famille.nomFamille}" ajoutée avec succès !`;
     
         // setTimeout(() => {
@@ -217,5 +219,8 @@ export class AddFamilleFormComponent {
       }, error => {
         console.error('Erreur lors de l\'ajout des zones:', error);
       });
+    }else{
+      this.close.emit();
+    }
   }
 }
