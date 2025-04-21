@@ -1,4 +1,5 @@
 package com.pfe.backend.Service.ServiceUser;
+import com.pfe.backend.DTO.UserHistoryDTO;
 import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.GroupeRepository;
 import com.pfe.backend.Repository.UserRepository;
@@ -8,12 +9,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.query.AuditEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Set;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 public class UserServiceImp implements UserIservice {
     @Autowired
@@ -112,14 +117,97 @@ public class UserServiceImp implements UserIservice {
         return ResponseEntity.ok().body(users);
     }
     @PersistenceContext
-    private EntityManager entityManager; // Permet d'utiliser Hibernate Envers
-    @Override
-    public List<Object[]> getUserHistory(Long userId) {
+    private EntityManager entityManager;
+
+    @Transactional(readOnly = true)
+    public List<UserHistoryDTO> getUserHistory(Long userId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
-        return auditReader.createQuery()
+
+        // Récupérer les révisions de l'utilisateur
+        List<Object[]> userRevisions = auditReader.createQuery()
                 .forRevisionsOfEntity(User.class, false, true)
-                .add(AuditEntity.id().eq(userId)) // Filtrer par ID de l'utilisateur
+                .add(AuditEntity.id().eq(userId))
                 .getResultList();
+
+        // Récupérer l'entité User actuelle pour le filtre
+        User user = entityManager.find(User.class, userId);
+        if (user == null) {
+            throw new IllegalArgumentException("User with ID " + userId + " not found");
+        }
+
+        // Récupérer les révisions des relations UserZone
+        List<Object[]> userZoneRevisions = auditReader.createQuery()
+                .forRevisionsOfEntity(UserZone.class, false, true)
+                .add(AuditEntity.property("user").eq(user))
+                .getResultList();
+
+        // Ajouter un log pour vérifier les révisions de UserZone
+        System.out.println("Nombre de révisions de UserZone trouvées : " + userZoneRevisions.size());
+        for (Object[] userZoneRevision : userZoneRevisions) {
+            UserZone userZone = (UserZone) userZoneRevision[0];
+            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) userZoneRevision[1];
+            String revisionType = userZoneRevision[2].toString();
+            System.out.println("Révision UserZone - Numéro: " + revisionEntity.getId() +
+                    ", Zone: " + userZone.getZone().getNom() +
+                    ", Type: " + revisionType);
+        }
+
+        // Map pour stocker les changements de zones par révision
+        Map<Integer, List<UserHistoryDTO.UserZoneChangeDTO>> zoneChangesByRevision = new HashMap<>();
+
+        // Traiter les révisions de UserZone
+        for (Object[] userZoneRevision : userZoneRevisions) {
+            UserZone userZone = (UserZone) userZoneRevision[0];
+            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) userZoneRevision[1];
+            String revisionType = userZoneRevision[2].toString();
+            int revisionNumber = revisionEntity.getId();
+
+            UserHistoryDTO.UserZoneChangeDTO zoneChange = UserHistoryDTO.UserZoneChangeDTO.builder()
+                    .zoneId(userZone.getZone().getIdZone())
+                    .zoneName(userZone.getZone().getNom())
+                    .changeType(revisionType.equals("0") ? "ADD" : revisionType.equals("2") ? "REMOVE" : "MODIFY")
+                    .build();
+
+            zoneChangesByRevision.computeIfAbsent(revisionNumber, k -> new ArrayList<>()).add(zoneChange);
+        }
+
+        List<UserHistoryDTO> history = new ArrayList<>();
+        for (Object[] revisionData : userRevisions) {
+            User currentUser = (User) revisionData[0];
+            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revisionData[1];
+            String revisionType = revisionData[2].toString();
+            int revisionNumber = revisionEntity.getId();
+
+            String actionneurMatricule = "system";
+            if (currentUser.getActionneur() != null && currentUser.getActionneur().getMatricule() != null) {
+                actionneurMatricule = currentUser.getActionneur().getMatricule();
+            }
+
+            UserHistoryDTO historyEntry = UserHistoryDTO.builder()
+                    .revisionNumber(revisionEntity.getId())
+                    .revisionDate(new Date(revisionEntity.getTimestamp()))
+                    .changeType(revisionType.equals("0") ? "CREATED" : revisionType.equals("2") ? "DELETED" : "MODIFIED")
+                    .actionneurMatricule(actionneurMatricule)
+                    .idUser(currentUser.getIdUser())
+                    .matricule(currentUser.getMatricule())
+                    .nom(currentUser.getNom())
+                    .prenom(currentUser.getPrenom())
+                    .email(currentUser.getEmail())
+                    .num(currentUser.getNum())
+                    .status(currentUser.getStatus())
+                    .genre(currentUser.getGenre())
+                    .modifieLe(currentUser.getModifieLe())
+                    .groupeNom(currentUser.getGroupe() != null ? currentUser.getGroupe().getNom() : null)
+                    .zoneChanges(zoneChangesByRevision.getOrDefault(revisionNumber, new ArrayList<>()))
+                    .build();
+
+            history.add(historyEntry);
+        }
+
+        // Trier l'historique par numéro de révision (croissant)
+        history.sort((a, b) -> a.getRevisionNumber() - b.getRevisionNumber());
+
+        return history;
     }
     @Override
     public User updateUser(Long idUser, User updatedUser, Long idActionneur) {

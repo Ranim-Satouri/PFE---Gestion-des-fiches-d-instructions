@@ -17,14 +17,8 @@ import { UserZoneService } from '../../../services/user-zone.service';
 @Component({
   selector: 'app-fiche-form',
   standalone: true,
-    imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    CommonModule
-],
-  templateUrl: './fiche-form.component.html',
-  styleUrl: './fiche-form.component.css'
-})
+  imports: [FormsModule,ReactiveFormsModule, CommonModule],
+  templateUrl: './fiche-form.component.html',styleUrl: './fiche-form.component.css'})
 export class FicheFormComponent {
   constructor(private produitService: ProduitService,private userZoneService: UserZoneService,private zoneService: ZoneService,private FicheService: FicheService , private ligneService : LigneService, private operationService: OperationService) {}
 
@@ -71,7 +65,7 @@ export class FicheFormComponent {
   //   this.loadZones();
   //   this.loadOperations();
   //   this.loadLignes();
-    
+
   //   const userFromLocalStorage = localStorage.getItem('user');
   //   if (userFromLocalStorage) {
   //     this.userConnected = JSON.parse(userFromLocalStorage);
@@ -110,11 +104,11 @@ export class FicheFormComponent {
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
-    this.loadProduits(); 
+    this.loadProduits();
     this.loadZones();
     this.loadOperations();
     this.loadLignes();
-  
+
     if (this.fiche && this.fiche.idFiche) {
       this.isEditMode = true;
       this.zoneSelected = true;
@@ -129,8 +123,8 @@ export class FicheFormComponent {
         this.Form = new FormGroup({
           produit: new FormControl(this.fiche.produit, [Validators.required]),
           zone: new FormControl(this.fiche.operation?.ligne?.zone, [Validators.required]),
-          ligne: new FormControl(this.fiche.operation?.ligne, [Validators.required]), 
-          operation: new FormControl(this.fiche.operation, [Validators.required]), 
+          ligne: new FormControl(this.fiche.operation?.ligne, [Validators.required]),
+          operation: new FormControl(this.fiche.operation, [Validators.required]),
           fichier: new FormControl(null),
         });
       } else if (this.fiche.typeFiche === 'ZONE') {
@@ -141,8 +135,8 @@ export class FicheFormComponent {
         this.Form = new FormGroup({
           produit: new FormControl(this.fiche.produit, [Validators.required]),
           zone: new FormControl(this.fiche.zone, [Validators.required]),
-          ligne: new FormControl('', []), 
-          operation: new FormControl('', []), 
+          ligne: new FormControl('', []),
+          operation: new FormControl('', []),
           fichier: new FormControl(null),
         });
       } else if (this.fiche.typeFiche === 'LIGNE') {
@@ -152,9 +146,9 @@ export class FicheFormComponent {
 
         this.Form = new FormGroup({
           produit: new FormControl(this.fiche.produit, [Validators.required]),
-          zone: new FormControl(this.fiche.ligne?.zone, [Validators.required]), 
+          zone: new FormControl(this.fiche.ligne?.zone, [Validators.required]),
           ligne: new FormControl(this.fiche.ligne, [Validators.required]),
-          operation: new FormControl('', []), 
+          operation: new FormControl('', []),
           fichier: new FormControl(null),
         });
       }
@@ -176,14 +170,14 @@ export class FicheFormComponent {
   loadProduits() {
     this.produitService.getAll().subscribe(produits => {
       this.produits = produits;
-      this.filteredProduits = produits; 
+      this.filteredProduits = produits;
       this.produitNames = produits.map(produit => produit.nomProduit);
     });
   }
   loadLignes() {
     this.ligneService.getAll().subscribe(lignes => {
       this.lignes = lignes;
-      this.filteredLignes = lignes; 
+      this.filteredLignes = lignes;
       this.ligneNames= lignes.map(ligne => ligne.nom);
   })};
   loadOperations() {
@@ -197,7 +191,7 @@ export class FicheFormComponent {
     this.userZoneService.getUserZones(this.userConnected.idUser!).subscribe(userZones => {
       const zones = userZones.map(zone => zone.zone);
       this.zones = zones;
-      this.filteredZones = zones; 
+      this.filteredZones = zones;
       this.zoneNames= zones.map(zone => zone.nom);
   })
 };
@@ -216,7 +210,7 @@ export class FicheFormComponent {
       String(p.ref).toLowerCase().includes(this.produitSearch.toLowerCase()) ||
       String(p.indice).toLowerCase().includes(this.produitSearch.toLowerCase())
     );
-    
+
     this.showProduitDropdown = true; // Afficher la liste déroulante
   }
   onLigneSearchChange(event: Event) {
@@ -266,14 +260,14 @@ export class FicheFormComponent {
   selectProduit(produit: Produit) {
     this.Form.get('produit')?.setValue(produit);
     this.produitSearch = `${produit.nomProduit} ${produit.ref} - ${produit.indice}`;
-    this.showProduitDropdown = false; 
+    this.showProduitDropdown = false;
     this.updated = true;
 
   }
   selectZone(zone : Zone) {
     this.Form.get('zone')?.setValue(zone);
     this.zoneSearch = zone.nom;
-    this.showZoneDropdown = false; 
+    this.showZoneDropdown = false;
     if(this.zoneSelected) {
       this.clearLigneSearch();
       this.clearOperationSearch();
@@ -287,7 +281,7 @@ export class FicheFormComponent {
   selectLigne(ligne : Ligne) {
     this.Form.get('ligne')?.setValue(ligne);
     this.ligneSearch = ligne.nom;
-    this.showLigneDropdown = false; 
+    this.showLigneDropdown = false;
     this.ligneSelected = true;
     if(this.ligneSelected) {
       this.clearOperationSearch();
@@ -301,7 +295,7 @@ export class FicheFormComponent {
   selectOperation(operation : Operation) {
     this.Form.get('operation')?.setValue(operation);
     this.operationSearch = operation.nom;
-    this.showOperationDropdown = false; 
+    this.showOperationDropdown = false;
     this.operationSelected = true;
     this.updated = true;
 
@@ -392,45 +386,45 @@ export class FicheFormComponent {
       const target = event.target as HTMLElement;
       const dropdown = document.getElementById(`dropdownProduit`);
       const button = target.closest('produit-input');
-  
+
       // Vérifiez si le clic est en dehors du dropdown et du bouton
       if (this.showProduitDropdown  && dropdown && !dropdown.contains(target) && !button) {
-        this.showProduitDropdown = false; 
+        this.showProduitDropdown = false;
       }
       const dropdown1 = document.getElementById(`dropdownZone`);
       const button1 = target.closest('zone-input');
-  
+
       // Vérifiez si le clic est en dehors du dropdown et du bouton
       if (this.showZoneDropdown  && dropdown1 && !dropdown1.contains(target) && !button1) {
         this.showZoneDropdown = false; // Ferme le dropdown
       }
       const dropdown2 = document.getElementById(`dropdownLigne`);
       const button2 = target.closest('ligne-input');
-  
+
       // Vérifiez si le clic est en dehors du dropdown et du bouton
       if (this.showLigneDropdown  && dropdown2 && !dropdown2.contains(target) && !button2) {
         this.showLigneDropdown = false; // Ferme le dropdown
       }
       const dropdown3 = document.getElementById(`dropdownOperation`);
       const button3 = target.closest('operation-input');
-  
+
       // Vérifiez si le clic est en dehors du dropdown et du bouton
       if (this.showOperationDropdown  && dropdown3 && !dropdown3.contains(target) && !button3) {
         this.showOperationDropdown = false; // Ferme le dropdown
       }
   }
 
-  // les methodes 
+  // les methodes
 
   getTypeFiche(): 'ZONE' | 'LIGNE' | 'OPERATION' {
-    if (this.Form.value.operation) { 
+    if (this.Form.value.operation) {
       return 'OPERATION';
     } else if (this.Form.value.ligne  ) {
       return 'LIGNE';
     } else if (this.Form.value.zone) {
       return 'ZONE';
     }
-    throw new Error('Fiche type invalide');  
+    throw new Error('Fiche type invalide');
   }
 
   addFiche() {
@@ -440,7 +434,7 @@ export class FicheFormComponent {
       const file: File = this.Form.value.fichier;
       const ligne: Ligne = this.Form.value.ligne;
       const operation: Operation = this.Form.value.operation;
-    
+
       this.FicheService.uploadPDF( file).subscribe({
         next: (response) => {
           console.log('Fichier stocker avec succès !', response);
@@ -457,7 +451,7 @@ export class FicheFormComponent {
               iqp: this.userConnected,
               actionneur: this.userConnected,
               typeFiche: 'OPERATION',
-              operation: operation, 
+              operation: operation,
             }
           } else if (this.getTypeFiche() === 'LIGNE') {
             this.fiche  =  {
@@ -472,7 +466,7 @@ export class FicheFormComponent {
               iqp: this.userConnected,
               actionneur: this.userConnected,
               typeFiche: 'LIGNE',
-              ligne: ligne, 
+              ligne: ligne,
             }
           } else if (this.getTypeFiche() === 'ZONE') {
             this.fiche  =  {
@@ -487,7 +481,7 @@ export class FicheFormComponent {
               iqp: this.userConnected,
               actionneur: this.userConnected,
               typeFiche: 'ZONE',
-              zone: zone, 
+              zone: zone,
             }
           }
           this.FicheService.addFiche(this.fiche).subscribe({
@@ -517,7 +511,7 @@ export class FicheFormComponent {
           console.error('Erreur lors de la création de la fiche !', err);
         }
       });
-      
+
     } else {
       console.warn('Formulaire invalide.');
       this.Form.markAllAsTouched();
@@ -536,7 +530,7 @@ export class FicheFormComponent {
       console.log('operation', operation);
       console.log('fiche', this.fiche);
       console.log('boolean', produit != this.fiche.produit || zone != this.fiche.zone || ligne != this.fiche.ligne || operation != this.fiche.operation);
-      if(this.updated){ 
+      if(this.updated){
         if (this.getTypeFiche() === 'ZONE') {
           this.fiche = {
             ...this.fiche,
@@ -578,9 +572,9 @@ export class FicheFormComponent {
           this.updateFiche();
         }
       }else{
-        this.close.emit(); 
+        this.close.emit();
       }
-      
+
     } else {
       console.warn('Formulaire invalide.');
       this.Form.markAllAsTouched();
@@ -593,12 +587,12 @@ export class FicheFormComponent {
         this.successMessage = `Fiche d'instruction modifié avec succès !`;
         this.errorMessage=''
         setTimeout(() => {
-          this.close.emit(); 
+          this.close.emit();
           this.successMessage = '';
         }, 1000);
-      
+
       },
-      error: (err) => { 
+      error: (err) => {
         this.successMessage = '';
         console.error('Erreur lors de l’upload du fichier', err)
         this.errorMessage = 'Une erreur inattendue est survenue.';
@@ -622,7 +616,7 @@ export class FicheFormComponent {
   //     const file: File = this.Form.value.fichier;
   //     const ligne: Ligne = this.Form.value.ligne;
   //     const operation: Operation = this.Form.value.operation;
-     
+
   //     this.FicheService.uploadPDF( file).subscribe({
   //       next: (response) => {
   //         console.log('Fichier stocker avec succès !', response);
@@ -639,7 +633,7 @@ export class FicheFormComponent {
   //             iqp: this.userConnected,
   //             actionneur: this.userConnected,
   //             typeFiche: 'OPERATION',
-  //             operation: operation, 
+  //             operation: operation,
   //           }
   //           this.addFicheOperation(ficheOp);
   //         } else if (this.getTypeFiche() === 'LIGNE') {
@@ -655,7 +649,7 @@ export class FicheFormComponent {
   //             iqp: this.userConnected,
   //             actionneur: this.userConnected,
   //             typeFiche: 'LIGNE',
-  //             ligne: ligne, 
+  //             ligne: ligne,
   //           }
   //           this.addFicheLigne(ficheLigne);
   //         } else if (this.getTypeFiche() === 'ZONE') {
@@ -671,7 +665,7 @@ export class FicheFormComponent {
   //             iqp: this.userConnected,
   //             actionneur: this.userConnected,
   //             typeFiche: 'ZONE',
-  //             zone: zone, 
+  //             zone: zone,
   //           }
   //           this.addFicheZone(ficheZone);
   //         }
@@ -680,7 +674,7 @@ export class FicheFormComponent {
   //         console.error('Erreur lors de la création de la fiche !', err);
   //       }
   //     });
-      
+
   //   } else {
   //     console.warn('Formulaire invalide.');
   //     this.Form.markAllAsTouched();

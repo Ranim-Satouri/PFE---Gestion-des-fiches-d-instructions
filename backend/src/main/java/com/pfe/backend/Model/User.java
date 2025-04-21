@@ -27,7 +27,7 @@ import lombok.Data;
 @Audited
 @Entity
 @JsonIgnoreProperties({"authorities", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled"})
-@EqualsAndHashCode(exclude = "groupe") //zedtha bech n7el el erreur ta3 stakc overflow
+@EqualsAndHashCode(exclude = {"groupe", "actionneur", "userZones"}) // Exclude cyclic fields
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,7 +64,7 @@ public class User implements UserDetails {
     private LocalDateTime modifieLe = LocalDateTime.now(); // Ajoute une valeur par défaut
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "actionneur")
     private User actionneur;
 

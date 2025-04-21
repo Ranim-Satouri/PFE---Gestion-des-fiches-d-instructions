@@ -139,7 +139,7 @@ export class ProduitListComponent {
         familleInput: this.familleInput,
       });
       return;
-    } 
+    }
     const arrow = this.familleArrowButton.nativeElement;
     const dropdown = this.familleDropdown.nativeElement;
     const input = this.familleInput.nativeElement;
@@ -157,15 +157,15 @@ export class ProduitListComponent {
     }
 
     // Position the dropdown below the SVG, but align its left edge with the input's left edge
-    dropdown.style.top = `${arrowRect.bottom + window.scrollY + 4}px`;
-    dropdown.style.left = `${inputRect.left + window.scrollX}px`;
-    dropdown.style.width = `${inputRect.width}px`;
-
-    console.log('Dropdown positioned at:', {
-      top: dropdown.style.top,
-      left: dropdown.style.left,
-      width: dropdown.style.width,
-    });
+    // dropdown.style.top = `${arrowRect.bottom + window.scrollY + 4}px`;
+    // dropdown.style.left = `${inputRect.left + window.scrollX}px`;
+    // dropdown.style.width = `${inputRect.width}px`;
+    //
+    // console.log('Dropdown positioned at:', {
+    //   top: dropdown.style.top,
+    //   left: dropdown.style.left,
+    //   width: dropdown.style.width,
+    // });
 
     // Make the dropdown visible after positioning
     this.isFamilleDropdownPositioned = true;

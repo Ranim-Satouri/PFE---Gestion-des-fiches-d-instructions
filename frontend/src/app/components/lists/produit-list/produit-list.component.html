@@ -33,12 +33,12 @@
           <input
             placeholder="référence"
             [(ngModel)]="refSearchText" (input)="applyFilters()"
-            class="px-6 py-2 w-full rounded-md flex-1 outline-none bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 shadow-sm 
+            class="px-6 py-2 w-full rounded-md flex-1 outline-none bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 shadow-sm
             dark:shadow-gray-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200 dark:focus:shadow-blue-500 transition-all duration-200" />
           <input placeholder="indice" [(ngModel)]="indiceSearchText" (input)="applyFilters()"
             class="px-6 py-2 w-full rounded-md flex-1 outline-none bg-white border-gray-300  focus:ring-blue-400 focus:border-blue-400
-            focus:shadow-blue-200 focus:ring-2 shadow-sm 
-            dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
+            focus:shadow-blue-200 focus:ring-2 shadow-sm
+            dark:bg-gray-700 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600
             dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 transition-all duration-200"  />
           <!-- Famille Input and Dropdown -->
           <div class="relative w-[200px]">
@@ -69,7 +69,7 @@
               class="cursor-pointer py-2 px-4 text-sm text-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600" > {{ f.nomFamille }} </div>
             </div>
           </div>
-      
+
         <!-- Reset Filters Button -->
         <button
         (click)="clearFilters()"
@@ -79,7 +79,7 @@
         class="flex items-center justify-center w-10 mx-5 px-2 h-10 bg-blue-500 text-white rounded-full hover:bg-blue-400 transition ease-in-out duration-200">
               <svg width='14' height='14' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'>
               <path d='M1.22229 5.00019H8.77785M5.00007 8.77797V1.22241' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'></path>
-        </svg></button>     
+        </svg></button>
     </div>
   </div>
   <div class="mb-2 overflow-x-auto shadow-md rounded-lg max-h-[calc(100%-136px)] overflow-y-auto custom-scrollbar-container " (scroll)="onScroll()">
@@ -88,7 +88,7 @@
                 <tr>
                     <th scope="col" class="px-6 py-3 ">
                       <div class="flex items-center">
-                          #  
+                          #
                       </div>
                    </th>
                     <th scope="col" class="px-6 py-3 ">
@@ -226,9 +226,7 @@
             <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white  " previousLabel="Précédent" nextLabel="Suivant" ></pagination-controls>
             </div>
     </div>
-
 </div>
-
 <app-delete-confirm
     [isOpen]="isDeleteModelOpen"
     [title]="'ce produit'"

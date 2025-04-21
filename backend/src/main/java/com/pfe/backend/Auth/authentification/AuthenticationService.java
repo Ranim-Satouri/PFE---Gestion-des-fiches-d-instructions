@@ -1,6 +1,5 @@
 package com.pfe.backend.Auth.authentification;
 import com.pfe.backend.Auth.Config.JwtService;
-import com.pfe.backend.DTO.UserDTO;
 import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Repository.GroupeRepository;
