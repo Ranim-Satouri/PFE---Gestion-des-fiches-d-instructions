@@ -14,8 +14,10 @@ import { DeleteConfirmComponent } from '../../delete-confirm/delete-confirm.comp
 import { RegisterFormComponent } from '../../add/register-form/register-form.component';
 import { GroupeService } from '../../../services/groupe.service';
 import { Groupe } from '../../../models/Groupe';
+import { Router } from '@angular/router'; // Importer Router
+import { UserHistoryComponent } from '../../user-history/user-history.component';
 @Component({selector: 'app-user-list', standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, RegisterFormComponent, DeleteConfirmComponent,FilterPipe],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, RegisterFormComponent, DeleteConfirmComponent,FilterPipe,UserHistoryComponent],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css'})
 export class UserListComponent implements  OnDestroy {
@@ -26,8 +28,10 @@ export class UserListComponent implements  OnDestroy {
   @ViewChild('zoneDropdown', { static: false }) zoneDropdown?: ElementRef;
 
   private observer?: MutationObserver;
-
-  constructor( private userService: UserService, private userZoneService: UserZoneService, private zoneService: ZoneService, private groupeService: GroupeService ,private cdr: ChangeDetectorRef ) {}
+//hisstorique
+showHistoryPopup: boolean = false;
+selectedUserId: number | null = null;
+  constructor( private userService: UserService, private userZoneService: UserZoneService, private zoneService: ZoneService, private groupeService: GroupeService ,private cdr: ChangeDetectorRef, private router: Router ) {}
 
   users: any[] = []; dropdownOpen: number | null = null; page: number = 1;
   itemsPerPage: number = 5;
@@ -51,6 +55,7 @@ export class UserListComponent implements  OnDestroy {
     filteredGroupes: Groupe[] = [];
     isGrpDropdownPositioned = false;
     showGrpDropdown = false;
+    
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
@@ -202,6 +207,7 @@ adjustGrpDropdownPosition() {
       this.getUsers(); // Refresh the user list after update
       this.closeRegisterForm();
     }
+    
   getUsers() {
     this.userService.getAll().subscribe({
       next: (users: User[]) => {
@@ -375,4 +381,20 @@ adjustGrpDropdownPosition() {
         ? dateB.getTime() - dateA.getTime()  // Tri décroissant
         : dateA.getTime() - dateB.getTime();  // Tri croissant
     });
-  }}
+  }
+// Méthode pour ouvrir le popup
+openUserHistory(idUser: number | undefined): void {
+  if (!idUser) {
+    console.error('ID utilisateur non défini pour cet utilisateur');
+    return;
+  }
+  console.log('Opening history for user ID:', idUser);
+  this.selectedUserId = idUser;
+  this.showHistoryPopup = true;
+}
+
+closeUserHistory(): void {
+  this.showHistoryPopup = false;
+  this.selectedUserId = null;
+}
+}

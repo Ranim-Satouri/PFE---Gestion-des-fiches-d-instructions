@@ -1,6 +1,6 @@
 package com.pfe.backend.Controller;
 
-import com.pfe.backend.DTO.UserDTO;
+import com.pfe.backend.DTO.UserHistoryDTO;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Model.UserZone;
 import com.pfe.backend.Service.ServiceUser.UserIservice;
@@ -66,9 +66,9 @@ public class userController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/history/{id}")
-    public List<Object[]> getUserHistory(@PathVariable Long id) {
-        return userIservice.getUserHistory(id);
+    @GetMapping("/history/{idUser}")
+    public List<UserHistoryDTO> getUserHistory(@PathVariable Long idUser) {
+        return userIservice.getUserHistory(idUser);
     }
     @PostMapping("/attribueZone/{idUser}/{idZone}/{idActionneur}")
     public ResponseEntity<?> attribuerZoneAUser(

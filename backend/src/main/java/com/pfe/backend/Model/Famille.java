@@ -46,7 +46,7 @@ public class Famille {
     //private List<Zone> zones;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "famille-zones",joinColumns = @JoinColumn(name = "idFamille"),
+    @JoinTable(name = "famille_zones",joinColumns = @JoinColumn(name = "idFamille"),
             inverseJoinColumns = @JoinColumn(name = "idZone"))
     private List<Zone> zones ;
 

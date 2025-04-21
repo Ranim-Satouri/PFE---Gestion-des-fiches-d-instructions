@@ -1,9 +1,5 @@
 package com.pfe.backend.Auth.authentification;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.pfe.backend.DTO.UserDTO;
-import com.pfe.backend.Model.Groupe;
-import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

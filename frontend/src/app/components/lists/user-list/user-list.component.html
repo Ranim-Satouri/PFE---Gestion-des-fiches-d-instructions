@@ -223,7 +223,8 @@
                                         Modifier</a>
                                 </li>
                                 <li>
-                                <a class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                <a (click)="openUserHistory(user.idUser)"
+                                 class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- History Icon -->
                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                     <polyline points="1 4 1 10 7 10"/>
@@ -293,4 +294,10 @@
         (onConfirm)="selectedUser ? ChangeUserStatus(selectedUser.idUser, UserStatus.DELETED) : null"
         (onCancel)="closeDeleteModel()">
     </app-delete-confirm>
+    <!-- Popup UserHistoryComponent -->
+  <app-user-history
+  *ngIf="showHistoryPopup"
+  [idUser]="selectedUserId"
+  (close)="closeUserHistory()">
+</app-user-history>
 
