@@ -1,11 +1,9 @@
 import { Component, Output, EventEmitter, Input, HostListener } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, FormGroup, Validators, FormControl, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, Validators, FormControl, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Operation } from '../../../models/Operation';
 import { User } from '../../../models/User';
 import { OperationService } from '../../../services/operation.service';
-import { Zone } from '../../../models/Zone';
-import { ZoneService } from '../../../services/zone.service';
 import { Ligne } from '../../../models/Ligne';
 import { LigneService } from '../../../services/ligne.service';
 
@@ -41,7 +39,9 @@ export class AddOperationComponent {
     this.loadLignes();
 
     if (this.operation && this.operation.idOperation) {
-      this.ligneSearch = this.operation.ligne.nom;
+      // this.ligneSearch = this.operation.ligne.nom;
+      this.ligneSearch = `${this.operation.ligne.nom} ${this.operation.ligne.zone.nom}`;
+
       this.isNewOperation = false;
       this.operationForm = new FormGroup({
         nom: new FormControl(this.operation.nom, [Validators.required]),
@@ -92,7 +92,7 @@ export class AddOperationComponent {
           if (err.status === 404) {
             this.errorMessage = "Actionneur introuvable";
           } else if (err.status === 409) {
-            this.errorMessage = "Une operation avec ce nom existe déjà.";
+            this.errorMessage = "Une operation avec ce nom et ligne existe déjà.";
           } else {
             this.errorMessage = "Une erreur inattendue est survenue.";
           }
@@ -136,7 +136,7 @@ export class AddOperationComponent {
             this.successMessage = '';
             console.error('Erreur lors de l’update :', err);
             if (err.status === 409) {
-              this.errorMessage = "Une operation avec ce nom existe déjà.";
+              this.errorMessage = "Une operation avec ce nom et ligne existe déjà.";
             } else {
               this.errorMessage = "Une erreur inattendue est survenue.";
             }    
@@ -165,7 +165,8 @@ export class AddOperationComponent {
   selectLigne(ligne : Ligne) {
     this.operationForm.get('ligne')?.setValue(ligne);
     console.log('✅ Ligne sélectionné :', ligne);
-    this.ligneSearch = ligne.nom;
+    //this.ligneSearch = ligne.nom;
+    this.ligneSearch = `${ligne.nom} ${ligne.zone.nom}`;
     console.log('✅ Ligne sélectionné :', this.operationForm.get('ligne')?.value);
     this.showLigneDropdown = false; // Fermer le dropdown
 
@@ -179,11 +180,26 @@ export class AddOperationComponent {
       return;
     }
 
-    this.filteredLignes = this.lignes.filter(z =>
-      z.nom.toLowerCase().includes(this.ligneSearch.toLowerCase()) // Filtrage insensible à la casse
+    // this.filteredLignes = this.lignes.filter(z =>
+    //   z.nom.toLowerCase().includes(this.ligneSearch.toLowerCase()) // Filtrage insensible à la casse
+    // );
+    this.filteredLignes = this.lignes.filter(ligne =>
+      ligne.nom.toLowerCase().includes(this.ligneSearch.toLowerCase()) ||
+      ligne.zone.nom.toLowerCase().includes(this.ligneSearch.toLowerCase())
     );
     this.showLigneDropdown = true; // Afficher la liste déroulante
   }
+  @HostListener('document:click', ['$event'])
+  closeDropdown(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+  
+    const dropdown1 = document.getElementById(`dropdownLigne`);
+    const button1 = target.closest('ligne-input');
 
+    // Vérifiez si le clic est en dehors du dropdown et du bouton
+    if (this.showLigneDropdown  && dropdown1 && !dropdown1.contains(target) && !button1) {
+      this.showLigneDropdown = false; 
+    }
+  }
   
 }

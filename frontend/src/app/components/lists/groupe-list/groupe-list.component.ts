@@ -31,6 +31,10 @@ export class GroupeListComponent {
   showUpdateModal = false;
 
   ngOnInit(){
+    const userFromLocalStorage = localStorage.getItem('user');
+    if (userFromLocalStorage) {
+      this.userConnected = JSON.parse(userFromLocalStorage);
+    }
     this.getGroupes();
   }
 
@@ -47,10 +51,6 @@ export class GroupeListComponent {
   }
 
   deleteGroupe(idGroupe: number): void {
-    const userFromLocalStorage = localStorage.getItem('user');
-    if (userFromLocalStorage) {
-      this.userConnected = JSON.parse(userFromLocalStorage);
-    }
     this.groupeService.deleteGroupe(idGroupe! , this.userConnected.idUser! ).subscribe({
       next: () => {
         console.log('Groupe supprimée');
@@ -102,8 +102,20 @@ export class GroupeListComponent {
     } else {
       const rect = button?.getBoundingClientRect();
       if (rect) {
-        const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
-        const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
+        //const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
+        let dropdownHeight = 0; 
+
+        if (this.hasPermission('modifier_fiche')) {
+          dropdownHeight += 44.5; 
+        }
+        if (this.hasPermission('consulter_historique')) {
+          dropdownHeight += 44.5; 
+        }
+        if (this.hasPermission('supprimer_fiche')) {
+          dropdownHeight += 44.5; 
+        }
+
+        const spaceBelow = window.innerHeight - rect.bottom;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
 
         this.displayAbove = spaceBelow < dropdownHeight;
 
@@ -148,5 +160,12 @@ export class GroupeListComponent {
         ? dateB.getTime() - dateA.getTime()  // Tri décroissant
         : dateA.getTime() - dateB.getTime();  // Tri croissant
     });
+  }
+  hasPermission(permissionName: string): boolean {
+    console.log(permissionName);
+    
+    const permissions = this.userConnected.groupe?.permissions || []; 
+    console.log(permissions.some(permission => permission.nom === permissionName))
+    return permissions.some(permission => permission.nom === permissionName);  
   }
 }

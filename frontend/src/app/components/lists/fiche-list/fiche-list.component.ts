@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, Input } from '@angular/core';
+import * as QRCode from 'qrcode';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FicheService } from '../../../services/fiche.service';
 import { Fiche, FicheStatus } from '../../../models/Fiche';
@@ -7,20 +8,17 @@ import { FormsModule } from '@angular/forms';
 import {FicheFormComponent} from '../../add/fiche-form/fiche-form.component';
 import { Role, User } from '../../../models/User';
  import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
-import { UpdateFicheComponent } from "../../update/update-fiche/update-fiche.component";
 import { FicheValidationComponent } from "../../fiche-validation/fiche-validation.component";
-import { Ligne } from '../../../models/Ligne';
-import { Operation } from '../../../models/Operation';
 @Component({
   selector: 'app-fiche-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, FicheFormComponent, DeleteConfirmComponent,FicheValidationComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, FicheFormComponent, DeleteConfirmComponent, FicheValidationComponent],
   templateUrl: './fiche-list.component.html',
   styleUrl: './fiche-list.component.css'
 })
 export class FicheListComponent {
 
-  constructor(private FicheService: FicheService) {}
+  constructor(private FicheService: FicheService ) { }
   fiches : Fiche[] = [];  
   dropdownOpen: number | null = null;
   role = Role ;
@@ -36,7 +34,9 @@ export class FicheListComponent {
   rejetComment: string = '';
   isCommentModalOpen: boolean = false;
   showForm=false;
-
+  isDescending: boolean = true;
+  isQrPopupOpen: boolean = false;
+  qrCodeUrl: string = '';  
   
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
@@ -48,97 +48,125 @@ export class FicheListComponent {
   }
   getFiches() {
 
-    if(this.userConnected.role == Role.SUPERUSER){ 
-      this.FicheService.getAllFiches().subscribe({
-        next : (response :Fiche[]) => {
-          console.log('response', response);
-          // Séparation des fiches par statut
-          const fichesAValider = response.filter(fiche => 
-            fiche.status === FicheStatus.PENDING 
-          );
-          const fichesRejeter = response.filter(fiche => 
-            fiche.status === FicheStatus.REJECTEDIPDF || fiche.status === FicheStatus.REJECTEDIQP
-          );
+    // if(this.userConnected.role == Role.SUPERUSER){ 
+    //   this.FicheService.getAllFiches().subscribe({
+    //     next : (response :Fiche[]) => {
+    //       console.log('response', response);
+    //       // Séparation des fiches par statut
+    //       const fichesAValider = response.filter(fiche => 
+    //         fiche.status === FicheStatus.PENDING 
+    //       );
+    //       const fichesRejeter = response.filter(fiche => 
+    //         fiche.status === FicheStatus.REJECTEDIPDF || fiche.status === FicheStatus.REJECTEDIQP
+    //       );
         
-          const fichesValider = response.filter(fiche => 
-            fiche.status === FicheStatus.ACCEPTEDIPDF
-          );
-          const autresFiches = response.filter(fiche => 
-             fiche.status !== FicheStatus.PENDING && fiche.status !== FicheStatus.REJECTEDIQP && fiche.status !== FicheStatus.REJECTEDIPDF && fiche.status !== FicheStatus.ACCEPTEDIPDF
-          );
+    //       const fichesValider = response.filter(fiche => 
+    //         fiche.status === FicheStatus.ACCEPTEDIPDF
+    //       );
+    //       const autresFiches = response.filter(fiche => 
+    //          fiche.status !== FicheStatus.PENDING && fiche.status !== FicheStatus.REJECTEDIQP && fiche.status !== FicheStatus.REJECTEDIPDF && fiche.status !== FicheStatus.ACCEPTEDIPDF
+    //       );
     
-          // Tri par idFiche (décroissant)
-          fichesAValider.sort((a, b) => b.idFiche! - a.idFiche!);
-          fichesRejeter.sort((a, b) => b.idFiche! - a.idFiche!);
-          fichesValider.sort((a, b) => b.idFiche! - a.idFiche!);
-          autresFiches.sort((a, b) => b.idFiche! - a.idFiche!);
+    //       // Tri par idFiche (décroissant)
+    //       fichesAValider.sort((a, b) => b.idFiche! - a.idFiche!);
+    //       fichesRejeter.sort((a, b) => b.idFiche! - a.idFiche!);
+    //       fichesValider.sort((a, b) => b.idFiche! - a.idFiche!);
+    //       autresFiches.sort((a, b) => b.idFiche! - a.idFiche!);
           
     
-          // Combinaison des fiches triées dans l'ordre souhaité
-          this.fiches = [...fichesAValider, ...fichesRejeter, ...fichesValider, ...autresFiches];
+    //       // Combinaison des fiches triées dans l'ordre souhaité
+    //       this.fiches = [...fichesAValider, ...fichesRejeter, ...fichesValider, ...autresFiches];
     
-        },
-        error : (error : any) => {
-          console.error('fetching fiches error:', error);
-        }
-      });
-    }else if(this.userConnected.role == Role.IPDF ){
-      this.FicheService.getFichesByIPDF(this.userConnected.idUser!).subscribe({
-        next: (response: Fiche[]) => {
-          console.log('response', response);
-          // Séparation des fiches par statut
-          const fichesAValider = response.filter(fiche => 
-            fiche.status === FicheStatus.PENDING 
-          );
-          const fichesRejeter = response.filter(fiche => 
-            fiche.status === FicheStatus.REJECTEDIPDF 
-          );
-          const fichesRejeterIQP = response.filter(fiche => 
-            fiche.status === FicheStatus.REJECTEDIQP
-          );
-          const fichesValider = response.filter(fiche => 
-            fiche.status === FicheStatus.ACCEPTEDIPDF
-          );
-          const autresFiches = response.filter(fiche => 
-             fiche.status !== FicheStatus.PENDING && fiche.status !== FicheStatus.REJECTEDIQP && fiche.status !== FicheStatus.REJECTEDIPDF && fiche.status !== FicheStatus.ACCEPTEDIPDF
-          );
+    //     },
+    //     error : (error : any) => {
+    //       console.error('fetching fiches error:', error);
+    //     }
+    //   });
+    // }else if(this.userConnected.role == Role.IPDF ){
+    //   this.FicheService.getFichesByIPDF(this.userConnected.idUser!).subscribe({
+    //     next: (response: Fiche[]) => {
+    //       console.log('response', response);
+    //       // Séparation des fiches par statut
+    //       const fichesAValider = response.filter(fiche => 
+    //         fiche.status === FicheStatus.PENDING 
+    //       );
+    //       const fichesRejeter = response.filter(fiche => 
+    //         fiche.status === FicheStatus.REJECTEDIPDF 
+    //       );
+    //       const fichesRejeterIQP = response.filter(fiche => 
+    //         fiche.status === FicheStatus.REJECTEDIQP
+    //       );
+    //       const fichesValider = response.filter(fiche => 
+    //         fiche.status === FicheStatus.ACCEPTEDIPDF
+    //       );
+    //       const autresFiches = response.filter(fiche => 
+    //          fiche.status !== FicheStatus.PENDING && fiche.status !== FicheStatus.REJECTEDIQP && fiche.status !== FicheStatus.REJECTEDIPDF && fiche.status !== FicheStatus.ACCEPTEDIPDF
+    //       );
     
-          // Tri par idFiche (décroissant)
-          fichesAValider.sort((a, b) => b.idFiche! - a.idFiche!);
-          fichesRejeter.sort((a, b) => b.idFiche! - a.idFiche!);
-          fichesValider.sort((a, b) => b.idFiche! - a.idFiche!);
-          autresFiches.sort((a, b) => b.idFiche! - a.idFiche!);
-          fichesRejeterIQP.sort((a, b) => b.idFiche! - a.idFiche!);
+    //       // Tri par idFiche (décroissant)
+    //       fichesAValider.sort((a, b) => b.idFiche! - a.idFiche!);
+    //       fichesRejeter.sort((a, b) => b.idFiche! - a.idFiche!);
+    //       fichesValider.sort((a, b) => b.idFiche! - a.idFiche!);
+    //       autresFiches.sort((a, b) => b.idFiche! - a.idFiche!);
+    //       fichesRejeterIQP.sort((a, b) => b.idFiche! - a.idFiche!);
     
-          // Combinaison des fiches triées dans l'ordre souhaité
-          this.fiches = [...fichesAValider, ...fichesRejeter, ...fichesValider,...fichesRejeterIQP, ...autresFiches];
+    //       // Combinaison des fiches triées dans l'ordre souhaité
+    //       this.fiches = [...fichesAValider, ...fichesRejeter, ...fichesValider,...fichesRejeterIQP, ...autresFiches];
     
-          console.log(this.fiches);
-        },
-        error: (error: any) => {
-          console.error('Fetching fiches error:', error);
-        }
-      });
-    }
-    else if (this.userConnected.role == Role.IQP) {
-      this.FicheService.getFichesByIQP(this.userConnected.idUser!).subscribe({
-        next: (response: Fiche[]) => {
-          const fichesAValider = response.filter(fiche => 
-            fiche.status === FicheStatus.PENDING || fiche.status === FicheStatus.ACCEPTEDIPDF
-          );
-          const autresFiches = response.filter(fiche => 
-            fiche.status !== FicheStatus.PENDING && fiche.status !== FicheStatus.ACCEPTEDIPDF
-          );
-          fichesAValider.sort((a, b) => b.idFiche! - a.idFiche!);
-          autresFiches.sort((a, b) => b.idFiche! - a.idFiche!);
-          this.fiches = [...fichesAValider, ...autresFiches];
-        },
-        error: (error: any) => {
-          console.error('fetching fiches error:', error);
-        }
-      });
-    }else if(this.userConnected.role == Role.PREPARATEUR ){
-      this.FicheService.getFichesByPreparateur(this.userConnected.idUser!).subscribe({
+    //       console.log(this.fiches);
+    //     },
+    //     error: (error: any) => {
+    //       console.error('Fetching fiches error:', error);
+    //     }
+    //   });
+    // }
+    // else if (this.userConnected.role == Role.IQP) {
+    //   this.FicheService.getFichesByIQP(this.userConnected.idUser!).subscribe({
+    //     next: (response: Fiche[]) => {
+    //       const fichesAValider = response.filter(fiche => 
+    //         fiche.status === FicheStatus.PENDING || fiche.status === FicheStatus.ACCEPTEDIPDF
+    //       );
+    //       const autresFiches = response.filter(fiche => 
+    //         fiche.status !== FicheStatus.PENDING && fiche.status !== FicheStatus.ACCEPTEDIPDF
+    //       );
+    //       fichesAValider.sort((a, b) => b.idFiche! - a.idFiche!);
+    //       autresFiches.sort((a, b) => b.idFiche! - a.idFiche!);
+    //       this.fiches = [...fichesAValider, ...autresFiches];
+    //     },
+    //     error: (error: any) => {
+    //       console.error('fetching fiches error:', error);
+    //     }
+    //   });
+    // }else if(this.userConnected.role == Role.PREPARATEUR ){
+    //   this.FicheService.getFichesByPreparateur(this.userConnected.idUser!).subscribe({
+    //     next : (response :Fiche[]) => {
+    //       this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
+    //     },
+    //     error : (error : any) => {
+    //       console.error('fetching fiches error:', error);
+    //     }
+    //   });
+    // }else if(this.userConnected.role == Role.OPERATEUR ){
+    //   this.FicheService.getFichesByOperateur(this.userConnected.idUser!).subscribe({
+    //     next : (response :Fiche[]) => {
+    //       this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
+    //     },
+    //     error : (error : any) => {
+    //       console.error('fetching fiches error:', error);
+    //     }
+    //   });
+    // }else{
+    //   this.FicheService.getFichesByAdmin(this.userConnected.idUser!).subscribe({
+    //     next : (response :Fiche[]) => {
+    //       this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
+    //     },
+    //     error : (error : any) => {
+    //       console.error('fetching fiches error:', error);
+    //     }
+    //   });
+    // }
+
+    this.FicheService.getFichesByUserZones(this.userConnected.idUser!).subscribe({
         next : (response :Fiche[]) => {
           this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
         },
@@ -146,25 +174,6 @@ export class FicheListComponent {
           console.error('fetching fiches error:', error);
         }
       });
-    }else if(this.userConnected.role == Role.OPERATEUR ){
-      this.FicheService.getFichesByOperateur(this.userConnected.idUser!).subscribe({
-        next : (response :Fiche[]) => {
-          this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
-        },
-        error : (error : any) => {
-          console.error('fetching fiches error:', error);
-        }
-      });
-    }else{
-      this.FicheService.getFichesByAdmin(this.userConnected.idUser!).subscribe({
-        next : (response :Fiche[]) => {
-          this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
-        },
-        error : (error : any) => {
-          console.error('fetching fiches error:', error);
-        }
-      });
-    }
   }
   checkFicheStatusPeriodically() {
     setInterval(() => {
@@ -200,7 +209,7 @@ export class FicheListComponent {
   closeDeleteModel(){
     this.isDeleteModelOpen = false;
   }
-  toggleDropdown(index: number, event: MouseEvent): void {
+  toggleDropdown(index: number, event: MouseEvent , fiche: Fiche): void {
     const target = event.target as HTMLElement;
     const button = target.closest("button");
   
@@ -209,8 +218,22 @@ export class FicheListComponent {
     } else {
       const rect = button?.getBoundingClientRect();
       if (rect) {
-        const dropdownHeight = 190; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
-        const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
+        //const dropdownHeight = 190; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
+        let dropdownHeight = 0;
+
+        if (this.hasPermission('modifier_fiche')) {
+          dropdownHeight += 44.5; 
+        }
+        if (this.hasPermission('consulter_historique')) {
+          dropdownHeight += 44.5; 
+        }
+        if (this.hasPermission('supprimer_fiche')) {
+          dropdownHeight += 44.5; 
+        }
+        if (fiche.ficheAQL !== '') {
+          dropdownHeight += 44.5; 
+        }
+        const spaceBelow = window.innerHeight - rect.bottom;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
   
         this.displayAbove = spaceBelow < dropdownHeight;
   
@@ -262,17 +285,6 @@ export class FicheListComponent {
     this.ficheToUpdate = undefined ;
   }
   openUpdateForm(fiche : Fiche){
-    const ligne : Ligne = { // pour tester
-      idLigne: 0,
-      nom: 'ligne 1',
-    };
-    const operation : Operation = {
-      idOperation: 0,
-      nom: 'operation 1',
-      ligne: ligne,
-    }
-    fiche.ligne = ligne;
-    fiche.operation = operation;
     this.dropdownOpen = null
     this.ficheToUpdate = fiche;
     this.showForm = true;
@@ -282,7 +294,6 @@ export class FicheListComponent {
     this.rejetComment = commentaire;
     this.isCommentModalOpen = true;
   }
-  isDescending: boolean = true;
   sortByDate() {
     this.isDescending = !this.isDescending; // Alterner entre croissant et décroissant
 
@@ -296,4 +307,27 @@ export class FicheListComponent {
         : dateA.getTime() - dateB.getTime();  // Tri croissant
     });
   }
+  hasPermission(permissionName: string): boolean {
+    const permissions = this.userConnected.groupe?.permissions || []; 
+    return permissions.some(permission => permission.nom === permissionName);  
+  }
+
+
+  generateQrCode(fileName: string) {
+      const serverUrl = `http://192.168.1.17:8080/fiche/getPdf/${fileName}`; 
+      //const serverUrl = `https://9007-197-0-185-128.ngrok-free.app/fiche/getPdf/${fileName}`; 
+      QRCode.toDataURL(serverUrl, { errorCorrectionLevel: 'H' })
+        .then(url => {
+          this.qrCodeUrl = url;
+          this.isQrPopupOpen = true;
+        })
+        .catch((err) => {
+          console.error('Erreur lors de la génération du QR code: ', err);
+        });
+  }
+
+  closeQrPopup() {
+    this.isQrPopupOpen = false;
+  }
+
 }

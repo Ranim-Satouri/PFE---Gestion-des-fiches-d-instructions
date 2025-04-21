@@ -32,7 +32,7 @@
   </div>
 </div>
 
-<div class="relative bg-white  dark:bg-gray-900 border border-gray-600  dark:border-gray-700 rounded-2xl shadow-2xl w-full max-w-lg p-6 transition-all">
+<div class="relative bg-white  dark:bg-gray-900 border border-gray-700  dark:border-gray-700 rounded-2xl shadow-2xl w-full max-w-lg p-6 transition-all ">
 
   <!-- Close button -->
   <button
@@ -53,7 +53,7 @@
     
     <!-- Produit -->
     <div>
-      <label class="text-sm text-black dark:text-gray-300 mb-1 block">Produit <span class="text-red-500">*</span></label>
+      <label class="text-sm text-black dark:text-gray-300 mb-1 block">Produit </label>
       <div class="relative">
         <input
           id="produit-input"
@@ -113,13 +113,13 @@
       </div>
       
       <div *ngIf="Form.get('produit')?.invalid && Form.get('produit')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
-        Veuillez sélectionner ou ajouter un produit.
+        Veuillez sélectionner un produit.
       </div>
     </div>
 
     <!-- Zone -->
     <div>
-    <label class="text-sm text-black dark:text-gray-300 mb-1 block">Zone <span class="text-red-500">*</span></label>
+    <label class="text-sm text-black dark:text-gray-300 mb-1 block">Zone</label>
     <div class="relative">
       <input
         id="zone-input"
@@ -177,19 +177,19 @@
       </ul>
     </div>
     <div *ngIf="Form.get('zone')?.invalid && Form.get('zone')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
-      Veuillez sélectionner ou ajouter une zone.
+      Veuillez sélectionner une zone.
     </div>
     </div>
     <!-- Ligne -->
-    <div>
-    <label class="text-sm text-black dark:text-gray-300 mb-1 block">Ligne <span class="text-red-500">*</span></label>
+    <div *ngIf="!(isEditMode && this.fiche?.typeFiche === 'ZONE' )">
+    <label class="text-sm text-black dark:text-gray-300 mb-1 block">Ligne</label>
     <div class="relative">
       <input
         id="ligne-input"
         placeholder="Ligne"
         [value]="ligneSearch"
         (input)="onLigneSearchChange($event)"
-        
+        [disabled]="!zoneSelected"
         class="w-full p-2 focus:outline-none rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
         dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
         [ngClass]="{
@@ -225,7 +225,7 @@
           <path d="M6 6l12 12"></path>
         </svg>
       </button>
-      <ul
+      <ul   
         *ngIf="showLigneDropdown && (filteredLignes.length > 0 || ligneSearch)"
         id="dropdownLigne"
         class="absolute z-10 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg"
@@ -240,19 +240,19 @@
       </ul>
     </div>
     <div *ngIf="Form.get('ligne')?.invalid && Form.get('ligne')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
-      Veuillez sélectionner ou ajouter une ligne.
+      Veuillez sélectionner une ligne.
     </div>
     </div>
     <!-- Operation -->
-    <div>
-    <label class="text-sm text-black dark:text-gray-300 mb-1 block">Operation <span class="text-red-500">*</span></label>
+    <div *ngIf="!((this.fiche?.typeFiche === 'ZONE' || this.fiche?.typeFiche === 'LIGNE') && isEditMode)">
+    <label class="text-sm text-black dark:text-gray-300 mb-1 block">Operation</label>
     <div class="relative">
       <input
         id="operation-input"
         placeholder="Operation"
         [value]="operationSearch"
+        [disabled]="!ligneSelected"
         (input)="onOperationSearchChange($event)"
-        
         class="w-full p-2 focus:outline-none rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
         dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
         [ngClass]="{
@@ -303,12 +303,12 @@
       </ul>
     </div>
     <div *ngIf="Form.get('operation')?.invalid && Form.get('operation')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
-      Veuillez sélectionner ou ajouter une operation.
+      Veuillez sélectionner une operation.
     </div>
     </div>
 
   <div>
-    <label class="text-sm text-black dark:text-gray-300 mb-1 block">Fiche d'instruction <span class="text-red-500">*</span></label>
+    <label class="text-sm text-black dark:text-gray-300 mb-1 block">Fiche d'instruction </label>
     <input type="file"
     class="rounded-lg bg-gray-50  dark:bg-gray-800 w-full text-slate-500 font-medium text-sm border-2  file:cursor-pointer cursor-pointer border 
     file:border-0 file:py-2 file:px-4 file:mr-4 file:bg-gray-800 dark:file:bg-gray-900 file:hover:bg-gray-800/90 file:text-gray-100 rounded  focus:outline-none shadow-sm 

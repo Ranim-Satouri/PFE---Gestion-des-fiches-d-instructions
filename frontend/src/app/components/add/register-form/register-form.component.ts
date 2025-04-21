@@ -371,7 +371,7 @@ showAlertAndClose()
  this.showSuccessAlert = true;
  setTimeout(()=>
  {
-   this.hideAlert();
+   //this.hideAlert();
    this.closeForm();
  },2000);
 }

@@ -77,7 +77,7 @@
             <button (click)="clearFilters()"
             class="w-fit mx-5 px-1 h-10 bg-gray-trans text-gray-500 rounded-lg hover:bg-gray-500 transition ease-in-out duration-200" > <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="30" height="31" stroke-width="2.25"> <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path> </svg>  </button>
            
-            <button (click)="showRegisterForm()"
+            <button *ngIf="hasPermission('creer_utilisateur')" (click)="showRegisterForm()"
             class="flex items-center justify-center w-12 mx-5 px-2 h-10 bg-blue-500 text-white rounded-full hover:bg-blue-400 transition ease-in-out duration-200">
               <svg width='14' height='14' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'>
               <path d='M1.22229 5.00019H8.77785M5.00007 8.77797V1.22241' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'></path>
@@ -110,7 +110,7 @@
       ></app-register-form>
       <div class="relative z-10  mb-2 shadow-md rounded-lg max-h-[calc(100%-132px)] custom-scrollbar-container overflow-auto " (scroll)="onScroll()">
         <table class=" w-full text-xs text-left rtl:text-right text-gray-700 dark:text-gray-400 ">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-300/80 dark:bg-gray-700 dark:text-gray-400 sticky-top">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-gray-400 sticky-top">
                 <tr>
                   <th scope="col" class="px-6 py-3 ">
                     <div class="flex items-center">
@@ -133,17 +133,17 @@
                             Type
                         </div>
                     </th>
-                    <th *ngIf="Role !== 'SUPERUSER'" scope="col" class="px-4 py-3 ">
+                    <th *ngIf="!hasPermission('modifier_utilisateur')"  scope="col" class="px-4 py-3 ">
                         <div class="flex items-center">
                             Situation
                         </div>
                     </th>
-                    <th *ngIf="Role === 'SUPERUSER'" scope="col" class="px-4 py-3 ">
+                    <!-- <th *ngIf="hasPermission('modifier_utilisateur')"  scope="col" class="px-4 py-3 ">
                         <div class="flex items-center">
                             Super Utilisateur
                         </div>
-                    </th>
-                    <th *ngIf="Role === 'SUPERUSER'" scope="col" class="px-4 py-3 ">
+                    </th> -->
+                    <th *ngIf="hasPermission('modifier_utilisateur')"  scope="col" class="px-4 py-3 ">
                         <div class="flex items-center">
                             Activé
                         </div>
@@ -169,20 +169,20 @@
                     <th scope="col" class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white ">{{user.matricule}}</th>
                     <th scope="col" class="px-2 py-2 font-medium">{{user.prenom}} {{user.nom}}</th>
                     <th scope="col" class="px-4 py-2 font-medium">{{user.email}}</th>
-                    <th scope="col" class="px-4 py-2 font-medium">{{user.role}}</th>
-                    <th *ngIf="Role !== 'SUPERUSER'" scope="col" class="px-4 py-2 font-medium">{{user.status}}</th>
+                    <th scope="col" class="px-4 py-2 font-medium">{{user.groupe ? user.groupe.nom : '-' }}</th>
+                    <th *ngIf="!hasPermission('modifier_utilisateur')" scope="col" class="px-4 py-2 font-medium">{{user.status}}</th>
 
                     <!-- Toggle pour le rôle : activé si le rôle est SUPERUSER, désactivé si ADMIN -->
-                    <th *ngIf="Role === 'SUPERUSER'" scope="col" class="px-4 py-2 font-medium ">
+                    <!-- <th *ngIf="hasPermission('modifier_utilisateur')" scope="col" class="px-4 py-2 font-medium ">
                         <label  class="inline-flex items-center cursor-pointer">
                             <input  [disabled]="user.role !== 'SUPERUSER' && user.role !== 'ADMIN'" type="checkbox" [checked]="user.role === 'SUPERUSER'"
                                 (change)="onRoleToggleChange(user, $event)" class="sr-only peer">
                                 <div [ngClass]="{ 'bg-gray-200 dark:bg-gray-700 dark:after:bg-gray-500 after:border-gray-300 after:bg-gray-300 dark:after:border-gray-500': user.role !== 'SUPERUSER' && user.role !== 'ADMIN' , 'bg-gray-400 dark:bg-gray-500': user.role === 'SUPERUSER' || user.role === 'ADMIN'  }" class="relative w-9 h-5   rounded-full peer  peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-200 after:border-gray-100 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500 dark:peer-checked:bg-blue-500  peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-300"></div>
                             </label>
-                    </th>
+                    </th> -->
 
                     <!-- Toggle pour le statut : activé si ACTIVE, sinon désactivé -->
-                    <th *ngIf="Role === 'SUPERUSER'" scope="col" class="px-4 py-2 font-medium ">
+                    <th *ngIf="hasPermission('modifier_utilisateur')" scope="col" class="px-4 py-2 font-medium ">
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="checkbox" [checked]="user.status === 'ACTIVE'"
                                 (change)="onStatusToggleChange(user, $event)" class="sr-only peer">
@@ -196,7 +196,7 @@
 
 
                     <th class="px-4 py-2 text-right relative">
-                        <div class="relative inline-block text-left">
+                        <div *ngIf="hasPermission('supprimer_utilisateur')  || hasPermission('consulter_historique') || hasPermission('modifier_utilisateur')" class="relative inline-block text-left">
                             <button (click)="toggleDropdown(i, $event)"
                             [ngClass]="{'dark:bg-gray-600 bg-gray-300': dropdownOpen === i , ' bg-transparent': dropdownOpen !== i}"
                             class="p-1 dark:hover:bg-gray-600  hover:bg-gray-300 rounded-full focus:outline-none">
@@ -215,7 +215,7 @@
 
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 font-medium space-y-1">
 
-                                <li>
+                                <li *ngIf="hasPermission('modifier_utilisateur')">
                                     <a (click)="openUpdateForm(user)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                         <!-- Pencil Icon -->
                                         <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
@@ -223,7 +223,7 @@
                                             <path d="M13.5 6.5l4 4"></path><path d="M16 19h6"></path></svg>
                                         Modifier</a>
                                 </li>
-                                <li>
+                                <li *ngIf="hasPermission('consulter_historique')">
                                 <a class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- History Icon -->
                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
@@ -234,7 +234,7 @@
                                     Historique
                                 </a>
                                 </li>
-                                <li>
+                                <li  *ngIf="hasPermission('supprimer_utilisateur')">
                                 <a class="flex items-center  mx-1 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-600 hover:text-red-700 dark:hover:text-white rounded-lg cursor-pointer transition-all"
                                 (click)="openDeleteModel(user)">
                                     <!-- Trash Icon -->

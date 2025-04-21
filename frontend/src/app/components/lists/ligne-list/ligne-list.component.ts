@@ -6,10 +6,11 @@ import { User } from '../../../models/User';
 import { Ligne } from '../../../models/Ligne';
 import { LigneService } from '../../../services/ligne.service';
 import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
+import { LigneFormComponent } from "../../add/ligne-form/ligne-form.component";
 @Component({
   selector: 'app-ligne-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, LigneFormComponent],
   templateUrl: './ligne-list.component.html',
   styleUrl: './ligne-list.component.css'
 })
@@ -30,13 +31,13 @@ export class LigneListComponent {
   showUpdateModal = false;
 
   ngOnInit(){
-    this.getLignes();
-  }
-  deleteLigne(idLigne: number): void {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
+    this.getLignes();
+  }
+  deleteLigne(idLigne: number): void {
     this.ligneService.deleteLigne(idLigne! , this.userConnected.idUser! ).subscribe({
       next: () => {
         console.log('Ligne supprimée');
@@ -99,8 +100,19 @@ export class LigneListComponent {
     } else {
       const rect = button?.getBoundingClientRect();
       if (rect) {
-        const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
-        const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
+       // const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
+       let dropdownHeight = 0;
+
+       if (this.hasPermission('modifier_ligne')) {
+         dropdownHeight += 45.5; 
+       }
+       if (this.hasPermission('consulter_historique')) {
+         dropdownHeight += 45.5; 
+       }
+       if (this.hasPermission('supprimer_ligne')) {
+         dropdownHeight += 45.5; 
+       }
+        const spaceBelow = window.innerHeight - rect.bottom ;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
 
         this.displayAbove = spaceBelow < dropdownHeight;
 
@@ -145,5 +157,10 @@ export class LigneListComponent {
         ? dateB.getTime() - dateA.getTime()  // Tri décroissant
         : dateA.getTime() - dateB.getTime();  // Tri croissant
     });
+  }
+
+  hasPermission(permissionName: string): boolean {
+    const permissions = this.userConnected.groupe?.permissions || []; 
+    return permissions.some(permission => permission.nom === permissionName);  
   }
 }

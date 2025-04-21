@@ -8,6 +8,7 @@ import com.pfe.backend.Repository.GroupeRepository;
 import com.pfe.backend.Repository.MenuRepository;
 import com.pfe.backend.Repository.PermissionRepository;
 import com.pfe.backend.Repository.UserRepository;
+import com.pfe.backend.Service.ServiceUser.UserIservice;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class GroupeServiceImp implements GroupeService {
     private GroupeRepository groupeRepository;
     private MenuRepository menuRepository;
     private PermissionRepository permissionRepository;
+    private UserIservice userService;
     public ResponseEntity<?> addGroupe(Groupe groupe , Long idActionneur){
         User actionneur = userRepository.findById(idActionneur)
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
@@ -87,9 +89,8 @@ public class GroupeServiceImp implements GroupeService {
         return groupeRepository.findAll();
     }
 
-    //@Transactional //zedtha bech n7el el erreur ta3 stack overflow
     @Override
-    public Groupe addRelationsToGroup(Long groupId, List<Long> menuIds, List<Long> permissionIds, List<Long> userIds) {
+    public Groupe addRelationsToGroup(Long groupId, List<Long> menuIds, List<Long> permissionIds, List<Long> userIds , Long idActionneur) {
         Groupe groupe = groupeRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Groupe non trouvé"));
 
@@ -110,10 +111,11 @@ public class GroupeServiceImp implements GroupeService {
 
         List<User> selectedUsers = userRepository.findAllById(userIds);
         for (User user : selectedUsers) {
-            user.setGroupe(groupe);
+            //user.setGroupe(groupe);
+            userService.attribuerGroupe(user.getIdUser(), groupe.getIdGroupe(), idActionneur);
         }
 
-        groupe.setUsers(selectedUsers);
+        //groupe.setUsers(selectedUsers);
 
         return groupeRepository.save(groupe);
     }

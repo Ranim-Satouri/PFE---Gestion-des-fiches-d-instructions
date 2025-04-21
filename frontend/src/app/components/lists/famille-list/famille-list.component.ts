@@ -1,4 +1,4 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { User } from '../../../models/User';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { FamilleService } from '../../../services/famille.service';
 import { Famille } from '../../../models/Famille';
 import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { AddFamilleFormComponent } from "../../add/add-famille-form/add-famille-form.component";
-import { UpdateFamilleComponent } from "../../update/update-famille/update-famille.component";
+
 @Component({
   selector: 'app-famille-list',
   standalone: true,
@@ -30,10 +30,13 @@ export class FamilleListComponent {
   selectedFamille !: number ;
   FamilleToUpdate : Famille | undefined;
   showAddModal = false;
-  showUpdateModal = false;
   step : number = 1;  //men ajl el update 
 
   ngOnInit(){
+    const userFromLocalStorage = localStorage.getItem('user');
+    if (userFromLocalStorage) {
+      this.userConnected = JSON.parse(userFromLocalStorage);
+    }
     this.getFamilles();
   }
 
@@ -49,10 +52,6 @@ export class FamilleListComponent {
   }
 
   deleteFamille(idFamille: number | undefined): void {
-    const userFromLocalStorage = localStorage.getItem('user');
-    if (userFromLocalStorage) {
-      this.userConnected = JSON.parse(userFromLocalStorage);
-    }
     this.familleService.deleteFamille(idFamille || undefined , this.userConnected.idUser! ).subscribe({
       next: () => {
         console.log('Famille supprimée');
@@ -91,10 +90,6 @@ export class FamilleListComponent {
     this.dropdownOpen = null;
     this.showAddModal = true;
   }
-  closeUpdateForm() {
-    this.getFamilles();
-    this.showUpdateModal = false;
-  }
   // toggleDropdown(index: number, event: MouseEvent): void {
   //   const target = event.target as HTMLElement;
   //   const button = target.closest("button");
@@ -128,8 +123,22 @@ export class FamilleListComponent {
     } else {
       const rect = button?.getBoundingClientRect();
       if (rect) {
-        const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
-        const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
+        //const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
+        let dropdownHeight = 44.5;
+
+        if (this.hasPermission('modifier_famille')) {
+          dropdownHeight += 44.5; 
+        }
+        if (this.hasPermission('consulter_historique')) {
+          dropdownHeight += 44.5; 
+        }
+        if (this.hasPermission('supprimer_famille')) {
+          dropdownHeight += 44.5; 
+        }
+        // if () {
+        //   dropdownHeight += 44.5; 
+        // }
+        const spaceBelow = window.innerHeight - rect.bottom;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
 
         this.displayAbove = spaceBelow < dropdownHeight;
 
@@ -174,6 +183,11 @@ export class FamilleListComponent {
         ? dateB.getTime() - dateA.getTime()  // Tri décroissant
         : dateA.getTime() - dateB.getTime();  // Tri croissant
     });
+  }
+
+  hasPermission(permissionName: string): boolean {
+    const permissions = this.userConnected.groupe?.permissions || []; 
+    return permissions.some(permission => permission.nom === permissionName);  
   }
 
 }

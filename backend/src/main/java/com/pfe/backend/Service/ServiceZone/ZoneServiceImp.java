@@ -54,13 +54,13 @@ public class ZoneServiceImp implements ZoneService {
         zone.setDeleted(true);
         zone.getUserZones().clear();
         zone.setActionneur( actionneur);
-        List<Fiche> fiches = ficheRepo.findByZone(zone);
-        for (Fiche fiche : fiches) {
-            fiche.setStatus(Fiche.FicheStatus.DELETED);
-            fiche.setAction(Fiche.FicheAction.DELETE);
-            fiche.setActionneur(actionneur);
-        }
-        ficheRepo.saveAll(fiches);
+        //List<Fiche> fiches = ficheRepo.findByZone(zone);
+//        for (Fiche fiche : fiches) {
+//            fiche.setStatus(Fiche.FicheStatus.DELETED);
+//            fiche.setAction(Fiche.FicheAction.DELETE);
+//            fiche.setActionneur(actionneur);
+//        }
+//        ficheRepo.saveAll(fiches);
         zoneRepository.save(zone);
     }
     @Override

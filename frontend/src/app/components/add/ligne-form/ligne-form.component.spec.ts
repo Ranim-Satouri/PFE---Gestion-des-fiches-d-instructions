@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddLigneComponent } from './add-ligne.component';
+import { LigneFormComponent } from './ligne-form.component';
 
-describe('AddLigneComponent', () => {
-  let component: AddLigneComponent;
-  let fixture: ComponentFixture<AddLigneComponent>;
+describe('LigneFormComponent', () => {
+  let component: LigneFormComponent;
+  let fixture: ComponentFixture<LigneFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddLigneComponent]
+      imports: [LigneFormComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AddLigneComponent);
+    fixture = TestBed.createComponent(LigneFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

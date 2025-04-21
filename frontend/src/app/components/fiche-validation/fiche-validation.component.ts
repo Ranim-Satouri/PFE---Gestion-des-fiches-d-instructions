@@ -39,43 +39,63 @@ export class FicheValidationComponent {
    
   }
   
-  onStatusChange(fiche: Fiche): void {
-    if (this.userConnected.role === 'IPDF') {
+  isDropdownOpen = false;
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  getSelectedOptionText(fiche: Fiche): string {
+    switch (fiche.status) {
+      case FicheStatus.ACCEPTEDIPDF:
+        return 'Verifiée';
+      case FicheStatus.ACCEPTEDIQP:
+        return 'Approuvée';
+      case FicheStatus.REJECTEDIPDF:
+      case FicheStatus.REJECTEDIQP:
+        return 'Rejetée';
+      case FicheStatus.PENDING:
+      default:
+        return 'En attente';
+    }
+  }
+
+  onStatusChange(fiche: Fiche ): void {
+    //fiche.status = newStatus;
+    this.isDropdownOpen = false; 
+    console.log('Status changed:', fiche.status);
+      this.ficheToApprove = fiche;
+      this.ficheToReject = fiche;
+
       if (fiche.status === FicheStatus.ACCEPTEDIPDF) {
         this.approuverFicheIPDF(fiche, FicheStatus.ACCEPTEDIPDF);
       }
     
       if (fiche.status === FicheStatus.REJECTEDIPDF) {
         this.previousStatus = FicheStatus.PENDING; 
-        this.ficheToReject = fiche;
         this.rejetComment = '';
         this.isRejetModalOpen = true;
       }
-    } else {
-      this.ficheToApprove = fiche;
+   
       if (fiche.status === FicheStatus.ACCEPTEDIQP) {
         this.isUploadAQLModalOpen = true;
       }
     
       if (fiche.status === FicheStatus.REJECTEDIQP) {
         this.previousStatus = FicheStatus.PENDING; 
-        this.ficheToReject = fiche;
         this.rejetComment = '';
         this.isRejetModalOpen = true;
       }
-    }
   }
 
-  getValidationStatus(): FicheStatus {  //nee bech nchoufou kif yaaml apporuver chnaw status ywali selon role mta3 el sayed li approuva
-    return this.userConnected.role === 'IPDF'
-      ? FicheStatus.ACCEPTEDIPDF
-      : FicheStatus.ACCEPTEDIQP;
+  getValidationStatus(fiche : Fiche): FicheStatus {  
+    console.log('fiche status 1:', fiche.status , fiche.idFiche);
+    return fiche.status === FicheStatus.PENDING ? FicheStatus.ACCEPTEDIPDF: FicheStatus.ACCEPTEDIQP;
   }
 
-  getRefuStatus(): FicheStatus { 
-    return this.userConnected.role === 'IPDF'
-      ? FicheStatus.REJECTEDIPDF
-      : FicheStatus.REJECTEDIQP;
+  getRefuStatus(fiche : Fiche): FicheStatus { 
+    console.log('fiche status 2:', fiche.status , fiche.idFiche);
+    return fiche.status === FicheStatus.PENDING? FicheStatus.REJECTEDIPDF: FicheStatus.REJECTEDIQP;
   }
     
   
@@ -161,5 +181,9 @@ export class FicheValidationComponent {
   openCommentModal(commentaire: string) {
     this.rejetComment = commentaire;
     this.isCommentModalOpen = true;
+  }
+  hasPermission(permissionName: string): boolean {
+    const permissions = this.userConnected.groupe?.permissions || []; 
+    return permissions.some(permission => permission.nom === permissionName);  
   }
 }

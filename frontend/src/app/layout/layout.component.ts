@@ -1,8 +1,9 @@
-import { Component, HostListener, OnInit  } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, PLATFORM_ID  } from '@angular/core';
 import { ThemeService } from '../config/theme.service';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { User } from '../models/User';
+import { Menu } from '../models/Menu';
 @Component({
   selector: 'app-layout',
   standalone: true,
@@ -12,31 +13,33 @@ import { User } from '../models/User';
 })
 export class LayoutComponent {
   isDarkMode: boolean;
-  isSideBarOpen : boolean = true;
+  isSideBarOpen : boolean = JSON.parse(localStorage.getItem('sidebarState') || 'true');
   isSideBarHidden : boolean =true;
   isListOpen : Boolean = false;
-  selectedItem: string =localStorage.getItem('selectedSidebarItem') || '';;
   isPopUpOpen: boolean = false;
- 
-  setActive(item: string) {
-    this.selectedItem = item;
-    localStorage.setItem('selectedSidebarItem', item);
-  }
+  currentUser!: User;
+  matricule: string = '';
+  email: string = '';
+  nom: string = '';
+  menus !:Menu[]
 
-  constructor(private themeService: ThemeService) {
+  constructor(private themeService: ThemeService, private router: Router,@Inject(PLATFORM_ID) private platformId: Object) {
     this.isDarkMode = this.themeService.isDarkMode();
+    // try {
+    //   this.isSideBarOpen = JSON.parse(localStorage.getItem('sidebarState') || 'true');
+    // } catch (error) {
+    //   // console.warn("Erreur lors de la récupération de sidebarState:", error);
+    // }
+    if (isPlatformBrowser(this.platformId)) {
     try {
-      this.isSideBarOpen = JSON.parse(localStorage.getItem('sidebarState') || 'true');
+      this.currentUser = JSON.parse(localStorage.getItem('user')!);
+      this.matricule = this.currentUser.matricule;
+      this.email = this.currentUser.email;
+      this.nom = this.currentUser.nom;
+      this.menus = this.currentUser.groupe?.menus!;
     } catch (error) {
       // console.warn("Erreur lors de la récupération de sidebarState:", error);
-    }
-  }
-  currentUser!: User;
-  ngOnInit(): void {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      this.currentUser = JSON.parse(storedUser);
-    }
+    }  }
   }
 
   openList() {
@@ -69,6 +72,11 @@ export class LayoutComponent {
       this.isListOpen = false; // Ferme la liste
     }
   }
-  
+  getCurrentPath(): string {
+    return this.router.url;
+  }
+  hasMenu(menuName: string): boolean {
+    return this.menus.some(menu => menu.nom === menuName);  
+  }
 
 }

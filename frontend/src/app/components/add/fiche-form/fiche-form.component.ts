@@ -7,12 +7,13 @@ import {Produit} from '../../../models/Produit';
 import {ZoneService} from '../../../services/zone.service';
 import {Zone} from '../../../models/Zone'
 import {FicheService} from '../../../services/fiche.service';
-import { Fiche, FicheAction, FicheStatus } from '../../../models/Fiche';
+import { Fiche, FicheAction, FicheLigne, FicheOperation, FicheStatus, FicheZone } from '../../../models/Fiche';
 import { User } from '../../../models/User';
 import { Ligne } from '../../../models/Ligne';
 import { Operation } from '../../../models/Operation';
 import { LigneService } from '../../../services/ligne.service';
 import { OperationService } from '../../../services/operation.service';
+import { UserZoneService } from '../../../services/user-zone.service';
 @Component({
   selector: 'app-fiche-form',
   standalone: true,
@@ -25,15 +26,16 @@ import { OperationService } from '../../../services/operation.service';
   styleUrl: './fiche-form.component.css'
 })
 export class FicheFormComponent {
-  constructor(private produitService: ProduitService,private zoneService: ZoneService,private FicheService: FicheService , private ligneService : LigneService, private operationService: OperationService) {}
+  constructor(private produitService: ProduitService,private userZoneService: UserZoneService,private zoneService: ZoneService,private FicheService: FicheService , private ligneService : LigneService, private operationService: OperationService) {}
 
   @Output() close = new EventEmitter<void>();
-  @Input( ) fiche!: Fiche;
+  @Input( ) fiche!: FicheOperation | FicheLigne | FicheZone;
   userConnected !: User;
   successMessage: string = '';
   errorMessage = '';
   Form !: FormGroup ;
   isEditMode: boolean = false;
+  updated : boolean = false;
 
   showProduitDropdown = false;
   showLigneDropdown = false;
@@ -60,38 +62,105 @@ export class FicheFormComponent {
   ligneNames: string[] = [];
   operationNames: string[] = [];
 
- 
+  zoneSelected: boolean = false;
+  ligneSelected: boolean = false;
+  operationSelected: boolean = false;
 
-  ngOnInit() {
-    this.loadProduits(); // Charger les produits lors de l'initialisation
-    this.loadZones();
-    this.loadOperations();
-    this.loadLignes();
+  // ngOnInit() {
+  //   this.loadProduits(); // Charger les produits lors de l'initialisation
+  //   this.loadZones();
+  //   this.loadOperations();
+  //   this.loadLignes();
     
+  //   const userFromLocalStorage = localStorage.getItem('user');
+  //   if (userFromLocalStorage) {
+  //     this.userConnected = JSON.parse(userFromLocalStorage);
+  //   }
+
+  //   // Si une fiche est passée en entrée, on est en mode édition
+  //   if (this.fiche && this.fiche.idFiche) {
+  //     this.isEditMode = true;
+  //     this.produitSearch = `${this.fiche.produit.nomProduit} ${this.fiche.produit.ref} - ${this.fiche.produit.indice}`;
+  //     this.zoneSearch = this.fiche.zone.nom;
+  //     this.ligneSearch = this.fiche.ligne.nom;
+  //     this.operationSearch = this.fiche.operation.nom;
+
+  //     // Remplir le formulaire avec les données de la fiche existante
+  //     this.Form = new FormGroup({
+  //       produit: new FormControl(this.fiche.produit, [Validators.required]),
+  //       zone: new FormControl(this.fiche.zone, [Validators.required]),
+  //       ligne: new FormControl(this.fiche.ligne, []),
+  //       operation: new FormControl(this.fiche.operation, []),
+  //       fichier: new FormControl(null),
+  //     });
+  //   } else {
+  //     this.isEditMode = false;
+  //     // Initialiser le formulaire pour un ajout (vide ou avec des valeurs par défaut)
+  //     this.Form = new FormGroup({
+  //       produit: new FormControl('', [Validators.required]),
+  //       zone: new FormControl('', [Validators.required]),
+  //       ligne: new FormControl('', []),
+  //       operation: new FormControl('', []),
+  //       fichier: new FormControl('' , [Validators.required]),
+  //     });
+  //   }
+  // }
+  ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
-
-    // Si une fiche est passée en entrée, on est en mode édition
+    this.loadProduits(); 
+    this.loadZones();
+    this.loadOperations();
+    this.loadLignes();
+  
     if (this.fiche && this.fiche.idFiche) {
       this.isEditMode = true;
+      this.zoneSelected = true;
+      this.ligneSelected = true;
       this.produitSearch = `${this.fiche.produit.nomProduit} ${this.fiche.produit.ref} - ${this.fiche.produit.indice}`;
-      this.zoneSearch = this.fiche.zone.nom;
-      this.ligneSearch = this.fiche.ligne.nom;
-      this.operationSearch = this.fiche.operation.nom;
 
-      // Remplir le formulaire avec les données de la fiche existante
-      this.Form = new FormGroup({
-        produit: new FormControl(this.fiche.produit, [Validators.required]),
-        zone: new FormControl(this.fiche.zone, [Validators.required]),
-        ligne: new FormControl(this.fiche.ligne, []),
-        operation: new FormControl(this.fiche.operation, []),
-        fichier: new FormControl(null),
-      });
+      if (this.fiche.typeFiche === 'OPERATION') {
+        this.zoneSearch = this.fiche.operation?.ligne?.zone?.nom || '';
+        this.ligneSearch = this.fiche.operation?.ligne?.nom || '';
+        this.operationSearch = this.fiche.operation?.nom || '';
+
+        this.Form = new FormGroup({
+          produit: new FormControl(this.fiche.produit, [Validators.required]),
+          zone: new FormControl(this.fiche.operation?.ligne?.zone, [Validators.required]),
+          ligne: new FormControl(this.fiche.operation?.ligne, [Validators.required]), 
+          operation: new FormControl(this.fiche.operation, [Validators.required]), 
+          fichier: new FormControl(null),
+        });
+      } else if (this.fiche.typeFiche === 'ZONE') {
+        this.zoneSearch = this.fiche.zone?.nom || '';
+        this.ligneSearch = '';
+        this.operationSearch = '';
+
+        this.Form = new FormGroup({
+          produit: new FormControl(this.fiche.produit, [Validators.required]),
+          zone: new FormControl(this.fiche.zone, [Validators.required]),
+          ligne: new FormControl('', []), 
+          operation: new FormControl('', []), 
+          fichier: new FormControl(null),
+        });
+      } else if (this.fiche.typeFiche === 'LIGNE') {
+        this.zoneSearch = this.fiche.ligne?.zone?.nom || '';
+        this.ligneSearch = this.fiche.ligne?.nom || '';
+        this.operationSearch = '';
+
+        this.Form = new FormGroup({
+          produit: new FormControl(this.fiche.produit, [Validators.required]),
+          zone: new FormControl(this.fiche.ligne?.zone, [Validators.required]), 
+          ligne: new FormControl(this.fiche.ligne, [Validators.required]),
+          operation: new FormControl('', []), 
+          fichier: new FormControl(null),
+        });
+      }
     } else {
+      console.log('Aucune fiche trouvée, mode ajout activé.');
       this.isEditMode = false;
-      // Initialiser le formulaire pour un ajout (vide ou avec des valeurs par défaut)
       this.Form = new FormGroup({
         produit: new FormControl('', [Validators.required]),
         zone: new FormControl('', [Validators.required]),
@@ -102,18 +171,19 @@ export class FicheFormComponent {
     }
   }
 
+
   //load data
   loadProduits() {
     this.produitService.getAll().subscribe(produits => {
       this.produits = produits;
-      this.filteredProduits = produits; // Initialiser avec tous les produits
+      this.filteredProduits = produits; 
       this.produitNames = produits.map(produit => produit.nomProduit);
     });
   }
   loadLignes() {
     this.ligneService.getAll().subscribe(lignes => {
       this.lignes = lignes;
-      this.filteredLignes = lignes; // Initialiser avec tous les lignes
+      this.filteredLignes = lignes; 
       this.ligneNames= lignes.map(ligne => ligne.nom);
   })};
   loadOperations() {
@@ -123,11 +193,14 @@ export class FicheFormComponent {
       this.operationNames= operations.map(operation => operation.nom);
   })};
   loadZones() {
-    this.zoneService.getAll().subscribe(zones => {
+    console.log(this.userConnected.idUser!);
+    this.userZoneService.getUserZones(this.userConnected.idUser!).subscribe(userZones => {
+      const zones = userZones.map(zone => zone.zone);
       this.zones = zones;
-      this.filteredZones = zones; // Initialiser avec tous les zones
+      this.filteredZones = zones; 
       this.zoneNames= zones.map(zone => zone.nom);
-  })};
+  })
+};
 
   // Gérer l'événement de saisie dans l'input pour recherche
   onProduitSearchChange(event: Event) {
@@ -192,34 +265,45 @@ export class FicheFormComponent {
   // Gerer la selection
   selectProduit(produit: Produit) {
     this.Form.get('produit')?.setValue(produit);
-    console.log('✅ Produit sélectionné :', produit);
     this.produitSearch = `${produit.nomProduit} ${produit.ref} - ${produit.indice}`;
-    console.log('✅ Produit sélectionné :', this.Form.get('produit')?.value);
-    this.showProduitDropdown = false; // Fermer le dropdown
+    this.showProduitDropdown = false; 
+    this.updated = true;
 
   }
   selectZone(zone : Zone) {
     this.Form.get('zone')?.setValue(zone);
-    console.log('✅ Zone sélectionné :', zone);
     this.zoneSearch = zone.nom;
-    console.log('✅ Zone sélectionné :', this.Form.get('zone')?.value);
-    this.showZoneDropdown = false; // Fermer le dropdown
+    this.showZoneDropdown = false; 
+    if(this.zoneSelected) {
+      this.clearLigneSearch();
+      this.clearOperationSearch();
+    }else{
+      this.zoneSelected = true;
+    }
+    this.filteredLignes = this.lignes.filter(ligne => ligne.zone.idZone === zone.idZone);
+    this.updated = true;
 
   }
   selectLigne(ligne : Ligne) {
     this.Form.get('ligne')?.setValue(ligne);
-    console.log('✅ Ligne sélectionné :', ligne);
     this.ligneSearch = ligne.nom;
-    console.log('✅ Ligne sélectionné :', this.Form.get('ligne')?.value);
-    this.showLigneDropdown = false; // Fermer le dropdown
+    this.showLigneDropdown = false; 
+    this.ligneSelected = true;
+    if(this.ligneSelected) {
+      this.clearOperationSearch();
+    }else{
+      this.ligneSelected = true;
+    }
+    this.filteredOperations = this.operations.filter(operation => operation.ligne.idLigne === ligne.idLigne);
+    this.updated = true;
 
   }
   selectOperation(operation : Operation) {
     this.Form.get('operation')?.setValue(operation);
-    console.log('✅ Operation sélectionné :', operation);
     this.operationSearch = operation.nom;
-    console.log('✅ Operation sélectionné :', this.Form.get('operation')?.value);
-    this.showOperationDropdown = false; // Fermer le dropdown
+    this.showOperationDropdown = false; 
+    this.operationSelected = true;
+    this.updated = true;
 
   }
 
@@ -237,18 +321,23 @@ export class FicheFormComponent {
     this.showZoneDropdown = false;
     this.showProduitDropdown = false;
     this.showOperationDropdown = false;
-    this.showLigneDropdown = !this.showLigneDropdown;
-    if (this.showLigneDropdown) {
-      this.filteredLignes=this.lignes;
+    //this.showLigneDropdown = !this.showLigneDropdown;
+    if (!this.showLigneDropdown && this.zoneSelected) {
+      this.showLigneDropdown = true;
+    }else{
+      this.showLigneDropdown = false;
     }
   }
   toggleOperationDropdown() {
     this.showZoneDropdown = false;
     this.showLigneDropdown = false;
     this.showProduitDropdown = false;
-    this.showOperationDropdown = !this.showOperationDropdown;
-    if (this.showOperationDropdown) {
-      this.filteredOperations=this.operations;
+    //this.showOperationDropdown = !this.showOperationDropdown;
+
+    if (!this.showOperationDropdown && this.ligneSelected) {
+      this.showOperationDropdown = true;
+    }else{
+      this.showOperationDropdown = false;
     }
   }
   toggleZoneDropdown() {
@@ -257,7 +346,6 @@ export class FicheFormComponent {
     this.showLigneDropdown = false;
     this.showZoneDropdown = !this.showZoneDropdown;
     if (this.showZoneDropdown) {
-      this.filteredZones=this.zones;
     }
   }
 
@@ -267,6 +355,7 @@ export class FicheFormComponent {
     this.Form.get('ligne')?.setValue(null);
     this.filteredLignes = this.lignes;
     this.showLigneDropdown = false;
+    this.clearOperationSearch();
   }
   clearOperationSearch() {
     this.operationSearch = '';
@@ -285,6 +374,8 @@ export class FicheFormComponent {
     this.Form.get('zone')?.setValue(null);
     this.filteredZones = this.zones;
     this.showZoneDropdown = false;
+    this.zoneSelected = false;
+    this.clearLigneSearch();
   }
 
   // selection de fiche dinstruction pdf
@@ -292,6 +383,8 @@ export class FicheFormComponent {
     const file = event.target.files[0];
     this.Form.get('fichier')?.setValue(file);
     this.Form.get('fichier')?.markAsTouched();
+    this.updated = true;
+
   }
 
   @HostListener('document:click', ['$event'])
@@ -327,7 +420,19 @@ export class FicheFormComponent {
       }
   }
 
-  // traitement ajout et update
+  // les methodes 
+
+  getTypeFiche(): 'ZONE' | 'LIGNE' | 'OPERATION' {
+    if (this.Form.value.operation) { 
+      return 'OPERATION';
+    } else if (this.Form.value.ligne  ) {
+      return 'LIGNE';
+    } else if (this.Form.value.zone) {
+      return 'ZONE';
+    }
+    throw new Error('Fiche type invalide');  
+  }
+
   addFiche() {
     if (this.Form.valid) {
       const produit: Produit = this.Form.value.produit;
@@ -335,49 +440,68 @@ export class FicheFormComponent {
       const file: File = this.Form.value.fichier;
       const ligne: Ligne = this.Form.value.ligne;
       const operation: Operation = this.Form.value.operation;
-      const fiche : Fiche = {
-        status: FicheStatus.PENDING,
-        commentaire: '',
-        ficheAQL: '',
-        pdf: '',
-        action: FicheAction.INSERT,
-        produit: produit,
-        zone: zone,
-        preparateur: this.userConnected,
-        ipdf: this.userConnected,
-        iqp: this.userConnected,
-        actionneur: this.userConnected,
-        ligne : ligne,
-        operation : operation,
-      }
-         
-      console.log(fiche);
+    
       this.FicheService.uploadPDF( file).subscribe({
         next: (response) => {
           console.log('Fichier stocker avec succès !', response);
-          fiche.pdf = response.fileName;
-          this.FicheService.addFiche(fiche).subscribe({
+          if (this.getTypeFiche() === 'OPERATION') {
+            this.fiche  =  {
+              status: FicheStatus.PENDING,
+              commentaire: '',
+              ficheAQL: '',
+              pdf:  response.fileName,
+              action: FicheAction.INSERT,
+              produit: produit,
+              preparateur: this.userConnected,
+              ipdf: this.userConnected,
+              iqp: this.userConnected,
+              actionneur: this.userConnected,
+              typeFiche: 'OPERATION',
+              operation: operation, 
+            }
+          } else if (this.getTypeFiche() === 'LIGNE') {
+            this.fiche  =  {
+              status: FicheStatus.PENDING,
+              commentaire: '',
+              ficheAQL: '',
+              pdf: response.fileName,
+              action: FicheAction.INSERT,
+              produit: produit,
+              preparateur: this.userConnected,
+              ipdf: this.userConnected,
+              iqp: this.userConnected,
+              actionneur: this.userConnected,
+              typeFiche: 'LIGNE',
+              ligne: ligne, 
+            }
+          } else if (this.getTypeFiche() === 'ZONE') {
+            this.fiche  =  {
+              status: FicheStatus.PENDING,
+              commentaire: '',
+              ficheAQL: '',
+              pdf: response.fileName,
+              action: FicheAction.INSERT,
+              produit: produit,
+              preparateur: this.userConnected,
+              ipdf: this.userConnected,
+              iqp: this.userConnected,
+              actionneur: this.userConnected,
+              typeFiche: 'ZONE',
+              zone: zone, 
+            }
+          }
+          this.FicheService.addFiche(this.fiche).subscribe({
             next: (response) => {
               console.log('Fichier attaché avec succès', response);
               this.successMessage = `Fiche d'instruction ajouté avec succès !`;
-            this.errorMessage=''
-            setTimeout(() => {
-              this.close.emit();
-              this.successMessage = '';
-            }, 2000);
-            this.Form.reset();
-            // this.pdfFilename = response.pdf; // si backend renvoie un nom ou une URL
-           
-            // this.produitSearch = '';
-            // this.zoneSearch = '';
-            // this.filteredProduits = this.produits;
-            // this.filteredZones = this.zones;
-            // const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-            // if (fileInput) {
-            //   fileInput.value = '';
-            // }
+              this.errorMessage=''
+              setTimeout(() => {
+                this.close.emit();
+                this.successMessage = '';
+              }, 2000);
+              this.Form.reset();
             },
-            error: (err) => { 
+            error: (err) => {
               this.successMessage = '';
               console.error('Erreur lors de l’upload du fichier', err)
               this.errorMessage = 'Une erreur inattendue est survenue.';
@@ -387,7 +511,7 @@ export class FicheFormComponent {
               }, 4000);
             }
           });
-          
+
         },
         error: (err) => {
           console.error('Erreur lors de la création de la fiche !', err);
@@ -400,39 +524,61 @@ export class FicheFormComponent {
     }
   }
   updateFicheAndFile() {
-    console.log('✅ Produit sélectionné :', this.Form.get('produit')?.value);
-    console.log('✅ Zone sélectionnée :', this.Form.get('zone')?.value);
-    console.log('✅ Fichier sélectionné :', this.Form.get('fichier')?.value);
-    console.log('✅ Ligne sélectionnée :', this.Form.get('ligne')?.value);
-    console.log('✅ Operation sélectionnée :', this.Form.get('operation')?.value);
     if (this.Form.valid) {
       const produit: Produit = this.Form.value.produit;
       const zone: Zone = this.Form.value.zone;
       const file: File = this.Form.value.fichier;
       const ligne: Ligne = this.Form.value.ligne;
       const operation: Operation = this.Form.value.operation;
-      if(produit != this.fiche.produit || zone != this.fiche.zone || file != null){ 
-        const fiche = { ...this.fiche };
-        fiche.produit = produit;
-        fiche.zone = zone;
-        fiche.ligne = ligne;
-        fiche.operation = operation;
-        console.log(fiche);
+      console.log('produit', produit);
+      console.log('zone', zone);
+      console.log('ligne', ligne);
+      console.log('operation', operation);
+      console.log('fiche', this.fiche);
+      console.log('boolean', produit != this.fiche.produit || zone != this.fiche.zone || ligne != this.fiche.ligne || operation != this.fiche.operation);
+      if(this.updated){ 
+        if (this.getTypeFiche() === 'ZONE') {
+          this.fiche = {
+            ...this.fiche,
+            produit: produit,
+            actionneur: this.userConnected,
+            typeFiche: 'ZONE',
+            zone: zone
+          } as FicheZone;
+        } else if (this.getTypeFiche() === 'LIGNE') {
+          this.fiche = {
+            ...this.fiche,
+            produit: produit,
+            actionneur: this.userConnected,
+            typeFiche: 'LIGNE',
+            ligne: ligne,  // Spécifique à FicheLigne
+          } as FicheLigne;
+        } else if (this.getTypeFiche() === 'OPERATION') {
+          this.fiche = {
+            ...this.fiche,
+            produit: produit,
+            actionneur: this.userConnected,
+            typeFiche: 'OPERATION',
+            operation: operation,  // Spécifique à FicheOperation
+          } as FicheOperation;
+        }
         if(file){
-          this.FicheService.uploadPDF( file).subscribe({
+          this.FicheService.uploadPDF(file).subscribe({
             next: (response) => {
               console.log('Fichier pdf stocker avec succès !', response);
-              fiche.pdf = response.fileName;
-              fiche.status = FicheStatus.PENDING;
-              this.updateFiche(fiche);
+              this.fiche.pdf = response.fileName;
+              this.fiche.status = FicheStatus.PENDING;
+              this.updateFiche();
             },
             error: (err) => {
               console.error('Erreur lors de la modification de la fiche !', err);
             }
           });
         }else{
-          this.updateFiche(fiche);
+          this.updateFiche();
         }
+      }else{
+        this.close.emit(); 
       }
       
     } else {
@@ -440,8 +586,8 @@ export class FicheFormComponent {
       this.Form.markAllAsTouched();
     }
   }
-  updateFiche(fiche: Fiche) {
-    this.FicheService.updateFiche(fiche).subscribe({
+  updateFiche() {
+    this.FicheService.updateFiche(this.fiche).subscribe({
       next: (response) => {
         console.log('Fichier attaché avec succès', response);
         this.successMessage = `Fiche d'instruction modifié avec succès !`;
@@ -466,6 +612,150 @@ export class FicheFormComponent {
   closeForm() {
     this.close.emit();
   }
+
+
+    //Add Fiche ++++++++++++++++++++++++++++++++++++++++++++++
+  // addFiche() {
+  //   if (this.Form.valid) {
+  //     const produit: Produit = this.Form.value.produit;
+  //     const zone: Zone = this.Form.value.zone;
+  //     const file: File = this.Form.value.fichier;
+  //     const ligne: Ligne = this.Form.value.ligne;
+  //     const operation: Operation = this.Form.value.operation;
+     
+  //     this.FicheService.uploadPDF( file).subscribe({
+  //       next: (response) => {
+  //         console.log('Fichier stocker avec succès !', response);
+  //         if (this.getTypeFiche() === 'OPERATION') {
+  //           const ficheOp : FicheOperation =  {
+  //             status: FicheStatus.PENDING,
+  //             commentaire: '',
+  //             ficheAQL: '',
+  //             pdf:  response.fileName,
+  //             action: FicheAction.INSERT,
+  //             produit: produit,
+  //             preparateur: this.userConnected,
+  //             ipdf: this.userConnected,
+  //             iqp: this.userConnected,
+  //             actionneur: this.userConnected,
+  //             typeFiche: 'OPERATION',
+  //             operation: operation, 
+  //           }
+  //           this.addFicheOperation(ficheOp);
+  //         } else if (this.getTypeFiche() === 'LIGNE') {
+  //           const ficheLigne : FicheLigne =  {
+  //             status: FicheStatus.PENDING,
+  //             commentaire: '',
+  //             ficheAQL: '',
+  //             pdf: response.fileName,
+  //             action: FicheAction.INSERT,
+  //             produit: produit,
+  //             preparateur: this.userConnected,
+  //             ipdf: this.userConnected,
+  //             iqp: this.userConnected,
+  //             actionneur: this.userConnected,
+  //             typeFiche: 'LIGNE',
+  //             ligne: ligne, 
+  //           }
+  //           this.addFicheLigne(ficheLigne);
+  //         } else if (this.getTypeFiche() === 'ZONE') {
+  //           const ficheZone : FicheZone = {
+  //             status: FicheStatus.PENDING,
+  //             commentaire: '',
+  //             ficheAQL: '',
+  //             pdf: response.fileName,
+  //             action: FicheAction.INSERT,
+  //             produit: produit,
+  //             preparateur: this.userConnected,
+  //             ipdf: this.userConnected,
+  //             iqp: this.userConnected,
+  //             actionneur: this.userConnected,
+  //             typeFiche: 'ZONE',
+  //             zone: zone, 
+  //           }
+  //           this.addFicheZone(ficheZone);
+  //         }
+  //       },
+  //       error: (err) => {
+  //         console.error('Erreur lors de la création de la fiche !', err);
+  //       }
+  //     });
+      
+  //   } else {
+  //     console.warn('Formulaire invalide.');
+  //     this.Form.markAllAsTouched();
+  //   }
+  // }
+
+  // addFicheOperation(fiche: FicheOperation) {
+  //   this.FicheService.addFicheOperation(fiche).subscribe({
+  //     next: (response) => {
+  //       console.log('Fichier attaché avec succès', response);
+  //       this.successMessage = `Fiche d'instruction ajouté avec succès !`;
+  //       this.errorMessage=''
+  //       setTimeout(() => {
+  //         this.close.emit();
+  //         this.successMessage = '';
+  //       }, 2000);
+  //       this.Form.reset();
+  //     },
+  //     error: (err) => {
+  //       this.successMessage = '';
+  //       console.error('Erreur lors de l’upload du fichier', err)
+  //       this.errorMessage = 'Une erreur inattendue est survenue.';
+  //       setTimeout(() => {
+  //         this.errorMessage = '';
+  //       }, 4000);
+  //     }
+  //   });
+  // }
+
+  // addFicheLigne(fiche: FicheLigne) {
+  //   this.FicheService.addFicheLigne(fiche).subscribe({
+  //     next: (response) => {
+  //       console.log('Fichier attaché avec succès', response);
+  //       this.successMessage = `Fiche d'instruction ajouté avec succès !`;
+  //       this.errorMessage=''
+  //       setTimeout(() => {
+  //         this.close.emit();
+  //         this.successMessage = '';
+  //       }, 2000);
+  //       this.Form.reset();
+  //     },
+  //     error: (err) => {
+  //       this.successMessage = '';
+  //       console.error('Erreur lors de l’upload du fichier', err)
+  //       this.errorMessage = 'Une erreur inattendue est survenue.';
+  //       setTimeout(() => {
+  //         this.errorMessage = '';
+  //       }, 4000);
+  //     }
+  //   });
+  // }
+
+  // addFicheZone(fiche: FicheZone) {
+  //   this.FicheService.addFicheZone(fiche).subscribe({
+  //     next: (response) => {
+  //       console.log('Fichier attaché avec succès', response);
+  //       this.successMessage = `Fiche d'instruction ajouté avec succès !`;
+  //       this.errorMessage=''
+  //       setTimeout(() => {
+  //         this.close.emit();
+  //         this.successMessage = '';
+  //       }, 2000);
+  //       this.Form.reset();
+  //     },
+  //     error: (err) => {
+  //       this.successMessage = '';
+  //       console.error('Erreur lors de l’upload du fichier', err)
+  //       this.errorMessage = 'Une erreur inattendue est survenue.';
+  //       setTimeout(() => {
+  //         this.errorMessage = '';
+  //       }, 4000);
+  //     }
+  //   });
+  // }
+  // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 }
 

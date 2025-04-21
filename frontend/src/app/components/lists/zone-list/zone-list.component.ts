@@ -9,8 +9,8 @@ import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.comp
 import { UserZoneAssignComponent } from "../../add/user-zone-assign/user-zone-assign.component";
 import { FilterPipe } from '../../../pipes/filter.pipe';
 import { Console } from 'console';
-import { UpdateZoneComponent } from "../../update/update-zone/update-zone.component";
 import { AddZoneFormComponent } from "../../add/add-zone-form/add-zone-form.component";
+import { UpdateZoneComponent } from '../../add/update-zone/update-zone.component';
 
 @Component({
   selector: 'app-zone-list',
@@ -39,7 +39,12 @@ export class ZoneListComponent {
   ngOnInit() {
     this.getZones();
   }
-
+  getUserConnected(){
+    const userFromLocalStorage = localStorage.getItem('user');
+    if (userFromLocalStorage) {
+      this.userConnected = JSON.parse(userFromLocalStorage);
+    }
+  }
   getZones() {
     this.zoneService.getAll().subscribe({
       next : (response :Zone[]) => {
@@ -53,10 +58,7 @@ export class ZoneListComponent {
     });
   }
   deleteZone(idZone: number | undefined ): void {
-    const userFromLocalStorage = localStorage.getItem('user');
-    if (userFromLocalStorage) {
-      this.userConnected = JSON.parse(userFromLocalStorage);
-    }
+    this.getUserConnected();
     this.zoneService.deleteZone(idZone || undefined , this.userConnected.idUser || 1  ).subscribe({
       next: () => {
         console.log('Zone supprimée');
@@ -86,8 +88,22 @@ export class ZoneListComponent {
     } else {
       const rect = button?.getBoundingClientRect();
       if (rect) {
-        const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
-        const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
+        //const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
+        let dropdownHeight = 44.5;
+
+        if (this.hasPermission('modifier_zone')) {
+          dropdownHeight += 44.5; 
+        }
+        if (this.hasPermission('consulter_historique')) {
+          dropdownHeight += 44.5; 
+        }
+        if (this.hasPermission('supprimer_zone')) {
+          dropdownHeight += 44.5; 
+        }
+        // if () {
+        //   dropdownHeight += 44.5; 
+        // }
+        const spaceBelow = window.innerHeight - rect.bottom ;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
 
         this.displayAbove = spaceBelow < dropdownHeight;
 
@@ -162,5 +178,11 @@ export class ZoneListComponent {
         ? dateB.getTime() - dateA.getTime()  // Tri décroissant
         : dateA.getTime() - dateB.getTime();  // Tri croissant
     });
+  }
+
+  hasPermission(permissionName: string): boolean {
+    this.getUserConnected();
+    const permissions = this.userConnected.groupe?.permissions || []; 
+    return permissions.some(permission => permission.nom === permissionName);  
   }
 }

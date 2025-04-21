@@ -6,6 +6,6 @@ export interface Ligne {
     nom: string;  
     modifieLe?: Date;
     actionneur?: User;
-    zone? : Zone;
+    zone : Zone;
 }
   

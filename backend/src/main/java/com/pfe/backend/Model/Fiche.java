@@ -1,24 +1,29 @@
 package com.pfe.backend.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.RelationTargetAuditMode;
-
 import java.time.LocalDateTime;
-import java.util.List;
 import org.hibernate.envers.Audited;
-import org.springframework.data.annotation.LastModifiedDate;
+
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "typeFiche")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = FicheZone.class, name = "ZONE"),
+        @JsonSubTypes.Type(value = FicheLigne.class, name = "LIGNE"),
+        @JsonSubTypes.Type(value = FicheOperation.class, name = "OPERATION")})
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @Audited
-
 public class Fiche {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,12 +40,8 @@ public class Fiche {
 
     private LocalDateTime expirationDate;
 
-    //@Lob
-    //@Column(columnDefinition = "LONGBLOB")
     private String pdf;
 
-    //@Lob
-    //@Column(columnDefinition = "LONGBLOB")
     private String ficheAQL;
 
     @Enumerated(EnumType.STRING)
@@ -54,12 +55,10 @@ public class Fiche {
     @Column(name = "modifie_le", nullable = false)
     private LocalDateTime modifieLe = LocalDateTime.now(); // Ajoute une valeur par défaut
 
-
-    @ManyToOne(cascade = CascadeType.ALL) // Plusieurs fiches peuvent appartenir à une seule zone
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @JoinColumn(name = "idZone", nullable = false) // Clé étrangère
-    private Zone zone;
-
+    //@ManyToOne(cascade = CascadeType.ALL) // Plusieurs fiches peuvent appartenir à une seule zone
+    //@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    //@JoinColumn(name = "idZone", nullable = false) // Clé étrangère
+    //private Zone zone;
 
     @ManyToOne(cascade = CascadeType.ALL) // Plusieurs fiches peuvent appartenir à une seule zone
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -82,7 +81,20 @@ public class Fiche {
     @JoinColumn(name = "idActionneur", nullable = false)
     private User actionneur;
 
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "idZone", nullable = true)
+//    private Zone zone;
+//
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "idLigne", nullable = true)
+//    private Ligne ligne;
+//
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "idOperation", nullable = true)
+//    private Operation operation;
 
-
+    @JsonProperty("typeFiche")
+    @Column(name = "type_fiche")
+    private String typeFiche;
 }
 

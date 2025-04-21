@@ -6,24 +6,6 @@ import { Zone } from "./Zone";
 
 
 
-export interface Fiche {
-  idFiche?: number;
-  status: FicheStatus;
-  commentaire: string;
-  expirationDate?: Date;
-  pdf: string;
-  modifieLe?: Date;
-  ficheAQL?: string;
-  action: FicheAction;
-  zone: Zone;
-  produit: Produit;
-  preparateur: User;
-  ipdf?: User;
-  iqp?: User;
-  actionneur: User;
-  ligne : Ligne;
-  operation : Operation;
-}
 
 export enum FicheStatus {
   PENDING = "PENDING",
@@ -41,3 +23,39 @@ export enum FicheAction {
   DELETE = "DELETE",
   APPROUVE = "APPROUVE"
 }
+
+export interface FicheBase {
+  idFiche?: number;
+  status: FicheStatus;
+  commentaire: string;
+  expirationDate?: Date;
+  pdf: string;
+  modifieLe?: Date;
+  ficheAQL?: string;
+  action: FicheAction;
+  preparateur: User;
+  ipdf?: User;
+  iqp?: User;
+  produit: Produit;
+  actionneur: User;
+  typeFiche: string;
+}
+export interface FicheZone extends FicheBase {
+  zone?: Zone;
+  ligne?: Ligne | null;
+  operation?: Operation | null;
+}
+
+export interface FicheLigne extends FicheBase {
+  ligne?: Ligne;
+  zone?: Zone | null;
+  operation?: Operation | null;
+}
+
+export interface FicheOperation extends FicheBase {
+  operation?: Operation;
+  zone?: Zone | null;
+  ligne?: Ligne | null;
+}
+
+export type Fiche = FicheZone | FicheLigne | FicheOperation;

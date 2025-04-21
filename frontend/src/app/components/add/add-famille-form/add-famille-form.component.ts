@@ -147,7 +147,7 @@ export class AddFamilleFormComponent {
   selectAllZones(event: Event ) {
     const isChecked = (event.target as HTMLInputElement).checked;
     if (isChecked) {
-      this.zones.forEach(zone => this.selectedZones.add(zone.idZone!));
+      this.filteredZones.forEach(zone => this.selectedZones.add(zone.idZone!));
     } else {
       this.selectedZones.clear();
     }

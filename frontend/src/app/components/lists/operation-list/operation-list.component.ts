@@ -34,6 +34,12 @@ export class OperationListComponent {
     this.getOperations();
   }
 
+  getUserConnected(){
+    const userFromLocalStorage = localStorage.getItem('user');
+    if (userFromLocalStorage) {
+      this.userConnected = JSON.parse(userFromLocalStorage);
+    }
+  }
   getOperations() {
     this.operationService.getAll().subscribe({
       next : (response :Operation[]) => {
@@ -46,10 +52,7 @@ export class OperationListComponent {
     });
   }
   deleteOperation(idOperation: number): void {
-    const userFromLocalStorage = localStorage.getItem('user');
-    if (userFromLocalStorage) {
-      this.userConnected = JSON.parse(userFromLocalStorage);
-    }
+   this.getUserConnected();
     this.operationService.deleteOperation(idOperation! , this.userConnected.idUser! ).subscribe({
       next: () => {
         console.log('Operation supprimée');
@@ -100,8 +103,19 @@ export class OperationListComponent {
     } else {
       const rect = button?.getBoundingClientRect();
       if (rect) {
-        const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
-        const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
+        //const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
+        let dropdownHeight = 0;
+
+        if (this.hasPermission('modifier_operation')) {
+          dropdownHeight += 45.5; 
+        }
+        if (this.hasPermission('consulter_historique')) {
+          dropdownHeight += 45.5; 
+        }
+        if (this.hasPermission('supprimer_operation')) {
+          dropdownHeight += 45.5; 
+        }
+        const spaceBelow = window.innerHeight - rect.bottom ;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
 
         this.displayAbove = spaceBelow < dropdownHeight;
 
@@ -147,5 +161,10 @@ export class OperationListComponent {
         ? dateB.getTime() - dateA.getTime()  // Tri décroissant
         : dateA.getTime() - dateB.getTime();  // Tri croissant
     });
+  }
+  hasPermission(permissionName: string): boolean {
+    this.getUserConnected();
+    const permissions = this.userConnected.groupe?.permissions || []; 
+    return permissions.some(permission => permission.nom === permissionName);  
   }
 }

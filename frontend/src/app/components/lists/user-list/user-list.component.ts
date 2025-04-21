@@ -59,7 +59,7 @@ export class UserListComponent implements AfterViewInit, OnDestroy {
       this.userConnected = JSON.parse(userFromLocalStorage);
       this.Role=this.userConnected.role;
       this.loadGroupes();
-     }
+    }
     this.getUsers();
     this.zoneService.getAll().subscribe({
       next: (zones: Zone[]) => {
@@ -171,7 +171,6 @@ filterUsersByZones() {
     );
   }
   selectGroupe(groupe: Groupe) {
-    console.log('✅ Groupe sélectionné :', groupe);
     this.searchText = groupe.nom;
     this.selectedGroupe = groupe;
     this.showDropdown = false;
@@ -184,7 +183,9 @@ filterUsersByZones() {
     this.showDropdown = true;
       setTimeout(() => {
         console.log('onSearchChange: Adjusting dropdown position');
-        this.adjustDropdownPosition(); }, 100);}
+        this.adjustDropdownPosition(); }, 100);
+  }
+
   applyFilters() {
     let filtered = [...this.users];
     // Filter by Zone
@@ -194,7 +195,8 @@ filterUsersByZones() {
         return user.zones.some(
           (zone: Zone) =>
             zone.idZone !== undefined &&
-            this.selectedZones.includes(zone.idZone));});}
+            this.selectedZones.includes(zone.idZone));});
+    }
     // Filter by Status
     if (this.selectedStatus) {
       filtered = filtered.filter((user) => user.status === this.selectedStatus);
@@ -208,13 +210,16 @@ filterUsersByZones() {
     this.filteredUsers = filtered;
     this.cdr.detectChanges();
   }
+
   getSelectedZoneNames(): string {
     if (this.selectedZones.length === 0) {
       return 'Sélectionner des zones';
     }
     const selected = this.zones.filter(
       (z) => z.idZone !== undefined && this.selectedZones.includes(z.idZone)
-    ); return selected.map((z) => z.nom).join(', ');}
+    ); return selected.map((z) => z.nom).join(', ');
+  }
+
   // Status filter handler
   onStatusChange() {this.applyFilters(); }
   
@@ -223,7 +228,8 @@ filterUsersByZones() {
     if (this.showDropdown) {
       this.filterGroupes();
         setTimeout(() => { console.log('toggleDropdown2: Adjusting dropdown position');
-        this.adjustDropdownPosition();}, 100);}}
+        this.adjustDropdownPosition();}, 100);}
+    }
 
   @HostListener('document:click', ['$event'])
   closeDropdown2(event: MouseEvent) {
@@ -235,18 +241,23 @@ filterUsersByZones() {
       dropdown && !dropdown.contains(target) &&!button)
        {this.showDropdown = false; }
   }
+
   openUpdateForm(user: User) {
     this.selectedUser=user;
     this.showForm = true;
-    }
-    closeRegisterForm() {
-      this.hideRegisterForm();
-      this.selectedUser=null;
-    }
-    onUserUpdated() {
-      this.getUsers(); // Refresh the user list after update
-      this.closeRegisterForm();
-    }
+    this.dropdownOpen = null;
+  }
+
+  closeRegisterForm() {
+    this.hideRegisterForm();
+    this.selectedUser=null;
+  }
+
+  onUserUpdated() {
+    this.getUsers(); // Refresh the user list after update
+    this.closeRegisterForm();
+  }
+
   getUsers() {
     this.userService.getAll().subscribe({
       next: (users: User[]) => {
@@ -280,6 +291,7 @@ filterUsersByZones() {
       },
     });
   }
+
   getZoneNames(user: User): string {
     if (user.zones && user.zones.length > 0) {
       return user.zones.map(zone => zone.nom).join(', ');
@@ -288,8 +300,6 @@ filterUsersByZones() {
   }
 
   onRoleToggleChange(user: User, event: any) {
-    console.log("ken",user.role);
-
     if(user.role === Role.ADMIN){
       user.role = Role.SUPERUSER;
     }else{
@@ -303,6 +313,7 @@ filterUsersByZones() {
       }
     });
   }
+
   onStatusToggleChange(user: User, event: any) {
       console.log("status", user.status);
       if(user.status === UserStatus.ACTIVE){
@@ -312,15 +323,17 @@ filterUsersByZones() {
       }
      this.ChangeUserStatus(user.idUser,user.status)
   }
+
   openDeleteModel(user : User){
       this.selectedUser = user;
       this.dropdownOpen = null;
       this.isDeleteModelOpen = true;
-    }
+  }
+
   closeDeleteModel(){
     this.isDeleteModelOpen = false;
-
   }
+
   ChangeUserStatus(idUser : number | undefined , status : UserStatus){
     this.userService.ChangeStatus(idUser , this.userConnected.idUser , status).subscribe({
       next : (response :any[]) => {
@@ -345,7 +358,19 @@ filterUsersByZones() {
     } else {
       const rect = button?.getBoundingClientRect();
       if (rect) {
-        const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
+        //const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
+         let dropdownHeight = 0;
+
+         if (this.hasPermission('modifier_utilisateur')) {
+           dropdownHeight += 45.5; 
+         }
+         if (this.hasPermission('consulter_historique')) {
+           dropdownHeight += 45.5; 
+         }
+         if (this.hasPermission('supprimer_utilisateur')) {
+           dropdownHeight += 45.5; 
+         }
+
         const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
 
         this.displayAbove = spaceBelow < dropdownHeight;
@@ -371,6 +396,7 @@ filterUsersByZones() {
       this.adjustDropdownPosition();
     }
   }
+
   @HostListener('document:click', ['$event'])
   closeDropdown(event: MouseEvent) {
     const target = event.target as HTMLElement;
@@ -382,17 +408,20 @@ filterUsersByZones() {
       this.dropdownOpen = null; // Ferme le dropdown
     }
   }
+
   showForm = false;
   showRegisterForm() {this.showForm = true;}
   hideRegisterForm() {
     this.getUsers();
     this.showForm = false;
   }
+  
   onUserRegistered(newUser: any) {
     // Ajoutez le nouvel utilisateur à votre liste
     this.users.unshift(newUser);
     this.hideRegisterForm();
   }
+
   isDescending: boolean = true;
   sortByDate() {
     this.isDescending = !this.isDescending; // Alterner entre croissant et décroissant
@@ -408,6 +437,10 @@ filterUsersByZones() {
     });
   }
 
+  hasPermission(permissionName: string): boolean {
+    const permissions = this.userConnected.groupe?.permissions || []; 
+    return permissions.some(permission => permission.nom === permissionName);  
+  }
 }
 
 

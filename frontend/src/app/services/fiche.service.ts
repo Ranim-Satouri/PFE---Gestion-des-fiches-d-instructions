@@ -1,22 +1,66 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Fiche } from '../models/Fiche';
+import { Fiche, FicheLigne, FicheOperation, FicheZone } from '../models/Fiche';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FicheService {
   private apiUrl = 'http://localhost:8080/fiche'; 
-  constructor(private http: HttpClient) { } 
   
-   // Méthode pour ajouter une fiche
-  addFiche(fiche: Fiche): Observable<any> {
-    // const formData = new FormData();
-    // formData.append('fiche', JSON.stringify(fiche)); // Envoie l'objet fiche en JSON
-    // formData.append('filePDF', file, file.name); // Ajoute le fichier PDF
+  constructor(private http: HttpClient) { } 
 
-    return this.http.post(`${this.apiUrl}/addFiche`, fiche);
+
+  addFiche(fiche: Fiche): Observable<Fiche> {
+    if (fiche.zone) {
+      return this.addFicheZone(fiche);
+    } else if (fiche.ligne) {
+      return this.addFicheLigne(fiche);
+    } else if (fiche.operation) {
+      return this.addFicheOperation(fiche);
+    } else {
+      throw new Error('Type de fiche inconnu');
+    }
+  }
+  addFicheOperation(fiche: Fiche): Observable<any> {
+    return this.http.post(`${this.apiUrl}/addFicheOperation`, fiche);
+  }
+  addFicheLigne(fiche: Fiche): Observable<any> {
+    return this.http.post(`${this.apiUrl}/addFicheLigne`, fiche);
+  }
+  addFicheZone(fiche: Fiche): Observable<any> {
+    return this.http.post(`${this.apiUrl}/addFicheZone`, fiche);
+  }
+
+
+
+  updateFiche(fiche: Fiche): Observable<Fiche> {
+    if (fiche.zone) {
+      return this.updateFicheZone(fiche);
+    } else if (fiche.ligne) {
+      return this.updateFicheLigne(fiche);
+    } else if (fiche.operation) {
+      return this.updateFicheOperation(fiche);
+    } else {
+      throw new Error('Type de fiche inconnu');
+    }
+  }
+  updateFicheOperation(fiche: Fiche): Observable<any> {
+    
+    return this.http.put(`${this.apiUrl}/updateFicheOperation`, fiche);
+  }
+  updateFicheZone(fiche: Fiche): Observable<any> {
+    
+    return this.http.put(`${this.apiUrl}/updateFicheZone`, fiche);
+  }
+  updateFicheLigne(fiche: Fiche): Observable<any> {
+    
+    return this.http.put(`${this.apiUrl}/updateFicheLigne`, fiche);
+  }
+
+  getFichesByUserZones(idUser: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/getFichesSheetByUserZones/${idUser}`);
   }
 
   uploadPDF(file: File): Observable<any> {
@@ -32,12 +76,6 @@ export class FicheService {
   }
   getAllFiches(): Observable<Fiche[]> {
     return this.http.get<Fiche[]>(`${this.apiUrl}/getAllFiches`);
-  }
-
-  // Méthode pour mettre à jour une fiche avec un fichier PDF
-  updateFiche(fiche: Fiche): Observable<any> {
-    
-    return this.http.put(`${this.apiUrl}/updateFiche`, fiche);
   }
 
   // Méthode pour supprimer une fiche
@@ -97,4 +135,17 @@ export class FicheService {
   checkFicheStatusUpdate(): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/updateStatus`);
   }
+
+
+  
+  // Méthode pour ajouter une fiche
+  // addFiche(fiche: Fiche): Observable<any> {
+  //   return this.http.post(`${this.apiUrl}/addFiche`, fiche);
+  // }
+
+  // // Méthode pour mettre à jour une fiche avec un fichier PDF
+  // updateFiche(fiche: Fiche): Observable<any> {
+    
+  //   return this.http.put(`${this.apiUrl}/updateFicheOperation`, fiche);
+  // }
 }

@@ -35,8 +35,8 @@
     </div>
     </div>
   
-    <!-- pop up add Operation -->
-    <div class="relative bg-white  dark:bg-gray-900 rounded-lg shadow-lg w-full max-w-lg p-6 transition-all  border dark:border-gray-700 ">
+    <!-- pop up add Ligne -->
+    <div class="relative bg-white  dark:bg-gray-900 rounded-lg shadow-lg w-full max-w-lg p-6 transition-all border dark:border-gray-700 ">
   
       <!-- Close button -->
       <button
@@ -50,13 +50,13 @@
       </svg>
       </button>
   
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Ajouter une Operation</h2>
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Ajouter une Ligne</h2>
       <div >
-        <form [formGroup]="operationForm" class="space-y-4">
+        <form [formGroup]="ligneForm" class="space-y-4">
   
             <!-- Nom -->
             <div>
-            <label class="text-sm text-black dark:text-gray-300 mb-1 block">Nom de l'operation <span class="text-red-500">*</span></label>
+            <label class="text-sm text-black dark:text-gray-300 mb-1 block">Nom de la ligne <span class="text-red-500">*</span></label>
             <input
                 type="text"
                 placeholder="Nom"
@@ -64,29 +64,29 @@
                 class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition   focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
                 dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
                 [ngClass]="{
-                  'border-red-500 ring-red-500': operationForm.get('nom')?.invalid && operationForm.get('nom')?.touched,
-                  'border-gray-400 dark:border-gray-700': !(operationForm.get('nom')?.invalid && operationForm.get('nom')?.touched)
+                  'border-red-500 ring-red-500': ligneForm.get('nom')?.invalid && ligneForm.get('nom')?.touched,
+                  'border-gray-400 dark:border-gray-700': !(ligneForm.get('nom')?.invalid && ligneForm.get('nom')?.touched)
                 }"
             />
-            <div *ngIf="operationForm.get('nom')?.invalid && operationForm.get('nom')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
-              Le nom de l'operation est requis.
+            <div *ngIf="ligneForm.get('nom')?.invalid && ligneForm.get('nom')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
+              Le nom de l'ligne est requis.
             </div>
             </div>     
-            <!-- Ligne -->
+            <!-- Zone -->
             <div>
-              <label class="text-sm text-black dark:text-gray-300 mb-1 block">Ligne <span class="text-red-500">*</span></label>
+              <label class="text-sm text-black dark:text-gray-300 mb-1 block">Zone <span class="text-red-500">*</span></label>
               <div class="relative">
                 <input
-                  id="ligne-input"
-                  placeholder="Ligne"
-                  [value]="ligneSearch"
-                  (input)="onLigneSearchChange($event)"
+                  id="zone-input"
+                  placeholder="Zone"
+                  [value]="zoneSearch"
+                  (input)="onZoneSearchChange($event)"
                   
                   class="w-full p-2 focus:outline-none rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
                   dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
                   [ngClass]="{
-                    'border-red-500 ring-red-500': operationForm.get('ligne')?.invalid && operationForm.get('ligne')?.touched,
-                    'border-gray-400 dark:border-gray-700': !(operationForm.get('ligne')?.invalid && operationForm.get('ligne')?.touched)
+                    'border-red-500 ring-red-500': ligneForm.get('zone')?.invalid && ligneForm.get('zone')?.touched,
+                    'border-gray-400 dark:border-gray-700': !(ligneForm.get('zone')?.invalid && ligneForm.get('zone')?.touched)
                   }"
                   
                 />
@@ -95,7 +95,7 @@
                 <!-- Dropdown toggle icon -->
                   <div
                   class="absolute top-1/2 right-3 mt-[1px]  -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
-                  (click)="toggleLigneDropdown()"
+                  (click)="toggleZoneDropdown()"
                   >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                       <path d="m7 10 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
@@ -107,8 +107,8 @@
           
                 <!-- Clear (x) icon -->
                 <button
-                  *ngIf="ligneSearch"
-                  (click)="clearLigneSearch()"
+                  *ngIf="zoneSearch"
+                  (click)="clearZoneSearch()"
                   type="button"
                   class="absolute right-12 mr-[5px] top-1/2 mt-[1px] -translate-y-1/2 dark:text-gray-400 text-gray-600  transition rounded-full border-2 border-gray-600 dark:border-gray-400  hover:bg-gray-200"
                   >
@@ -118,40 +118,40 @@
                   </svg>
                 </button>
                 <ul
-                  *ngIf="showLigneDropdown && (filteredLignes.length > 0 || ligneSearch)"
-                  id="dropdownLigne"
+                  *ngIf="showZoneDropdown && (filteredZones.length > 0 || zoneSearch)"
+                  id="dropdownZone"
                   class="absolute z-10 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg"
                 >
                   <li
-                    *ngFor="let ligne of filteredLignes"
-                    (click)="selectLigne(ligne)"
+                    *ngFor="let z of filteredZones"
+                    (click)="selectZone(z)"
                     class="px-4 py-2 m-2 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
                   >
-                  {{ ligne.nom }} {{ ligne.zone.nom }} 
+                    {{ z.nom }} 
                   </li>
                 </ul>
               </div>
-              <div *ngIf="operationForm.get('ligne')?.invalid && operationForm.get('ligne')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
-                Veuillez sélectionner ou ajouter une ligne.
+              <div *ngIf="ligneForm.get('zone')?.invalid && ligneForm.get('zone')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
+                Veuillez sélectionner ou ajouter une zone.
               </div>
             </div>
   
             <div class="flex justify-end  items-center gap-x-2">
                   <button
-                      *ngIf="isNewOperation"
-                      (click)="addOperation()"
+                      *ngIf="isNewLigne"
+                      (click)="addLigne()"
                       type="button"
-                      [disabled]="operationForm.invalid"
+                      [disabled]="ligneForm.invalid"
                       class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                   >
                       Créer
                   </button>
               
                   <button
-                      *ngIf="!isNewOperation"
-                      (click)="updateOperation()"
+                      *ngIf="!isNewLigne"
+                      (click)="updateLigne()"
                       type="button"
-                      [disabled]="operationForm.invalid || ( operation.nom=== operationForm.value.nom && operationForm.value.ligne.nom === operation.ligne.nom )"
+                      [disabled]="ligneForm.invalid || ( ligne.nom=== ligneForm.value.nom && ligneForm.value.zone.nom === ligne.zone.nom )"
                       class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                   >
                       Modifier
@@ -163,5 +163,8 @@
         </form>
         </div>
     </div>
+  
+    
+  
   </div>
   

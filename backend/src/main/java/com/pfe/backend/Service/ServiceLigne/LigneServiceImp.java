@@ -3,8 +3,10 @@ package com.pfe.backend.Service.ServiceLigne;
 
 import com.pfe.backend.Model.Ligne;
 import com.pfe.backend.Model.User;
+import com.pfe.backend.Model.Zone;
 import com.pfe.backend.Repository.LigneRepository;
 import com.pfe.backend.Repository.UserRepository;
+import com.pfe.backend.Repository.ZoneRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,16 +22,20 @@ public class LigneServiceImp implements LigneService {
     @Autowired
     private UserRepository userRepository;
     private LigneRepository ligneRepository;
+    private ZoneRepository zoneRepository;
 
     public ResponseEntity<?> addLigne(Ligne ligne , Long idActionneur){
         User actionneur = userRepository.findById(idActionneur)
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-        Optional<Ligne> existingLigne = ligneRepository.findBynomAndIsDeleted(ligne.getNom(), false);
+        Zone zone = zoneRepository.findById(ligne.getZone().getIdZone())
+                .orElseThrow(() -> new RuntimeException("zone introuvable"));
+        Optional<Ligne> existingLigne = ligneRepository.findBynomAndIsDeletedAndZone(ligne.getNom(), false , ligne.getZone());
         if(existingLigne.isPresent()){
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body("une ligne avec le même nom existe déjà");
+                    .body("une ligne avec le même nom et zone existe déjà");
         }
+        ligne.setZone(zone);
         ligne.setActionneur(actionneur);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -41,14 +47,17 @@ public class LigneServiceImp implements LigneService {
     {
         Ligne ligne = ligneRepository.findById(idLigne).orElseThrow(()-> new RuntimeException("Ligne introuvable ! "));
         User actionneur = userRepository.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-        Optional<Ligne> existingLigne = ligneRepository.findBynomAndIsDeleted(ligne.getNom(), false);
+        Zone zone = zoneRepository.findById(NewLigneData.getZone().getIdZone())
+                .orElseThrow(() -> new RuntimeException("zone introuvable"));
+        Optional<Ligne> existingLigne = ligneRepository.findBynomAndIsDeletedAndZone(NewLigneData.getNom(), false , NewLigneData.getZone());
         if(existingLigne.isPresent()){
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body("une ligne avec le même nom existe déjà");
+                    .body("une ligne avec le même nom et zone existe déjà");
         }
         if(NewLigneData.getNom()!=null ) ligne.setNom(NewLigneData.getNom());
         ligne.setActionneur(actionneur);
+        ligne.setZone(zone);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ligneRepository.save(ligne));

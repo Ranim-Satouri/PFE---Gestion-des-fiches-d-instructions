@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pfe.backend.DTO.FicheHistoryDto;
 import com.pfe.backend.Model.Fiche;
+import com.pfe.backend.Model.FicheLigne;
+import com.pfe.backend.Model.FicheOperation;
+import com.pfe.backend.Model.FicheZone;
 import com.pfe.backend.ServiceFiche.FicheAuditService;
 import com.pfe.backend.ServiceFiche.FicheService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +29,35 @@ public class FicheController {
     @Autowired
     private FicheService ficheService;
 
-    @PostMapping("/addFiche")
-    public ResponseEntity<?> addFiche(@RequestBody Fiche fiche) {
-        Fiche saved = ficheService.addFiche(fiche);
-        return ResponseEntity.ok(saved);
+
+    @PostMapping("/addFicheOperation")
+    public ResponseEntity<?> addFiche(@RequestBody FicheOperation fiche) {
+        try {
+            return ResponseEntity.ok(ficheService.addFicheOperation(fiche));
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/addFicheLigne")
+    public ResponseEntity<?> addFicheLigne(@RequestBody FicheLigne fiche) {
+        try {
+            return ResponseEntity.ok(ficheService.addFicheLigne(fiche));
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/addFicheZone")
+    public ResponseEntity<?> addFicheZone(@RequestBody FicheZone fiche) {
+        try {
+            return ResponseEntity.ok(ficheService.addFicheZone(fiche));
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PostMapping("/uploadPDF")
@@ -65,10 +93,28 @@ public class FicheController {
     public ResponseEntity<List<Fiche>> getAllFiches(){
         return ResponseEntity.ok().body(ficheService.getFiches());
     }
-    @PutMapping("/updateFiche")
-    public ResponseEntity<?> updateFiche(@RequestBody Fiche fiche ){
+
+
+    @PutMapping("/updateFicheOperation")
+    public ResponseEntity<?> updateFicheOperation(@RequestBody FicheOperation fiche ){
         try{
-            return ResponseEntity.ok().body(ficheService.updateFiche(fiche));
+            return ResponseEntity.ok().body(ficheService.updateFicheOperation(fiche));
+        }catch(RuntimeException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+    @PutMapping("/updateFicheZone")
+    public ResponseEntity<?> updateFicheZone(@RequestBody FicheZone fiche ){
+        try{
+            return ResponseEntity.ok().body(ficheService.updateFicheZone(fiche));
+        }catch(RuntimeException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+    @PutMapping("/updateFicheLigne")
+    public ResponseEntity<?> updateFicheLigne(@RequestBody FicheLigne fiche ){
+        try{
+            return ResponseEntity.ok().body(ficheService.updateFicheLigne(fiche));
         }catch(RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -79,6 +125,15 @@ public class FicheController {
         try {
             return ResponseEntity.ok().body(ficheService.deleteFiche(idFiche , idActionneur));
         } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getFichesSheetByUserZones/{idUser}")
+    public ResponseEntity<?> getFichesSheetByUserZones(@PathVariable Long idUser) {
+        try{
+            return new ResponseEntity<>(ficheService.getFichesSheetByUserZones(idUser), HttpStatus.OK);
+        }catch(RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
@@ -163,5 +218,22 @@ public class FicheController {
         return ResponseEntity.ok(updated);
     }
 
+    //    @PostMapping("/addFiche")
+//    public ResponseEntity<?> addFiche(@RequestBody Fiche fiche) {
+//        try {
+//            return ResponseEntity.ok(ficheService.addFiche(fiche));
+//        } catch (RuntimeException e) {
+//            System.out.println(e.getMessage());
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//        }
+//    }
+//    @PutMapping("/updateFiche")
+//    public ResponseEntity<?> updateFiche(@RequestBody Fiche fiche ){
+//        try{
+//            return ResponseEntity.ok().body(ficheService.updateFiche(fiche));
+//        }catch(RuntimeException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
 
 }

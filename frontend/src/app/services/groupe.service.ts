@@ -16,12 +16,13 @@ export class GroupeService {
                   .set('idActionneur',idActionneur)
     return this.http.post<any>(`${this.apiUrl}/addGroupe`, groupe , {params});
   }
-  addRelationsToGroup(groupId: number, menuIds: number[], permissionIds: number[], userIds: number[]) {
+  addRelationsToGroup(groupId: number, menuIds: number[], permissionIds: number[], userIds: number[] , idActionneur: number): Observable<any> {
     const params = new HttpParams()
       .set('groupId', groupId.toString())
       .set('menuIds', menuIds.join(','))
       .set('permissionIds', permissionIds.join(','))
-      .set('userIds', userIds.join(','));
+      .set('userIds', userIds.join(','))
+      .set('idActionneur', idActionneur.toString());
     
     return this.http.post(`${this.apiUrl}/addRelationsToGroup`, null, { params });
   }

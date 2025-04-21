@@ -290,7 +290,7 @@ export class AddGroupeComponent {
 
     if(!array1.every(item => array2.includes(item)) || !array2.every(item => array1.includes(item)) || !array3.every(item => array4.includes(item)) 
       || !array4.every(item => array3.includes(item))|| !array5.every(item => array6.includes(item)) || !array6.every(item => array5.includes(item)) ){
-      this.groupeService.addRelationsToGroup(this.groupe.idGroupe!, Array.from(this.selectedMenus), Array.from(this.selectedPermissions), Array.from(this.selectedUsers))
+      this.groupeService.addRelationsToGroup(this.groupe.idGroupe!, Array.from(this.selectedMenus), Array.from(this.selectedPermissions), Array.from(this.selectedUsers), this.userConnected.idUser!)
       .subscribe(response => {
         console.log('Relations ajoutées avec succès:', response);
         // this.successMessage = `Groupe "${this.groupe.nom}" ajoutée avec succès !`;
@@ -346,7 +346,7 @@ export class AddGroupeComponent {
   selectAllPermissions(event: Event ) {
     const isChecked = (event.target as HTMLInputElement).checked;
     if (isChecked) {
-      this.permissions.forEach(permission => this.selectedPermissions.add(permission.idPermission!));
+      this.filteredPermissions.forEach(permission => this.selectedPermissions.add(permission.idPermission!));
     } else {
       this.selectedPermissions.clear();
     }
@@ -354,7 +354,7 @@ export class AddGroupeComponent {
   selectAllUsers(event: Event ) {
     const isChecked = (event.target as HTMLInputElement).checked;
     if (isChecked) {
-      this.users.forEach(user => this.selectedUsers.add(user.idUser!));
+      this.filteredUsers.forEach(user => this.selectedUsers.add(user.idUser!));
     } else {
       this.selectedUsers.clear();
     }
@@ -362,12 +362,9 @@ export class AddGroupeComponent {
   selectAllMenus(event: Event ) {
     const isChecked = (event.target as HTMLInputElement).checked;
     if (isChecked) {
-      this.menus.forEach(menu => this.selectedMenus.add(menu.idMenu!));
+      this.filteredMenus.forEach(menu => this.selectedMenus.add(menu.idMenu!));
     } else {
       this.selectedMenus.clear();
     }
   }
-
-
-
 }

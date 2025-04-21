@@ -10,7 +10,7 @@ import { FamilleService } from '../../../services/famille.service';
 import { ProduitService } from '../../../services/produit.service';
 import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { AddProduitFormComponent } from '../../add/add-produit-form/add-produit-form.component';
-import { UpdateProduitComponent } from "../../update/update-produit/update-produit.component";
+import { UpdateProduitComponent } from "../../add/update-produit/update-produit.component";
 @Component({
   selector: 'app-produit-list',standalone: true,
   imports: [NgxPaginationModule, CommonModule,FilterPipe, FormsModule, DeleteConfirmComponent, AddProduitFormComponent, UpdateProduitComponent],
@@ -215,6 +215,12 @@ export class ProduitListComponent {
       }
     });
   }
+  getUserConnected(){
+    const userFromLocalStorage = localStorage.getItem('user');
+    if (userFromLocalStorage) {
+      this.userConnected = JSON.parse(userFromLocalStorage);
+    }
+  }
   toggleDropdown(index: number, event: MouseEvent): void {
     const target = event.target as HTMLElement;
     const button = target.closest("button");
@@ -224,8 +230,19 @@ export class ProduitListComponent {
     } else {
       const rect = button?.getBoundingClientRect();
       if (rect) {
-        const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
-        const spaceBelow = window.innerHeight - rect.bottom + 50;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
+       // const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
+        let dropdownHeight = 0;
+
+        if (this.hasPermission('modifier_produit')) {
+          dropdownHeight += 45.5; 
+        }
+        if (this.hasPermission('consulter_produit')) {
+          dropdownHeight += 45.5; 
+        }
+        if (this.hasPermission('supprimer_produit')) {
+          dropdownHeight += 45.5; 
+        }
+        const spaceBelow = window.innerHeight - rect.bottom;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
 
         this.displayAbove = spaceBelow < dropdownHeight;
 
@@ -240,10 +257,7 @@ export class ProduitListComponent {
     }
   }
   deleteProduit(idProduit: number | undefined): void {
-    const userFromLocalStorage = localStorage.getItem('user');
-    if (userFromLocalStorage) {
-      this.userConnected = JSON.parse(userFromLocalStorage);
-    }
+    this.getUserConnected();
     this.produitService.deleteProduit(idProduit || undefined ,this.userConnected.idUser! ).subscribe({
       next: () => {
         console.log('Produit supprimée');
@@ -294,5 +308,10 @@ export class ProduitListComponent {
         ? dateB.getTime() - dateA.getTime()  // Tri décroissant
         : dateA.getTime() - dateB.getTime();  // Tri croissant
     });
+  }
+  hasPermission(permissionName: string): boolean {
+    this.getUserConnected();
+    const permissions = this.userConnected.groupe?.permissions || []; 
+    return permissions.some(permission => permission.nom === permissionName);  
   }
 }

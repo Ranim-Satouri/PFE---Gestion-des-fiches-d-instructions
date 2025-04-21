@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 @Audited
 public class Ligne {
     @Id
