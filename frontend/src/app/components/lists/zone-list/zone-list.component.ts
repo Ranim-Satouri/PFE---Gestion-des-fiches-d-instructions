@@ -1,4 +1,4 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input, ViewChild } from '@angular/core';
 import { Zone } from '../../../models/Zone';
 import { ZoneService } from '../../../services/zone.service';
 import { CommonModule } from '@angular/common';
@@ -8,18 +8,20 @@ import { User } from '../../../models/User';
 import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { UserZoneAssignComponent } from "../../add/user-zone-assign/user-zone-assign.component";
 import { FilterPipe } from '../../../pipes/filter.pipe';
-import { Console } from 'console';
 import { AddZoneFormComponent } from "../../add/add-zone-form/add-zone-form.component";
 import { UpdateZoneComponent } from '../../add/update-zone/update-zone.component';
-
+import { ZoneHistoryComponent } from '../../History/zone-history/zone-history.component';
 @Component({
   selector: 'app-zone-list',
   standalone: true,
-  imports: [NgxPaginationModule,FilterPipe, CommonModule, FormsModule, DeleteConfirmComponent, UserZoneAssignComponent,AddZoneFormComponent, UpdateZoneComponent],
+  imports: [NgxPaginationModule,FilterPipe, CommonModule,
+     FormsModule, DeleteConfirmComponent, UserZoneAssignComponent,AddZoneFormComponent,
+     UpdateZoneComponent,ZoneHistoryComponent],
   templateUrl: './zone-list.component.html',
   styleUrl: './zone-list.component.css',
 })
 export class ZoneListComponent {
+  @ViewChild('zoneHistory') zoneHistoryComponent!: ZoneHistoryComponent;
   constructor(private zoneService: ZoneService) {}
   searchbar: string = '';
   zones : Zone[] = [];
@@ -184,5 +186,10 @@ export class ZoneListComponent {
     this.getUserConnected();
     const permissions = this.userConnected.groupe?.permissions || []; 
     return permissions.some(permission => permission.nom === permissionName);  
+  }
+  openHistory(zoneId: number | undefined): void {
+    if (zoneId !== undefined) {
+      this.zoneHistoryComponent.openHistory(zoneId); // Appeler la méthode openHistory
+    }
   }
 }

@@ -1,6 +1,8 @@
 package com.pfe.backend.Service.ServiceFamille;
 
 import com.pfe.backend.Model.Famille;
+import com.pfe.backend.Model.FamilleHistory;
+import com.pfe.backend.Model.FamilleZonesAudit;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -12,4 +14,6 @@ public interface FamilleService {
     void DeleteFamily(Long idFam , Long idActionneur);
     List<Famille> getActiveFamilies();
     Famille addZonesToFamille(Long familleId, List<Long> zoneIds);
+    List<FamilleHistory> getFamilleHistory(Long familleId);
+    List<FamilleZonesAudit> getFamilleZonesAudit(Long familleId);
 }

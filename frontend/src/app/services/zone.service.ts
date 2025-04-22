@@ -1,7 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Zone } from '../models/Zone';
 import { Observable } from 'rxjs';
+import { Zone } from '../models/Zone';
+import { ZoneHistory } from '../models/ZoneHistory';
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +29,8 @@ export class ZoneService {
     const params = new HttpParams()
           .set('idActionneur',idActionneur);
     return this.http.put<Zone>(`${this.apiUrl}/update/${idZone}`, zone , { params }) ;
+  }
+  getZoneHistory(idZone: number): Observable<ZoneHistory[]> {
+    return this.http.get<ZoneHistory[]>(`${this.apiUrl}/zone-history/${idZone}`);
   }
 }

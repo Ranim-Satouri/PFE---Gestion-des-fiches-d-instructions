@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { UserService } from '../../services/user.service';
-import { UserHistoryDTO, UserZoneChangeDTO } from '../../models/UserHistoryDTO';
 import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { UserHistoryDTO, UserZoneChangeDTO } from '../../../models/UserHistoryDTO';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-user-history',

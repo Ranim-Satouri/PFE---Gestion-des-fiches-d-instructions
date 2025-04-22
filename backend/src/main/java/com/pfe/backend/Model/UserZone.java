@@ -29,6 +29,7 @@ public class UserZone {
     @ManyToOne
     @JoinColumn(name = "idZone", nullable = false)
     private Zone zone;
+
     @NotAudited
     @Column(name = "idActionneur", nullable = false)
     private Long idActionneur;

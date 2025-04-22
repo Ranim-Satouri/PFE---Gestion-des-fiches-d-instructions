@@ -1,5 +1,7 @@
 package com.pfe.backend.Controller;
 import com.pfe.backend.Model.Famille;
+import com.pfe.backend.Model.FamilleHistory;
+import com.pfe.backend.Model.FamilleZonesAudit;
 import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Service.ServiceFamille.FamilleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,15 @@ import java.util.List;
 public class FamilleController {
     @Autowired
     private FamilleService familleService;
+    @GetMapping("/history/{idFamille}")
+    public List<FamilleHistory> getFamilleHistory(@PathVariable Long id) {
+        return familleService.getFamilleHistory(id);
+    }
+
+    @GetMapping("/zones-audit/{id}")
+    public List<FamilleZonesAudit> getFamilleZonesAudit(@PathVariable Long id) {
+        return familleService.getFamilleZonesAudit(id);
+    }
     @PostMapping("/addFamille")
     public ResponseEntity<?> addFamille(@RequestBody Famille famille, @RequestParam Long idActionneur) {
         try {

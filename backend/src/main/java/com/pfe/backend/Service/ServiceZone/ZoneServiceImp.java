@@ -5,15 +5,22 @@ import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.FicheRepository;
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.ZoneRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.DefaultRevisionEntity;
+import org.hibernate.envers.query.AuditEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import org.hibernate.envers.RevisionType;
+import org.hibernate.envers.query.AuditEntity;
+import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -85,4 +92,65 @@ public class ZoneServiceImp implements ZoneService {
                 .orElseThrow(() -> new RuntimeException("Zone introuvable"));
         return zone.getUserZones();
     }
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public List<Map<String, Object>> getZoneHistory(Long zoneId) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        List<Object[]> revisions = auditReader.createQuery()
+                .forRevisionsOfEntity(Zone.class, false, true)
+                .add(AuditEntity.id().eq(zoneId))
+                .addOrder(AuditEntity.revisionNumber().desc())
+                .getResultList();
+
+        List<Map<String, Object>> history = new ArrayList<>();
+        for (Object[] revision : revisions) {
+            Zone zone = (Zone) revision[0]; // Entité Zone
+            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revision[1]; // Métadonnées de révision
+            Integer revisionNumber = revisionEntity.getId(); // Numéro de révision
+            RevisionType revisionType = (RevisionType) revision[2]; // Type de révision
+
+            // Récupérer la date de la révision depuis revinfo
+            LocalDateTime revisionDate = revisionEntity.getRevisionDate().toInstant()
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDateTime();
+
+            // Déterminer le type de changement
+            String changeType;
+            switch (revisionType) {
+                case ADD:
+                    changeType = "CREATED";
+                    break;
+                case MOD:
+                    changeType = "MODIFIED";
+                    break;
+                case DEL:
+                    changeType = "DELETED";
+                    break;
+                default:
+                    changeType = "UNKNOWN";
+            }
+
+            // Concaténer le nom et prénom de l'actionneur
+            String actionneurFullName = zone.getActionneur() != null
+                    ? zone.getActionneur().getNom() + " " + zone.getActionneur().getPrenom()
+                    : "N/A";
+
+            // Créer un objet JSON personnalisé avec les champs de Zone et les métadonnées
+            Map<String, Object> historyEntry = new HashMap<>();
+            historyEntry.put("revisionNumber", revisionNumber);
+            historyEntry.put("revisionDate", revisionDate);
+            historyEntry.put("changeType", changeType);
+            historyEntry.put("idZone", zone.getIdZone());
+            historyEntry.put("nom", zone.getNom());
+            historyEntry.put("isDeleted", zone.isDeleted());
+            historyEntry.put("modifieLe", zone.getModifieLe());
+            historyEntry.put("actionneurFullName", actionneurFullName);
+
+            history.add(historyEntry);
+        }
+
+        return history;
+    }
+
 }

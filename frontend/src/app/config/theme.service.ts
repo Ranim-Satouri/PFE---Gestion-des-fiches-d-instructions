@@ -8,8 +8,17 @@ export class ThemeService {
 
   constructor() {
     this.loadTheme();
+     // Initialiser le thème au démarrage
+     this.applyTheme();
   }
-
+  private applyTheme(): void {
+    const isDark = this.isDarkMode();
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }
   toggleDarkMode(): void {
     if (typeof window !== 'undefined') {
       document.documentElement.classList.toggle('dark');
