@@ -6,7 +6,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { first } from 'rxjs';
-import { ZoneHistory } from '../../../models/ZoneHistory';
+import { ZoneHistory } from '../../../models/ZoneHistoryDTO';
 import { ZoneService } from '../../../services/zone.service';
 @Component({
   selector: 'app-zone-history',

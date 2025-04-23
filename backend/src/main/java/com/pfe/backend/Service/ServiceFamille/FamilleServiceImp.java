@@ -1,4 +1,6 @@
 package com.pfe.backend.Service.ServiceFamille;
+import com.pfe.backend.DTO.FamilleHistoriqueDTO;
+import com.pfe.backend.DTO.FamilleZonesDTO;
 import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.FamilleRepository;
 import com.pfe.backend.Repository.UserRepository;
@@ -8,6 +10,8 @@ import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.DefaultRevisionEntity;
+import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.query.AuditEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +34,7 @@ public class FamilleServiceImp implements FamilleService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<FamilleHistory> getFamilleHistory(Long familleId) {
+    public List<FamilleHistoriqueDTO> getFamilleHistory(Long familleId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         List<Object[]> revisions = auditReader.createQuery()
                 .forRevisionsOfEntity(Famille.class, false, true)
@@ -38,19 +42,21 @@ public class FamilleServiceImp implements FamilleService {
                 .addOrder(AuditEntity.revisionNumber().asc())
                 .getResultList();
 
-        List<FamilleHistory> history = new ArrayList<>();
-        for (Object[] revision : revisions) {
-            Famille famille = (Famille) revision[0];
-            Integer revisionNumber = (Integer) revision[1];
-            String revisionType = revision[2].toString();
+        System.out.println("Nombre de révisions trouvées pour familleId " + familleId + " : " + revisions.size());
 
-            FamilleHistory dto = new FamilleHistory();
+        List<FamilleHistoriqueDTO> history = new ArrayList<>();
+        for (Object[] revision : revisions) {
+            Famille famille = (Famille) revision[0]; // Entité Zone
+            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revision[1]; // Métadonnées de révision
+            Integer revisionNumber = revisionEntity.getId(); // Numéro de révision
+            RevisionType revisionType = (RevisionType) revision[2];
+
+            FamilleHistoriqueDTO dto = new FamilleHistoriqueDTO();
             dto.setRevisionNumber(revisionNumber);
             dto.setModifieLe(famille.getModifieLe());
             dto.setActionneurFullName(famille.getActionneur().getNom() + " " + famille.getActionneur().getPrenom());
             dto.setNom(famille.getNomFamille());
             dto.setDeleted(famille.isDeleted());
-            // Récupérer les zones associées à cette révision
             List<Zone> zonesAtRevision = auditReader.find(Famille.class, familleId, revisionNumber).getZones();
             dto.setZones(zonesAtRevision.stream().map(Zone::getNom).collect(Collectors.toList()));
             history.add(dto);
@@ -58,24 +64,21 @@ public class FamilleServiceImp implements FamilleService {
 
         return history;
     }
-
-    public List<FamilleZonesAudit> getFamilleZonesAudit(Long familleId) {
+    public List<FamilleZonesDTO> getFamilleZonesAudit(Long familleId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         List<Object[]> revisions = auditReader.createQuery()
                 .forRevisionsOfEntity(Famille.class, false, true)
-                .add(AuditEntity.id().eq(familleId))
-                .addOrder(AuditEntity.revisionNumber().asc())
-                .getResultList();
+                .add(AuditEntity.id().eq(familleId)).addOrder(AuditEntity.revisionNumber().asc()).getResultList();
 
-        List<FamilleZonesAudit> auditEntries = new ArrayList<>();
+        List<FamilleZonesDTO> auditEntries = new ArrayList<>();
         for (Object[] revision : revisions) {
-            Integer revisionNumber = (Integer) revision[1];
+            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revision[1]; // Correction
+            Integer revisionNumber = revisionEntity.getId(); // Correction
             Famille familleAtRevision = auditReader.find(Famille.class, familleId, revisionNumber);
             String revisionType = revision[2].toString(); // ADD, MOD, DEL
 
-            // Récupérer les zones à cette révision
             List<Zone> zones = familleAtRevision.getZones();
-            FamilleZonesAudit auditDTO = new FamilleZonesAudit();
+            FamilleZonesDTO auditDTO = new FamilleZonesDTO();
             auditDTO.setRevisionNumber(revisionNumber);
             auditDTO.setModifieLe(familleAtRevision.getModifieLe());
             auditDTO.setActionneurFullName(familleAtRevision.getActionneur().getNom() + " " + familleAtRevision.getActionneur().getPrenom());

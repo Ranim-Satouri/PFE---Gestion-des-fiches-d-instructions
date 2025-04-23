@@ -14,10 +14,12 @@ import { ParticlesComponent } from './components/particles/particles.component';
 import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ZoneHistoryComponent } from './components/History/zone-history/zone-history.component';
+import { FamilleHistoryComponent } from './components/History/famille-history/famille-history.component';
 export const routes: Routes = [
     { path: '', component: LoginComponent },
     { path : 'history/:idUser', component: UserHistoryComponent },
     {path : "zone-history/:idZone", component : ZoneHistoryComponent},
+    {path : "famille-history/:idFamille", component : FamilleHistoryComponent},
     {
       path:'particles' ,
       component :ParticlesComponent,

@@ -1,8 +1,7 @@
 package com.pfe.backend.Controller;
 import com.pfe.backend.Model.Famille;
-import com.pfe.backend.Model.FamilleHistory;
-import com.pfe.backend.Model.FamilleZonesAudit;
-import com.pfe.backend.Model.Groupe;
+import com.pfe.backend.DTO.FamilleHistoriqueDTO;
+import com.pfe.backend.DTO.FamilleZonesDTO;
 import com.pfe.backend.Service.ServiceFamille.FamilleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,13 +15,14 @@ import java.util.List;
 public class FamilleController {
     @Autowired
     private FamilleService familleService;
-    @GetMapping("/history/{idFamille}")
-    public List<FamilleHistory> getFamilleHistory(@PathVariable Long id) {
-        return familleService.getFamilleHistory(id);
+    //pour récupérer l’historique des modifications de Famille.
+    @GetMapping("/famille-history/{idFamille}")
+    public List<FamilleHistoriqueDTO> getFamilleHistory(@PathVariable Long idFamille) {
+        return familleService.getFamilleHistory(idFamille);
     }
-
+    //pour récupérer l’audit des modifications de la table famille_zones.
     @GetMapping("/zones-audit/{id}")
-    public List<FamilleZonesAudit> getFamilleZonesAudit(@PathVariable Long id) {
+    public List<FamilleZonesDTO> getFamilleZonesAudit(@PathVariable Long id) {
         return familleService.getFamilleZonesAudit(id);
     }
     @PostMapping("/addFamille")

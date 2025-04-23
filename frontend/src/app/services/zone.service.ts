@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Zone } from '../models/Zone';
-import { ZoneHistory } from '../models/ZoneHistory';
+import { ZoneHistory } from '../models/ZoneHistoryDTO';
 
 @Injectable({
   providedIn: 'root'
