@@ -28,6 +28,9 @@ public class UserHistoryDTO {
     private LocalDateTime modifieLe;
     private String groupeNom;
 
+    // Liste complète des zones à cette révision
+    private List<String> zones;
+
     // Changements des zones (userZones)
     private List<UserZoneChangeDTO> zoneChanges;
 
