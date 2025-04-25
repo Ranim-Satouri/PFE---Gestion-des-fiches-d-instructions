@@ -31,11 +31,6 @@ export class UserListComponent implements  OnDestroy {
 //hisstorique
 showHistoryPopup: boolean = false;
 selectedUserId: number | null = null;
-
-  private observer?: MutationObserver;
-  //hisstorique
-  showHistoryPopup: boolean = false;
-  selectedUserId: number | null = null;
   constructor( private userService: UserService, private userZoneService: UserZoneService, private zoneService: ZoneService, private groupeService: GroupeService ,private cdr: ChangeDetectorRef, private router: Router ) {}
 
   users: any[] = []; dropdownOpen: number | null = null; page: number = 1;
