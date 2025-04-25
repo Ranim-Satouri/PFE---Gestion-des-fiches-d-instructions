@@ -1,4 +1,4 @@
-<div class="fixed inset-0 flex items-center justify-center bg-black/50 bg-opacity-50 z-[100]">
+<div class="fixed inset-0 flex items-center justify-center bg-black/50 bg-opacity-50 z-[100] p-4">
     <!-- Message success  -->
     <div
         *ngIf="successMessage"
@@ -50,7 +50,8 @@
       </svg>
       </button>
   
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Ajouter une Operation</h2>
+      <h2 *ngIf="isNewOperation" class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Ajouter une opération</h2>
+      <h2 *ngIf="!isNewOperation" class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Modifier l'opération      </h2>
       <div >
         <form [formGroup]="operationForm" class="space-y-4">
   
@@ -81,7 +82,7 @@
                   placeholder="Ligne"
                   [value]="ligneSearch"
                   (input)="onLigneSearchChange($event)"
-                  
+                  autocomplete="off"
                   class="w-full p-2 focus:outline-none rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
                   dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
                   [ngClass]="{

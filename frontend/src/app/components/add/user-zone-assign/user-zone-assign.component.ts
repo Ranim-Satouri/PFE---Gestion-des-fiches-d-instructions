@@ -5,6 +5,8 @@ import {  User } from '../../../models/User';
 import { UserService } from '../../../services/user.service';
 import { UserZoneService } from '../../../services/user-zone.service';
 import { forkJoin, map } from 'rxjs';
+import { GroupeService } from '../../../services/groupe.service';
+import { Groupe } from '../../../models/Groupe';
 
 @Component({
   selector: 'app-user-zone-assign',
@@ -15,28 +17,29 @@ import { forkJoin, map } from 'rxjs';
 
 })
 export class UserZoneAssignComponent {
-  constructor(private userService: UserService , private userZoneService: UserZoneService) {}
+  constructor(private userService: UserService , private userZoneService: UserZoneService,private groupeService: GroupeService) {}
   @Input() successMessage: string = '';
   users: User[] = [];
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<User[]>();
   @Input() idZone !: number ;
   searchText: string = '';
-  selectedRole: string = '';
+  selectedGroupe: string = '';
   userConnected !: User;
-  roles = [ 'superuser', 'admin','preparateur','ipdf', 'iqp','operateur'];
-  showRoleDropdown: boolean = false;
+  showGroupeDropdown: boolean = false;
   affectationFilter: string = ''; // '', 'assigned', 'not-assigned'
   showSelectorDropdown: boolean = false;
   originalAssignedUsers = new Set<number>(); // contient les idUser au début (avant modif)
   selectedUsers = new Set<number>(); // modifiable par checkboxes
   selectedState: string = '';
+  groupes: string[] = [];
+  
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
-  
+    this.getGroupes();
     forkJoin({
       allUsers: this.userService.getAll(),
       assignedUserZones: this.userZoneService.getZoneUsers(this.idZone)
@@ -54,7 +57,17 @@ export class UserZoneAssignComponent {
       }
     });
   }
-  
+  getGroupes() {
+    this.groupeService.getAll().subscribe({
+      next : (response :Groupe[]) => {
+        this.groupes = response.map(groupe => groupe.nom);
+        console.log('groupes:', this.groupes);
+      },
+      error: (error: any) => {
+        console.error('fetching groupes error:', error);
+      },
+    });
+  }
 
   toggleUser(user: User) {
     if (this.selectedUsers.has(user.idUser!)) {
@@ -70,9 +83,9 @@ export class UserZoneAssignComponent {
 
   
   
-  selectRole(role: string) {
-    this.selectedRole = role;
-    this.showRoleDropdown = false;
+  selectGroupe(groupe: string) {
+    this.selectedGroupe = groupe;
+    this.showGroupeDropdown = false;
   }
   selectState(state: string) {
     this.selectedState = state;
@@ -80,9 +93,9 @@ export class UserZoneAssignComponent {
     this.showSelectorDropdown = false;
   }
   
-  clearRoleFilter() {
-    this.selectedRole = '';
-    this.showRoleDropdown = false;
+  clearGroupeFilter() {
+    this.selectedGroupe = '';
+    this.showGroupeDropdown = false;
   }
   
 
@@ -128,8 +141,8 @@ export class UserZoneAssignComponent {
       const matchesSearch =
         `${user.nom} ${user.prenom} ${user.matricule}`.toLowerCase().includes(this.searchText.toLowerCase());
   
-      const matchesRole = this.selectedRole
-        ? user.role.toLowerCase() === this.selectedRole.toLowerCase()
+      const matchesGroupe = this.selectedGroupe
+        ? user.groupe?.nom.toLowerCase() === this.selectedGroupe.toLowerCase()
         : true;
   
       const isAssigned = this.selectedUsers.has(user.idUser!);
@@ -140,7 +153,7 @@ export class UserZoneAssignComponent {
           ? !isAssigned
           : true;
   
-      return matchesSearch && matchesRole && matchesAffectation;
+      return matchesSearch && matchesGroupe && matchesAffectation;
     });
   }
 
@@ -148,12 +161,12 @@ export class UserZoneAssignComponent {
    @HostListener('document:click', ['$event'])
       closeDropdown(event: MouseEvent) {
         const target = event.target as HTMLElement;
-        const dropdown = document.getElementById(`dropdownRole`);
-        const button = target.closest('Role-input');
+        const dropdown = document.getElementById(`dropdownGroupe`);
+        const button = target.closest('Groupe-input');
     
         // Vérifiez si le clic est en dehors du dropdown et du bouton
-        if (this.showRoleDropdown  && dropdown && !dropdown.contains(target) && !button) {
-          this.showRoleDropdown = false; 
+        if (this.showGroupeDropdown  && dropdown && !dropdown.contains(target) && !button) {
+          this.showGroupeDropdown = false; 
         }// Ferme le dropdown
         const dropdown1 = document.getElementById(`dropdownAffectation`);
         const button1 = target.closest('Affectation-input');

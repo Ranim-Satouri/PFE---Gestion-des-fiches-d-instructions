@@ -1,4 +1,4 @@
-<div  class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+<div  class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
   <div
     *ngIf="successMessage"
     class="fixed top-10 -translate-x-1/2 z-50 w-fit max-w-md flex items-start justify-between gap-3 p-3 rounded-lg border border-green-400 bg-green-50 dark:bg-green-900/10 dark:border-green-700 text-green-800 dark:text-green-300 text-sm animate-slideFromTop shadow-lg"
@@ -18,7 +18,7 @@
       {{successMessage }}
     </div>
   </div>
-  <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg w-[60%] p-6 max-h-[71.5vh] overflow-y-auto  border dark:border-gray-700 ">
+  <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg sm:w-[60%] p-6 sm:max-h-[71.5vh] overflow-y-auto  border dark:border-gray-700 w-full h-full">
       <button
           (click)="close.emit()"
           type="button"
@@ -34,7 +34,7 @@
       </div> -->
 
       <!-- Barre de recherche & filtre -->
-      <div class="flex flex-col md:flex-row gap-3 mb-4 mt-4 ">
+      <div class="flex flex-col md:flex-row gap-3 mb-4 mt-6 ">
             <!-- Selection Dropdown -->
           <div class="relative w-full md:w-[22%]">
               <input
@@ -139,7 +139,7 @@
           -->
       
           <!-- recherche -->
-          <div class="w-full  md:w-[55%] min-w-[200px]">
+          <div class="w-full  md:w-[55%] sm:min-w-[200px]">
               <div class="relative flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="absolute w-5 h-5 top-2.5 left-2.5 text-slate-600">
                   <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
@@ -153,21 +153,21 @@
                 />
               </div>
           </div>
-          <!-- Rôles Dropdown -->
+          <!-- Groupes Dropdown -->
           <div class="relative w-full md:w-[25%]">
               <input
               type="text"
-              id="Role-input"
+              id="Groupe-input"
               readonly
-              (click)="showRoleDropdown = !showRoleDropdown"
-              [value]="selectedRole ? selectedRole.toUpperCase(): 'Tous les rôles'"
+              (click)="showGroupeDropdown = !showGroupeDropdown"
+              [value]="selectedGroupe ? selectedGroupe.toUpperCase(): 'Tous les groupes'"
               class="w-full p-2 border-gray-400 dark:border-gray-700 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:ring-2 focus:ring-blue-500"
               />
           
               <!-- Toggle icon -->
               <div
               class="absolute top-[20px] right-3 mt-[1px]  -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
-              (click)="showRoleDropdown = !showRoleDropdown"
+              (click)="showGroupeDropdown = !showGroupeDropdown"
               >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path d="m7 10 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
@@ -179,21 +179,21 @@
 
               <!-- Dropdown -->
               <ul
-              *ngIf="showRoleDropdown"
-              id="dropdownRole"
-              class="absolute z-10 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg "            >
+              *ngIf="showGroupeDropdown"
+              id="dropdownGroupe"
+              class="absolute z-50 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg "            >
               <li
-                  (click)="selectRole('')"
+                  (click)="selectGroupe('')"
                   class="px-2 py-2 m-2 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
                   >
-                  Tous les rôles
+                  Tous les groupes
               </li>
               <li
-                  *ngFor="let role of roles"
-                  (click)="selectRole(role)"
+                  *ngFor="let groupe of groupes"
+                  (click)="selectGroupe(groupe)"
                   class="px-2 py-2 m-2 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
                   >
-                  {{ role | uppercase }}
+                  {{ groupe | uppercase }}
               </li>
               </ul>
           </div>  
@@ -208,7 +208,7 @@
               <th class="px-4 py-2">Matricule</th>
               <th class="px-4 py-2">Nom</th>
               <th class="px-4 py-2">Prénom</th>
-              <th class="px-4 py-2">Rôle</th>
+              <th class="px-4 py-2">Groupe</th>
             </tr>
           </thead>
           <tbody>
@@ -228,7 +228,7 @@
               <td class="px-4 py-2">{{ user.matricule }}</td>
               <td class="px-4 py-2">{{ user.nom }}</td>
               <td class="px-4 py-2">{{ user.prenom }}</td>
-              <td class="px-4 py-2">{{ user.role }}</td>
+              <td class="px-4 py-2">{{ user.groupe?.nom }}</td>
             </tr>
           </tbody>
         </table>

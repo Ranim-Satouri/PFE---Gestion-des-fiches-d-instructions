@@ -1,4 +1,4 @@
-<div class="h-full flex flex-col" >  
+<div class="h-full flex flex-col" >
     <div class="h-16 w-full bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 flex items-center px-2 justify-end">
         <div class="flex items-center justify-between w-full px-3">
             <div class="relative form-outline">
@@ -8,7 +8,7 @@
                 id="form1"
                 [(ngModel)]="searchbar"
                 class="form-control no-native-clear w-96 h-10 px-4 py-2 dark:bg-gray-700 border-gray-300 dark:border-gray-600 shadow-sm
-                 dark:shadow-gray-900 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 
+                 dark:shadow-gray-900 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500
                  focus:shadow-md focus:shadow-blue-200 dark:focus:shadow-blue-500 transition-all duration-200 text-gray-900
                   bg-gray-50 border rounded-lg focus:border-blue-500 dark:placeholder-gray-400 dark:text-white outline-none"
                 placeholder="Rechercher ..."
@@ -49,12 +49,12 @@
                 <tr>
                     <th scope="col" class="px-6 py-3 ">
                         <div class="flex items-center">
-                            #  
+                            #
                         </div>
                     </th>
                     <th scope="col" class="px-6 py-3">
                         <div class="flex items-center">
-                            Nom  
+                            Nom
                         </div>
                     </th>
                     <th scope="col" class="px-5 py-3 " >
@@ -69,40 +69,40 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let famille of familles | filter:searchbar | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index" 
+                <tr *ngFor="let famille of familles | filter:searchbar | paginate: { itemsPerPage: itemsPerPage, currentPage: page }; let i = index"
                     class="bg-gray-50 border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 dark:hover:bg-hoverColor hover:bg-gray-100">
                     <th scope="col" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white ">{{famille.idFamille}}</th>
                     <th scope="col" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white ">{{famille.nomFamille}}</th>
                     <th scope="col" class="px-5 py-2 font-medium">{{famille.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
-                    
+
                     <th class="px-4 py-2 text-right relative">
                         <div class="relative inline-block text-left">
-                            <button (click)="toggleDropdown(i, $event)" 
+                            <button (click)="toggleDropdown(i, $event)"
                             [ngClass]="{'dark:bg-gray-600 bg-gray-300': dropdownOpen === i , ' bg-transparent': dropdownOpen !== i}"
                             class="p-1 dark:hover:bg-gray-600  hover:bg-gray-300 rounded-full focus:outline-none">
                                 <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
                                     <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                                 </svg>
-                            </button>   
+                            </button>
                             <!-- Menu déroulant -->
                             <div *ngIf="dropdownOpen === i"  id="dropdownDots-{{i}}"
                                 [ngStyle]="{ top: dropdownPosition.top + 'px', left: dropdownPosition.left + 'px' }"
-                                class="fixed w-40 
-                                        bg-gray-100 dark:bg-gray-800 
-                                        border border-gray-300 dark:border-gray-600 
+                                class="fixed w-40
+                                        bg-gray-100 dark:bg-gray-800
+                                        border border-gray-300 dark:border-gray-600
                                         rounded-md shadow-md z-50 transition-all"
                                 [ngClass]="{ 'origin-bottom-right': displayAbove, 'origin-top-right': !displayAbove }">
 
                                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 font-medium space-y-1">
                                 <li>
-                                <a (click)="OpenUpdateFamillePopUp(famille , 2)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                <a (click)="OpenUpdateFamillePopUp(famille , 2)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- Pencil Icon -->
                                     <svg class="w-6 h-6 mr-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16v-5.5A3.5 3.5 0 0 0 7.5 7m3.5 9H4v-5.5A3.5 3.5 0 0 1 7.5 7m3.5 9v4M7.5 7H14m0 0V4h2.5M14 7v3m-3.5 6H20v-6a3 3 0 0 0-3-3m-2 9v4m-8-6.5h1"/>
                                     </svg>
                                     Zones
                                 </a>
-                                <a *ngIf="hasPermission('modifier_famille')" (click)="OpenUpdateFamillePopUp(famille , 1)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                <a *ngIf="hasPermission('modifier_famille')" (click)="OpenUpdateFamillePopUp(famille , 1)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- Pencil Icon -->
                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                                         <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
@@ -116,7 +116,7 @@
                                 <li>
                                 <a *ngIf="hasPermission('consulter_historique')"
                                 (click)="openHistory(famille.idFamille)"
-                                 class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                 class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- History Icon -->
                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                     <polyline points="1 4 1 10 7 10"/>
@@ -127,9 +127,9 @@
                                 </a>
                                 </li>
                                 <li>
-                                <a *ngIf="hasPermission('supprimer_famille')" class="flex items-center  mx-1 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-600 hover:text-red-700 dark:hover:text-white rounded-lg cursor-pointer transition-all"
+                                <a *ngIf="hasPermission('supprimer_famille')" class="flex items-center  mx-1 px-4 py-2 text-red-600 hover:bg-red-500 dark:hover:bg-red-600 hover:text-white dark:hover:text-white rounded-lg cursor-pointer transition-all"
                                 (click)="openDeleteModel(famille)">
-                                    <!-- Trash Icon -->    
+                                    <!-- Trash Icon -->
                                     <svg class="w-5 h-5 mr-3  " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                                         <path d="M4 7l16 0"></path>
                                         <path d="M10 11l0 6"></path>
@@ -141,7 +141,7 @@
                                 </a>
                                 </li>
                                 </ul>
-                            </div>  
+                            </div>
                         </div>
                     </th>
                 </tr>
@@ -155,7 +155,7 @@
             Affichage <b>{{ (page - 1) * itemsPerPage + 1 }}</b> - <b>{{ (page * itemsPerPage > familles.length ? familles.length : page * itemsPerPage) }}</b> de <b>{{ familles.length }}</b> éléments
         </div>
     <div class="flex space-x-3 flex-row sm:flex-row flex-col">
-            
+
             <form class="max-w-sm mx-auto flex flex-row gap-3 items-center ">
                 <label for="countries" class="block text-sm font-medium text-slate-500">Élément par page</label>
                 <div class="relative">
@@ -172,13 +172,13 @@
                     </svg>
                 </div>
             </form>
-            
+
             <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white " previousLabel="Précédent" nextLabel="Suivant" ></pagination-controls>
             </div>
     </div>
 </div>
 
-<app-delete-confirm 
+<app-delete-confirm
     [isOpen]="isDeleteModelOpen"
     [title]="'cette famille'"
     [message1]="'Toutes les produits associées à cette famille seront également supprimées.'"

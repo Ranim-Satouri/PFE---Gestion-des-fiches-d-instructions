@@ -16,4 +16,5 @@ public interface ZoneService {
     List<Zone> getActiveZones();
     Set<UserZone> getZoneUsers(Long idZone);
     List<Map<String, Object>> getZoneHistory(Long zoneId);
+    List<Zone> getZonesPourProduit(Long produitId);
 }

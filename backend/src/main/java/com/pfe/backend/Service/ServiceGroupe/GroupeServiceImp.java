@@ -9,7 +9,6 @@ import com.pfe.backend.Repository.MenuRepository;
 import com.pfe.backend.Repository.PermissionRepository;
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Service.ServiceUser.UserIservice;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -94,7 +93,6 @@ public class GroupeServiceImp implements GroupeService {
         Groupe groupe = groupeRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Groupe non trouvé"));
 
-        // 1. Menus & Permissions (ça va bien)
         List<Menu> selectedMenus = menuRepository.findAllById(menuIds);
         groupe.setMenus(selectedMenus);
 
@@ -108,15 +106,10 @@ public class GroupeServiceImp implements GroupeService {
                 userRepository.save(user);
             }
         }
-
         List<User> selectedUsers = userRepository.findAllById(userIds);
         for (User user : selectedUsers) {
-            //user.setGroupe(groupe);
             userService.attribuerGroupe(user.getIdUser(), groupe.getIdGroupe(), idActionneur);
         }
-
-        //groupe.setUsers(selectedUsers);
-
         return groupeRepository.save(groupe);
     }
 }

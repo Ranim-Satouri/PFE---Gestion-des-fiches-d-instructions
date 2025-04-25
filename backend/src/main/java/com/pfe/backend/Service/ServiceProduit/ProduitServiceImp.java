@@ -88,7 +88,6 @@ public class ProduitServiceImp implements ProduitService {
                 fiche.setActionneur(actionneur);
             }
             ficheRepo.saveAll(fiches);
-//            prod.getUserZones().clear();
             produitRepository.save(prod);
         }
     @Override

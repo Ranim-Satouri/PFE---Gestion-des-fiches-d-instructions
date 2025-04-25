@@ -13,6 +13,7 @@ export class FicheService {
 
 
   addFiche(fiche: Fiche): Observable<Fiche> {
+    console.log(fiche);
     if (fiche.zone) {
       return this.addFicheZone(fiche);
     } else if (fiche.ligne) {

@@ -9,15 +9,15 @@ import { ZoneHistory } from '../models/ZoneHistoryDTO';
 })
 export class ZoneService {
 
-  private apiUrl = 'http://localhost:8080/zone'; 
-  constructor(private http: HttpClient) { } 
+  private apiUrl = 'http://localhost:8080/zone';
+  constructor(private http: HttpClient) { }
   getAll(): Observable<Zone[]> {
       return this.http.get<Zone[]>(`${this.apiUrl}/activeZones`);
   }
   deleteZone(idZone: number | undefined, idSupprimateur: number): Observable<any> {
     const params = new HttpParams()
                   .set('idActionneur',idSupprimateur);
-    return this.http.delete( `${this.apiUrl}/delete/${idZone}`, { params }); 
+    return this.http.delete( `${this.apiUrl}/delete/${idZone}`, { params });
   }
   addZone(zone: Zone, idActionneur: number): Observable<Zone> {
     const params = new HttpParams()
@@ -32,5 +32,8 @@ export class ZoneService {
   }
   getZoneHistory(idZone: number): Observable<ZoneHistory[]> {
     return this.http.get<ZoneHistory[]>(`${this.apiUrl}/zone-history/${idZone}`);
+  }
+  getZonesPourProduit(produitId: number): Observable<Zone[]> {
+    return this.http.get<Zone[]>(`${this.apiUrl}/getZonesForProduit/${produitId}`);
   }
 }

@@ -217,23 +217,4 @@ public class FicheController {
         boolean updated = ficheService.verifierEtMettreAJourFichesExpirees();
         return ResponseEntity.ok(updated);
     }
-
-    //    @PostMapping("/addFiche")
-//    public ResponseEntity<?> addFiche(@RequestBody Fiche fiche) {
-//        try {
-//            return ResponseEntity.ok(ficheService.addFiche(fiche));
-//        } catch (RuntimeException e) {
-//            System.out.println(e.getMessage());
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//        }
-//    }
-//    @PutMapping("/updateFiche")
-//    public ResponseEntity<?> updateFiche(@RequestBody Fiche fiche ){
-//        try{
-//            return ResponseEntity.ok().body(ficheService.updateFiche(fiche));
-//        }catch(RuntimeException e){
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-//        }
-//    }
-
 }

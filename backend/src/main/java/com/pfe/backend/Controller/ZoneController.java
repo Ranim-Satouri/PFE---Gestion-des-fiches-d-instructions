@@ -60,4 +60,9 @@ public class ZoneController {
     public Set<UserZone> getZoneUsers(@PathVariable Long idZone) {
         return zoneService.getZoneUsers(idZone);
     }
+
+    @GetMapping("/getZonesForProduit/{produitId}")
+    public List<Zone> getZonesForProduit(@PathVariable Long produitId) {
+        return zoneService.getZonesPourProduit(produitId);
+    }
 }

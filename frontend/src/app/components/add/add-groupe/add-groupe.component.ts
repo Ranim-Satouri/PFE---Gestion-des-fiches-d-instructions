@@ -213,7 +213,7 @@ export class AddGroupeComponent {
   getUsers(){
     this.userService.getAll().subscribe(
       (data: User[]) => {
-        this.users = data;  
+        this.users = data.filter(user => !user.groupe || !user.groupe.idGroupe || user.groupe?.idGroupe === this.groupe.idGroupe); 
         if (this.groupe && this.groupe.idGroupe) {
           this.selectedUsers = new Set(this.users?.filter(user => user.groupe?.idGroupe === this.groupe.idGroupe).map(user => user.idUser!)); // hatytha lenna mech fel ngOninit khater feha this.users wel fel oninit mazelt null 
         }

@@ -2,6 +2,8 @@ package com.pfe.backend.Service.ServiceZone;
 
 
 import com.pfe.backend.Model.*;
+import com.pfe.backend.Repository.*;
+import com.pfe.backend.Service.ServiceLigne.LigneService;
 import com.pfe.backend.Repository.FicheRepository;
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.ZoneRepository;
@@ -16,6 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.query.AuditEntity;
 import org.springframework.stereotype.Service;
@@ -29,7 +37,9 @@ public class ZoneServiceImp implements ZoneService {
     private ZoneRepository zoneRepo;
     private ZoneRepository zoneRepository;
     private UserRepository userRepo;
-    private FicheRepository ficheRepo;
+    private LigneRepository ligneRepo;
+    private ProduitRepository produitRepo;
+    private LigneService serviceLigne;
     @Override
     public ResponseEntity<List<Zone>> getAllZones() {
         return ResponseEntity.ok().body(zoneRepository.findAll());
@@ -60,14 +70,13 @@ public class ZoneServiceImp implements ZoneService {
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
         zone.setDeleted(true);
         zone.getUserZones().clear();
+        zone.getFamilles().clear();
         zone.setActionneur( actionneur);
-        //List<Fiche> fiches = ficheRepo.findByZone(zone);
-//        for (Fiche fiche : fiches) {
-//            fiche.setStatus(Fiche.FicheStatus.DELETED);
-//            fiche.setAction(Fiche.FicheAction.DELETE);
-//            fiche.setActionneur(actionneur);
-//        }
-//        ficheRepo.saveAll(fiches);
+
+        List<Ligne> lignes = ligneRepo.findByZoneAndIsDeletedFalse(zone);
+        for (Ligne ligne : lignes) {
+            serviceLigne.DeleteLigne(ligne.getIdLigne() , actionneur.getIdUser());
+        }
         zoneRepository.save(zone);
     }
     @Override
@@ -153,4 +162,19 @@ public class ZoneServiceImp implements ZoneService {
         return history;
     }
 
+//    @Override
+//    public Set<UserZone> getZonesByProduit(Long idProduit) {
+//        Famille famille = zoneRepo.findByFamille(idProduit)
+//                .orElseThrow(() -> new RuntimeException("Zone introuvable"));
+//        return zone.getUserZones();
+//    }
+    @Override
+    public List<Zone> getZonesPourProduit(Long produitId) {
+        Produit produit = produitRepo.findById(produitId).orElseThrow(() -> new RuntimeException("Produit non trouvé"));
+        Famille famille = produit.getFamille();
+        List<Zone> zonesNonSupprimees = famille.getZones().stream()
+                .filter(zone -> !zone.isDeleted())
+                .collect(Collectors.toList());
+        return zonesNonSupprimees;
+    }
 }

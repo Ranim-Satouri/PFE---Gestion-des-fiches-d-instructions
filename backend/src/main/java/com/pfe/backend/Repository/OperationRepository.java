@@ -1,4 +1,5 @@
 package com.pfe.backend.Repository;
+import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.Ligne;
 import com.pfe.backend.Model.Operation;
 import com.pfe.backend.Model.Operation;
@@ -12,4 +13,5 @@ import java.util.Optional;
 public interface OperationRepository extends JpaRepository<Operation,Long> {
     Optional<Operation> findBynomAndIsDeletedAndLigne(String nomOperation, boolean deleted , Ligne ligne);
     List<Operation> findByIsDeletedFalse();
+    List<Operation> findByLigneAndIsDeletedFalse(Ligne ligne);
 }

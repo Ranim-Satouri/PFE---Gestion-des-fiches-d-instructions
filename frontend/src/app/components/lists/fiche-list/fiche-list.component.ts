@@ -6,7 +6,7 @@ import { FicheService } from '../../../services/fiche.service';
 import { Fiche, FicheStatus } from '../../../models/Fiche';
 import { FormsModule } from '@angular/forms';
 import {FicheFormComponent} from '../../add/fiche-form/fiche-form.component';
-import { Role, User } from '../../../models/User';
+import { User } from '../../../models/User';
  import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { FicheValidationComponent } from "../../fiche-validation/fiche-validation.component";
 @Component({
@@ -21,7 +21,6 @@ export class FicheListComponent {
   constructor(private FicheService: FicheService ) { }
   fiches : Fiche[] = [];  
   dropdownOpen: number | null = null;
-  role = Role ;
   FicheStatus = FicheStatus;
   page: number = 1;
   itemsPerPage: number = 5;
@@ -47,125 +46,6 @@ export class FicheListComponent {
     this.checkFicheStatusPeriodically();
   }
   getFiches() {
-
-    // if(this.userConnected.role == Role.SUPERUSER){ 
-    //   this.FicheService.getAllFiches().subscribe({
-    //     next : (response :Fiche[]) => {
-    //       console.log('response', response);
-    //       // Séparation des fiches par statut
-    //       const fichesAValider = response.filter(fiche => 
-    //         fiche.status === FicheStatus.PENDING 
-    //       );
-    //       const fichesRejeter = response.filter(fiche => 
-    //         fiche.status === FicheStatus.REJECTEDIPDF || fiche.status === FicheStatus.REJECTEDIQP
-    //       );
-        
-    //       const fichesValider = response.filter(fiche => 
-    //         fiche.status === FicheStatus.ACCEPTEDIPDF
-    //       );
-    //       const autresFiches = response.filter(fiche => 
-    //          fiche.status !== FicheStatus.PENDING && fiche.status !== FicheStatus.REJECTEDIQP && fiche.status !== FicheStatus.REJECTEDIPDF && fiche.status !== FicheStatus.ACCEPTEDIPDF
-    //       );
-    
-    //       // Tri par idFiche (décroissant)
-    //       fichesAValider.sort((a, b) => b.idFiche! - a.idFiche!);
-    //       fichesRejeter.sort((a, b) => b.idFiche! - a.idFiche!);
-    //       fichesValider.sort((a, b) => b.idFiche! - a.idFiche!);
-    //       autresFiches.sort((a, b) => b.idFiche! - a.idFiche!);
-          
-    
-    //       // Combinaison des fiches triées dans l'ordre souhaité
-    //       this.fiches = [...fichesAValider, ...fichesRejeter, ...fichesValider, ...autresFiches];
-    
-    //     },
-    //     error : (error : any) => {
-    //       console.error('fetching fiches error:', error);
-    //     }
-    //   });
-    // }else if(this.userConnected.role == Role.IPDF ){
-    //   this.FicheService.getFichesByIPDF(this.userConnected.idUser!).subscribe({
-    //     next: (response: Fiche[]) => {
-    //       console.log('response', response);
-    //       // Séparation des fiches par statut
-    //       const fichesAValider = response.filter(fiche => 
-    //         fiche.status === FicheStatus.PENDING 
-    //       );
-    //       const fichesRejeter = response.filter(fiche => 
-    //         fiche.status === FicheStatus.REJECTEDIPDF 
-    //       );
-    //       const fichesRejeterIQP = response.filter(fiche => 
-    //         fiche.status === FicheStatus.REJECTEDIQP
-    //       );
-    //       const fichesValider = response.filter(fiche => 
-    //         fiche.status === FicheStatus.ACCEPTEDIPDF
-    //       );
-    //       const autresFiches = response.filter(fiche => 
-    //          fiche.status !== FicheStatus.PENDING && fiche.status !== FicheStatus.REJECTEDIQP && fiche.status !== FicheStatus.REJECTEDIPDF && fiche.status !== FicheStatus.ACCEPTEDIPDF
-    //       );
-    
-    //       // Tri par idFiche (décroissant)
-    //       fichesAValider.sort((a, b) => b.idFiche! - a.idFiche!);
-    //       fichesRejeter.sort((a, b) => b.idFiche! - a.idFiche!);
-    //       fichesValider.sort((a, b) => b.idFiche! - a.idFiche!);
-    //       autresFiches.sort((a, b) => b.idFiche! - a.idFiche!);
-    //       fichesRejeterIQP.sort((a, b) => b.idFiche! - a.idFiche!);
-    
-    //       // Combinaison des fiches triées dans l'ordre souhaité
-    //       this.fiches = [...fichesAValider, ...fichesRejeter, ...fichesValider,...fichesRejeterIQP, ...autresFiches];
-    
-    //       console.log(this.fiches);
-    //     },
-    //     error: (error: any) => {
-    //       console.error('Fetching fiches error:', error);
-    //     }
-    //   });
-    // }
-    // else if (this.userConnected.role == Role.IQP) {
-    //   this.FicheService.getFichesByIQP(this.userConnected.idUser!).subscribe({
-    //     next: (response: Fiche[]) => {
-    //       const fichesAValider = response.filter(fiche => 
-    //         fiche.status === FicheStatus.PENDING || fiche.status === FicheStatus.ACCEPTEDIPDF
-    //       );
-    //       const autresFiches = response.filter(fiche => 
-    //         fiche.status !== FicheStatus.PENDING && fiche.status !== FicheStatus.ACCEPTEDIPDF
-    //       );
-    //       fichesAValider.sort((a, b) => b.idFiche! - a.idFiche!);
-    //       autresFiches.sort((a, b) => b.idFiche! - a.idFiche!);
-    //       this.fiches = [...fichesAValider, ...autresFiches];
-    //     },
-    //     error: (error: any) => {
-    //       console.error('fetching fiches error:', error);
-    //     }
-    //   });
-    // }else if(this.userConnected.role == Role.PREPARATEUR ){
-    //   this.FicheService.getFichesByPreparateur(this.userConnected.idUser!).subscribe({
-    //     next : (response :Fiche[]) => {
-    //       this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
-    //     },
-    //     error : (error : any) => {
-    //       console.error('fetching fiches error:', error);
-    //     }
-    //   });
-    // }else if(this.userConnected.role == Role.OPERATEUR ){
-    //   this.FicheService.getFichesByOperateur(this.userConnected.idUser!).subscribe({
-    //     next : (response :Fiche[]) => {
-    //       this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
-    //     },
-    //     error : (error : any) => {
-    //       console.error('fetching fiches error:', error);
-    //     }
-    //   });
-    // }else{
-    //   this.FicheService.getFichesByAdmin(this.userConnected.idUser!).subscribe({
-    //     next : (response :Fiche[]) => {
-    //       this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
-    //     },
-    //     error : (error : any) => {
-    //       console.error('fetching fiches error:', error);
-    //     }
-    //   });
-    // }
-
     this.FicheService.getFichesByUserZones(this.userConnected.idUser!).subscribe({
         next : (response :Fiche[]) => {
           this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
@@ -311,7 +191,6 @@ export class FicheListComponent {
     const permissions = this.userConnected.groupe?.permissions || []; 
     return permissions.some(permission => permission.nom === permissionName);  
   }
-
 
   generateQrCode(fileName: string) {
       const serverUrl = `http://192.168.1.17:8080/fiche/getPdf/${fileName}`; 

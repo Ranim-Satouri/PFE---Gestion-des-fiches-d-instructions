@@ -1,9 +1,6 @@
 package com.pfe.backend.Repository;
 
-import com.pfe.backend.Model.Fiche;
-import com.pfe.backend.Model.Produit;
-import com.pfe.backend.Model.User;
-import com.pfe.backend.Model.Zone;
+import com.pfe.backend.Model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +11,4 @@ import java.util.Optional;
 public interface ZoneRepository extends JpaRepository<Zone, Long> {
     List<Zone> findByIsDeletedFalse();
     Optional<Zone> findByNomAndIsDeleted(String nomZone , boolean deleted);
-
 }

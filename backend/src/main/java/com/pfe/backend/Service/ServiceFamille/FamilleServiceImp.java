@@ -132,9 +132,8 @@ public class FamilleServiceImp implements FamilleService {
     @Override
     public void DeleteFamily(Long idFam ,Long idActionneur)
     {
-        Famille famille = familleRepository.findById(idFam).orElseThrow(()-> new RuntimeException("Famille introuvable ! "));
-        User actionneur = userRepository.findById(idActionneur)
-                .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+        Famille famille = familleRepository.findById(idFam).orElseThrow(()-> new RuntimeException("Famille introuvable !"));
+        User actionneur = userRepository.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
         for (Produit produit : famille.getProduits()) {
             produit.setDeleted(true);
             produit.setActionneur(actionneur);
@@ -143,7 +142,6 @@ public class FamilleServiceImp implements FamilleService {
         famille.setActionneur(actionneur);
         famille.setDeleted(true);
         familleRepository.save(famille);
-
     }
     @Override
     public List<Famille> getActiveFamilies() {

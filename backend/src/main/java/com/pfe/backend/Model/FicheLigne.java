@@ -15,6 +15,6 @@ import lombok.Setter;
 public class FicheLigne extends Fiche {
 
     @ManyToOne
-    @JoinColumn(name = "idLigne", nullable = false)
+    @JoinColumn(name = "idLigne", nullable = true)
     private Ligne ligne;
 }

@@ -1,4 +1,4 @@
-<div class="fixed inset-0 flex items-center justify-center bg-black/50 bg-opacity-50 z-[100]">
+<div class="fixed inset-0 flex items-center justify-center bg-black/50 bg-opacity-50 z-[100] p-4">
   <!-- Message success  -->
   <div
       *ngIf="successMessage"
@@ -50,7 +50,8 @@
     </svg>
     </button>
 
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Ajouter une Famille</h2>
+    <h2 *ngIf="isNewFamille" class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Ajouter une famille</h2>
+    <h2 *ngIf="!isNewFamille" class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Modifier la famille</h2>
     <div >
       <form [formGroup]="familyForm" class="space-y-4">
 
@@ -59,6 +60,7 @@
           <label class="text-sm text-black dark:text-gray-300 mb-1 block">Nom de la famille <span class="text-red-500">*</span></label>
           <input
               type="text"
+              autocomplete="off"
               placeholder="Nom"
               formControlName="nom"
               class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition   focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
@@ -130,7 +132,7 @@
   </div>
 
   <!-- pop up Affectation -->
-  <div *ngIf="currentStep === 2" class="relative bg-white  dark:bg-gray-900  rounded-lg shadow-lg  p-6 transition-all  max-h-[71.5vh] w-[60%] overflow-y-auto  border dark:border-gray-700 " >
+  <div *ngIf="currentStep === 2" class="relative bg-white  dark:bg-gray-900  rounded-lg shadow-lg  p-6 transition-all  sm:max-h-[71.5vh] sm:w-[60%] overflow-y-auto  border dark:border-gray-700 w-full max-h-lg" >
     <!-- Bouton X avec z-index élevé et position fixe -->
 
     <button
@@ -229,6 +231,7 @@
                       
                           <input
                           type="text"
+                          autocomplete="off"
                           [(ngModel)]="zoneSearchText"
                           class="w-full pl-10 pr-3 py-2  rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition   focus:outline-none  border-gray-400 dark:border-gray-700  focus:ring-0 focus:border-blue-500 dark:focus:border-blue-500 dark:focus:ring-blue-500
                           focus:shadow-sm dark:shadow-gray-900 focus:shadow-md transition-all duration-200"

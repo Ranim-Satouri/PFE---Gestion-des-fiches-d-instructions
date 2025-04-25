@@ -54,4 +54,5 @@ public class Zone {
     @JsonIgnore
     @ManyToMany(mappedBy = "zones", fetch = FetchType.LAZY)
     private List<Famille> familles;
+
 }

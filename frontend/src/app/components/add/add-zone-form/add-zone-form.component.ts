@@ -52,7 +52,7 @@ export class AddZoneFormComponent {
                 setTimeout(() => {
                   this.close.emit();
                   this.successMessage = '';
-                }, 2000);
+                }, 1000);
               }
              
               
@@ -71,7 +71,7 @@ export class AddZoneFormComponent {
       
               setTimeout(() => {
                 this.errorMessage = '';
-              }, 2000);
+              }, 1000);
             }
           });
         } else {

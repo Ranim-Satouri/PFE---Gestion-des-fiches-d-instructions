@@ -57,7 +57,7 @@
                 <tr>
                     <th scope="col" class="px-6 py-3 ">
                         <div class="flex items-center">
-                            #  
+                            #
                         </div>
                     </th>
                     <th scope="col" class="px-6 py-3 ">
@@ -102,7 +102,7 @@
 
                                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 font-medium space-y-1">
                                     <li>
-                                        <a (click)="openUserPopup(zone)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                        <a (click)="openUserPopup(zone)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                             <!-- Pencil Icon -->
                                             <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                                                 <path d="M5 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
@@ -115,7 +115,7 @@
                                         </a>
                                     </li>
                             <li>
-                                <a *ngIf="hasPermission('modifier_zone')" (click)="openUpdateForm(zone)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                <a *ngIf="hasPermission('modifier_zone')" (click)="openUpdateForm(zone)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- Pencil Icon -->
                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                                         <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
@@ -127,7 +127,7 @@
                                 </li>
                                 <li>
                                 <a *ngIf="hasPermission('consulter_historique')"
-                                (click)="openHistory(zone.idZone)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                (click)="openHistory(zone.idZone)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- History Icon -->
                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                     <polyline points="1 4 1 10 7 10"/>
@@ -138,7 +138,7 @@
                                 </a>
                                 </li>
                                 <li>
-                                <a  *ngIf="hasPermission('supprimer_zone')" class="flex items-center  mx-1 px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-600 hover:text-red-700 dark:hover:text-white rounded-lg cursor-pointer transition-all"
+                                <a  *ngIf="hasPermission('supprimer_zone')" class="flex items-center  mx-1 px-4 py-2 text-red-600 hover:bg-red-500 dark:hover:bg-red-600 hover:text-white dark:hover:text-white rounded-lg cursor-pointer transition-all"
                                 (click)="openDeleteModel(zone)">
                                     <!-- Trash Icon -->
                                     <svg class="w-5 h-5 mr-3  " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">

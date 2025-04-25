@@ -1,12 +1,9 @@
 package com.pfe.backend.Service.ServiceLigne;
 
 
-import com.pfe.backend.Model.Ligne;
-import com.pfe.backend.Model.User;
-import com.pfe.backend.Model.Zone;
-import com.pfe.backend.Repository.LigneRepository;
-import com.pfe.backend.Repository.UserRepository;
-import com.pfe.backend.Repository.ZoneRepository;
+import com.pfe.backend.Model.*;
+import com.pfe.backend.Repository.*;
+import com.pfe.backend.Service.ServiceOperation.OperationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +20,9 @@ public class LigneServiceImp implements LigneService {
     private UserRepository userRepository;
     private LigneRepository ligneRepository;
     private ZoneRepository zoneRepository;
+    private OperationRepository operationRepo;
+    private OperationService operationService;
+    private FicheLigneRepository ficheLigneRepo;
 
     public ResponseEntity<?> addLigne(Ligne ligne , Long idActionneur){
         User actionneur = userRepository.findById(idActionneur)
@@ -69,11 +69,21 @@ public class LigneServiceImp implements LigneService {
         Ligne ligne = ligneRepository.findById(idLigne).orElseThrow(()-> new RuntimeException("Ligne introuvable ! "));
         User actionneur = userRepository.findById(idActionneur)
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-
+        List<Operation> operations = operationRepo.findByLigneAndIsDeletedFalse(ligne);
+        for (Operation op : operations) {
+            operationService.DeleteOperation(op.getIdOperation() , actionneur.getIdUser());
+        }
+        operationRepo.saveAll(operations);
+        List<FicheLigne> fichesLigne = ficheLigneRepo.findByLigneAndStatusNot(ligne , Fiche.FicheStatus.DELETED);
+        for (Fiche fiche : fichesLigne) {
+            fiche.setStatus(Fiche.FicheStatus.DELETED);
+            fiche.setAction(Fiche.FicheAction.DELETE);
+            fiche.setActionneur(actionneur);
+        }
+        ficheLigneRepo.saveAll(fichesLigne);
         ligne.setActionneur(actionneur);
         ligne.setDeleted(true);
         ligneRepository.save(ligne);
-
     }
     @Override
     public List<Ligne> getActiveLignes() {

@@ -14,6 +14,6 @@ import lombok.Setter;
 public class FicheOperation extends Fiche {
 
     @ManyToOne
-    @JoinColumn(name = "idOperation", nullable = false)
+    @JoinColumn(name = "idOperation", nullable = true)
     private Operation operation;
 }

@@ -31,6 +31,11 @@ export class UserListComponent implements  OnDestroy {
 //hisstorique
 showHistoryPopup: boolean = false;
 selectedUserId: number | null = null;
+
+  private observer?: MutationObserver;
+  //hisstorique
+  showHistoryPopup: boolean = false;
+  selectedUserId: number | null = null;
   constructor( private userService: UserService, private userZoneService: UserZoneService, private zoneService: ZoneService, private groupeService: GroupeService ,private cdr: ChangeDetectorRef, private router: Router ) {}
 
   users: any[] = []; dropdownOpen: number | null = null; page: number = 1;
@@ -50,17 +55,16 @@ selectedUserId: number | null = null;
   selectedZones: number[] = [];
   selectedStatus: string = '';
   // les groupes
-    groupes: Groupe[] = [];
-    selectedGroupe: Groupe | null | undefined;
-    filteredGroupes: Groupe[] = [];
-    isGrpDropdownPositioned = false;
-    showGrpDropdown = false;
+  groupes: Groupe[] = [];
+  selectedGroupe: Groupe | null | undefined;
+  filteredGroupes: Groupe[] = [];
+  isGrpDropdownPositioned = false;
+  showGrpDropdown = false;
 
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
-      this.Role=this.userConnected.role;
       this.loadGroupes();
      }
     this.getUsers();
@@ -215,15 +219,16 @@ adjustGrpDropdownPosition() {
   openUpdateForm(user: User) {
     this.selectedUser=user;
     this.showForm = true;
+    this.dropdownOpen= null;
     }
-    closeRegisterForm() {
-      this.hideRegisterForm();
-      this.selectedUser=null;
-    }
-    onUserUpdated() {
-      this.getUsers(); // Refresh the user list after update
-      this.closeRegisterForm();
-    }
+  closeRegisterForm() {
+    this.hideRegisterForm();
+    this.selectedUser=null;
+  }
+  onUserUpdated() {
+    this.getUsers(); // Refresh the user list after update
+    this.closeRegisterForm();
+  }
 
   getUsers() {
     this.userService.getAll().subscribe({
@@ -425,6 +430,6 @@ adjustGrpDropdownPosition() {
 //   this.showHistoryPopup = false;
 //   this.selectedUserId = null;
 // }
- 
+
 }
 
