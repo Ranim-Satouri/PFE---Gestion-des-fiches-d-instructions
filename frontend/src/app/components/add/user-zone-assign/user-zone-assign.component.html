@@ -18,7 +18,7 @@
       {{successMessage }}
     </div>
   </div>
-  <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg sm:w-[60%] p-6 sm:max-h-[71.5vh] overflow-y-auto  border dark:border-gray-700 w-full h-full">
+  <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-lg sm:w-[60%] p-6 sm:max-h-[71.5vh] overflow-y-auto  border dark:border-gray-700 flex flex-col w-full h-full">
       <button
           (click)="close.emit()"
           type="button"
@@ -200,7 +200,7 @@
       </div>
 
     <!-- Liste utilisateurs -->
-    <div class="overflow-auto  h-[39vh]">
+    <div class="overflow-auto  h-[39vh] flex-1">
       <table class="w-full text-sm text-left text-gray-800 dark:text-gray-200 ">
           <thead class="text-xs uppercase bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
             <tr>
@@ -234,7 +234,8 @@
         </table>
     </div>
 
-    <div class="mt-6 flex justify-end gap-4">
+    <!-- Boutons en bas -->
+    <div class="border-t border-gray-300 dark:border-gray-700 pt-6 flex justify-end gap-4 ">
       <button (click)="close.emit()" class="px-4 py-2 text-sm bg-gray-300 dark:bg-gray-700 rounded hover:bg-gray-400 dark:hover:bg-gray-600">
         Annuler
       </button>
@@ -242,6 +243,7 @@
         Enregistrer
       </button>
     </div>
+
   </div>
   </div>
   

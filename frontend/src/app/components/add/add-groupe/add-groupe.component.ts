@@ -227,8 +227,6 @@ export class AddGroupeComponent {
     return this.users.filter(user => {
       const matchesSearch =
         `${user.nom} ${user.prenom} ${user.matricule}`.toLowerCase().includes(this.userSearchText.toLowerCase());
-  
-    
       const isAssigned = this.selectedUsers.has(user.idUser!);
   
       const matchesAffectation = this.affectationFilter === 'Affectés'

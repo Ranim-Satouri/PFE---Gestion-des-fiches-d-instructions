@@ -379,6 +379,7 @@ adjustGrpDropdownPosition() {
   showRegisterForm() {this.showForm = true;}
 
   hideRegisterForm() {
+    this.selectedUser= null;
     this.getUsers();
     this.showForm = false;
   }

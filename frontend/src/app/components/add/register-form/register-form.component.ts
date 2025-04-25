@@ -22,6 +22,7 @@ export class RegisterFormComponent {
   @Output() close = new EventEmitter<void>();
   @Output() userUpdated = new EventEmitter<void>();
   constructor(private userService:UserService,private zoneService: ZoneService,private groupeService: GroupeService) {}
+  alreadyExist : Boolean = false;
 
   userConnected !: User;
   ngOnInit() {
@@ -277,6 +278,7 @@ export class RegisterFormComponent {
           console.log('✅ Utilisateur ajouté avec succès', response);
           const selectedGroupe = this.registerForm.get('groupe')?.value;
           if (selectedGroupe && selectedGroupe.idGroupe) {
+            console.log("groupe",this.searchText);
             this.userService.attribuerGroupe(response.user.idUser, selectedGroupe.idGroupe, idActionneur).subscribe({
               next: () => {
                 console.log('✅ Groupe attribué avec succès');
@@ -288,7 +290,10 @@ export class RegisterFormComponent {
               }
             });
           } else { this.assignZones(response.user.idUser, idActionneur); }
-        }, error: (error) => { this.showFailAlert(); console.error('❌ Erreur lors de l\'ajout de l\'utilisateur', error); }
+        }, error: (error) => {
+          this.alreadyExist = true;
+           this.showFailAlert(); 
+           console.error('❌ Erreur lors de l\'ajout de l\'utilisateur', error); }
       });
       console.log("Données soumises :", user);
     } else {
@@ -306,9 +311,11 @@ assignZones(userId: number, idActionneur: number) {
     forkJoin(zoneObservables).subscribe({
       next: () => {
         console.log('✅ Zones attribuées avec succès');
+        this.hideAlert();
         this.showAlertAndClose();
       },
       error: (error) => {
+        this.hideAlert();
         this.showFailAlert();
         console.error('❌ Erreur lors de l\'ajout des zones', error);
       }
@@ -318,11 +325,18 @@ assignZones(userId: number, idActionneur: number) {
 // aleeeeeeeeerrtt
 showSuccessAlert: boolean = false;
 showEchecAlert : boolean = false;
-hideAlert(){ this.showSuccessAlert = false ; this.showEchecAlert = false ; }
+hideAlert(){ 
+  if(this.showSuccessAlert){
+    this.showSuccessAlert = false ;
+  }
+  if(this.showEchecAlert){
+    this.showEchecAlert = false ; 
+  }
+}
 
-showAlertAndClose() { this.showSuccessAlert = true; setTimeout(()=>{this.hideAlert();  this.closeForm();},3000); }
+showAlertAndClose() {this.showEchecAlert = false; this.showSuccessAlert = true; setTimeout(()=>{this.showSuccessAlert = false;  this.closeForm();},3000); }
 
-showFailAlert() { this.showEchecAlert = true; setTimeout(()=> { this.hideAlert();},3500); }
+showFailAlert() {this.showSuccessAlert = false ; this.showEchecAlert = true; setTimeout(()=> { this.showEchecAlert = false;},3500); }
   // Dynamically position the dropdown above the input
   adjustDropdownPosition() {
     if (this.groupeInput && this.groupeDropdown) {
