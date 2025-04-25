@@ -187,21 +187,21 @@ export class RegisterFormComponent {
       const selectedGroupe = this.registerForm.get('groupe')?.value;
       const previousGroupe = this.userToUpdate.groupe;
 
-      // Vérifier si le groupe a changé (en tenant compte que les deux peuvent être null)
-      if ( selectedGroupe?.idGroupe !== previousGroupe?.idGroupe &&
-        (selectedGroupe || previousGroupe) // S'assurer qu'au moins l'un des deux est défini
-      ) {
-        this.userService.attribuerGroupe(this.userToUpdate.idUser, selectedGroupe?.idGroupe || null, idActionneur).subscribe({
-          next: () => {
-            console.log('✅ Groupe mis à jour avec succès');
-            this.userUpdated.emit();
+    // Vérifier si le groupe a changé (en tenant compte que les deux peuvent être null)
+    if ( selectedGroupe?.idGroupe !== previousGroupe?.idGroupe &&
+      (selectedGroupe || previousGroupe) // S'assurer qu'au moins l'un des deux est défini
+    ) {
+      this.userService.attribuerGroupe(this.userToUpdate.idUser, selectedGroupe?.idGroupe || null, idActionneur).subscribe({
+        next: () => {
+          console.log('✅ Groupe mis à jour avec succès');
+          this.userUpdated.emit();
 
-          },
-          error: (error) => {
-            console.error('❌ Erreur lors de la mise à jour du groupe', error);
-            this.showFailAlert();
-          }
-        });}
+        },
+        error: (error) => {
+          console.error('❌ Erreur lors de la mise à jour du groupe', error);
+          this.showFailAlert();
+        }
+      });}
     this.userService.updateUser(this.userToUpdate.idUser, updatedUser, idActionneur).subscribe({
       next: (response) => {
         console.log('✅ Utilisateur mis à jour avec succès', response);
@@ -292,11 +292,12 @@ export class RegisterFormComponent {
           } else { this.assignZones(response.user.idUser, idActionneur); }
         }, error: (error) => {
           this.alreadyExist = true;
-           this.showFailAlert(); 
-           console.error('❌ Erreur lors de l\'ajout de l\'utilisateur', error); }
+          this.showFailAlert(); 
+          console.error('❌ Erreur lors de l\'ajout de l\'utilisateur', error); }
       });
       console.log("Données soumises :", user);
     } else {
+      this.alreadyExist = false;
       this.showFailAlert();
       console.log("❌ Formulaire invalide !");
     }
