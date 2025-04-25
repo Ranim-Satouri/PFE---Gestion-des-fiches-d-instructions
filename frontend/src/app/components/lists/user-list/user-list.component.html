@@ -285,7 +285,7 @@
       </div>
   </div>
 </div>
-
+<app-user-history #userHistoryComponent></app-user-history>
     <app-delete-confirm
         [isOpen]="isDeleteModelOpen"
         [title]="'cet utilisateur'"
@@ -294,10 +294,5 @@
         (onConfirm)="selectedUser ? ChangeUserStatus(selectedUser.idUser, UserStatus.DELETED) : null"
         (onCancel)="closeDeleteModel()">
     </app-delete-confirm>
-    <!-- Popup UserHistoryComponent -->
-  <app-user-history
-  *ngIf="showHistoryPopup"
-  [idUser]="selectedUserId"
-  (close)="closeUserHistory()">
-</app-user-history>
+
 

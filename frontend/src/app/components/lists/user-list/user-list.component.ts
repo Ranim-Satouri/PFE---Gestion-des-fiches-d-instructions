@@ -26,8 +26,8 @@ export class UserListComponent implements  OnDestroy {
   @ViewChild('grpArrowButton', { static: false }) grpArrowButton?: ElementRef;
   @ViewChild('zoneToggleButton', { static: false }) zoneToggleButton?: ElementRef;
   @ViewChild('zoneDropdown', { static: false }) zoneDropdown?: ElementRef;
-
-  private observer?: MutationObserver;
+  @ViewChild('userHistoryComponent', { static: false }) userHistoryComponent?: UserHistoryComponent;
+    private observer?: MutationObserver;
 //hisstorique
 showHistoryPopup: boolean = false;
 selectedUserId: number | null = null;
@@ -70,6 +70,20 @@ selectedUserId: number | null = null;
         console.log('Zones loaded:', this.zones);},
       error: (error: any) => { console.error('Fetching zones error:', error) ; },});
     }
+    // Méthode pour ouvrir le popup
+// Méthode pour ouvrir le popup d'historique
+openUserHistory(idUser: number | undefined): void {
+  if (!idUser) {
+    console.error('ID utilisateur non défini pour cet utilisateur');
+    return;
+  }
+
+  if (this.userHistoryComponent) {
+    this.userHistoryComponent.openHistory(idUser);
+  } else {
+    console.error('UserHistoryComponent is not initialized');
+  }
+}
 loadGroupes() {
   this.groupeService.getAll().subscribe({
     next: (groupes) => {
@@ -406,21 +420,11 @@ adjustGrpDropdownPosition() {
     const permissions = this.userConnected.groupe?.permissions || [];
     return permissions.some(permission => permission.nom === permissionName);
   }
-// Méthode pour ouvrir le popup
-openUserHistory(idUser: number | undefined): void {
-  if (!idUser) {
-    console.error('ID utilisateur non défini pour cet utilisateur');
-    return;
-  }
-  console.log('Opening history for user ID:', idUser);
-  this.selectedUserId = idUser;
-  this.showHistoryPopup = true;
-}
 
-closeUserHistory(): void {
-  this.showHistoryPopup = false;
-  this.selectedUserId = null;
-}
+// closeUserHistory(): void {
+//   this.showHistoryPopup = false;
+//   this.selectedUserId = null;
+// }
  
 }
 
