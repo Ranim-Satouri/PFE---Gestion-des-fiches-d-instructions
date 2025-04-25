@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Famille } from '../../../models/Famille';
 import { User } from '../../../models/User';
 import { FilterPipe } from '../../../pipes/filter.pipe';
@@ -9,7 +10,6 @@ import { FamilleService } from '../../../services/famille.service';
 import { AddFamilleFormComponent } from "../../add/add-famille-form/add-famille-form.component";
 import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { FamilleHistoryComponent } from "../../History/famille-history/famille-history.component";
-import { DialogService } from 'primeng/dynamicdialog';
 @Component({
   selector: 'app-famille-list',
   standalone: true,
