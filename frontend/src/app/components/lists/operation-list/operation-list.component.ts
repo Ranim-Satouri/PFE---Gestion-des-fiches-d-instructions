@@ -7,10 +7,13 @@ import { Operation } from '../../../models/Operation';
 import { OperationService } from '../../../services/operation.service';
 import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { AddOperationComponent } from "../../add/add-operation/add-operation.component";
+import { FilterPipe } from '../../../pipes/filter.pipe';    
+import { filter } from 'rxjs';
+
 @Component({
   selector: 'app-operation-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddOperationComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddOperationComponent,FilterPipe],
   templateUrl: './operation-list.component.html',
   styleUrl: './operation-list.component.css'
 })
@@ -29,6 +32,7 @@ export class OperationListComponent {
   OperationToUpdate : Operation | undefined ;
   showAddModal = false;
   showUpdateModal = false;
+  searchbar: string = '';
 
   ngOnInit(){
     this.getOperations();

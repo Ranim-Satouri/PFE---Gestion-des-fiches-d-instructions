@@ -7,16 +7,18 @@ import { Ligne } from '../../../models/Ligne';
 import { LigneService } from '../../../services/ligne.service';
 import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { LigneFormComponent } from "../../add/ligne-form/ligne-form.component";
+import { FilterPipe } from '../../../pipes/filter.pipe';
+
 @Component({
   selector: 'app-ligne-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, LigneFormComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, LigneFormComponent,FilterPipe],
   templateUrl: './ligne-list.component.html',
   styleUrl: './ligne-list.component.css'
 })
 export class LigneListComponent {
-
  constructor(private ligneService: LigneService) {}
+ searchbar: string = '';
   lignes: Ligne[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
