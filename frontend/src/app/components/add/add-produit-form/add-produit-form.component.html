@@ -117,7 +117,7 @@
             placeholder="Famille"
             [value]="familleSearch"
             (input)="onFamilleSearchChange($event)"
-           
+            autocomplete="off"
             class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
             dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"   
             [ngClass]="{
@@ -153,7 +153,7 @@
           <ul
             *ngIf="showDropdown && (filteredFamilles.length > 0 || familleSearch)"
             id="dropdown"
-            class="absolute z-10 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg"
+            class="absolute z-10 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 sm:max-h-40 max-h-[120px] overflow-y-auto shadow-lg"
           >
             <li
               *ngFor="let f of filteredFamilles"

@@ -1,8 +1,7 @@
 package com.pfe.backend.Service.ServiceOperation;
 
-import com.pfe.backend.Model.Ligne;
-import com.pfe.backend.Model.Operation;
-import com.pfe.backend.Model.User;
+import com.pfe.backend.Model.*;
+import com.pfe.backend.Repository.FicheOperationRepository;
 import com.pfe.backend.Repository.LigneRepository;
 import com.pfe.backend.Repository.OperationRepository;
 import com.pfe.backend.Repository.UserRepository;
@@ -22,6 +21,8 @@ public class OperationServiceImp implements OperationService {
     private UserRepository userRepository;
     private OperationRepository operationRepository;
     private LigneRepository ligneRepository;
+    private FicheOperationRepository ficheOperationRepo;
+
     public ResponseEntity<?> addOperation(Operation operation , Long idActionneur){
         User actionneur = userRepository.findById(idActionneur)
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
@@ -68,11 +69,16 @@ public class OperationServiceImp implements OperationService {
         Operation operation = operationRepository.findById(idOperation).orElseThrow(()-> new RuntimeException("Operation introuvable ! "));
         User actionneur = userRepository.findById(idActionneur)
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-
+        List<FicheOperation> fichesOp = ficheOperationRepo.findByOperationAndStatusNot(operation , Fiche.FicheStatus.DELETED);
+        for (Fiche fiche : fichesOp) {
+            fiche.setStatus(Fiche.FicheStatus.DELETED);
+            fiche.setAction(Fiche.FicheAction.DELETE);
+            fiche.setActionneur(actionneur);
+        }
+        ficheOperationRepo.saveAll(fichesOp);
         operation.setActionneur(actionneur);
         operation.setDeleted(true);
         operationRepository.save(operation);
-
     }
     @Override
     public List<Operation> getActiveOperations() {

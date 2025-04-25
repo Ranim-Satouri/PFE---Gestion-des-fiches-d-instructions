@@ -60,7 +60,7 @@
           placeholder="Produit"
           [value]="produitSearch"
           (input)="onProduitSearchChange($event)"
-         
+          autocomplete="off"
           class="w-full p-2 focus:outline-none   border rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
           dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
           [ngClass]="{
@@ -69,8 +69,6 @@
           }"
           
         />
-
-
         <!-- Dropdown toggle icon -->
           <div
           class="absolute top-1/2 right-3 mt-[1px]  -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
@@ -126,7 +124,8 @@
         placeholder="Zone"
         [value]="zoneSearch"
         (input)="onZoneSearchChange($event)"
-        
+        [disabled]="!produitSelected"
+        autocomplete="off"
         class="w-full p-2 focus:outline-none rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
         dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
         [ngClass]="{
@@ -135,7 +134,6 @@
         }"
         
       />
-
 
       <!-- Dropdown toggle icon -->
         <div
@@ -190,6 +188,7 @@
         [value]="ligneSearch"
         (input)="onLigneSearchChange($event)"
         [disabled]="!zoneSelected"
+        autocomplete="off"
         class="w-full p-2 focus:outline-none rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
         dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
         [ngClass]="{
@@ -252,6 +251,7 @@
         placeholder="Operation"
         [value]="operationSearch"
         [disabled]="!ligneSelected"
+        autocomplete="off"
         (input)="onOperationSearchChange($event)"
         class="w-full p-2 focus:outline-none rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
         dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"

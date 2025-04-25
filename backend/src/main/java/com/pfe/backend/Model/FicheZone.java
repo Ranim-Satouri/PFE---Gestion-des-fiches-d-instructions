@@ -14,7 +14,7 @@ import lombok.Setter;
 public class FicheZone extends Fiche {
 
     @ManyToOne
-    @JoinColumn(name = "idZone", nullable = false)
+    @JoinColumn(name = "idZone", nullable = true)
     private Zone zone;
 
 }

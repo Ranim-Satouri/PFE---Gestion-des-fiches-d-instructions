@@ -80,18 +80,7 @@ public class Fiche {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idActionneur", nullable = false)
     private User actionneur;
-
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "idZone", nullable = true)
-//    private Zone zone;
-//
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "idLigne", nullable = true)
-//    private Ligne ligne;
-//
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "idOperation", nullable = true)
-//    private Operation operation;
+    
 
     @JsonProperty("typeFiche")
     @Column(name = "type_fiche")

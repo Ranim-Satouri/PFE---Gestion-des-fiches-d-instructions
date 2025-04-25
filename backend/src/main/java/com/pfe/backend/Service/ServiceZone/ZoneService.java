@@ -14,5 +14,5 @@ public interface ZoneService {
     void DeleteZone(Long idZone , Long idActionneur);
     List<Zone> getActiveZones();
     Set<UserZone> getZoneUsers(Long idZone);
-
+    List<Zone> getZonesPourProduit(Long produitId);
 }

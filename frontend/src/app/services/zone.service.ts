@@ -29,4 +29,7 @@ export class ZoneService {
           .set('idActionneur',idActionneur);
     return this.http.put<Zone>(`${this.apiUrl}/update/${idZone}`, zone , { params }) ;
   }
+  getZonesPourProduit(produitId: number): Observable<Zone[]> {
+    return this.http.get<Zone[]>(`${this.apiUrl}/getZonesForProduit/${produitId}`);
+  }
 }

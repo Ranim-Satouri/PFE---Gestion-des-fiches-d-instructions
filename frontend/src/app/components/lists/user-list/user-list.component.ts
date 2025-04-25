@@ -28,9 +28,9 @@ export class UserListComponent implements  OnDestroy {
   @ViewChild('zoneDropdown', { static: false }) zoneDropdown?: ElementRef;
 
   private observer?: MutationObserver;
-//hisstorique
-showHistoryPopup: boolean = false;
-selectedUserId: number | null = null;
+  //hisstorique
+  showHistoryPopup: boolean = false;
+  selectedUserId: number | null = null;
   constructor( private userService: UserService, private userZoneService: UserZoneService, private zoneService: ZoneService, private groupeService: GroupeService ,private cdr: ChangeDetectorRef, private router: Router ) {}
 
   users: any[] = []; dropdownOpen: number | null = null; page: number = 1;
@@ -50,17 +50,16 @@ selectedUserId: number | null = null;
   selectedZones: number[] = [];
   selectedStatus: string = '';
   // les groupes
-    groupes: Groupe[] = [];
-    selectedGroupe: Groupe | null | undefined;
-    filteredGroupes: Groupe[] = [];
-    isGrpDropdownPositioned = false;
-    showGrpDropdown = false;
+  groupes: Groupe[] = [];
+  selectedGroupe: Groupe | null | undefined;
+  filteredGroupes: Groupe[] = [];
+  isGrpDropdownPositioned = false;
+  showGrpDropdown = false;
 
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
-      this.Role=this.userConnected.role;
       this.loadGroupes();
      }
     this.getUsers();
@@ -201,15 +200,16 @@ adjustGrpDropdownPosition() {
   openUpdateForm(user: User) {
     this.selectedUser=user;
     this.showForm = true;
+    this.dropdownOpen= null;
     }
-    closeRegisterForm() {
-      this.hideRegisterForm();
-      this.selectedUser=null;
-    }
-    onUserUpdated() {
-      this.getUsers(); // Refresh the user list after update
-      this.closeRegisterForm();
-    }
+  closeRegisterForm() {
+    this.hideRegisterForm();
+    this.selectedUser=null;
+  }
+  onUserUpdated() {
+    this.getUsers(); // Refresh the user list after update
+    this.closeRegisterForm();
+  }
 
   getUsers() {
     this.userService.getAll().subscribe({
@@ -251,20 +251,20 @@ adjustGrpDropdownPosition() {
     return '-'; // Default message if no zones
   }
 
-  onRoleToggleChange(user: User, event: any) {
-    if(user.role === Role.ADMIN){
-      user.role = Role.SUPERUSER;
-    }else{
-      user.role = Role.ADMIN;
-    }
+  // onRoleToggleChange(user: User, event: any) {
+  //   if(user.role === Role.ADMIN){
+  //     user.role = Role.SUPERUSER;
+  //   }else{
+  //     user.role = Role.ADMIN;
+  //   }
 
-    this.userService.ChangeRole(user.idUser || undefined , this.userConnected.idUser || undefined , user.role).subscribe({
-      next : (response :any[]) => {
-        console.log('Role changed successuly'); },
-      error : (error : any) => {console.error('changing user Role error:', error);
-      }
-    });
-  }
+  //   this.userService.ChangeRole(user.idUser || undefined , this.userConnected.idUser || undefined , user.role).subscribe({
+  //     next : (response :any[]) => {
+  //       console.log('Role changed successuly'); },
+  //     error : (error : any) => {console.error('changing user Role error:', error);
+  //     }
+  //   });
+  // }
   onStatusToggleChange(user: User, event: any) {
       console.log("status", user.status);
       if(user.status === UserStatus.ACTIVE){

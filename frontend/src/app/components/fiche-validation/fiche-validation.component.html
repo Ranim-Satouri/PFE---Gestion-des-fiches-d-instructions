@@ -1,41 +1,14 @@
-<!-- <div *ngIf="((userConnected.role === role.IPDF && !(fiche.status === FicheStatus.ACCEPTEDIQP || fiche.status === FicheStatus.REJECTEDIQP))
-    || (userConnected.role === role.SUPERUSER && (fiche.status === FicheStatus.PENDING || fiche.status === FicheStatus.ACCEPTEDIPDF))
-    || userConnected.role === role.IQP) && fiche.status !== FicheStatus.EXPIRED"  
-    class="relative w-full max-w-[130px]">
 
-    <select
-        [(ngModel)]="fiche.status"
-        (change)="onStatusChange(fiche)"
-        class="w-full appearance-none px-4 py-1 pr-10 rounded-xl text-sm 
-                bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600
-                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                transition-colors duration-150 ease-in-out"
-        [ngClass]="{
-            'text-green-600': (fiche.status === FicheStatus.ACCEPTEDIPDF && userConnected.role === role.IPDF) || fiche.status === FicheStatus.ACCEPTEDIQP,
-            'text-red-500': fiche.status === FicheStatus.REJECTEDIQP || fiche.status === FicheStatus.REJECTEDIPDF,
-            'text-gray-700 dark:text-gray-200': fiche.status === 'PENDING'
-        }"
-        [disabled]="fiche.status === getValidationStatus() || fiche.status === getRefuStatus()"> 
-
-        <option class="text-green-600" [value]="getValidationStatus()">Approuvée</option>
-        <option class="text-red-500" [value]="getRefuStatus()">Rejetée</option>
-    </select>
-
-    <svg class="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
-        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-    </svg>
-</div> -->
 
 <div *ngIf="!(fiche.status === FicheStatus.EXPIRED)"  
-    class="relative w-full max-w-[130px]">
+    class="relative w-[120px]">
     <select
         [(ngModel)]="fiche.status"
         (change)="onStatusChange(fiche)"
-        class="w-full appearance-none pr-10 py-1 px-2 border-2 border-gray-400/70 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 cursor-pointer text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-40 transition-colors duration-150 ease-in-out"
+        class="w-full appearance-none pr-4 py-1 px-2 border-2 border-gray-400/70 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 cursor-pointer text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-40 transition-colors duration-150 ease-in-out"
         [ngClass]="{
             'text-green-600': fiche.status === FicheStatus.ACCEPTEDIPDF  || fiche.status === FicheStatus.ACCEPTEDIQP,
-            'text-red-500': fiche.status === FicheStatus.REJECTEDIQP || fiche.status === FicheStatus.REJECTEDIPDF,
+            'text-red-700': fiche.status === FicheStatus.REJECTEDIQP || fiche.status === FicheStatus.REJECTEDIPDF,
             'text-gray-700 dark:text-gray-200': fiche.status === 'PENDING'
         }"
         [disabled]="((fiche.status === FicheStatus.ACCEPTEDIPDF && !hasPermission('valider_fiche_IQP')) ||  (fiche.status === FicheStatus.PENDING && !hasPermission('valider_fiche_IPDF')) || fiche.status === FicheStatus.REJECTEDIQP || fiche.status === FicheStatus.ACCEPTEDIQP || fiche.status === FicheStatus.REJECTEDIPDF)" >
@@ -49,61 +22,21 @@
         <option [hidden]="fiche.status !== FicheStatus.ACCEPTEDIPDF" class="text-red-500" [selected]="fiche.status === FicheStatus.REJECTEDIQP"  [value]="FicheStatus.REJECTEDIQP" >Rejetée</option>
     </select>
 
-    <svg class="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
+    <svg class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
         fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
     </svg>
 </div>
-<!-- <div *ngIf="!(fiche.status === FicheStatus.EXPIRED)" class="relative min-w-[130px]">
-    <div class="dropdown-container relative w-full" (click)="toggleDropdown()">
-        <div class="selected-option py-1 px-2 border-2 border-gray-400 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 cursor-pointer text-sm transition focus:ring-2 focus:ring-blue-500"
-        [ngClass]="{
-            'text-green-600': fiche.status === FicheStatus.ACCEPTEDIPDF  || fiche.status === FicheStatus.ACCEPTEDIQP,
-            'text-red-500': fiche.status === FicheStatus.REJECTEDIQP || fiche.status === FicheStatus.REJECTEDIPDF,
-            'text-gray-700 dark:text-gray-200': fiche.status === 'PENDING'
-        }">
-            {{ getSelectedOptionText(fiche) || 'En attente' }}
-        </div>
-        <svg class="absolute top-1/2 right-3 transform -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400 cursor-pointer" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="m7 10 5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        
-        <ul *ngIf="isDropdownOpen && !((fiche.status === FicheStatus.ACCEPTEDIPDF && !hasPermission('valider_fiche_IQP')) || fiche.status === FicheStatus.REJECTEDIQP || fiche.status === FicheStatus.ACCEPTEDIQP || fiche.status === FicheStatus.REJECTEDIPDF)"
-            class="absolute z-50 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 max-h-40 overflow-y-auto shadow-lg">
-            
-            <li *ngIf="fiche.status === FicheStatus.PENDING" (click)="onStatusChange(fiche, FicheStatus.ACCEPTEDIPDF)"
-                class="px-2 py-2 m-1 text-green-600 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer">
-                Verifiée
-            </li>
-            
-            <li *ngIf="fiche.status === FicheStatus.ACCEPTEDIPDF" (click)="onStatusChange(fiche, FicheStatus.ACCEPTEDIQP)"
-                class="px-2 py-2 m-1 text-green-600 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer">
-                Approuvée
-            </li>
-            
-            <li *ngIf="fiche.status === FicheStatus.PENDING" (click)="onStatusChange(fiche, FicheStatus.REJECTEDIPDF)"
-                class="px-2 py-2 m-1 text-red-500 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer">
-                Rejetée
-            </li>
-            
-            <li *ngIf="fiche.status === FicheStatus.ACCEPTEDIPDF" (click)="onStatusChange(fiche, FicheStatus.REJECTEDIQP)"
-                class="px-2 py-2 m-1 text-red-500 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer">
-                Rejetée
-            </li>
-        </ul>
-    </div>
-</div> -->
-
 
 
 <!-- pop up commentaire de rejet -->
 <div class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center" *ngIf="isRejetModalOpen">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg w-[90%] max-w-md p-6 space-y-4 relative  text-sm">        
+    <div class="bg-gray-100  dark:bg-gray-900 rounded-lg shadow-lg w-[90%] max-w-md p-6 space-y-4 relative  text-sm border dark:border-gray-700">        
         <textarea [(ngModel)]="rejetComment"
                 placeholder="Entrez un commentaire de rejet..."
                 rows="4"
                 class="w-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500
-                transition-colors duration-150 ease-in-out border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white resize-none"></textarea>
+                transition-colors duration-150 ease-in-out border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-800 dark:text-white resize-none bg-gray-50 "></textarea>
     
         <div class="flex justify-end space-x-2">
         <button (click)="fermerRejetModal()"

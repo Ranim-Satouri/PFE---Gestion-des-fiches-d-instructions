@@ -236,6 +236,7 @@ public class FicheServiceImp implements FicheService {
 
     @Override
     public FicheOperation addFicheOperation(FicheOperation fiche) {
+        System.out.println(fiche.getOperation());
         User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
         User iqp = userRepository.findById(fiche.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));
         User preparateur = userRepository.findById(fiche.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));
