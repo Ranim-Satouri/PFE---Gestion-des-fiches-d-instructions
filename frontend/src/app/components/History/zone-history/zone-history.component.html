@@ -1,10 +1,10 @@
-<p-dialog header="Historique de la Zone" 
-          [(visible)]="visible" 
-          [modal]="true" 
-          [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
-          [style]="{ width: '60vw' }" 
-          [draggable]="false" 
-          [resizable]="false" 
+<p-dialog header="Historique de la Zone"
+          [(visible)]="visible"
+          [modal]="true"
+          [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+          [style]="{ width: '60vw' }"
+          [draggable]="false"
+          [resizable]="false"
           [styleClass]="'dark:bg-gray-700'">
   <!-- Contenu -->
 <div *ngIf="errorMessage" class="alert alert-danger text-red-600 dark:text-red-400 p-4 mb-4 bg-red-100 dark:bg-red-900 rounded-lg">
@@ -23,11 +23,11 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let entry of history">
+        <ng-container *ngFor="let entry of history,let i =index">
             <!-- Ligne principale avec les champs prioritaires -->
             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
               <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                {{ entry.revisionNumber }}
+                {{i+1 }}
               </th>
               <td class="px-6 py-4">
                 {{ entry.modifieLe | date:'medium' }}

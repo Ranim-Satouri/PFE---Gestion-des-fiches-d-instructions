@@ -116,8 +116,8 @@
                     {{ groupe.nom }}
                     </li>
                 </ul>
-                
-             
+
+
             </div>
             <!-- Reset Filters Button class="w-fit mx-5 px-2 h-10 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition ease-in-out duration-200" > <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2.25"> <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path> </svg>  </button>-->
             <button (click)="clearFilters()"
@@ -317,24 +317,19 @@
       </div>
   </div>
 </div>
+<app-user-history #userHistoryComponent></app-user-history>
+    <app-delete-confirm
+        [isOpen]="isDeleteModelOpen"
+        [title]="'cet utilisateur'"
+        [message1]="'Vous êtes sur le point de supprimer un utilisateur du système.'"
+        [message2]="'Cette action est importante et aura un impact permanent.'"
+        (onConfirm)="selectedUser ? ChangeUserStatus(selectedUser.idUser, UserStatus.DELETED) : null"
+        (onCancel)="closeDeleteModel()">
+    </app-delete-confirm>
 
-<app-delete-confirm
-    [isOpen]="isDeleteModelOpen"
-    [title]="'cet utilisateur'"
-    [message1]="'Vous êtes sur le point de supprimer un utilisateur du système.'"
-    [message2]="'Cette action est importante et aura un impact permanent.'"
-    (onConfirm)="selectedUser ? ChangeUserStatus(selectedUser.idUser, UserStatus.DELETED) : null"
-    (onCancel)="closeDeleteModel()">
-</app-delete-confirm>
-<!-- Popup UserHistoryComponent -->
-<app-user-history
-  *ngIf="showHistoryPopup"
-  [idUser]="selectedUserId"
-  (close)="closeUserHistory()">
-</app-user-history>
 
-<app-register-form  
-    *ngIf="showForm" 
+<app-register-form
+    *ngIf="showForm"
     (close)="hideRegisterForm()"
     (submit)="onUserRegistered($event)"
     [userToUpdate]="selectedUser"
