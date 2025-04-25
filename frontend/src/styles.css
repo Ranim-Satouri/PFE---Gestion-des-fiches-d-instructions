@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Redéfinir la police globalement */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+  }
+/* Fond du conteneur principal du dialogue */
+.dark .p-dialog {
+  background-color: #1f2937 !important; /* Équivalent à bg-gray-700 */
+}
+
+/* Fond du contenu du dialogue */
+.dark .p-dialog .p-dialog-content {
+  background-color: #1f2937 !important;
+}
+
+/* Fond de l'en-tête du dialogue */
+.dark .p-dialog .p-dialog-header {
+  background-color: #1f2937 !important; /* Même couleur que le conteneur principal */
+}
+
+/* Couleur du titre dans l'en-tête */
+.dark .p-dialog .p-dialog-title {
+  color: #e5e7eb !important; /* Équivalent à text-gray-200 pour une bonne lisibilité */
+}
+
+/* Style du bouton de fermeture (X) */
+.dark .p-dialog .p-dialog-header-close {
+  background-color: transparent !important; /* Supprimer tout fond par défaut */
+  color: #e5e7eb !important; /* Équivalent à text-gray-200 pour l'icône */
+}
+
+/* Style au survol du bouton de fermeture */
+.dark .p-dialog .p-dialog-header-close:hover {
+  background-color: #4b5563 !important; /* Équivalent à bg-gray-600 pour un effet de survol */
+  color: #ffffff !important; /* Texte/icône blanc au survol */
+}

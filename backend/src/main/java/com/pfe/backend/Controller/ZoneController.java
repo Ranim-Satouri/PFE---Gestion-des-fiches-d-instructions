@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RequestMapping("/zone")
@@ -17,7 +18,10 @@ import java.util.Set;
 public class ZoneController {
     @Autowired
     private ZoneService zoneService;
-
+    @GetMapping("/zone-history/{idZone}")
+    public List<Map<String, Object>> getZoneHistory(@PathVariable Long idZone) {
+        return zoneService.getZoneHistory(idZone);
+    }
     @GetMapping("/getAllZones")
     public ResponseEntity<List<Zone>> getAllZones(){
         return zoneService.getAllZones();

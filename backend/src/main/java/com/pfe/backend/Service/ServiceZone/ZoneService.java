@@ -5,6 +5,7 @@ import com.pfe.backend.Model.Zone;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface ZoneService {
@@ -14,5 +15,6 @@ public interface ZoneService {
     void DeleteZone(Long idZone , Long idActionneur);
     List<Zone> getActiveZones();
     Set<UserZone> getZoneUsers(Long idZone);
+    List<Map<String, Object>> getZoneHistory(Long zoneId);
     List<Zone> getZonesPourProduit(Long produitId);
 }

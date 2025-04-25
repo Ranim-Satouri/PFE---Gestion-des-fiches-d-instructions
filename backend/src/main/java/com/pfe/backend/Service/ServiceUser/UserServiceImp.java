@@ -118,7 +118,6 @@ public class UserServiceImp implements UserIservice {
     }
     @PersistenceContext
     private EntityManager entityManager;
-
     @Transactional(readOnly = true)
     public List<UserHistoryDTO> getUserHistory(Long userId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
@@ -129,7 +128,7 @@ public class UserServiceImp implements UserIservice {
                 .add(AuditEntity.id().eq(userId))
                 .getResultList();
 
-        // Récupérer l'entité User actuelle pour le filtre
+        // Vérifier que l'utilisateur existe
         User user = entityManager.find(User.class, userId);
         if (user == null) {
             throw new IllegalArgumentException("User with ID " + userId + " not found");
@@ -155,7 +154,7 @@ public class UserServiceImp implements UserIservice {
         // Map pour stocker les changements de zones par révision
         Map<Integer, List<UserHistoryDTO.UserZoneChangeDTO>> zoneChangesByRevision = new HashMap<>();
 
-        // Traiter les révisions de UserZone
+        // Traiter les révisions de UserZone pour les changements
         for (Object[] userZoneRevision : userZoneRevisions) {
             UserZone userZone = (UserZone) userZoneRevision[0];
             DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) userZoneRevision[1];
@@ -165,13 +164,88 @@ public class UserServiceImp implements UserIservice {
             UserHistoryDTO.UserZoneChangeDTO zoneChange = UserHistoryDTO.UserZoneChangeDTO.builder()
                     .zoneId(userZone.getZone().getIdZone())
                     .zoneName(userZone.getZone().getNom())
-                    .changeType(revisionType.equals("0") ? "ADD" : revisionType.equals("2") ? "REMOVE" : "MODIFY")
+                    .changeType(revisionType.equals("ADD") ? "ADD" : revisionType.equals("DELETE") ? "REMOVE" : "MODIFY")
                     .build();
 
             zoneChangesByRevision.computeIfAbsent(revisionNumber, k -> new ArrayList<>()).add(zoneChange);
         }
 
+        // Reconstituer l'état des zones à chaque révision de User
+        Map<Integer, Set<String>> zonesByRevision = new HashMap<>();
+        Set<String> currentZones = new TreeSet<>(); // Utiliser TreeSet pour un tri naturel des noms de zones
+
+        // Parcourir toutes les révisions de UserZone dans l'ordre croissant
+        List<Object[]> sortedUserZoneRevisions = userZoneRevisions.stream()
+                .sorted((r1, r2) -> Integer.compare(
+                        ((DefaultRevisionEntity) r1[1]).getId(),
+                        ((DefaultRevisionEntity) r2[1]).getId()))
+                .collect(Collectors.toList());
+
+        // Trier les révisions de User dans l'ordre croissant pour construire l'état des zones
+        List<Object[]> sortedUserRevisions = new ArrayList<>(userRevisions);
+        sortedUserRevisions.sort((r1, r2) -> {
+            DefaultRevisionEntity rev1 = (DefaultRevisionEntity) r1[1];
+            DefaultRevisionEntity rev2 = (DefaultRevisionEntity) r2[1];
+            int dateComparison = Long.compare(rev1.getTimestamp(), rev2.getTimestamp());
+            if (dateComparison != 0) {
+                return dateComparison;
+            }
+            return Integer.compare(rev1.getId(), rev2.getId());
+        });
+
+        // Itérer sur les révisions de UserZone pour mettre à jour currentZones
+        Iterator<Object[]> userZoneIterator = sortedUserZoneRevisions.iterator();
+        Object[] nextUserZoneRevision = userZoneIterator.hasNext() ? userZoneIterator.next() : null;
+
+        // Construire l'état des zones pour chaque révision de User
+        for (Object[] userRevision : sortedUserRevisions) {
+            DefaultRevisionEntity userRevEntity = (DefaultRevisionEntity) userRevision[1];
+            int userRevNumber = userRevEntity.getId();
+
+            // Traiter toutes les révisions de UserZone qui se trouvent avant ou à la révision actuelle
+            while (nextUserZoneRevision != null) {
+                DefaultRevisionEntity zoneRevEntity = (DefaultRevisionEntity) nextUserZoneRevision[1];
+                int zoneRevNumber = zoneRevEntity.getId();
+
+                // Si la révision de UserZone est antérieure ou égale à la révision de User
+                if (zoneRevNumber <= userRevNumber) {
+                    UserZone userZone = (UserZone) nextUserZoneRevision[0];
+                    String revisionType = nextUserZoneRevision[2].toString();
+                    String zoneName = userZone.getZone().getNom();
+
+                    // Mettre à jour l'état des zones
+                    if (revisionType.equals("ADD")) {
+                        currentZones.add(zoneName);
+                    } else if (revisionType.equals("DELETE")) {
+                        currentZones.remove(zoneName);
+                    }
+
+                    // Passer à la révision suivante de UserZone
+                    nextUserZoneRevision = userZoneIterator.hasNext() ? userZoneIterator.next() : null;
+                } else {
+                    break;
+                }
+            }
+
+            // Sauvegarder l'état des zones pour cette révision de User
+            zonesByRevision.put(userRevNumber, new TreeSet<>(currentZones));
+            System.out.println("État des zones à la révision " + userRevNumber + " : " + currentZones);
+        }
+
+        // Construire l'historique de l'utilisateur dans l'ordre décroissant
         List<UserHistoryDTO> history = new ArrayList<>();
+        // Trier userRevisions par date et numéro de révision (décroissant)
+        userRevisions.sort((r1, r2) -> {
+            DefaultRevisionEntity rev1 = (DefaultRevisionEntity) r1[1];
+            DefaultRevisionEntity rev2 = (DefaultRevisionEntity) r2[1];
+            int dateComparison = Long.compare(rev2.getTimestamp(), rev1.getTimestamp());
+            if (dateComparison != 0) {
+                return dateComparison;
+            }
+            return Integer.compare(rev2.getId(), rev1.getId());
+        });
+
+        // Construire les DTOs avec les zones correctes
         for (Object[] revisionData : userRevisions) {
             User currentUser = (User) revisionData[0];
             DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revisionData[1];
@@ -183,10 +257,13 @@ public class UserServiceImp implements UserIservice {
                 actionneurMatricule = currentUser.getActionneur().getMatricule();
             }
 
+            // Récupérer les zones à cette révision
+            Set<String> zonesAtRevision = zonesByRevision.getOrDefault(revisionNumber, new TreeSet<>());
+
             UserHistoryDTO historyEntry = UserHistoryDTO.builder()
                     .revisionNumber(revisionEntity.getId())
                     .revisionDate(new Date(revisionEntity.getTimestamp()))
-                    .changeType(revisionType.equals("0") ? "CREATED" : revisionType.equals("2") ? "DELETED" : "MODIFIED")
+                    .changeType(revisionType.equals("ADD") ? "CREATED" : revisionType.equals("DELETE") ? "DELETED" : "MODIFIED")
                     .actionneurMatricule(actionneurMatricule)
                     .idUser(currentUser.getIdUser())
                     .matricule(currentUser.getMatricule())
@@ -198,14 +275,13 @@ public class UserServiceImp implements UserIservice {
                     .genre(currentUser.getGenre())
                     .modifieLe(currentUser.getModifieLe())
                     .groupeNom(currentUser.getGroupe() != null ? currentUser.getGroupe().getNom() : null)
+                    .zones(new ArrayList<>(zonesAtRevision))
                     .zoneChanges(zoneChangesByRevision.getOrDefault(revisionNumber, new ArrayList<>()))
                     .build();
 
             history.add(historyEntry);
+            System.out.println("Révision " + revisionNumber + " - Zones attribuées : " + zonesAtRevision);
         }
-
-        // Trier l'historique par numéro de révision (croissant)
-        history.sort((a, b) -> a.getRevisionNumber() - b.getRevisionNumber());
 
         return history;
     }

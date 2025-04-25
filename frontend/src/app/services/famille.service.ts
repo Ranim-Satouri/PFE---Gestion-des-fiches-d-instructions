@@ -1,7 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { Famille } from '../models/Famille';
+import { FamilleHistoryDTO } from '../models/FamilleHistoryDTO';
+import { FamilleZonesAuditDTO } from '../models/FamilleZonesAuditDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -31,8 +33,31 @@ export class FamilleService {
   addZonesToFamille(familleId: number, zoneIds: number[]) {
     const params = new HttpParams()
       .set('familleId', familleId.toString())
-      .set('zoneIds', zoneIds.join(','));
-    
+      .set('zoneIds', zoneIds.join(',')); 
     return this.http.post(`${this.apiUrl}/addZonesToFamille`, null, { params });
   }
+//   getFamilleHistory(idFamille: number): Observable<FamilleHistoryDTO[]> {
+//   return this.http.get<FamilleHistoryDTO[]>(`${this.apiUrl}/famille-history/${idFamille}`);
+//   }
+//   // Récupère l'audit des modifications de la table famille_zones
+//   getFamilleZonesAudit(idFamille: number): Observable<FamilleZonesAuditDTO[]> {
+//     return this.http.get<FamilleZonesAuditDTO[]>(`${this.apiUrl}/zones-audit/${idFamille}`);
+// }
+getFamilleHistory(idFamille: number): Observable<FamilleHistoryDTO[]> {
+  return forkJoin({
+      history: this.http.get<FamilleHistoryDTO[]>(`${this.apiUrl}/famille-history/${idFamille}`),
+      zonesAudit: this.http.get<FamilleZonesAuditDTO[]>(`${this.apiUrl}/zones-audit/${idFamille}`)
+  }).pipe(
+      map(({ history, zonesAudit }) => {
+          // Fusionner les données
+          return history.map(historyEntry => {
+              const auditEntry = zonesAudit.find(audit => audit.revisionNumber === historyEntry.revisionNumber);
+              return {
+                  ...historyEntry,
+                  revisionType: auditEntry?.revisionType || 'N/A'
+              };
+          });
+      })
+  );
+}
 }

@@ -1,15 +1,27 @@
 package com.pfe.backend.Service.ServiceFamille;
+import com.pfe.backend.DTO.FamilleHistoriqueDTO;
+import com.pfe.backend.DTO.FamilleZonesDTO;
 import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.FamilleRepository;
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.ZoneRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.DefaultRevisionEntity;
+import org.hibernate.envers.RevisionType;
+import org.hibernate.envers.query.AuditEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -19,7 +31,64 @@ public class FamilleServiceImp implements FamilleService {
     @Autowired
     private UserRepository userRepository;
     private ZoneRepository zoneRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
+    public List<FamilleHistoriqueDTO> getFamilleHistory(Long familleId) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        List<Object[]> revisions = auditReader.createQuery()
+                .forRevisionsOfEntity(Famille.class, false, true)
+                .add(AuditEntity.id().eq(familleId))
+                .addOrder(AuditEntity.revisionNumber().asc())
+                .getResultList();
+
+        System.out.println("Nombre de révisions trouvées pour familleId " + familleId + " : " + revisions.size());
+
+        List<FamilleHistoriqueDTO> history = new ArrayList<>();
+        for (Object[] revision : revisions) {
+            Famille famille = (Famille) revision[0]; // Entité Zone
+            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revision[1]; // Métadonnées de révision
+            Integer revisionNumber = revisionEntity.getId(); // Numéro de révision
+            RevisionType revisionType = (RevisionType) revision[2];
+
+            FamilleHistoriqueDTO dto = new FamilleHistoriqueDTO();
+            dto.setRevisionNumber(revisionNumber);
+            dto.setModifieLe(famille.getModifieLe());
+            dto.setActionneurFullName(famille.getActionneur().getNom() + " " + famille.getActionneur().getPrenom());
+            dto.setNom(famille.getNomFamille());
+            dto.setDeleted(famille.isDeleted());
+            List<Zone> zonesAtRevision = auditReader.find(Famille.class, familleId, revisionNumber).getZones();
+            dto.setZones(zonesAtRevision.stream().map(Zone::getNom).collect(Collectors.toList()));
+            history.add(dto);
+        }
+
+        return history;
+    }
+    public List<FamilleZonesDTO> getFamilleZonesAudit(Long familleId) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        List<Object[]> revisions = auditReader.createQuery()
+                .forRevisionsOfEntity(Famille.class, false, true)
+                .add(AuditEntity.id().eq(familleId)).addOrder(AuditEntity.revisionNumber().asc()).getResultList();
+
+        List<FamilleZonesDTO> auditEntries = new ArrayList<>();
+        for (Object[] revision : revisions) {
+            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revision[1]; // Correction
+            Integer revisionNumber = revisionEntity.getId(); // Correction
+            Famille familleAtRevision = auditReader.find(Famille.class, familleId, revisionNumber);
+            String revisionType = revision[2].toString(); // ADD, MOD, DEL
+
+            List<Zone> zones = familleAtRevision.getZones();
+            FamilleZonesDTO auditDTO = new FamilleZonesDTO();
+            auditDTO.setRevisionNumber(revisionNumber);
+            auditDTO.setModifieLe(familleAtRevision.getModifieLe());
+            auditDTO.setActionneurFullName(familleAtRevision.getActionneur().getNom() + " " + familleAtRevision.getActionneur().getPrenom());
+            auditDTO.setRevisionType(revisionType);
+            auditDTO.setZones(zones.stream().map(Zone::getNom).collect(Collectors.toList()));
+            auditEntries.add(auditDTO);
+        }
+
+        return auditEntries;
+    }
     @Override
     public ResponseEntity<?> addFamille(Famille famille, Long idActionneur) {
         User actionneur = userRepository.findById(idActionneur)

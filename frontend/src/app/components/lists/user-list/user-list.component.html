@@ -105,8 +105,8 @@
       <app-register-form  *ngIf="showForm" (close)="hideRegisterForm()"
     (submit)="onUserRegistered($event)"
     [userToUpdate]="selectedUser"
-    (userUpdated)="onUserUpdated()"
-      ></app-register-form>
+    (userUpdated)="onUserUpdated()">
+    </app-register-form>
       <div class="relative z-10  mb-2 shadow-md rounded-lg max-h-[calc(100%-132px)] custom-scrollbar-container overflow-auto " (scroll)="onScroll()">
         <table class=" w-full text-xs text-left rtl:text-right text-gray-700 dark:text-gray-400 ">
             <thead class="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-gray-400 sticky-top">

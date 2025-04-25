@@ -1,21 +1,21 @@
 import { CommonModule } from '@angular/common';
-import {ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, ViewChild,} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, ViewChild, } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router'; // Importer Router
 import { NgxPaginationModule } from 'ngx-pagination';
 import { forkJoin, map } from 'rxjs';
+import { Groupe } from '../../../models/Groupe';
 import { Role, User, UserStatus } from '../../../models/User';
 import { User_Zone } from '../../../models/User_Zone';
 import { Zone } from '../../../models/Zone';
 import { FilterPipe } from '../../../pipes/filter.pipe';
+import { GroupeService } from '../../../services/groupe.service';
 import { UserZoneService } from '../../../services/user-zone.service';
 import { UserService } from '../../../services/user.service';
 import { ZoneService } from '../../../services/zone.service';
-import { DeleteConfirmComponent } from '../../delete-confirm/delete-confirm.component';
 import { RegisterFormComponent } from '../../add/register-form/register-form.component';
-import { GroupeService } from '../../../services/groupe.service';
-import { Groupe } from '../../../models/Groupe';
-import { Router } from '@angular/router'; // Importer Router
-import { UserHistoryComponent } from '../../user-history/user-history.component';
+import { DeleteConfirmComponent } from '../../delete-confirm/delete-confirm.component';
+import { UserHistoryComponent } from '../../History/user-history/user-history.component';
 @Component({selector: 'app-user-list', standalone: true,
   imports: [NgxPaginationModule, CommonModule, FormsModule, RegisterFormComponent, DeleteConfirmComponent,FilterPipe,UserHistoryComponent],
   templateUrl: './user-list.component.html',

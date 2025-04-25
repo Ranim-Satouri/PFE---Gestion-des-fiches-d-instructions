@@ -1,22 +1,26 @@
-import { Component, HostListener } from '@angular/core';
-import { User } from '../../../models/User';
 import { CommonModule } from '@angular/common';
+import { Component, HostListener, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { DialogService } from 'primeng/dynamicdialog';
+import { Famille } from '../../../models/Famille';
+import { User } from '../../../models/User';
 import { FilterPipe } from '../../../pipes/filter.pipe';
 import { FamilleService } from '../../../services/famille.service';
-import { Famille } from '../../../models/Famille';
-import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { AddFamilleFormComponent } from "../../add/add-famille-form/add-famille-form.component";
-
+import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
+import { FamilleHistoryComponent } from "../../History/famille-history/famille-history.component";
 @Component({
   selector: 'app-famille-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, DeleteConfirmComponent, AddFamilleFormComponent,FilterPipe],
+  imports: [NgxPaginationModule, CommonModule, FormsModule,
+     DeleteConfirmComponent, AddFamilleFormComponent, FilterPipe, 
+     FamilleHistoryComponent],
+     providers: [DialogService],
   templateUrl: './famille-list.component.html',
-  styleUrl: './famille-list.component.css'
-})
+  styleUrl: './famille-list.component.css'})
 export class FamilleListComponent {
+  @ViewChild('familleHistory') FamilleHistoryComponent!: FamilleHistoryComponent;
   constructor(private familleService: FamilleService) {}
   searchbar: String = '';
   familles: Famille[] = [];
@@ -188,6 +192,11 @@ export class FamilleListComponent {
   hasPermission(permissionName: string): boolean {
     const permissions = this.userConnected.groupe?.permissions || []; 
     return permissions.some(permission => permission.nom === permissionName);  
+  }
+  openHistory(idFamille: number | undefined): void {
+    if (idFamille !== undefined) {
+      this.FamilleHistoryComponent.openHistory(idFamille); // Appeler la méthode openHistory
+    }
   }
 
 }

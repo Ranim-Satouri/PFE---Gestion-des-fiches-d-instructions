@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
 import { RegisterFormComponent } from './components/add/register-form/register-form.component';
+import { FamilleHistoryComponent } from './components/History/famille-history/famille-history.component';
+import { UserHistoryComponent } from './components/History/user-history/user-history.component';
+import { ZoneHistoryComponent } from './components/History/zone-history/zone-history.component';
 import { FamilleListComponent } from './components/lists/famille-list/famille-list.component';
 import { FicheListComponent } from './components/lists/fiche-list/fiche-list.component';
 import { GroupeListComponent } from './components/lists/groupe-list/groupe-list.component';
@@ -10,12 +13,13 @@ import { ProduitListComponent } from './components/lists/produit-list/produit-li
 import { UserListComponent } from './components/lists/user-list/user-list.component';
 import { ZoneListComponent } from './components/lists/zone-list/zone-list.component';
 import { ParticlesComponent } from './components/particles/particles.component';
-import { UserHistoryComponent } from './components/user-history/user-history.component';
 import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './pages/login/login.component';
 export const routes: Routes = [
     { path: '', component: LoginComponent },
     { path : 'history/:idUser', component: UserHistoryComponent },
+    {path : "zone-history/:idZone", component : ZoneHistoryComponent},
+    {path : "famille-history/:idFamille", component : FamilleHistoryComponent},
     {
       path:'particles' ,
       component :ParticlesComponent,
