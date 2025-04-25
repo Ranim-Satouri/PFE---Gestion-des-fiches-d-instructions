@@ -89,14 +89,14 @@
                         
                         <ng-container *ngIf="fiche.typeFiche === 'LIGNE'">{{ fiche.ligne?.nom }} </ng-container>
                          
-                        <ng-container *ngIf="fiche.typeFiche === 'ZONE'">-</ng-container>
+                        <ng-container *ngIf="fiche.typeFiche === 'ZONE'">Tous</ng-container>
                     </th>
                     <th class="px-2 py-2">
                         <ng-container *ngIf="fiche.typeFiche === 'OPERATION'">{{fiche.operation?.nom}} </ng-container>
                         
-                        <ng-container *ngIf="fiche.typeFiche === 'LIGNE'">- </ng-container>
+                        <ng-container *ngIf="fiche.typeFiche === 'LIGNE'">Tous </ng-container>
                         
-                        <ng-container *ngIf="fiche.typeFiche === 'ZONE'">-</ng-container>
+                        <ng-container *ngIf="fiche.typeFiche === 'ZONE'">Tous</ng-container>
                     </th>
 
                     <th
