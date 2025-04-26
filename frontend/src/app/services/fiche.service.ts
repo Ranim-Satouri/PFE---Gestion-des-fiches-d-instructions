@@ -1,16 +1,17 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Fiche, FicheLigne, FicheOperation, FicheZone } from '../models/Fiche';
-
+import { Fiche } from '../models/Fiche';
+import { FicheHistoryDTO } from '../models/FicheHistoryDTO';
 @Injectable({
   providedIn: 'root'
 })
 export class FicheService {
   private apiUrl = 'http://localhost:8080/fiche'; 
-  
   constructor(private http: HttpClient) { } 
-
+  getFicheHistory(idFiche: number): Observable<FicheHistoryDTO[]> {
+    return this.http.get<FicheHistoryDTO[]>(`${this.apiUrl}/fiche-history/${idFiche}`);
+  }
 
   addFiche(fiche: Fiche): Observable<Fiche> {
     console.log(fiche);
@@ -127,17 +128,9 @@ export class FicheService {
   getFichesByAdmin(idAdmin: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/getFichesSheetByAdmin/${idAdmin}`);
   }
-  
-   // Méthode pour récupérer l'historique d'une fiche
-   getFicheHistory(id: number): Observable<any> {
-    const url = `http://localhost:8080/ficheAudit/getFicheAudit/${id}`;
-    return this.http.get(url);
-  }
   checkFicheStatusUpdate(): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/updateStatus`);
   }
-
-
   
   // Méthode pour ajouter une fiche
   // addFiche(fiche: Fiche): Observable<any> {

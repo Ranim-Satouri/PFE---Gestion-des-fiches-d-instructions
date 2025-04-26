@@ -7,10 +7,12 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Getter
 @Setter
+@Audited
 @DiscriminatorValue("LIGNE")
 public class FicheLigne extends Fiche {
 

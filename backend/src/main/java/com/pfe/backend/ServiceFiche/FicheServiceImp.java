@@ -1,10 +1,17 @@
 package com.pfe.backend.ServiceFiche;
 
+import com.pfe.backend.DTO.FicheHistoryDTO;
 import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.*;
 import com.pfe.backend.ServiceMail.NotificationService;
 import com.pfe.backend.configuration.EncryptionUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.DefaultRevisionEntity;
+import org.hibernate.envers.query.AuditEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -38,7 +45,47 @@ public class FicheServiceImp implements FicheService {
     private NotificationService nService;
 
     private static final String STORAGE_DIR = "C:\\Users\\Ranim\\Desktop\\pdf_storage\\";
+    @PersistenceContext
+    private EntityManager entityManager;
+    public List<FicheHistoryDTO> getFicheHistory(Long ficheId) {
+        // Créer un AuditReader pour interroger l'historique
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        // Récupérer toutes les révisions de la fiche avec l'ID donné
+        List<Object[]> revisions = auditReader.createQuery()
+                .forRevisionsOfEntity(Fiche.class, false, true)
+                .add(AuditEntity.id().eq(ficheId)).addOrder(AuditEntity.revisionNumber().desc()).getResultList();
 
+        List<FicheHistoryDTO> history = new ArrayList<>();
+
+        // Mapper les résultats vers le DTO
+        for (Object[] revision : revisions) {
+            Fiche fiche = (Fiche) revision[0]; // L'entité audité
+            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revision[1]; // Métadonnées de révision
+            String revisionType = revision[2].toString(); // Type de révision (ADD, MOD, DEL)
+
+            FicheHistoryDTO dto = new FicheHistoryDTO();
+            dto.setIdFiche(fiche.getIdFiche());
+            dto.setRevisionNumber(revisionEntity.getId());
+            dto.setRevisionType(revisionType);
+            dto.setStatus(fiche.getStatus() != null ? fiche.getStatus().toString() : null);
+            dto.setCommentaire(fiche.getCommentaire());
+            dto.setExpirationDate(fiche.getExpirationDate());
+            dto.setPdf(fiche.getPdf());
+            dto.setFicheAQL(fiche.getFicheAQL());
+            dto.setAction(fiche.getAction() != null ? fiche.getAction().toString() : null);
+            dto.setModifieLe(fiche.getModifieLe());
+            dto.setTypeFiche(fiche.getTypeFiche());
+            dto.setProduitNom(fiche.getProduit() != null ? fiche.getProduit().getNomProduit() : null);
+            dto.setActionneurMatricule(fiche.getActionneur() != null ? fiche.getActionneur().getNom() + " " + fiche.getActionneur().getPrenom() : null);
+            dto.setPreparateurMatricule(fiche.getPreparateur() != null ? fiche.getPreparateur().getNom() + " " + fiche.getPreparateur().getPrenom() : null);
+            dto.setIpdfMatricule(fiche.getIPDF() != null ? fiche.getIPDF().getNom() + " " + fiche.getIPDF().getPrenom() : null);
+            dto.setIqpMatricule(fiche.getIQP() != null ? fiche.getIQP().getNom() + " " + fiche.getIQP().getPrenom(): null);
+
+            history.add(dto);
+        }
+
+        return history;
+    }
 //    @Override
 //    public Fiche addFiche(Fiche fiche) {
 //        System.out.println(fiche);

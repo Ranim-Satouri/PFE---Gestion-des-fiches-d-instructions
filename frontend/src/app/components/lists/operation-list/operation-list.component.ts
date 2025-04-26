@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { User } from '../../../models/User';
 import { Operation } from '../../../models/Operation';
+import { User } from '../../../models/User';
+import { FilterPipe } from '../../../pipes/filter.pipe';
 import { OperationService } from '../../../services/operation.service';
-import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { AddOperationComponent } from "../../add/add-operation/add-operation.component";
-import { FilterPipe } from '../../../pipes/filter.pipe';    
-import { filter } from 'rxjs';
+import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 
 @Component({
   selector: 'app-operation-list',

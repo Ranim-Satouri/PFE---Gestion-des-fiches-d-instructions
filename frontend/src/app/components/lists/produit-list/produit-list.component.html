@@ -1,5 +1,5 @@
 <div class="h-full flex flex-col" >
-  <div class="w-full bg-gray-200 dark:bg-gray-800 rounded-lg mb-4 flex flex-col justify-around">
+  <div class="w-full z-50 bg-gray-200 dark:bg-gray-800 rounded-lg mb-4 flex flex-col justify-around">
     <!-- Search Bar and Button Row -->
     <div class="flex items-center justify-between w-full px-3 py-2 space-x-4">
       <div class="relative form-outline ">
@@ -61,7 +61,7 @@
             *ngIf="showFamilleDropdown"
             id="familleDropDown"
             #familleDropdown
-            class="fixed bg-white shadow-md w-fit dark:bg-gray-700 border border-gray-50 rounded-lg max-h-40 overflow-y-auto z-[1001] mb-3"
+            class="absolute w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 sm:max-h-60 max-h-[120px] overflow-y-auto shadow-lg"
             [ngClass]="{ invisible: !isFamilleDropdownPositioned }">
             <div
               *ngFor="let f of filteredFamilles"

@@ -1,0 +1,6 @@
+/* fiche-history.component.css */
+.wrap-text {
+    white-space: normal; /* Permet le retour à la ligne */
+    word-break: break-all; /* Casse les mots longs si nécessaire */
+    max-width: 300px; /* Limite la largeur de la cellule pour forcer le wrapping */
+}

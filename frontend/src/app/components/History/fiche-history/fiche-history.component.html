@@ -1,0 +1,257 @@
+<p-dialog header="Historique de la Fiche" 
+  [(visible)]="visible" 
+  [modal]="true" 
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+  [style]="{ width: '70vw' }" 
+  [draggable]="false" 
+  [resizable]="false" 
+  [styleClass]="'dark:bg-gray-700'">
+  <!-- Contenu -->
+  <div *ngIf="errorMessage" class="alert alert-danger text-red-600 dark:text-red-400 p-4 mb-4 bg-red-100 dark:bg-red-900 rounded-lg">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Tableau pour afficher l'historique -->
+  <div *ngIf="history.length > 0" class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-500">
+      <thead class="text-xs text-gray-700 uppercase bg-blue-50 dark:bg-gray-700 dark:text-gray-400">
+        <tr>
+          <th scope="col" class="px-6 py-3">Numéro de Révision</th>
+          <th scope="col" class="px-6 py-3">Date de Modification</th>
+          <th scope="col" class="px-6 py-3">Actionneur</th>
+          <th scope="col" class="px-6 py-3">Détails</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let entry of history,let i =index">
+          <!-- Ligne principale -->
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              {{ i+1 }}
+            </th>
+            <td class="px-6 py-4">
+              {{ entry.modifieLe | date:'medium' }}
+            </td>
+            <td class="px-6 py-4">
+              {{ entry.actionneurMatricule }}
+            </td>
+            <td class="px-6 py-4">
+              <a href="javascript:void(0)"
+                class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                (click)="toggleRevision(entry.revisionNumber)">
+                {{ isExpanded(entry.revisionNumber) ? 'Masquer' : 'Afficher' }}
+              </a>
+            </td>
+          </tr>
+          <!-- Détails dans un collapse -->
+          <tr *ngIf="isExpanded(entry.revisionNumber)" class="bg-gray-50 dark:text-gray-800 dark:bg-gray-700">
+            <td colspan="4">
+              <div class="p-3 border-l-4 border-blue-600 dark:border-blue-500">
+                <div class="max-w-4xl bg-white w-full rounded-lg shadow-xl dark:bg-gray-700">
+                  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 dark:bg-gray-800">
+                    <thead class="text-xs text-gray-700 uppercase bg-blue-50 dark:bg-gray-600 dark:text-gray-400">
+                      <tr>
+                        <th scope="col" class="px-6 py-3"></th>
+                        <th scope="col" class="px-6 py-3">Valeur Précédente</th>
+                        <th scope="col" class="px-6 py-3">Valeur Actuelle</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- Statut -->
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Statut</td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
+                          <span *ngIf="hasFieldChanged(entry, 'status')">
+                            {{ getPreviousValue(entry, 'status') || '-' }}
+                          </span>
+                          <span *ngIf="!hasFieldChanged(entry, 'status')">-</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2">
+                          {{ entry.status || '-' }}
+                          <svg *ngIf="hasFieldChanged(entry, 'status')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                        </td>
+                      </tr>
+                      <!-- Commentaire -->
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Commentaire</td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
+                          <span *ngIf="hasFieldChanged(entry, 'commentaire')">
+                            {{ getPreviousValue(entry, 'commentaire') || '-' }}
+                          </span>
+                          <span *ngIf="!hasFieldChanged(entry, 'commentaire')">-</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2">
+                          {{ entry.commentaire || '-' }}
+                          <svg *ngIf="hasFieldChanged(entry, 'commentaire')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                        </td>
+                      </tr>
+                      <!-- Expiration Date -->
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Date d'Expiration</td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
+                          <span *ngIf="hasFieldChanged(entry, 'expirationDate')">
+                            {{ getPreviousValue(entry, 'expirationDate') | date:'medium' }}
+                          </span>
+                          <span *ngIf="!hasFieldChanged(entry, 'expirationDate')">-</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2">
+                          {{ entry.expirationDate | date:'medium' }}
+                          <svg *ngIf="hasFieldChanged(entry, 'expirationDate')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                        </td>
+                      </tr>
+                      <!-- PDF -->
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">PDF</td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400 wrap-text ">
+                          <span *ngIf="hasFieldChanged(entry, 'pdf')">
+                            {{ getPreviousValue(entry, 'pdf') || '-' }}
+                          </span>
+                          <span *ngIf="!hasFieldChanged(entry, 'pdf')">-</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2 wrap-text ">
+                          {{ entry.pdf || '-' }}
+                          <svg *ngIf="hasFieldChanged(entry, 'pdf')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                        </td>
+                      </tr>
+                      <!-- Fiche AQL -->
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Fiche AQL</td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400 wrap-text ">
+                          <span *ngIf="hasFieldChanged(entry, 'ficheAQL')">
+                            {{ getPreviousValue(entry, 'ficheAQL') || '-' }}
+                          </span>
+                          <span *ngIf="!hasFieldChanged(entry, 'ficheAQL')">-</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2 wrap-text ">
+                          {{ entry.ficheAQL || '-' }}
+                          <svg *ngIf="hasFieldChanged(entry, 'ficheAQL')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                        </td>
+                      </tr>
+                      <!-- Action -->
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Action</td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
+                          <span *ngIf="hasFieldChanged(entry, 'action')">
+                            {{ getPreviousValue(entry, 'action') || '-' }}
+                          </span>
+                          <span *ngIf="!hasFieldChanged(entry, 'action')">-</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2">
+                          {{ entry.action || '-' }}
+                          <svg *ngIf="hasFieldChanged(entry, 'action')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                        </td>
+                      </tr>
+                      <!-- Type Fiche -->
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Type de Fiche</td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
+                          <span *ngIf="hasFieldChanged(entry, 'typeFiche')">
+                            {{ getPreviousValue(entry, 'typeFiche') || '-' }}
+                          </span>
+                          <span *ngIf="!hasFieldChanged(entry, 'typeFiche')">-</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2">
+                          {{ entry.typeFiche || '-' }}
+                          <svg *ngIf="hasFieldChanged(entry, 'typeFiche')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                        </td>
+                      </tr>
+                      <!-- Produit -->
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Produit</td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
+                          <span *ngIf="hasFieldChanged(entry, 'produitNom')">
+                            {{ getPreviousValue(entry, 'produitNom') || '-' }}
+                          </span>
+                          <span *ngIf="!hasFieldChanged(entry, 'produitNom')">-</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2">
+                          {{ entry.produitNom || '-' }}
+                          <svg *ngIf="hasFieldChanged(entry, 'produitNom')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                        </td>
+                      </tr>
+                      <!-- Préparateur -->
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Préparateur</td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
+                          <span *ngIf="hasFieldChanged(entry, 'preparateurMatricule')">
+                            {{ getPreviousValue(entry, 'preparateurMatricule') || '-' }}
+                          </span>
+                          <span *ngIf="!hasFieldChanged(entry, 'preparateurMatricule')">-</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2">
+                          {{ entry.preparateurMatricule || '-' }}
+                          <svg *ngIf="hasFieldChanged(entry, 'preparateurMatricule')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                        </td>
+                      </tr>
+                      <!-- IPDF -->
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">IPDF</td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
+                          <span *ngIf="hasFieldChanged(entry, 'ipdfMatricule')">
+                            {{ getPreviousValue(entry, 'ipdfMatricule') || '-' }}
+                          </span>
+                          <span *ngIf="!hasFieldChanged(entry, 'ipdfMatricule')">-</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2">
+                          {{ entry.ipdfMatricule || '-' }}
+                          <svg *ngIf="hasFieldChanged(entry, 'ipdfMatricule')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                        </td>
+                      </tr>
+                      <!-- IQP -->
+                      <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                        <td class="px-6 py-4 text-gray-600 dark:text-gray-400">IQP</td>
+                        <td class="px-6 py-4 text-gray-500 dark:text-gray-400">
+                          <span *ngIf="hasFieldChanged(entry, 'iqpMatricule')">
+                            {{ getPreviousValue(entry, 'iqpMatricule') || '-' }}
+                          </span>
+                          <span *ngIf="!hasFieldChanged(entry, 'iqpMatricule')">-</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2">
+                          {{ entry.iqpMatricule || '-' }}
+                          <svg *ngIf="hasFieldChanged(entry, 'iqpMatricule')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 20h9"/>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                          </svg>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</p-dialog>

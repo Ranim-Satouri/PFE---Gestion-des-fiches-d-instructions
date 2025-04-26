@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, HostListener, Input, ViewChild } from '@angular/core';
 import * as QRCode from 'qrcode';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FicheService } from '../../../services/fiche.service';
@@ -9,16 +9,20 @@ import {FicheFormComponent} from '../../add/fiche-form/fiche-form.component';
 import { User } from '../../../models/User';
  import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { FicheValidationComponent } from "../../fiche-validation/fiche-validation.component";
+import { FilterPipe } from '../../../pipes/filter.pipe';
+import { FicheHistoryComponent } from '../../History/fiche-history/fiche-history.component';
 @Component({
   selector: 'app-fiche-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, FicheFormComponent, DeleteConfirmComponent, FicheValidationComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, FicheFormComponent, DeleteConfirmComponent, FicheValidationComponent, 
+    FilterPipe, FicheHistoryComponent],
   templateUrl: './fiche-list.component.html',
   styleUrl: './fiche-list.component.css'
 })
 export class FicheListComponent {
-
+  @ViewChild('ficheHistoryComponent', { static: false }) ficheHistoryComponent?: FicheHistoryComponent;
   constructor(private FicheService: FicheService ) { }
+  searchbar : string = '';
   fiches : Fiche[] = [];  
   dropdownOpen: number | null = null;
   FicheStatus = FicheStatus;
@@ -208,5 +212,18 @@ export class FicheListComponent {
   closeQrPopup() {
     this.isQrPopupOpen = false;
   }
+  openFicheHistory(idFiche: number | undefined): void {
+    if (!idFiche) {
+      console.error('ID fiche non défini');
+      return;
+    }
 
+    if (this.ficheHistoryComponent) {
+      this.ficheHistoryComponent.openHistory(idFiche);
+    } else {
+      console.error('FicheHistoryComponent is not initialized');
+    }
+  }
 }
+
+

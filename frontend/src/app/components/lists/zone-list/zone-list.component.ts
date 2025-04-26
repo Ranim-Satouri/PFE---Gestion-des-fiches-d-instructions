@@ -1,15 +1,15 @@
-import { Component, HostListener, Input, ViewChild } from '@angular/core';
-import { Zone } from '../../../models/Zone';
-import { ZoneService } from '../../../services/zone.service';
 import { CommonModule } from '@angular/common';
-import { NgxPaginationModule } from 'ngx-pagination';
+import { Component, HostListener, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { User } from '../../../models/User';
-import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
-import { UserZoneAssignComponent } from "../../add/user-zone-assign/user-zone-assign.component";
+import { Zone } from '../../../models/Zone';
 import { FilterPipe } from '../../../pipes/filter.pipe';
+import { ZoneService } from '../../../services/zone.service';
 import { AddZoneFormComponent } from "../../add/add-zone-form/add-zone-form.component";
 import { UpdateZoneComponent } from '../../add/update-zone/update-zone.component';
+import { UserZoneAssignComponent } from "../../add/user-zone-assign/user-zone-assign.component";
+import { DeleteConfirmComponent } from "../../delete-confirm/delete-confirm.component";
 import { ZoneHistoryComponent } from '../../History/zone-history/zone-history.component';
 @Component({
   selector: 'app-zone-list',

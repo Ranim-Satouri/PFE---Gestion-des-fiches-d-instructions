@@ -1,15 +1,13 @@
-import {Component, EventEmitter, Output, inject, HostListener, ViewChild, ElementRef, Input} from '@angular/core';
-import {FormGroup, FormControl, Validators, ReactiveFormsModule, FormBuilder, FormArray} from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild, inject } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { Groupe } from '../../../models/Groupe';
+import { Role, User } from '../../../models/User';
 import { Zone } from '../../../models/Zone';
+import { GroupeService } from '../../../services/groupe.service';
+import { UserService } from '../../../services/user.service';
 import { ZoneService } from '../../../services/zone.service';
-import {UserService} from '../../../services/user.service';
-import {Genre, Role, User, UserStatus} from '../../../models/User';
-import {Groupe} from '../../../models/Groupe';
-import {GroupeService} from '../../../services/groupe.service';
-import { error, group } from 'console';
-import { FormsModule } from '@angular/forms';
 @Component({ selector: 'app-register-form',standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './register-form.component.html',

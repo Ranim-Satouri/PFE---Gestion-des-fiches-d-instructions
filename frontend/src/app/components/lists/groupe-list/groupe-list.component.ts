@@ -7,16 +7,18 @@ import { User } from '../../../models/User';
 import { GroupeService } from '../../../services/groupe.service';
 import { AddGroupeComponent } from '../../add/add-groupe/add-groupe.component';
 import { DeleteConfirmComponent } from '../../delete-confirm/delete-confirm.component';
+import { FilterPipe } from '../../../pipes/filter.pipe';
 
 @Component({
   selector: 'app-groupe-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, AddGroupeComponent,DeleteConfirmComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, AddGroupeComponent,DeleteConfirmComponent,FilterPipe],
   templateUrl: './groupe-list.component.html',
   styleUrl: './groupe-list.component.css'
 })
 export class GroupeListComponent {
  constructor(private groupeService: GroupeService) {}
+ searchbar: string ='';
   groupes: Groupe[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
