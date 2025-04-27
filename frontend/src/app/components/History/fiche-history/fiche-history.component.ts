@@ -1,14 +1,13 @@
-import { Component , Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { DialogModule } from 'primeng/dialog';
-import { TableModule } from 'primeng/table';
+import { ApplicationRef, Component, Inject, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { ApplicationRef, Inject } from '@angular/core';
+import { TableModule } from 'primeng/table';
 import { first } from 'rxjs/operators';
-import { FicheService} from '../../../services/fiche.service';
 import { FicheHistoryDTO } from '../../../models/FicheHistoryDTO';
+import { FicheService } from '../../../services/fiche.service';
 @Component({
   selector: 'app-fiche-history',
   standalone: true,

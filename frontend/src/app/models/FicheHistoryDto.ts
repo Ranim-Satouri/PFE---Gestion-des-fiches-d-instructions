@@ -1,4 +1,3 @@
-import { Fiche } from "./Fiche";
 export interface FicheHistoryDTO {
   idFiche: number;
   revisionNumber: number;
