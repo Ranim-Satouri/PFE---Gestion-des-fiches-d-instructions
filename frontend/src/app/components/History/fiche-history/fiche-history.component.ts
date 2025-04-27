@@ -1,7 +1,5 @@
-import { Component , HostListener, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component , HostListener, Input, ApplicationRef,Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ApplicationRef, Component, Inject, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';

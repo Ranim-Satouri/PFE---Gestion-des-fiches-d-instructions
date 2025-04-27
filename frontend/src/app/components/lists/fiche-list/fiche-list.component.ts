@@ -86,7 +86,7 @@ export class FicheListComponent {
   // isFiltrageOpen: boolean = false;
   showFamilleDropdown = false;
 // Liste statique des situations
-situations: string[] = ['Expirée', 'En attente', 'IPDF', 'IQP'];
+situations: string[] = ['Expirée', 'En attente', 'IPDF', 'IQP' , 'Rejetée IQP' , 'Rejetée IPDF'];
 
 // Situations sélectionnées
 selectedSituations: string[] = [];
@@ -148,20 +148,33 @@ situationDropdownOpen = false;
 toggleSituationDropdown() {
   this.situationDropdownOpen = !this.situationDropdownOpen;
 }
+// Mappage des situations visibles aux valeurs en base de données
+situationsMap: { [key: string]: string } = {
+  'Expirée': 'EXPIRED',
+  'En attente': 'PENDING',
+  'IPDF': 'APPROUVEDIPDF',
+  'IQP': 'APPROUVEDIQP',
+  'Rejetée IPDF': 'REJECTEDIPDF',
+  'Rejetée IQP': 'REJECTEDIQP',
+};
 
 // Gérer les changements de checkboxes des situations
 onSituationCheckboxChange(event: any) {
   const value = event.target.value;
+  const mappedValue = this.situationsMap[value];  // Mappage vers la valeur de la base de données
+
   if (event.target.checked) {
-    if (!this.selectedSituations.includes(value)) {
-      this.selectedSituations.push(value);
+    if (!this.selectedSituations.includes(mappedValue)) {
+      this.selectedSituations.push(mappedValue);
     }
   } else {
-    this.selectedSituations = this.selectedSituations.filter((s) => s !== value);
+    this.selectedSituations = this.selectedSituations.filter((s) => s !== mappedValue);
   }
-  console.log('Selected situations:', this.selectedSituations);
+
+  console.log('Situations sélectionnées:', this.selectedSituations);
   this.applyFilters();
 }
+
 
 // Afficher les noms des situations sélectionnées
 getSelectedSituationNames(): string {
