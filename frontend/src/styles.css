@@ -38,3 +38,32 @@ body {
   background-color: #4b5563 !important; /* Équivalent à bg-gray-600 pour un effet de survol */
   color: #ffffff !important; /* Texte/icône blanc au survol */
 }
+.no-native-clear::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+} /* hethy inahy beha "x" par defaut yali f search input */
+div.uniform-placeholder{
+  color: #9ca3af; /* text-gray-400 */
+  font-size: 15px;
+  font-style: bold;
+}
+input.uniform-placeholder {
+  color: #171819; /* text-gray-400 */
+  font-size: 15px;
+  font-style: bold;
+}
+
+div.uniform-placeholder.dark,
+input.uniform-placeholder.dark {
+  color: #6b7280; /* dark:text-gray-500 */
+}
+
+
+input.uniform-placeholder::placeholder {
+  color: #9ca3af; /* text-gray-400 */
+  font-size: 15px;
+  font-style: bold;
+}
+
+input.uniform-placeholder.dark::placeholder {
+  color: #6b7280; /* dark:text-gray-500 */
+}

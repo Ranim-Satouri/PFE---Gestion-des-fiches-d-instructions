@@ -33,8 +33,9 @@ showHistoryPopup: boolean = false;
 selectedUserId: number | null = null;
   constructor( private userService: UserService, private userZoneService: UserZoneService, private zoneService: ZoneService, private groupeService: GroupeService ,private cdr: ChangeDetectorRef, private router: Router ) {}
 
-  users: any[] = []; dropdownOpen: number | null = null; page: number = 1;
-  itemsPerPage: number = 5;
+  users: any[] = [];
+   dropdownOpen: number | null = null;
+   page: number = 1;itemsPerPage: number = 5;
   Role!: Role;
   userConnected!: User;
   dropdownPosition = { top: 0, left: 0 };
@@ -346,8 +347,6 @@ adjustGrpDropdownPosition() {
         };
       } this.dropdownOpen = index; }
   }
-
-
   @HostListener('window:scroll', [])
   onScroll(): void {
     if (this.dropdownOpen !== null) {
@@ -383,8 +382,8 @@ adjustGrpDropdownPosition() {
       if (
         this.zoneDropdownOpen &&
         !clickedInsideZoneToggle &&
-        !clickedInsideZoneDropdown
-      ) {
+        !clickedInsideZoneDropdown)
+      {
         this.zoneDropdownOpen = false;
         this.cdr.detectChanges();
       }

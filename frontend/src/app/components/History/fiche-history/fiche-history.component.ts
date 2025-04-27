@@ -1,17 +1,18 @@
 import { Component , HostListener, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { DialogModule } from 'primeng/dialog';
-import { TableModule } from 'primeng/table';
+import { ApplicationRef, Component, Inject, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { ApplicationRef, Inject } from '@angular/core';
+import { TableModule } from 'primeng/table';
 import { first } from 'rxjs/operators';
-import { FicheService} from '../../../services/fiche.service';
 import { FicheHistoryDTO } from '../../../models/FicheHistoryDTO';
 import { FormsModule } from '@angular/forms';
 
 
+import { FicheService } from '../../../services/fiche.service';
 @Component({
   selector: 'app-fiche-history',
   standalone: true,
@@ -113,7 +114,7 @@ export class FicheHistoryComponent {
     return previousEntry[field];
   }
   showSelectorDropdown: boolean = false;
-  selectedAction: string = ''; 
+  selectedAction: string = '';
   get filteredHistory(): FicheHistoryDTO[] {
     if (!this.selectedAction) {
       return this.history; // Si aucune action n'est sélectionnée, on retourne toute l'historique
@@ -142,7 +143,7 @@ export class FicheHistoryComponent {
           const target = event.target as HTMLElement;
           const dropdown1 = document.getElementById(`dropdownAffectation`);
           const button1 = target.closest('actionFilter');
-      
+
           // Vérifiez si le clic est en dehors du dropdown et du bouton
           if (this.showSelectorDropdown  && dropdown1 && !dropdown1.contains(target) && !button1) {
             this.showSelectorDropdown = false; // Ferme le dropdown
