@@ -189,8 +189,6 @@ export class AddGroupeComponent {
     // Récupérer tous les menus
     this.menuService.getAllMenus().subscribe((menus) => {
       this.menus = menus; 
-      console.log(this.menus);
-
     },
     (error) => {
       console.error('Erreur lors de la récupération des permissions', error);
@@ -201,8 +199,6 @@ export class AddGroupeComponent {
     this.permissionService.getAllPermissions().subscribe(
       (permissions) => {
         this.permissions = permissions; 
-        console.log(this.permissions);
-
       },
       (error) => {
         console.error('Erreur lors de la récupération des permissions', error);
@@ -213,9 +209,11 @@ export class AddGroupeComponent {
   getUsers(){
     this.userService.getAll().subscribe(
       (data: User[]) => {
-        this.users = data.filter(user => !user.groupe || !user.groupe.idGroupe || user.groupe?.idGroupe === this.groupe.idGroupe); 
         if (this.groupe && this.groupe.idGroupe) {
+          this.users = data.filter(user => !user.groupe || !user.groupe.idGroupe || user.groupe?.idGroupe === this.groupe.idGroupe);
           this.selectedUsers = new Set(this.users?.filter(user => user.groupe?.idGroupe === this.groupe.idGroupe).map(user => user.idUser!)); // hatytha lenna mech fel ngOninit khater feha this.users wel fel oninit mazelt null 
+        }else{
+          this.users = data.filter(user => !user.groupe || !user.groupe.idGroupe );
         }
       },
       (error) => {

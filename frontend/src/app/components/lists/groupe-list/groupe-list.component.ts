@@ -7,11 +7,12 @@ import { User } from '../../../models/User';
 import { GroupeService } from '../../../services/groupe.service';
 import { AddGroupeComponent } from '../../add/add-groupe/add-groupe.component';
 import { DeleteConfirmComponent } from '../../delete-confirm/delete-confirm.component';
+import { FilterPipe } from '../../../pipes/filter.pipe';
 
 @Component({
   selector: 'app-groupe-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, AddGroupeComponent,DeleteConfirmComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, AddGroupeComponent,DeleteConfirmComponent ,FilterPipe],
   templateUrl: './groupe-list.component.html',
   styleUrl: './groupe-list.component.css'
 })
@@ -29,6 +30,7 @@ export class GroupeListComponent {
   GroupeToUpdate : Groupe | undefined ;
   showAddModal = false;
   showUpdateModal = false;
+  searchbar: String = '';
 
   ngOnInit(){
     const userFromLocalStorage = localStorage.getItem('user');
@@ -42,7 +44,6 @@ export class GroupeListComponent {
     this.groupeService.getAll().subscribe({
       next : (response :Groupe[]) => {
         this.groupes = response.sort((a, b) => b.idGroupe! - a.idGroupe!);
-        console.log('groupes:', this.groupes);
       },
       error: (error: any) => {
         console.error('fetching groupes error:', error);
@@ -161,11 +162,8 @@ export class GroupeListComponent {
         : dateA.getTime() - dateB.getTime();  // Tri croissant
     });
   }
-  hasPermission(permissionName: string): boolean {
-    console.log(permissionName);
-    
+  hasPermission(permissionName: string): boolean {    
     const permissions = this.userConnected.groupe?.permissions || []; 
-    console.log(permissions.some(permission => permission.nom === permissionName))
     return permissions.some(permission => permission.nom === permissionName);  
   }
 }

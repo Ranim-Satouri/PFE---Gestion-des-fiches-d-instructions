@@ -294,6 +294,13 @@ export class ProduitListComponent {
     if (this.dropdownOpen !== null && dropdown && !dropdown.contains(target) && !button) {
       this.dropdownOpen = null; // Ferme le dropdown
     }
+    const dropdown1 = document.getElementById('famille_DropDown');
+    const familleInputElement = this.familleInput?.nativeElement;
+
+    if (this.showFamilleDropdown && dropdown1 && familleInputElement && 
+        !dropdown1.contains(target) && target !== familleInputElement) {
+      this.showFamilleDropdown = false; 
+    }
   }
   isDescending: boolean = true;
   sortByDate() {
