@@ -195,7 +195,8 @@ export class FamilleListComponent {
   }
   openHistory(idFamille: number | undefined): void {
     if (idFamille !== undefined) {
-      this.FamilleHistoryComponent.openHistory(idFamille); // Appeler la méthode openHistory
+      this.dropdownOpen = null;
+      this.FamilleHistoryComponent.openHistory(idFamille); 
     }
   }
 

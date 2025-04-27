@@ -12,12 +12,13 @@ import { FilterPipe } from '../../../pipes/filter.pipe';
 @Component({
   selector: 'app-groupe-list',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, AddGroupeComponent,DeleteConfirmComponent ,FilterPipe],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, AddGroupeComponent,DeleteConfirmComponent,FilterPipe],
   templateUrl: './groupe-list.component.html',
   styleUrl: './groupe-list.component.css'
 })
 export class GroupeListComponent {
  constructor(private groupeService: GroupeService) {}
+ searchbar: string ='';
   groupes: Groupe[] = [];
   dropdownOpen: number | null = null;
   page: number = 1;
@@ -30,7 +31,6 @@ export class GroupeListComponent {
   GroupeToUpdate : Groupe | undefined ;
   showAddModal = false;
   showUpdateModal = false;
-  searchbar: String = '';
 
   ngOnInit(){
     const userFromLocalStorage = localStorage.getItem('user');
@@ -69,9 +69,9 @@ export class GroupeListComponent {
     console.log(this.GroupeToUpdate);
     this.showAddModal = true;
   }
-  closeAddGroupePopUp() {   
+  closeAddGroupePopUp() {
     this.getGroupes();
-    this.showAddModal = false; 
+    this.showAddModal = false;
     this.GroupeToUpdate = undefined ; // aamltha bech kif naawd nhel add marra okhra yabda el groupe undefined
   }
   openDeleteModel(groupe : Groupe) {
@@ -104,16 +104,16 @@ export class GroupeListComponent {
       const rect = button?.getBoundingClientRect();
       if (rect) {
         //const dropdownHeight = 145; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
-        let dropdownHeight = 0; 
+        let dropdownHeight = 0;
 
         if (this.hasPermission('modifier_fiche')) {
-          dropdownHeight += 44.5; 
+          dropdownHeight += 44.5;
         }
         if (this.hasPermission('consulter_historique')) {
-          dropdownHeight += 44.5; 
+          dropdownHeight += 44.5;
         }
         if (this.hasPermission('supprimer_fiche')) {
-          dropdownHeight += 44.5; 
+          dropdownHeight += 44.5;
         }
 
         const spaceBelow = window.innerHeight - rect.bottom;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9
@@ -162,8 +162,8 @@ export class GroupeListComponent {
         : dateA.getTime() - dateB.getTime();  // Tri croissant
     });
   }
-  hasPermission(permissionName: string): boolean {    
-    const permissions = this.userConnected.groupe?.permissions || []; 
-    return permissions.some(permission => permission.nom === permissionName);  
+  hasPermission(permissionName: string): boolean {
+    const permissions = this.userConnected.groupe?.permissions || [];
+    return permissions.some(permission => permission.nom === permissionName);
   }
 }

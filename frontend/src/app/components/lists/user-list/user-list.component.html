@@ -93,16 +93,6 @@
                     stroke-linecap="round" stroke-linejoin="round"> <path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path>
                   </svg>
                 </div>
-                <!-- <div
-                *ngIf="showGrpDropdown" id="groupeDropdown"  #groupeDropdown
-                class="fixed z-[1001] bg-white shadow-md w-[100%] dark:bg-gray-700 border border-gray-50 rounded-lg max-h-40 overflow-y-auto"
-                [ngClass]="{'invisible': !isGrpDropdownPositioned}">
-                <div
-                  *ngFor="let groupe of filteredGroupes"
-                  (click)="selectGroupe(groupe)"
-                  class="cursor-pointer py-2 px-4 text-sm text-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600"
-                >{{ groupe.nom }}
-                </div></div> -->
                 <ul
                 *ngIf="showGrpDropdown" id="groupeDropdown"  #groupeDropdown
                 class="absolute z-1000 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-700 rounded-lg mt-2 sm:max-h-60 max-h-[120px] overflow-y-auto shadow-lg"

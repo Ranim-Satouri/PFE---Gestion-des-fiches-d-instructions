@@ -254,7 +254,7 @@ public class UserServiceImp implements UserIservice {
 
             String actionneurMatricule = "system";
             if (currentUser.getActionneur() != null && currentUser.getActionneur().getMatricule() != null) {
-                actionneurMatricule = currentUser.getActionneur().getMatricule();
+                actionneurMatricule = currentUser.getActionneur().getNom() + " " + currentUser.getActionneur().getPrenom();
             }
 
             // Récupérer les zones à cette révision

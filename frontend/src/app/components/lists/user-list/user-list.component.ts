@@ -78,6 +78,7 @@ openUserHistory(idUser: number | undefined): void {
   }
 
   if (this.userHistoryComponent) {
+    this.dropdownOpen = null;
     this.userHistoryComponent.openHistory(idUser);
   } else {
     console.error('UserHistoryComponent is not initialized');

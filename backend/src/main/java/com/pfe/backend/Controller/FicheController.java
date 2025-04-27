@@ -1,14 +1,10 @@
 package com.pfe.backend.Controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.pfe.backend.DTO.FicheHistoryDto;
+import com.pfe.backend.DTO.FicheHistoryDTO;
 import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.FicheLigne;
 import com.pfe.backend.Model.FicheOperation;
 import com.pfe.backend.Model.FicheZone;
-import com.pfe.backend.ServiceFiche.FicheAuditService;
 import com.pfe.backend.ServiceFiche.FicheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -28,7 +24,11 @@ import java.util.Map;
 public class FicheController {
     @Autowired
     private FicheService ficheService;
-
+    @GetMapping("/fiche-history/{idFiche}")
+    public ResponseEntity<List<FicheHistoryDTO>> getFicheHistory(@PathVariable Long idFiche) {
+        List<FicheHistoryDTO> history = ficheService.getFicheHistory(idFiche);
+        return ResponseEntity.ok(history);
+    }
 
     @PostMapping("/addFicheOperation")
     public ResponseEntity<?> addFiche(@RequestBody FicheOperation fiche) {

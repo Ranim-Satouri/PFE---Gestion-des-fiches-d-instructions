@@ -304,24 +304,28 @@ export class FicheFormComponent {
       this.showLigneDropdown = false;
     }
   }
+  
   toggleOperationDropdown() {
     this.showZoneDropdown = false;
     this.showLigneDropdown = false;
     this.showProduitDropdown = false;
     //this.showOperationDropdown = !this.showOperationDropdown;
-
     if (!this.showOperationDropdown && this.ligneSelected) {
       this.showOperationDropdown = true;
     }else{
       this.showOperationDropdown = false;
     }
   }
+
   toggleZoneDropdown() {
     this.showProduitDropdown = false;
     this.showOperationDropdown = false;
     this.showLigneDropdown = false;
-    this.showZoneDropdown = !this.showZoneDropdown;
-    if (this.showZoneDropdown) {
+    // this.showZoneDropdown = !this.showZoneDropdown;
+    if (!this.showZoneDropdown && this.produitSelected) {
+      this.showZoneDropdown=true;
+    }else{
+      this.showZoneDropdown=false;
     }
   }
 
@@ -344,11 +348,12 @@ export class FicheFormComponent {
     this.Form.get('produit')?.setValue(null);
     this.filteredProduits = this.produits;
     this.showProduitDropdown = false;
+    this.clearZoneSearch();
   }
   clearZoneSearch() {
     this.zoneSearch = '';
     this.Form.get('zone')?.setValue(null);
-    this.filteredZones = this.zones;
+    //this.filteredZones = this.zones;
     this.showZoneDropdown = false;
     this.zoneSelected = false;
     this.clearLigneSearch();
@@ -360,7 +365,6 @@ export class FicheFormComponent {
     this.Form.get('fichier')?.setValue(file);
     this.Form.get('fichier')?.markAsTouched();
     this.updated = true;
-
   }
 
   @HostListener('document:click', ['$event'])
@@ -539,6 +543,7 @@ export class FicheFormComponent {
           } as FicheOperation;
         }
         if(file){
+          this.fiche.commentaire = "";
           this.FicheService.uploadPDF(file).subscribe({
             next: (response) => {
               console.log('Fichier pdf stocker avec succès !', response);
@@ -563,6 +568,7 @@ export class FicheFormComponent {
     }
   }
   updateFiche() {
+    console.log(this.fiche);
     this.FicheService.updateFiche(this.fiche).subscribe({
       next: (response) => {
         console.log('Fichier attaché avec succès', response);

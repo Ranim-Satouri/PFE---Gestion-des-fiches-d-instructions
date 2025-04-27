@@ -1,5 +1,6 @@
 package com.pfe.backend.ServiceFiche;
 
+import com.pfe.backend.DTO.FicheHistoryDTO;
 import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.FicheLigne;
 import com.pfe.backend.Model.FicheOperation;
@@ -32,4 +33,5 @@ public interface FicheService {
     Fiche updateFicheLigne(FicheLigne ficheLigne);
     Fiche updateFicheOperation(FicheOperation ficheOperation);
     List<Fiche> getFichesSheetByUserZones(Long idUser);
+    List<FicheHistoryDTO> getFicheHistory(Long ficheId);
 }

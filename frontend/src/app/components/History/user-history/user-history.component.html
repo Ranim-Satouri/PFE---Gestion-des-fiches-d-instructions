@@ -1,18 +1,14 @@
 <p-dialog header="Historique de l'Utilisateur" 
   [(visible)]="visible" 
   [modal]="true" 
-  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
-  [style]="{ width: '60vw' }" 
-  [draggable]="false" 
-  [resizable]="false" 
-  [styleClass]="'dark:bg-gray-700'">
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" [style]="{ width: '60vw' }" 
+  [draggable]="false" [resizable]="false"  [styleClass]="'dark:bg-gray-700'">
   <!-- Contenu -->
   <div *ngIf="errorMessage" class="alert alert-danger text-red-600 dark:text-red-400 p-4 mb-4 bg-red-100 dark:bg-red-900 rounded-lg">
-    {{ errorMessage }}
-  </div>
+  {{ errorMessage }} </div>
 
   <!-- Tableau pour afficher l'historique -->
-  <div *ngIf="history.length > 0" class="relative overflow-x-auto shadow-md sm:rounded-lg">
+  <div *ngIf="history.length > 0" class="relative overflow-x-auto shadow-md sm:rounded-lg  max-h-[400px] min-h-[90px]">
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-500">
       <thead class="text-xs text-gray-700 uppercase bg-blue-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
@@ -30,7 +26,7 @@
               {{ i+1 }}
             </th>
             <td class="px-6 py-4">
-              {{ entry.modifieLe | date:'medium' }}
+              {{ entry.modifieLe |date:'dd/MM/yyyy, HH:mm:ss' }}
             </td>
             <td class="px-6 py-4">
               {{ entry.actionneurMatricule }}
