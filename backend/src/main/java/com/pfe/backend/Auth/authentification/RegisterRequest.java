@@ -1,6 +1,4 @@
 package com.pfe.backend.Auth.authentification;
-
-import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

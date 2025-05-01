@@ -26,32 +26,17 @@ export class UserService {
     );
   }
 
-  // Gestion des erreurs HTTP
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'Une erreur est survenue';
-    if (error.error instanceof ErrorEvent) {
-      // Erreur côté client
-      errorMessage = `Erreur: ${error.error.message}`;
-    } else {
-      // Erreur côté serveur
-      errorMessage = `Code d'erreur: ${error.status}, Message: ${error.message}`;
-    }
-    console.error(errorMessage);
-    return throwError(() => new Error(errorMessage));
-  }
-     
-
-
-  Login(matricule: string, password: string): Observable<User> {
+  Login(matricule: string, password: string): Observable<any> {
     const body = { matricule, password };
-    return this.http.post<{ token: string; user: User; groupe: string }>(
-        `${this.apiUrl2}/authenticate`, body ).pipe(
-          map(response => {
-              localStorage.setItem('token', response.token);
-              return response.user; // Pas besoin de mapToUser
-          })
-      );
-  }
+    console.log('Envoi de la requête de login:', body);
+    return this.http.post(`${this.apiUrl2}/authenticate`, body).pipe(
+        tap(response => console.log('Réponse brute:', JSON.stringify(response))),
+        catchError(error => {
+            console.error('Erreur de login:', error);
+            return throwError(() => new Error(`Erreur: ${error.status}, Message: ${error.message}`));
+        })
+    );
+}
 
   Register(user: User, idActionneur: number): Observable<any> {
     const params = new HttpParams()
@@ -61,7 +46,9 @@ export class UserService {
   }
   
   getAll(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/getUsers`); 
+    return this.http.get<User[]>(`${this.apiUrl}/getUsers`).pipe(
+      catchError(this.handleError)
+    );
   }
   
   attribuerGroupe(idUser: number, idGroupe: number, idActionneur: number): Observable<any>
@@ -110,6 +97,22 @@ removeZone(idUser: number, idZone: number, idActionneur: number): Observable<any
     return this.http.put(`${this.apiUrl}/changeStatus/${idUser}/${idActionneur}`, null, { params });
   }
 
-
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Une erreur est survenue';
+    if (error.error instanceof ErrorEvent) {
+      // Erreur côté client
+      errorMessage = `Erreur: ${error.error.message}`;
+    } else {
+      // Erreur côté serveur
+      errorMessage = `Code d'erreur: ${error.status}, Message: ${error.message}`;
+      if (error.status === 401) {
+        // Rediriger vers la page de connexion
+        localStorage.removeItem('token'); // Supprime le token invalide
+        window.location.href = '/login'; // Redirection
+      }
+    }
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
+  }
 
 }

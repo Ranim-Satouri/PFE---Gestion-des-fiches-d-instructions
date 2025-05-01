@@ -3,6 +3,8 @@ package com.pfe.backend.Auth.authentification;
 import com.pfe.backend.Model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,7 +14,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class AuthenticationController {
 
     private final AuthenticationService Aservice;
-
+    @GetMapping("/profile")
+    public ResponseEntity<String> getUserProfile() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok("Profil de l'utilisateur : " + auth.getName());
+    }
     public AuthenticationController(AuthenticationService Aservice) {
         this.Aservice = Aservice;
     }

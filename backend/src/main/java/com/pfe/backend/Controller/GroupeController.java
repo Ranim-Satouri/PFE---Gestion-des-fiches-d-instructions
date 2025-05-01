@@ -48,6 +48,7 @@ public class GroupeController {
     }
     @GetMapping("/activeGroupes")
     public ResponseEntity<List<Groupe>> getActiveGroupes() {
+        System.out.println("GroupeController - Requête reçue pour /groupe/activeGroupes");
         return ResponseEntity.ok(groupeService.getActiveGroupes());
     }
     @PostMapping("/addRelationsToGroup")

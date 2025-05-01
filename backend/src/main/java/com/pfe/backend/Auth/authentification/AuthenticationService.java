@@ -86,26 +86,32 @@ public class AuthenticationService {
                 .build();
 
     }
- public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        try
-        {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getMatricule(), request.getPassword())
-        );
-    } catch (BadCredentialsException e) {
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Matricule ou mot de passe incorrect");
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        System.out.println("Tentative d'authentification pour matricule: " + request.getMatricule());
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getMatricule(), request.getPassword())
+            );
+            System.out.println("Authentification réussie pour: " + request.getMatricule());
+        } catch (BadCredentialsException e) {
+            System.out.println("Erreur d'authentification pour matricule: " + request.getMatricule() + ", erreur: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Matricule ou mot de passe incorrect");
+        } catch (Exception e) {
+            System.out.println("Erreur inattendue pour matricule: " + request.getMatricule() + ", erreur: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de l'authentification");
+        }
+
+        User user = repository.findByMatricule(request.getMatricule())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
+        System.out.println("Utilisateur trouvé: " + user.getMatricule() + ", groupe: " + (user.getGroupe() != null ? user.getGroupe().getNom() : "aucun"));
+
+        var jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .user(user)
+                .groupe(user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe")
+                .build();
     }
-
-    var user = repository.findByMatricule(request.getMatricule())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
-
-    var jwtToken = jwtService.generateToken(user);
-    return AuthenticationResponse.builder()
-            .token(jwtToken)
-            .user(user).groupe(user.getGroupe().getNom())
-            .build();
-}
-
     public void updatePassword(Long idUser, String newPassword, Long idActionneur) {
         User user = repository.findById(idUser)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
