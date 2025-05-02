@@ -5,7 +5,7 @@ import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.FicheLigne;
 import com.pfe.backend.Model.FicheOperation;
 import com.pfe.backend.Model.FicheZone;
-import com.pfe.backend.ServiceFiche.FicheService;
+import com.pfe.backend.Service.ServiceFiche.FicheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -31,7 +31,7 @@ public class FicheController {
     }
 
     @PostMapping("/addFicheOperation")
-    public ResponseEntity<?> addFiche(@RequestBody FicheOperation fiche) {
+    public ResponseEntity<?> addFicheOperation(@RequestBody FicheOperation fiche) {
         try {
             return ResponseEntity.ok(ficheService.addFicheOperation(fiche));
         } catch (RuntimeException e) {

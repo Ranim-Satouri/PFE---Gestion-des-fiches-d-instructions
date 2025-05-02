@@ -4,7 +4,7 @@
         <!-- Search Bar and Filters Row -->
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-2">
           <!-- Search Bar -->
-          <div class="relative w-full sm:w-1/4">
+          <div class="relative w-full sm:w-[15%]">
             <input
               type="search"
               [(ngModel)]="searchbar" placeholder="Rechercher ..."
@@ -38,19 +38,19 @@
               placeholder="Référence"
               [(ngModel)]="refSearchText"
               (input)="applyFilters()"
-              class="uniform-placeholder w-[15%] h-10 px-3 py-2  rounded-lg bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none transition-all duration-200"/>
+              class="uniform-placeholder w-full sm:w-[10%] h-10 px-3 py-2  rounded-lg bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none transition-all duration-200"/>
             <input
               placeholder="Indice"
               [(ngModel)]="indiceSearchText"
               (input)="applyFilters()"
-              class="uniform-placeholder w-[15%] h-10 px-3 py-2 rounded-lg bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none transition-all duration-200" />
+              class="uniform-placeholder w-full sm:w-[10%] h-10 px-3 py-2 rounded-lg bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none transition-all duration-200" />
       <!-- Ligne Input -->
-      <div class="relative w-full sm:w-48">
+      <div class="relative w-full  sm:w-[10%]">
         <input placeholder="Ligne" [(ngModel)]="ligneSearchText" (input)="applyFilters()"
         class="uniform-placeholder w-full h-10 px-4 py-2 rounded-lg bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none transition-all duration-200"  />
             </div>  
         <!-- Operation Input -->
-        <div class="relative w-full sm:w-48">
+        <div class="relative w-full  sm:w-[10%]">
             <input
             placeholder="Opération"
             [(ngModel)]="OperationSearchText"
@@ -58,7 +58,7 @@
             dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none transition-all duration-200"/>
         </div>  
           <!-- Famille Dropdown -->
-          <div class="relative w-full sm:w-48">
+          <div class="relative w-full  sm:w-[10%]">
             <input
               #familleInput
               class="uniform-placeholder w-full h-10 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-400 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 focus:border-blue-400 dark:focus:border-blue-500 outline-none transition-all duration-200"
@@ -91,14 +91,14 @@
             </div>
           </div>
           <!-- Zone Dropdown -->
-          <div class="relative w-[21%]" #zoneToggleButton (click)="toggleZoneDropdown()">
+          <div class="relative w-full sm:w-[10%]" #zoneToggleButton (click)="toggleZoneDropdown()">
             <div 
             class="uniform-placeholder w-full h-10 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-400 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 focus:border-blue-400 dark:focus:border-blue-500 outline-none transition-all duration-200"
             >
             {{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Zone' }}
             </div>
             <div class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
-              <svg class="shrink-0 size-3.5 w-4 h-4"
+              <svg class="shrink-0 size-3.5"
                 xmlns="http://www.w3.org/2000/svg" width="24"height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path>
@@ -106,9 +106,9 @@
             </div>
             <div
               *ngIf="zoneDropdownOpen" #zoneDropdown
-              class="absolute w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg z-[1000]">
+              class="absolute w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg z-[1000]  dark:text-gray-400">
               <label *ngFor="let zone of zones"
-                class="flex items-center px-4 py-2  hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">
+                class="flex items-center px-4 py-2  hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer ">
                 <input
                   type="checkbox"
                   [value]="zone.idZone"
@@ -125,43 +125,43 @@
             </div>
           </div>
       
-<!-- Situation Dropdown -->
-<div class="relative w-full sm:w-48" #situationToggleButton (click)="toggleSituationDropdown()">
-  <!-- Situation Dropdown -->
-<div
-class="w-full h-10 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 uniform-placeholder focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 focus:border-blue-400 dark:focus:border-blue-500 cursor-pointer transition-all duration-200"
->
-{{ selectedSituations.length > 0 ? getSelectedSituationNames() : 'Situation' }}
-</div>
-    <div
-      class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
-      <svg
-        class="shrink-0 size-3.5 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="m7 15 5 5 5-5"></path> <path d="m7 9 5-5 5 5"></path>
-      </svg>
-    </div>
-    <div
-      *ngIf="situationDropdownOpen"
-      #situationDropdown
-      class="absolute w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg z-[1000]">
-      <label  *ngFor="let situation of situations"
-        class="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">
-        <input
-          type="checkbox"
-          [value]="situation"
-          (change)="onSituationCheckboxChange($event)"
-          [checked]="selectedSituations.includes(situation)"
-          class="hidden peer"/>
-        <div class="w-4 h-4 mr-2 flex items-center justify-center rounded border-2 border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
-          <svg class="w-4 h-4 text-white hidden"
-            fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-          </svg></div><span style="font-size: 13px">{{ situation }}</span></label>
-    </div>
-  </div>
+        <!-- Situation Dropdown -->
+        <div class="relative w-full sm:w-[10%]" #situationToggleButton id="situationToggleButton" (click)="toggleSituationDropdown()">
+          <!-- Situation Dropdown -->
+        <div
+        class="w-full h-10 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 uniform-placeholder focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 focus:border-blue-400 dark:focus:border-blue-500 cursor-pointer transition-all duration-200"
+        >
+        {{ selectedSituations.length > 0 ? getSelectedSituationNames() : 'Situation' }}
+        </div>
+          <div
+            class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
+            <svg
+              class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m7 15 5 5 5-5"></path> <path d="m7 9 5-5 5 5"></path>
+            </svg>
+          </div>
+          <div
+            *ngIf="situationDropdownOpen"
+            #situationDropdown id="situationDropdown"
+            class="absolute w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg z-[1000] dark:text-gray-400">
+            <label  *ngFor="let situation of situations"
+              class="flex items-center px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">
+              <input
+                type="checkbox"
+                [value]="situation"
+                (change)="onSituationCheckboxChange($event)"
+                [checked]="selectedSituations.includes(situation)"
+                class="hidden peer "/>
+              <div class="w-4 h-4 mr-2 flex items-center justify-center rounded border-2 border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
+                <svg class="w-4 h-4 text-white hidden"
+                  fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg></div><span style="font-size: 13px">{{ situation }}</span></label>
+            </div>
+          </div>
           <!-- Buttons -->
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1">
             <!-- Reset Filters Button -->
             <button
               (click)="clearFilters()"
@@ -170,7 +170,7 @@ class="w-full h-10 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded
             <button
               *ngIf="hasPermission('creer_fiche')"
               (click)="showFicheForm()"
-              class="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition duration-200" >
+              class="flex items-center justify-center  h-10 w-10  bg-blue-500 text-white rounded-full hover:bg-blue-600 transition duration-200" >
               <svg width="14" height="14" viewBox="0 0 10 10" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
                 <path

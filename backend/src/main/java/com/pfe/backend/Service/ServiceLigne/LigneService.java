@@ -11,4 +11,5 @@ public interface LigneService {
     void DeleteLigne(Long idLigne ,Long idActionneur);
     List<Ligne> getActiveLignes();
     List<Ligne> getLignes();
+    List<Ligne> getLignesByUserZones(long idUser);
 }

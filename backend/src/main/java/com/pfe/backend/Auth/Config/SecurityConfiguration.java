@@ -23,7 +23,6 @@ public class SecurityConfiguration {
     //awl haja ylawj aleha spring nrml
 //    //we want every request to be authentifcated whoch means the session should not be stored it should be stateless
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

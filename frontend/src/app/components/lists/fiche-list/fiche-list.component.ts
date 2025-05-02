@@ -105,16 +105,32 @@ situationDropdownOpen = false;
   this.getLignes(); 
   }
   getFiches() {
-    this.FicheService.getFichesByUserZones(this.userConnected.idUser!).subscribe({
-      next: (response: Fiche[]) => {
-        this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
-        this.filteredFiches = [...this.fiches]; // Initialiser filteredFiches
-        this.applyFilters(); // Appliquer les filtres immédiatement
-      },
-      error: (error: any) => {
-        console.error('fetching fiches error:', error);
-      }
-    });
+    
+    if(this.userConnected.groupe?.nom === "SUPERUSER"){
+      console.log('superuser');
+      this.FicheService.getAllFiches().subscribe({
+        next: (response: Fiche[]) => {
+          this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
+          this.filteredFiches = [...this.fiches]; 
+          this.applyFilters(); 
+        },
+        error: (error: any) => {
+          console.error('fetching fiches error:', error);
+        }
+      });
+    }else{
+      console.log('mech superuser');
+      this.FicheService.getFichesByUserZones(this.userConnected.idUser!).subscribe({
+        next: (response: Fiche[]) => {
+          this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
+          this.filteredFiches = [...this.fiches]; 
+          this.applyFilters(); 
+        },
+        error: (error: any) => {
+          console.error('fetching fiches error:', error);
+        }
+        
+      });}
   }
 //----------------------------------------------------------------------------------------------------
    // Fetch the list of Famille
@@ -156,6 +172,7 @@ situationsMap: { [key: string]: string } = {
   'IQP': 'APPROUVEDIQP',
   'Rejetée IPDF': 'REJECTEDIPDF',
   'Rejetée IQP': 'REJECTEDIQP',
+
 };
 
 // Gérer les changements de checkboxes des situations
@@ -177,11 +194,20 @@ onSituationCheckboxChange(event: any) {
 
 
 // Afficher les noms des situations sélectionnées
+// getSelectedSituationNames(): string {
+//   if (this.selectedSituations.length === 0) {
+//     return 'Situation';
+//   }
+//   return this.selectedSituations.join(', ');
+// }
 getSelectedSituationNames(): string {
-  if (this.selectedSituations.length === 0) {
-    return 'Situation';
-  }
-  return this.selectedSituations.join(', ');
+  // On transforme chaque situation sélectionnée en sa version conviviale
+  return this.selectedSituations
+    .map(situation => {
+      const key = Object.keys(this.situationsMap).find(key => this.situationsMap[key] === situation);
+      return key || ''; // On retourne le nom de la situation ou une chaîne vide si non trouvé
+    })
+    .join(', ');
 }
   applyFilters() {
     let filtered = [...this.fiches];
@@ -504,6 +530,23 @@ adjustGrpDropdownPosition() {
        this.zoneDropdownOpen = false;
        this.cdr.detectChanges();
        }
+    const dropdown2 = document.getElementById('situationDropdown');
+    const button2 = document.getElementById('situationToggleButton');
+  
+    // Vérifiez si le clic est en dehors du dropdown et du bouton
+    if (this.situationDropdownOpen && dropdown2 && button2) {
+      if (!dropdown2.contains(target) && !button2.contains(target)) {
+        this.situationDropdownOpen = false; // Ferme le dropdown
+      }
+    }
+    if (this.showFamilleDropdown && this.familleDropdown && this.familleArrowButton) {
+      if (
+        !this.familleDropdown.nativeElement.contains(target) && 
+        !this.familleArrowButton.nativeElement.contains(target)
+      ) {
+        this.showFamilleDropdown = false; // Close the dropdown
+      }
+    }
   }
   downloadFile(fileName: string) {
 
@@ -536,8 +579,7 @@ adjustGrpDropdownPosition() {
   }
   sortByDate() {
     this.isDescending = !this.isDescending; // Alterner entre croissant et décroissant
-
-    this.fiches.sort((a, b) => {
+    this.filteredFiches.sort((a, b) => {
       // Comparaison des dates
       const dateA = new Date(a.modifieLe!);
       const dateB = new Date(b.modifieLe!);

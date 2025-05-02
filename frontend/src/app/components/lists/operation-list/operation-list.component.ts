@@ -44,15 +44,30 @@ export class OperationListComponent {
     }
   }
   getOperations() {
-    this.operationService.getAll().subscribe({
-      next : (response :Operation[]) => {
-        this.operations = response.sort((a, b) => b.idOperation! - a.idOperation!);
-        console.log('operations:', this.operations);
-      },
-      error: (error: any) => {
-        console.error('fetching operations error:', error);
-      },
-    });
+    this.getUserConnected();
+    if(this.userConnected.groupe?.nom === "SUPERUSER"){
+      console.log('superuser');
+      this.operationService.getAll().subscribe({
+        next : (response :Operation[]) => {
+          this.operations = response.sort((a, b) => b.idOperation! - a.idOperation!);
+          console.log('operations:', this.operations);
+        },
+        error: (error: any) => {
+          console.error('fetching operations error:', error);
+        },
+      });
+    }else{
+      console.log('mech superuser');
+      this.operationService.getOperationsByUserZones(this.userConnected.idUser!).subscribe({
+        next : (response :Operation[]) => {
+          this.operations = response.sort((a, b) => b.idOperation! - a.idOperation!);
+          console.log('operations:', this.operations);
+        },
+        error: (error: any) => {
+          console.error('fetching operations error:', error);
+        },
+      });
+      };
   }
   deleteOperation(idOperation: number): void {
    this.getUserConnected();

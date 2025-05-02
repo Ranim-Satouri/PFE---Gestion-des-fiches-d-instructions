@@ -70,11 +70,11 @@ public class Fiche {
     private User preparateur;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_IPDF", nullable = false)
+    @JoinColumn(name = "id_IPDF")
     private User IPDF;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_IQP", nullable = false)
+    @JoinColumn(name = "id_IQP")
     private User IQP;
 
     @ManyToOne(cascade = CascadeType.ALL)

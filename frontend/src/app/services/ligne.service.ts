@@ -12,6 +12,9 @@ private apiUrl = 'http://localhost:8080/ligne';
   getAll(): Observable<Ligne[]> {
     return this.http.get<Ligne[]>(`${this.apiUrl}/activeLignes`);
   }
+  getLignesByUserZones(idUser : number): Observable<Ligne[]> {
+    return this.http.get<Ligne[]>(`${this.apiUrl}/getLignesByUserZones/${idUser}`);
+  }
   addLigne(ligne: Ligne, idActionneur: number): Observable<any> {
     const params = new HttpParams()
                   .set('idActionneur',idActionneur)

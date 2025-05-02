@@ -6,10 +6,11 @@ import com.pfe.backend.Model.Zone;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserZoneRepository extends JpaRepository<UserZone, Long> {
     Optional<UserZone> findByUserAndZone(User user, Zone zone);
-
+    List<UserZone> findByZone(Zone zone);
 }

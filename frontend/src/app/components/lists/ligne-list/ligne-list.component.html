@@ -45,10 +45,13 @@
                 </button>
             </div>
             <button *ngIf="hasPermission('creer_ligne')"  (click)="OpenAddLignePopUp()" 
-            class="flex items-center justify-center h-10 w-10 mx-5 px-2 shadow-blue-200 bg-blue-500 text-white rounded-full hover:bg-blue-400 ">
-        <svg width='14' height='14' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M1.22229 5.00019H8.77785M5.00007 8.77797V1.22241' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'></path>
-  </svg></button></div></div>
+                class="flex items-center justify-center h-10 w-10  px-2 shadow-blue-200 bg-blue-500 text-white rounded-full hover:bg-blue-400 ">
+               <svg width='14' height='14' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                    <path d='M1.22229 5.00019H8.77785M5.00007 8.77797V1.22241' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'></path>
+                </svg>
+            </button>
+            </div>
+        </div>
     <div class="mb-2 overflow-x-auto shadow-md rounded-lg max-h-[calc(100%-136px)] overflow-y-auto custom-scrollbar-container"  (scroll)="onScroll()">
         <table class="w-full text-xs text-left rtl:text-right text-gray-700 dark:text-gray-400 ">
             <thead class="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-gray-400 sticky-top">

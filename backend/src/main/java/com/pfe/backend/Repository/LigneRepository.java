@@ -13,4 +13,5 @@ public interface LigneRepository extends JpaRepository<Ligne,Long> {
     Optional<Ligne> findBynomAndIsDeletedAndZone(String nomLigne, boolean deleted , Zone zone);
     List<Ligne> findByIsDeletedFalse();
     List<Ligne> findByZoneAndIsDeletedFalse(Zone zone);
+
 }

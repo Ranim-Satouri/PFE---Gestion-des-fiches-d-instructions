@@ -68,7 +68,7 @@ export class FicheFormComponent {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
     this.loadProduits();
-    //this.loadZones();
+    this.loadZones();
     this.loadOperations();
     this.loadLignes();
 
@@ -154,7 +154,7 @@ export class FicheFormComponent {
       console.log('superuser');
       this.zoneService.getAll().subscribe(zones => {
         this.zones = zones;
-        this.filteredZones = zones;
+        //this.filteredZones = zones;
         this.zoneNames= zones.map(zone => zone.nom);
       })
     }else{
@@ -162,11 +162,11 @@ export class FicheFormComponent {
       this.userZoneService.getUserZones(this.userConnected.idUser!).subscribe(userZones => {
         const zones = userZones.map(zone => zone.zone);
         this.zones = zones;
-        this.filteredZones = zones;
+        //this.filteredZones = zones;
         this.zoneNames= zones.map(zone => zone.nom);
       })
     }
-};
+  };
 
   // Gérer l'événement de saisie dans l'input pour recherche
   onProduitSearchChange(event: Event) {
@@ -218,7 +218,7 @@ export class FicheFormComponent {
     const value = input.value;
     this.zoneSearch = value;
     if (!this.zoneSearch) {
-      this.filteredZones = this.zones; // Si aucun texte n'est saisi, afficher tous les produits
+      this.filteredZones = this.zones; 
       return;
     }
 
@@ -242,8 +242,13 @@ export class FicheFormComponent {
       this.produitSelected = true;
     }
     this.zoneService.getZonesPourProduit(produit.idProduit!).subscribe(zones => {
-      this.filteredZones = zones;
+      //this.filteredZones = zones;
+      console.log("zones ",zones);
+      console.log("this.zones " , this.zones);
+      this.filteredZones =  this.zones.filter(zone => 
+        zones.some(produitZone => produitZone.idZone === zone.idZone))
     });
+    console.log(this.filteredZones);
   }
   
   selectZone(zone : Zone) {
@@ -353,7 +358,7 @@ export class FicheFormComponent {
   clearZoneSearch() {
     this.zoneSearch = '';
     this.Form.get('zone')?.setValue(null);
-    //this.filteredZones = this.zones;
+    this.filteredZones = [];
     this.showZoneDropdown = false;
     this.zoneSelected = false;
     this.clearLigneSearch();
@@ -433,8 +438,6 @@ export class FicheFormComponent {
               action: FicheAction.INSERT,
               produit: produit,
               preparateur: this.userConnected,
-              ipdf: this.userConnected,
-              iqp: this.userConnected,
               actionneur: this.userConnected,
               typeFiche: 'OPERATION',
               operation: operation,
@@ -448,8 +451,6 @@ export class FicheFormComponent {
               action: FicheAction.INSERT,
               produit: produit,
               preparateur: this.userConnected,
-              ipdf: this.userConnected,
-              iqp: this.userConnected,
               actionneur: this.userConnected,
               typeFiche: 'LIGNE',
               ligne: ligne,
@@ -462,9 +463,7 @@ export class FicheFormComponent {
               pdf: response.fileName,
               action: FicheAction.INSERT,
               produit: produit,
-              preparateur: this.userConnected,
-              ipdf: this.userConnected,
-              iqp: this.userConnected,
+              preparateur: this.userConnected,            
               actionneur: this.userConnected,
               typeFiche: 'ZONE',
               zone: zone,

@@ -53,15 +53,29 @@ export class LigneListComponent {
     this.closeDeleteModel()
   }
   getLignes() {
-    this.ligneService.getAll().subscribe({
-      next : (response :Ligne[]) => {
-        this.lignes = response.sort((a, b) => b.idLigne! - a.idLigne!);
-        console.log('lignes:', this.lignes);
-      },
-      error: (error: any) => {
-        console.error('fetching lignes error:', error);
-      },
-    });
+    if(this.userConnected.groupe?.nom === "SUPERUSER"){
+      console.log('superuser');
+      this.ligneService.getAll().subscribe({
+        next : (response :Ligne[]) => {
+          this.lignes = response.sort((a, b) => b.idLigne! - a.idLigne!);
+          console.log('lignes:', this.lignes);
+        },
+        error: (error: any) => {
+          console.error('fetching lignes error:', error);
+        },
+      });
+    }else{
+      console.log('mech superuser');
+      this.ligneService.getLignesByUserZones(this.userConnected.idUser!).subscribe({
+        next : (response :Ligne[]) => {
+          this.lignes = response.sort((a, b) => b.idLigne! - a.idLigne!);
+          console.log('lignes:', this.lignes);
+        },
+        error: (error: any) => {
+          console.error('fetching lignes error:', error);
+        },
+      });
+     };
   }
 
   OpenAddLignePopUp(){
