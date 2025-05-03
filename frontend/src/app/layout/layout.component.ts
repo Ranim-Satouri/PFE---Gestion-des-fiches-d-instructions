@@ -1,9 +1,9 @@
-import { Component, HostListener, Inject, OnInit, PLATFORM_ID  } from '@angular/core';
-import { ThemeService } from '../config/theme.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { User } from '../models/User';
+import { ThemeService } from '../config/theme.service';
 import { Menu } from '../models/Menu';
+import { User } from '../models/User';
 @Component({
   selector: 'app-layout',
   standalone: true,
@@ -41,7 +41,15 @@ export class LayoutComponent {
       // console.warn("Erreur lors de la récupération de sidebarState:", error);
     }  }
   }
-
+  logout() {
+    localStorage.removeItem('token'); 
+    localStorage.removeItem('refreshToken'); 
+    localStorage.removeItem('user');  
+    localStorage.removeItem('groupe'); 
+    localStorage.removeItem('groupeNom'); 
+    localStorage.removeItem('selectedSidebarItem');
+    this.router.navigate(['/']);
+  }
   openList() {
     this.isListOpen = !this.isListOpen;
   }

@@ -50,7 +50,6 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        System.out.println("SecurityFilterChain configuré");
         return http.build();
     }
 
@@ -62,10 +61,9 @@ public class SecurityConfiguration {
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
-
+        System.out.println("CORS configuré pour http://localhost:4200");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        System.out.println("CORS configuré pour http://localhost:4200");
         return source;
     }
 }

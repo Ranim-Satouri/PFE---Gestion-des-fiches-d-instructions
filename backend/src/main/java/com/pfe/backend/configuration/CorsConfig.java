@@ -14,23 +14,23 @@ import java.io.IOException;
 
 @Configuration
 public class CorsConfig {
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:4200");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/**", config);
-        CorsFilter filter = new CorsFilter(source) {
-            @Override
-            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-                    throws ServletException, IOException {
-                System.out.println("CORS Filter traité pour: " + request.getRequestURI());
-                super.doFilterInternal(request, response, filterChain);
-            }
-        };
-        System.out.println("CORS Filter configuré pour http://localhost:4200");
-        return filter;
-    }}
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowCredentials(true);
+//        config.addAllowedOrigin("http://localhost:4200");
+//        config.addAllowedHeader("*");
+//        config.addAllowedMethod("*");
+//        source.registerCorsConfiguration("/**", config);
+//        CorsFilter filter = new CorsFilter(source) {
+//            @Override
+//            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+//                    throws ServletException, IOException {
+//                System.out.println("CORS Filter traité pour: " + request.getRequestURI());
+//                super.doFilterInternal(request, response, filterChain);
+//            }
+//        };
+//        return filter;
+//        }
+}

@@ -41,7 +41,8 @@
                     setClaims(extraClaims)
                     .setSubject(userDetails.getUsername())
                     .setIssuedAt(new Date(System.currentTimeMillis()))
-                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+//                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 ))
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256).compact()
             );
         }
@@ -71,4 +72,13 @@
      {
          return  extractExpiration(token).before(new java.util.Date());
      }
+     public String generateRefreshToken(UserDetails userDetails) {
+         return Jwts.builder()
+                 .setSubject(userDetails.getUsername())
+                 .setIssuedAt(new Date(System.currentTimeMillis()))
+                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7 days
+                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                 .compact();
+     }
+
     }

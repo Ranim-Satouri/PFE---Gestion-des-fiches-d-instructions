@@ -1,6 +1,10 @@
 package com.pfe.backend.Auth.authentification;
 
+import com.pfe.backend.Auth.Config.JwtService;
+import com.pfe.backend.Auth.Config.RefreshTokenRequest;
 import com.pfe.backend.Model.User;
+import com.pfe.backend.Repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,6 +18,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class AuthenticationController {
 
     private final AuthenticationService Aservice;
+    @Autowired
+    private  JwtService jwtService;
+    @Autowired
+    private UserRepository userRepository;
     @GetMapping("/profile")
     public ResponseEntity<String> getUserProfile() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -22,11 +30,23 @@ public class AuthenticationController {
     public AuthenticationController(AuthenticationService Aservice) {
         this.Aservice = Aservice;
     }
-
-//    @PostMapping("/register")
-//    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-//        return ResponseEntity.ok(Aservice.register(request, request.getActionneur()));
-//    }
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthenticationResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
+        String refreshToken = request.getRefreshToken();
+        String matricule = jwtService.extractUsername(refreshToken);
+        User user = userRepository.findByMatricule(matricule)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
+        if (jwtService.isTokenValid(refreshToken, user)) {
+            String newAccessToken = jwtService.generateToken(user);
+            return ResponseEntity.ok(AuthenticationResponse.builder()
+                    .token(newAccessToken)
+                    .refreshToken(refreshToken)
+                    .user(user)
+                    .groupe(user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe")
+                    .build());
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh token");
+    }
 @PostMapping("/register")
 public ResponseEntity<AuthenticationResponse> register(
         @RequestBody RegisterRequest request,

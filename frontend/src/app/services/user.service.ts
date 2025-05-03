@@ -28,16 +28,29 @@ export class UserService {
 
   Login(matricule: string, password: string): Observable<any> {
     const body = { matricule, password };
-    console.log('Envoi de la requête de login:', body);
-    return this.http.post(`${this.apiUrl2}/authenticate`, body).pipe(
-        tap(response => console.log('Réponse brute:', JSON.stringify(response))),
-        catchError(error => {
-            console.error('Erreur de login:', error);
-            return throwError(() => new Error(`Erreur: ${error.status}, Message: ${error.message}`));
-        })
+    return this.http.post(`${this.apiUrl2}/authenticate`, body, {
+      observe: 'response',
+      withCredentials: true
+    }).pipe(
+      tap(response => console.log('Réponse brute:', response)),
+      map(response => {
+        if (!response.body) {
+          throw new Error('No response body');
+        }
+        return response.body;
+      }),
+      catchError(error => {
+        console.error('Erreur de login:', error);
+        const errorMessage = error.error?.message || error.message || 'Erreur inconnue';
+        const errorCode = error.error?.errorCode || 'UNKNOWN';
+        return throwError(() => ({
+          status: error.status,
+          message: errorMessage,
+          errorCode: errorCode
+        }));
+      })
     );
-}
-
+  }
   Register(user: User, idActionneur: number): Observable<any> {
     const params = new HttpParams()
       .set('idCreator', idActionneur);

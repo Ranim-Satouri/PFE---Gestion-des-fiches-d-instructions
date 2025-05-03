@@ -1,4 +1,5 @@
 package com.pfe.backend.Auth.Config;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,18 +28,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final JwtService jwtService;
   private final UserDetailsService userDetailsService;
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        boolean shouldNotFilter = path.startsWith("/api/v1/auth/");
+        System.out.println("JwtAuthenticationFilter - shouldNotFilter pour " + path + ": " + shouldNotFilter);
+        return shouldNotFilter;
+    }
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         System.out.println("JwtAuthenticationFilter - Requête: " + request.getRequestURI());
         final String authHeader = request.getHeader("Authorization");
         System.out.println("Auth Header: " + authHeader);
-
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             System.out.println("JwtAuthenticationFilter - Aucun token Bearer trouvé");
             filterChain.doFilter(request, response);
             return;
         }
-
         final String jwt = authHeader.substring(7);
         try {
             final String userMatricule = jwtService.extractUsername(jwt);
@@ -58,12 +64,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     System.out.println("JwtAuthenticationFilter - Token invalide pour: " + userMatricule);
                 }
             }
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            System.out.println("JwtAuthenticationFilter - Token expiré: " + e.getMessage());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write("JWT token is expired");
+            return;
         } catch (SignatureException e) {
             System.out.println("JwtAuthenticationFilter - Erreur de signature JWT: " + e.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write("Invalid JWT signature");
             return;
+        } catch (Exception e) {
+            System.out.println("JwtAuthenticationFilter - Erreur JWT: " + e.getMessage());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write("Invalid JWT token");
+            return;
         }
-        filterChain.doFilter(request, response);
     }
 }

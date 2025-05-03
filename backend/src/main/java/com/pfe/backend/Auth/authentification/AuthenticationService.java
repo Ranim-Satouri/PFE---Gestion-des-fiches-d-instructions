@@ -1,5 +1,7 @@
 package com.pfe.backend.Auth.authentification;
 import com.pfe.backend.Auth.Config.JwtService;
+import com.pfe.backend.Auth.Exception.InactiveAccountException;
+import com.pfe.backend.Auth.Exception.NoGroupException;
 import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Repository.GroupeRepository;
@@ -18,8 +20,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class AuthenticationService {
     @Autowired
     private final UserRepository repository;
+    @Autowired
     private final PasswordEncoder passwordEncoder;
+    @Autowired
     private final JwtService jwtService;
+    @Autowired
     private final AuthenticationManager authenticationManager;
     @Autowired
     private final GroupeRepository groupeRepository;
@@ -77,17 +82,17 @@ public class AuthenticationService {
             user = repository.save(user);
         }
             var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
             //we need to encode our pwd before saving it so we neeed to inject our passwordencoder Service
         String groupeNom = user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe";
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .refreshToken(refreshToken)
                 .user(user)
                 .groupe(user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe")
                 .build();
-
     }
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        System.out.println("Tentative d'authentification pour matricule: " + request.getMatricule());
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getMatricule(), request.getPassword())
@@ -104,10 +109,19 @@ public class AuthenticationService {
         User user = repository.findByMatricule(request.getMatricule())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
         System.out.println("Utilisateur trouvé: " + user.getMatricule() + ", groupe: " + (user.getGroupe() != null ? user.getGroupe().getNom() : "aucun"));
+        if (user.getStatus() == null || user.getStatus() == User.UserStatus.INACTIVE) {
+            System.out.println("Utilisateur inactif");
+            throw new InactiveAccountException();
+        }
+        if (user.getGroupe() == null || user.getGroupe().equals("Aucun groupe")) {
+            throw new NoGroupException();
+        }
 
         var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .refreshToken(refreshToken)
                 .user(user)
                 .groupe(user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe")
                 .build();
