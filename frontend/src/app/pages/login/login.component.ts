@@ -25,7 +25,6 @@ export class LoginComponent {
         this.loginError = null;
   
         const token = response.token;
-        const refreshToken = response.refreshToken;
         if (!token) {
           console.error('Aucun token reçu');
           this.loginError = 'Erreur : aucun token reçu';
@@ -33,9 +32,7 @@ export class LoginComponent {
           return;
         }
         localStorage.setItem('token', token);
-        console.log('Token stocké:', token);
-        localStorage.setItem('refreshToken', refreshToken);
-  
+        console.log('Token stocké:', token);  
         // Store user with groupe and permissions
         const user = response.user || {
           matricule: this.matricule,

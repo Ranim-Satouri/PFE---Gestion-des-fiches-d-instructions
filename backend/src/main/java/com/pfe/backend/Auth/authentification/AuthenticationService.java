@@ -15,7 +15,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 @Service
+
 @RequiredArgsConstructor
 public class AuthenticationService {
     @Autowired
@@ -92,7 +95,7 @@ public class AuthenticationService {
                 .groupe(user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe")
                 .build();
     }
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request,HttpServletResponse response) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getMatricule(), request.getPassword())
@@ -119,9 +122,16 @@ public class AuthenticationService {
 
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
+        // Ajouter le refreshToken dans un cookie sécurisé
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true); // Protège contre XSS
+        refreshTokenCookie.setSecure(true); // HTTPS uniquement
+        refreshTokenCookie.setPath("/api/v1/auth"); // Limite le cookie au chemin d'authentification
+        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // Durée de vie : 7 jours (ajuste selon tes besoins)
+        refreshTokenCookie.setAttribute("SameSite", "Strict"); // Protège contre CSRF
+        response.addCookie(refreshTokenCookie);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .refreshToken(refreshToken)
                 .user(user)
                 .groupe(user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe")
                 .build();

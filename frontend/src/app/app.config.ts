@@ -14,7 +14,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   console.log('AuthInterceptor - URL:', req.url, 'Token:', token, 'RefreshToken:', refreshToken);
 
   if (req.url.includes('/api/v1/auth') || req.url.includes('/api/v1/auth/refresh')) {
-      return next(req);
+    return next(req.clone({ withCredentials: true }));
   }
 
   if (token) {
@@ -25,45 +25,37 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           catchError((err) => {
               console.log('Interceptor caught error:', err);
               console.log('Error status:', err.status, 'Error message:', err.message);
-              if (err.status === 401 && refreshToken) {
-                  console.log('401 Unauthorized - Attempting to refresh token');
-                  return http.post('http://localhost:8080/api/v1/auth/refresh', { refreshToken }).pipe(
-                      switchMap((res: any) => {
-                          console.log('Token refreshed:', res);
-                          localStorage.setItem('token', res.token);
-                          localStorage.setItem('refreshToken', res.refreshToken);
-                          const retryReq = req.clone({
-                              setHeaders: { Authorization: `Bearer ${res.token}` }
-                          });
-                          return next(retryReq);
-                      }),
-                      catchError((refreshErr) => {
-                          console.error('Refresh token failed:', refreshErr);
-                          localStorage.removeItem('token');
-                          localStorage.removeItem('refreshToken');
-                          localStorage.removeItem('user');
-                          router.navigate(['/']);
-                          return throwError(() => refreshErr);
-                      })
-                  );
-              } else if (err.status === 401) {
-                  console.error('401 Unauthorized - No refresh token, redirecting to login');
-                  localStorage.removeItem('token');
-                  localStorage.removeItem('refreshToken');
-                  localStorage.removeItem('user');
-                  router.navigate(['/']);
+              if (err.status === 401) {
+                console.log('401 Unauthorized - Attempting to refresh token');
+                return http.post('http://localhost:8080/api/v1/auth/refresh', {}, { withCredentials: true }).pipe(
+                  switchMap((res: any) => {
+                    console.log('Token refreshed:', res);
+                    localStorage.setItem('token', res.token);
+                    const retryReq = req.clone({
+                      setHeaders: { Authorization: `Bearer ${res.token}` }
+                    });
+                    return next(retryReq);
+                  }),
+                  catchError((refreshErr) => {
+                    console.error('Refresh token failed:', refreshErr);
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    router.navigate(['/']);
+                    return throwError(() => refreshErr);
+                  })
+                );
               } else if (err.status === 403) {
-                  console.error('403 Forbidden - Access denied');
-                  router.navigate(['/access-denied']);
+                console.error('403 Forbidden - Access denied');
+                router.navigate(['/access-denied']);
               }
               return throwError(() => err);
-          })
-      );
-  } else {
-      console.warn('No access token found, proceeding without Authorization header');
-      return next(req);
-  }
-};
+            })
+          );
+        } else {
+          console.warn('No access token found, proceeding without Authorization header');
+          return next(req);
+        }
+      };
 
 export const appConfig: ApplicationConfig = {
   providers: [

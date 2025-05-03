@@ -14,6 +14,6 @@ public class AuthenticationResponse {
 
     private User user;
     private String token;
-    private String refreshToken;
+//    private String refreshToken;
     private String groupe;
 }
