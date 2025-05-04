@@ -1,10 +1,13 @@
 package com.pfe.backend.Auth.Config;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,42 +28,58 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final JwtService jwtService;
   private final UserDetailsService userDetailsService;
     @Override
-    protected void doFilterInternal(
-           @NonNull HttpServletRequest request,
-           @NonNull HttpServletResponse response,
-           @NonNull FilterChain filterChain)
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        boolean shouldNotFilter = path.startsWith("/api/v1/auth/");
+        System.out.println("JwtAuthenticationFilter - shouldNotFilter pour " + path + ": " + shouldNotFilter);
+        return shouldNotFilter;
+    }
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-            //when we make a call we need to pass jwt auth token within the header so we will try to extract this header
+        System.out.println("JwtAuthenticationFilter - Requête: " + request.getRequestURI());
         final String authHeader = request.getHeader("Authorization");
-        //yali entre "Auth.." is the header that contains the jwt token or the bearer token
-        final String jwt;
-        final String userEmail;
-        // tw besh namlo implements lel chekc yali hachtna bih
-        if (authHeader == null || !authHeader.startsWith("Bearer "))
-        {
-            filterChain.doFilter(request,response);
+        System.out.println("Auth Header: " + authHeader);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("JwtAuthenticationFilter - Aucun token Bearer trouvé");
+            filterChain.doFilter(request, response);
             return;
         }
-        //the next step is to extract the token from my authHeader
-        jwt = authHeader.substring(7); //started from position seven khtr ybda baed l Bearer w space
-        userEmail = jwtService.extractUsername(jwt) ; //todo ectract the userEmail from jwt token , so lezm nasn3o l class jwtservice
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null)
-        {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            // the next step is to check if the token is still validate or no
-            if (jwtService.isTokenValid(jwt, userDetails)){
-               //once our token is valid we need to create an object of type :
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource()
-                        .buildDetails(request));
-                //now the final step is to update security context holder
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        final String jwt = authHeader.substring(7);
+        try {
+            final String userMatricule = jwtService.extractUsername(jwt);
+            System.out.println("JwtAuthenticationFilter - JWT: " + jwt + ", User: " + userMatricule);
+
+            if (userMatricule != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userMatricule);
+                System.out.println("JwtAuthenticationFilter - UserDetails chargé: " + userDetails.getUsername() + ", Rôles: " + userDetails.getAuthorities());
+
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    System.out.println("JwtAuthenticationFilter - Token validé pour: " + userMatricule);
+                } else {
+                    System.out.println("JwtAuthenticationFilter - Token invalide pour: " + userMatricule);
+                }
             }
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            System.out.println("JwtAuthenticationFilter - Token expiré: " + e.getMessage());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write("JWT token is expired");
+            return;
+        } catch (SignatureException e) {
+            System.out.println("JwtAuthenticationFilter - Erreur de signature JWT: " + e.getMessage());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write("Invalid JWT signature");
+            return;
+        } catch (Exception e) {
+            System.out.println("JwtAuthenticationFilter - Erreur JWT: " + e.getMessage());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write("Invalid JWT token");
+            return;
         }
-        //we need to hand the filter to the next filters
-        filterChain.doFilter(request,response);
-        // we created the filter now but it's not yet used so we gonna create a securtty config class
     }
 }

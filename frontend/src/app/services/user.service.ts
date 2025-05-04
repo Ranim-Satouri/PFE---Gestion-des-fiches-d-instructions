@@ -26,33 +26,31 @@ export class UserService {
     );
   }
 
-  // Gestion des erreurs HTTP
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'Une erreur est survenue';
-    if (error.error instanceof ErrorEvent) {
-      // Erreur côté client
-      errorMessage = `Erreur: ${error.error.message}`;
-    } else {
-      // Erreur côté serveur
-      errorMessage = `Code d'erreur: ${error.status}, Message: ${error.message}`;
-    }
-    console.error(errorMessage);
-    return throwError(() => new Error(errorMessage));
-  }
-     
-
-
-  Login(matricule: string, password: string): Observable<User> {
+  Login(matricule: string, password: string): Observable<any> {
     const body = { matricule, password };
-    return this.http.post<{ token: string; user: User; groupe: string }>(
-        `${this.apiUrl2}/authenticate`, body ).pipe(
-          map(response => {
-              localStorage.setItem('token', response.token);
-              return response.user; // Pas besoin de mapToUser
-          })
-      );
+    return this.http.post(`${this.apiUrl2}/authenticate`, body, {
+      observe: 'response',
+      withCredentials: true
+    }).pipe(
+      tap(response => console.log('Réponse brute:', response)),
+      map(response => {
+        if (!response.body) {
+          throw new Error('No response body');
+        }
+        return response.body;
+      }),
+      catchError(error => {
+        console.error('Erreur de login:', error);
+        const errorMessage = error.error?.message || error.message || 'Erreur inconnue';
+        const errorCode = error.error?.errorCode || 'UNKNOWN';
+        return throwError(() => ({
+          status: error.status,
+          message: errorMessage,
+          errorCode: errorCode
+        }));
+      })
+    );
   }
-
   Register(user: User, idActionneur: number): Observable<any> {
     const params = new HttpParams()
       .set('idCreator', idActionneur);
@@ -61,7 +59,9 @@ export class UserService {
   }
   
   getAll(): Observable<User[]> {
-    return this.http.get<User[]>(`${this.apiUrl}/getUsers`); 
+    return this.http.get<User[]>(`${this.apiUrl}/getUsers`).pipe(
+      catchError(this.handleError)
+    );
   }
   
   attribuerGroupe(idUser: number, idGroupe: number, idActionneur: number): Observable<any>
@@ -110,6 +110,22 @@ removeZone(idUser: number, idZone: number, idActionneur: number): Observable<any
     return this.http.put(`${this.apiUrl}/changeStatus/${idUser}/${idActionneur}`, null, { params });
   }
 
-
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    let errorMessage = 'Une erreur est survenue';
+    if (error.error instanceof ErrorEvent) {
+      // Erreur côté client
+      errorMessage = `Erreur: ${error.error.message}`;
+    } else {
+      // Erreur côté serveur
+      errorMessage = `Code d'erreur: ${error.status}, Message: ${error.message}`;
+      if (error.status === 401) {
+        // Rediriger vers la page de connexion
+        localStorage.removeItem('token'); // Supprime le token invalide
+        window.location.href = '/login'; // Redirection
+      }
+    }
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
+  }
 
 }
