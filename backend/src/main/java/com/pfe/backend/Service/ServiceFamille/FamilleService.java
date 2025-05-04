@@ -16,4 +16,5 @@ public interface FamilleService {
     Famille addZonesToFamille(Long familleId, List<Long> zoneIds);
     List<FamilleHistoriqueDTO> getFamilleHistory(Long familleId);
     List<FamilleZonesDTO> getFamilleZonesAudit(Long familleId);
+    List<Famille> getFamillesByUserZones(Long idUser);
 }

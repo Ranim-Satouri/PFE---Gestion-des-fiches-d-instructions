@@ -90,7 +90,6 @@ public class AuthenticationService {
         String groupeNom = user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe";
         return AuthenticationResponse.builder()
                 .token(jwtToken)
-                .refreshToken(refreshToken)
                 .user(user)
                 .groupe(user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe")
                 .build();

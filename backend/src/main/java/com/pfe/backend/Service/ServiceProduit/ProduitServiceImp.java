@@ -1,8 +1,5 @@
 package com.pfe.backend.Service.ServiceProduit;
-import com.pfe.backend.Model.Famille;
-import com.pfe.backend.Model.Fiche;
-import com.pfe.backend.Model.Produit;
-import com.pfe.backend.Model.User;
+import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.FamilleRepository;
 import com.pfe.backend.Repository.FicheRepository;
 import com.pfe.backend.Repository.ProduitRepository;
@@ -13,8 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +24,7 @@ public class ProduitServiceImp implements ProduitService {
     private FamilleRepository familleRepository;
     private UserRepository userRepo;
     private FicheRepository ficheRepo;
+    private UserRepository userRepository;
 
     @Override
     public ResponseEntity<?> addProduit(Produit produit, Long idFamille, Long idActionneur) {
@@ -94,4 +95,18 @@ public class ProduitServiceImp implements ProduitService {
     public List<Produit> getActiveProducts() {
         return produitRepository.findByIsDeletedFalse();
     }
+
+    @Override
+    public List<Produit> getProduitsByUserZones(Long idUser) {
+        User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        return user.getUserZones().stream()
+                .map(UserZone::getZone)
+                .flatMap(zone -> zone.getFamilles().stream())
+                .flatMap(famille -> famille.getProduits().stream())
+                .filter(produit -> !produit.isDeleted())
+                .distinct()
+                .collect(Collectors.toList());
+
+    }
+
 }

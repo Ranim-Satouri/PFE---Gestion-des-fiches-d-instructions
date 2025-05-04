@@ -9,6 +9,7 @@ public interface ProduitService {
     ResponseEntity<?> addProduit(Produit produit, Long idFamille, Long idActionneur);
     ResponseEntity<List<Produit>> getAllProduit();
     ResponseEntity<?> updateProduit(Long idProduit,Long idFamille, Produit newProduitData ,Long idActionneur);
-        void DeleteProduit(Long idProduit ,Long idActionneur);
+    void DeleteProduit(Long idProduit ,Long idActionneur);
     List<Produit> getActiveProducts();
+    List<Produit> getProduitsByUserZones(Long idUser);
 }

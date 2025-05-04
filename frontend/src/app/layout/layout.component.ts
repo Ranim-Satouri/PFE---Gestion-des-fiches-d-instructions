@@ -1,7 +1,6 @@
 import { Component, HostListener, Inject, OnInit, PLATFORM_ID, ViewChild  } from '@angular/core';
 import { ThemeService } from '../config/theme.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Menu } from '../models/Menu';
 import { ProfilComponent } from '../components/profil/profil.component';
