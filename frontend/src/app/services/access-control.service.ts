@@ -19,15 +19,15 @@ export class AccessControlService {
  // Définir le groupe courant
  setCurrentGroupe(groupe: Groupe): void {
   this.currentGroupe = groupe;
-}
-
-// Obtenir les interfaces autorisées (routes)
-getAllowedInterfaces(): string[] {
-  if (!this.currentGroupe || !this.currentGroupe.nom) {
-    return [];
   }
-  return [...this.groupeAccessMap[this.currentGroupe.nom.toUpperCase()]];
-}
+
+  // Obtenir les interfaces autorisées (routes)
+  getAllowedInterfaces(): string[] {
+    if (!this.currentGroupe || !this.currentGroupe.nom) {
+      return [];
+    }
+    return [...this.groupeAccessMap[this.currentGroupe.nom.toUpperCase()]];
+  }
 
 // Vérifier si l'utilisateur peut accéder au chemin
 canAccess(path: string): boolean {

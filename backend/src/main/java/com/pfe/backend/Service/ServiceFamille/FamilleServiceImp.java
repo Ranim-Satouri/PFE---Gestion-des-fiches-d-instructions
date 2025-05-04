@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -154,5 +155,17 @@ public class FamilleServiceImp implements FamilleService {
         famille.setZones(selectedZones);
         famille.setZones(selectedZones);
         return familleRepository.save(famille);
+    }
+
+    @Override
+    public List<Famille> getFamillesByUserZones(Long idUser) {
+        User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        return user.getUserZones().stream()
+                .map(UserZone::getZone)
+                .flatMap(zone -> zone.getFamilles().stream())
+                .filter(famille -> !famille.isDeleted())
+                .distinct()
+                .collect(Collectors.toList());
+
     }
 }

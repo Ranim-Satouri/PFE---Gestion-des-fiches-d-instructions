@@ -1,4 +1,4 @@
-package com.pfe.backend.ServiceFiche;
+package com.pfe.backend.Service.ServiceFiche;
 
 import com.pfe.backend.DTO.FicheHistoryDTO;
 import com.pfe.backend.Model.*;
@@ -7,6 +7,7 @@ import com.pfe.backend.ServiceMail.NotificationService;
 import com.pfe.backend.configuration.EncryptionUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -15,6 +16,7 @@ import org.hibernate.envers.query.AuditEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.crypto.SecretKey;
@@ -24,8 +26,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -40,6 +44,7 @@ public class FicheServiceImp implements FicheService {
     private FicheOperationRepository ficheOperationRepository;
     private FicheZoneRepository ficheZoneRepository;
     private FicheLigneRepository ficheLigneRepository;
+    private UserZoneRepository userZoneRepository;
     private LigneRepository ligneRepository;
     private OperationRepository operationRepository;
     private NotificationService nService;
@@ -47,6 +52,10 @@ public class FicheServiceImp implements FicheService {
     private static final String STORAGE_DIR = "C:\\Users\\Ranim\\Desktop\\pdf_storage\\";
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private GroupeRepository groupeRepository;
+
+    //historique
     public List<FicheHistoryDTO> getFicheHistory(Long ficheId) {
         // Créer un AuditReader pour interroger l'historique
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
@@ -86,141 +95,22 @@ public class FicheServiceImp implements FicheService {
 
         return history;
     }
-//    @Override
-//    public Fiche addFiche(Fiche fiche) {
-//        System.out.println(fiche);
-//
-//        User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));;
-//        User iqp = userRepository.findById(fiche.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));;
-//        User preparateur = userRepository.findById(fiche.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));;
-//        Produit produit = produitRepository.findById(fiche.getProduit().getIdProduit()).orElseThrow(() -> new RuntimeException("Produit introuvable"));;
-//        User actionneur = userRepository.findById(fiche.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));;
 
-//        if ("ZONE".equals(fiche.getTypeFiche())) {
-//            Zone zone = zoneRepository.findById(fiche.getZone().getIdZone()).orElseThrow(() -> new RuntimeException("Zone introuvable"));
-//            fiche.setZone(zone);
-//
-//        } else if ("LIGNE".equals(fiche.getTypeFiche())) {
-//            System.out.println("ligne");
-//
-//            Ligne ligne = ligneRepository.findById(fiche.getLigne().getIdLigne()).orElseThrow(() -> new RuntimeException("Ligne introuvable"));
-//            fiche.setLigne(ligne);
-//            fiche.setZone(ligne.getZone());
-//
-//        } else if ("OPERATION".equals(fiche.getTypeFiche())) {
-//            System.out.println("operation");
-//
-//            Operation operation = operationRepository.findById(fiche.getOperation().getIdOperation()).orElseThrow(() -> new RuntimeException("Operation introuvable"));
-//            fiche.setOperation(operation);
-//            fiche.setLigne(operation.getLigne());
-//            fiche.setZone(operation.getLigne().getZone());
-//        } else {
-//            throw new RuntimeException("Type de fiche invalide");
-//        }
-// Utilisation du polymorphisme
-//        if (fiche instanceof FicheZone) {
-//            FicheZone ficheZone = (FicheZone) fiche;
-//            Zone zone = zoneRepository.findById(ficheZone.getZone().getIdZone()).orElseThrow(() -> new RuntimeException("Zone introuvable"));
-//            System.out.println("zone ++++++++++++++++++++++++++++++++ "+ zone.getIdZone());
-//            ficheZone.setZone(zone);
-//            System.out.println("ficheZone  "+ficheZone.getZone().getIdZone());
-//        } else if (fiche instanceof FicheLigne) {
-//            FicheLigne ficheLigne = (FicheLigne) fiche;
-//            Ligne ligne = ligneRepository.findById(ficheLigne.getLigne().getIdLigne()).orElseThrow(() -> new RuntimeException("Ligne introuvable"));
-//            ficheLigne.setLigne(ligne);
-//            ficheLigne.setZone(ligne.getZone());
-//        } else if (fiche instanceof FicheOperation) {
-//            FicheOperation ficheOperation = (FicheOperation) fiche;
-//            Operation operation = operationRepository.findById(ficheOperation.getOperation().getIdOperation()).orElseThrow(() -> new RuntimeException("Operation introuvable"));
-//            ficheOperation.setOperation(operation);
-//            ficheOperation.setLigne(operation.getLigne());
-//            ficheOperation.setZone(operation.getLigne().getZone());
-//        } else {
-//            throw new RuntimeException("Type de fiche invalide");
-//        }
-//        fiche.setIPDF(ipdf);
-//        fiche.setIQP(iqp);
-//        fiche.setPreparateur(preparateur);
-//        fiche.setProduit(produit);
-//        fiche.setActionneur(actionneur);
-//        fiche.setAction(Fiche.FicheAction.INSERT);
-//        fiche.setStatus(Fiche.FicheStatus.PENDING);
-//        LocalDateTime currentDateTime = LocalDateTime.now();
-//        LocalDateTime expirationDate = currentDateTime.plusHours(24);
-//        fiche.setExpirationDate(expirationDate);
-//        //nService.notifyIPDFAboutFicheInjection(fiche);
-//        //List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
-//        //for(User u : superUsers){
-//        // nService.notifySuperUserAboutNewFiche(fiche, u);
-//        //}
-//        return ficheRepository.save(fiche);
-//    }
-
-//    @Override
-//    public Fiche updateFiche(Fiche fiche ) {
-//        Fiche existingFiche = ficheRepository.findById(fiche.getIdFiche()).orElseThrow(() -> new RuntimeException("Fiche introuvable"));
-//        User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
-//        User iqp = userRepository.findById(fiche.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));
-//        User preparateur = userRepository.findById(fiche.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));
-//        Produit produit = produitRepository.findById(fiche.getProduit().getIdProduit()).orElseThrow(() -> new RuntimeException("Produit introuvable"));
-//        User actionneur = userRepository.findById(fiche.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-//        System.out.println(fiche.getTypeFiche());
-//
-//        if (fiche instanceof FicheZone) {
-//            Zone zone = zoneRepository.findById(existingFiche.getZone().getIdZone()).orElseThrow(() -> new RuntimeException("Zone introuvable"));
-//            System.out.println("zone  "+ zone.getIdZone());
-//            existingFiche.setZone(zone);
-//            System.out.println("typeFiche  "+fiche.getTypeFiche());
-//            existingFiche.setLigne(null);
-//            existingFiche.setOperation(null);
-//        } else if (fiche instanceof FicheLigne) {
-//            Ligne ligne = ligneRepository.findById(existingFiche.getLigne().getIdLigne()).orElseThrow(() -> new RuntimeException("Ligne introuvable"));
-//            existingFiche.setLigne(ligne);
-//            existingFiche.setZone(ligne.getZone());
-//            existingFiche.setOperation(null);
-//        } else if (fiche instanceof FicheOperation) {
-//            Operation operation = operationRepository.findById(existingFiche.getOperation().getIdOperation()).orElseThrow(() -> new RuntimeException("Operation introuvable"));
-//            existingFiche.setOperation(operation);
-//            existingFiche.setLigne(operation.getLigne());
-//            existingFiche.setZone(operation.getLigne().getZone());
-//        } else {
-//            throw new RuntimeException("Type de fiche invalide");
-//        }
-
-
-        //if(!exisitingFiche.getStatus().equals(Fiche.FicheStatus.PENDING) && !actionneur.getRole().equals(Role.SUPERUSER)){
-        //  throw new RuntimeException("Interdit de Modifier une fiche deja Approuver sans etre un SUPERUSR");
-        //}
-
-//        if(!existingFiche.getPdf().equals(fiche.getPdf())){
-//            LocalDateTime currentDateTime = LocalDateTime.now();
-//            LocalDateTime expirationDate = currentDateTime.plusHours(24);
-//            existingFiche.setExpirationDate(expirationDate);
-//            existingFiche.setPdf(fiche.getPdf());
-//        }
-//        existingFiche.setIPDF(ipdf);
-//        existingFiche.setIQP(iqp);
-//        existingFiche.setPreparateur(preparateur);
-//        existingFiche.setProduit(produit);
-//        existingFiche.setActionneur(actionneur);
-//        existingFiche.setStatus(fiche.getStatus());
-//        existingFiche.setAction(Fiche.FicheAction.UPDATE);
-//        return ficheRepository.save(existingFiche);
-//    }
+    //update
     @Override
     public Fiche updateFicheZone(FicheZone ficheZone) {
         FicheZone existingFiche = (FicheZone) ficheRepository.findById(ficheZone.getIdFiche()).orElseThrow(() -> new RuntimeException("FicheZone introuvable"));
 
-        User ipdf = userRepository.findById(ficheZone.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
-        User iqp = userRepository.findById(ficheZone.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));
+        //User ipdf = userRepository.findById(ficheZone.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
+        //User iqp = userRepository.findById(ficheZone.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));
         User preparateur = userRepository.findById(ficheZone.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));
         Produit produit = produitRepository.findById(ficheZone.getProduit().getIdProduit()).orElseThrow(() -> new RuntimeException("Produit introuvable"));
         User actionneur = userRepository.findById(ficheZone.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
 
         Zone zone = zoneRepository.findById(ficheZone.getZone().getIdZone()).orElseThrow(() -> new RuntimeException("Zone introuvable"));
         existingFiche.setZone(zone);
-        existingFiche.setIPDF(ipdf);
-        existingFiche.setIQP(iqp);
+        //existingFiche.setIPDF(ipdf);
+        //existingFiche.setIQP(iqp);
         existingFiche.setPreparateur(preparateur);
         existingFiche.setProduit(produit);
         existingFiche.setActionneur(actionneur);
@@ -232,6 +122,19 @@ public class FicheServiceImp implements FicheService {
             LocalDateTime expirationDate = currentDateTime.plusHours(24);
             existingFiche.setExpirationDate(expirationDate);
             existingFiche.setPdf(ficheZone.getPdf());
+            //maaaaaaaiiiiillllllll
+            addFicheMail(existingFiche , zone);
+            // maaaaaaill done
+
+//            nService.notifyIPDFAboutFicheInjection(existingFiche, existingFiche.getIPDF());
+//
+//            Optional<Groupe> superuser = groupeRepository.findById(1L);
+//            if(superuser.isPresent()){
+//                List<User> superUsers=userRepository.findByGroupe(superuser.get());
+//                for(User u : superUsers){
+//                    nService.notifySuperUserAboutNewFiche(existingFiche, u);
+//                }
+//            }
         }
         return ficheRepository.save(existingFiche);
     }
@@ -240,8 +143,6 @@ public class FicheServiceImp implements FicheService {
         FicheLigne existingFiche = (FicheLigne) ficheRepository.findById(ficheLigne.getIdFiche())
                 .orElseThrow(() -> new RuntimeException("FicheLigne introuvable"));
 
-        User ipdf = userRepository.findById(ficheLigne.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
-        User iqp = userRepository.findById(ficheLigne.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));
         User preparateur = userRepository.findById(ficheLigne.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));
         Produit produit = produitRepository.findById(ficheLigne.getProduit().getIdProduit()).orElseThrow(() -> new RuntimeException("Produit introuvable"));
         User actionneur = userRepository.findById(ficheLigne.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
@@ -249,8 +150,6 @@ public class FicheServiceImp implements FicheService {
         Ligne ligne = ligneRepository.findById(ficheLigne.getLigne().getIdLigne()).orElseThrow(() -> new RuntimeException("Ligne introuvable"));
         existingFiche.setLigne(ligne);
         existingFiche.setCommentaire(ficheLigne.getCommentaire());
-        existingFiche.setIPDF(ipdf);
-        existingFiche.setIQP(iqp);
         existingFiche.setPreparateur(preparateur);
         existingFiche.setProduit(produit);
         existingFiche.setActionneur(actionneur);
@@ -262,16 +161,27 @@ public class FicheServiceImp implements FicheService {
             LocalDateTime expirationDate = currentDateTime.plusHours(24);
             existingFiche.setExpirationDate(expirationDate);
             existingFiche.setPdf(ficheLigne.getPdf());
+            //maaaaaaaiiiiillllllll
+            Zone zone = existingFiche.getLigne().getZone();
+            addFicheMail(existingFiche , zone);
+            // maaaaaaill done
+
+
+//            nService.notifyIPDFAboutFicheInjection(existingFiche, existingFiche.getIPDF());
+//
+//            Optional<Groupe> superuser = groupeRepository.findById(1L);
+//            if(superuser.isPresent()){
+//                List<User> superUsers=userRepository.findByGroupe(superuser.get());
+//                for(User u : superUsers){
+//                    nService.notifySuperUserAboutNewFiche(existingFiche, u);
+//                }
+//            }
         }
         return ficheRepository.save(existingFiche);
     }
-
     @Override
     public Fiche updateFicheOperation(FicheOperation ficheOperation) {
         FicheOperation existingFiche = (FicheOperation) ficheRepository.findById(ficheOperation.getIdFiche()).orElseThrow(() -> new RuntimeException("FicheOperation introuvable"));
-
-        User ipdf = userRepository.findById(ficheOperation.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
-        User iqp = userRepository.findById(ficheOperation.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));
         User preparateur = userRepository.findById(ficheOperation.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));
         Produit produit = produitRepository.findById(ficheOperation.getProduit().getIdProduit()).orElseThrow(() -> new RuntimeException("Produit introuvable"));
         User actionneur = userRepository.findById(ficheOperation.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
@@ -279,8 +189,6 @@ public class FicheServiceImp implements FicheService {
         existingFiche.setCommentaire(ficheOperation.getCommentaire());
         Operation operation = operationRepository.findById(ficheOperation.getOperation().getIdOperation()).orElseThrow(() -> new RuntimeException("Operation introuvable"));
         existingFiche.setOperation(operation);
-        existingFiche.setIPDF(ipdf);
-        existingFiche.setIQP(iqp);
         existingFiche.setPreparateur(preparateur);
         existingFiche.setProduit(produit);
         existingFiche.setActionneur(actionneur);
@@ -291,24 +199,36 @@ public class FicheServiceImp implements FicheService {
             LocalDateTime expirationDate = currentDateTime.plusHours(24);
             existingFiche.setExpirationDate(expirationDate);
             existingFiche.setPdf(ficheOperation.getPdf());
+            //maaaaaaaiiiiillllllll
+            Zone zone = existingFiche.getOperation().getLigne().getZone();
+            addFicheMail(existingFiche , zone);
+            // maaaaaaill done
+//            //maaaaaaaiiiiillllllll
+//
+//            nService.notifyIPDFAboutFicheInjection(existingFiche, existingFiche.getIPDF());
+//
+//            Optional<Groupe> superuser = groupeRepository.findById(1L);
+//            if(superuser.isPresent()){
+//                List<User> superUsers=userRepository.findByGroupe(superuser.get());
+//                for(User u : superUsers){
+//                    nService.notifySuperUserAboutNewFiche(existingFiche, u);
+//                }
+//            }
+//            // maaaaaaill done
         }
         return ficheRepository.save(existingFiche);
     }
 
+    //add
     @Override
     public FicheOperation addFicheOperation(FicheOperation fiche) {
         System.out.println(fiche.getOperation());
-        User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
-        User iqp = userRepository.findById(fiche.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));
         User preparateur = userRepository.findById(fiche.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));
         Produit produit = produitRepository.findById(fiche.getProduit().getIdProduit()).orElseThrow(() -> new RuntimeException("Produit introuvable"));
         User actionneur = userRepository.findById(fiche.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
-
         Operation operation = operationRepository.findById(fiche.getOperation().getIdOperation()).orElseThrow(() -> new RuntimeException("Operation introuvable"));
         fiche.setOperation(operation);
         fiche.setTypeFiche("OPERATION");
-        fiche.setIPDF(ipdf);
-        fiche.setIQP(iqp);
         fiche.setPreparateur(preparateur);
         fiche.setProduit(produit);
         fiche.setActionneur(actionneur);
@@ -317,18 +237,18 @@ public class FicheServiceImp implements FicheService {
         LocalDateTime currentDateTime = LocalDateTime.now();
         LocalDateTime expirationDate = currentDateTime.plusHours(24);
         fiche.setExpirationDate(expirationDate);
-        //nService.notifyIPDFAboutFicheInjection(fiche);
-        //List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
-        //for(User u : superUsers){
-        // nService.notifySuperUserAboutNewFiche(fiche, u);
-        //}
-        return ficheOperationRepository.save(fiche);
-    }
 
+        FicheOperation insertedFiche = ficheOperationRepository.save(fiche);
+
+        //maaaaaaaiiiiillllllll
+        Zone zone = fiche.getOperation().getLigne().getZone();
+        addFicheMail(insertedFiche , zone);
+        // maaaaaaill done
+
+        return insertedFiche;
+    }
     @Override
     public FicheZone addFicheZone(FicheZone fiche) {
-        User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
-        User iqp = userRepository.findById(fiche.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));
         User preparateur = userRepository.findById(fiche.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));
         Produit produit = produitRepository.findById(fiche.getProduit().getIdProduit()).orElseThrow(() -> new RuntimeException("Produit introuvable"));
         User actionneur = userRepository.findById(fiche.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
@@ -337,8 +257,6 @@ public class FicheServiceImp implements FicheService {
         Zone zone = zoneRepository.findById(ficheZone.getZone().getIdZone()).orElseThrow(() -> new RuntimeException("Zone introuvable"));
         ficheZone.setZone(zone);
         fiche.setTypeFiche("ZONE");
-        fiche.setIPDF(ipdf);
-        fiche.setIQP(iqp);
         fiche.setPreparateur(preparateur);
         fiche.setProduit(produit);
         fiche.setActionneur(actionneur);
@@ -347,18 +265,16 @@ public class FicheServiceImp implements FicheService {
         LocalDateTime currentDateTime = LocalDateTime.now();
         LocalDateTime expirationDate = currentDateTime.plusHours(24);
         fiche.setExpirationDate(expirationDate);
-        //nService.notifyIPDFAboutFicheInjection(fiche);
-        //List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
-        //for(User u : superUsers){
-        // nService.notifySuperUserAboutNewFiche(fiche, u);
-        //}
-        return ficheZoneRepository.save(fiche);
-    }
 
+        FicheZone insertedFiche = ficheZoneRepository.save(fiche);
+        //maaaaaaaiiiiillllllll
+        addFicheMail(insertedFiche , zone);
+        // maaaaaaill done
+
+        return insertedFiche;
+    }
     @Override
     public FicheLigne addFicheLigne(FicheLigne fiche) {
-        User ipdf = userRepository.findById(fiche.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
-        User iqp = userRepository.findById(fiche.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));
         User preparateur = userRepository.findById(fiche.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));
         Produit produit = produitRepository.findById(fiche.getProduit().getIdProduit()).orElseThrow(() -> new RuntimeException("Produit introuvable"));
         User actionneur = userRepository.findById(fiche.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
@@ -366,9 +282,6 @@ public class FicheServiceImp implements FicheService {
         Ligne ligne = ligneRepository.findById(fiche.getLigne().getIdLigne()).orElseThrow(() -> new RuntimeException("Ligne introuvable"));
         fiche.setLigne(ligne);
         fiche.setTypeFiche("LIGNE");
-
-        fiche.setIPDF(ipdf);
-        fiche.setIQP(iqp);
         fiche.setPreparateur(preparateur);
         fiche.setProduit(produit);
         fiche.setActionneur(actionneur);
@@ -377,29 +290,18 @@ public class FicheServiceImp implements FicheService {
         LocalDateTime currentDateTime = LocalDateTime.now();
         LocalDateTime expirationDate = currentDateTime.plusHours(24);
         fiche.setExpirationDate(expirationDate);
-        //nService.notifyIPDFAboutFicheInjection(fiche);
-        //List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
-        //for(User u : superUsers){
-        // nService.notifySuperUserAboutNewFiche(fiche, u);
-        //}
-        return ficheLigneRepository.save(fiche);
+
+        FicheLigne insertedFiche = ficheLigneRepository.save(fiche);
+        //maaaaaaaiiiiillllllll
+        Zone zone = fiche.getLigne().getZone();
+        addFicheMail(insertedFiche , zone);
+        // maaaaaaill done
+
+        return insertedFiche;
     }
 
-    @Override
-    public List<Fiche> getFiches() {
-        return ficheRepository.findByStatusNot(Fiche.FicheStatus.DELETED);
-    }
-    @Override
-    public Fiche deleteFiche(long idFiche, long idSupprimateur) {
-        Fiche fiche = ficheRepository.findById(idFiche).orElseThrow(() -> new RuntimeException("fiche introuvable"));
-        User actionneur = userRepository.findById(idSupprimateur).orElseThrow(() -> new RuntimeException("actionneur introuvable"));
 
-        fiche.setStatus(Fiche.FicheStatus.DELETED);
-        fiche.setActionneur(actionneur);
-        fiche.setAction(Fiche.FicheAction.DELETE);
-        return ficheRepository.save(fiche);
-    }
-
+    //validation
     @Override
     public Fiche ValidationIPDF(long idFiche, long idIPDF , Fiche.FicheStatus status , String commentaire) {
         Fiche fiche = ficheRepository.findById(idFiche).orElseThrow(() -> new RuntimeException("fiche introuvable"));
@@ -412,22 +314,13 @@ public class FicheServiceImp implements FicheService {
         LocalDateTime currentDateTime = LocalDateTime.now();
         LocalDateTime expirationDate = currentDateTime.plusHours(24);
         fiche.setExpirationDate(expirationDate);
-        //List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
-        //if(status.equals(Fiche.FicheStatus.ACCEPTEDIPDF)){
-            //nService.notifyPreparateurAboutIPDFAcceptance(fiche);
-            //for(User u : superUsers){
-                //nService.notifySuperUserAboutIPDFValidation(fiche, u);
-            //}
-            //nService.notifyIQPAboutFicheValidationByIPDF(fiche);
-        //}else{
-            //nService.notifyPreparateurAboutIPDFRejection(fiche);
-            //for(User u : superUsers){
-                //nService.notifySuperUserAboutIPDFRejection(fiche, u);
-            //}
-       // }
+        fiche.setIPDF(actionneur);
+
+        // maaaaaaiiiiiilll
+        validationIPDFMail(fiche);
+
         return ficheRepository.save(fiche);
     }
-
     @Override
     public Fiche ValidationIQP(long idFiche, long idIQP , Fiche.FicheStatus status ,String ficheAql, String commentaire ) {
         Fiche fiche = ficheRepository.findById(idFiche).orElseThrow(() -> new RuntimeException("fiche introuvable"));
@@ -442,26 +335,94 @@ public class FicheServiceImp implements FicheService {
         fiche.setCommentaire(commentaire);
         fiche.setActionneur(actionneur);
         fiche.setAction(Fiche.FicheAction.APPROUVE);
-        //nService.notifyPreparateurAboutFicheFinalValidation(fiche);
-        //List<User> superUsers=userRepository.findByRole(Role.SUPERUSER);
-        //for(User u : superUsers){
-            //nService.notifySuperUserAboutAQLAddition(fiche, u);
-        //}
+        fiche.setIQP(actionneur);
+
+        //maaaaaaaiiiiillllllll
+        validationIqpMail(fiche);
+        // maaaaaaill done
+
         return ficheRepository.save(fiche);
     }
 
-
+    //get
+    @Override
+    public List<Fiche> getFiches() {
+        return ficheRepository.findByStatusNot(Fiche.FicheStatus.DELETED);
+    }
     @Override
     public List<Fiche> getFichesByPreparateur(Long idPreparateur) {
         User preparateur = userRepository.findById(idPreparateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        if(preparateur.getRole().equals(Role.PREPARATEUR ) || preparateur.getRole().equals(Role.SUPERUSER)){
+        if(preparateur.getRole().equals(Role.PREPARATEUR ) || preparateur.getRole().equals(Role.ADMIN)){
             return ficheRepository.findFicheByPreparateurAndActionNot(preparateur , Fiche.FicheAction.DELETE);
         }else{
             throw new RuntimeException("L'utilisateur n'a pas le rôle Preparateur requis.");
         }
     }
+    @Override
+    public List<Fiche> getFichesSheetByUserZones(Long idUser) {
+        User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        Set<UserZone> zones = user.getUserZones();
+        List<Fiche> fiches = new ArrayList<>();
+        for (UserZone u : zones) {
+            Zone zone = u.getZone();
+            //fiches.addAll(ficheRepository.findFichesByZone(zone));
+            fiches.addAll(ficheZoneRepository.findByZoneAndStatusNot(zone, Fiche.FicheStatus.DELETED));
+            fiches.addAll(ficheLigneRepository.findByLigneZoneAndStatusNot(zone, Fiche.FicheStatus.DELETED));
+            fiches.addAll(ficheOperationRepository.findByOperationLigneZoneAndStatusNot(zone , Fiche.FicheStatus.DELETED));
+        }
+        return  fiches;
+    }
+    @Override
+    public List<Fiche> getFichesSheetByIPDF(Long idIPDF) {
+        User ipdf = userRepository.findById(idIPDF).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        if(ipdf.getRole().equals(Role.IPDF) || ipdf.getRole().equals(Role.ADMIN) ){
+            return ficheRepository.findFicheByIPDFAndActionNot(ipdf , Fiche.FicheAction.DELETE );
+        }
+        throw new RuntimeException("L'utilisateur n'a pas le rôle IPDF requis.");
+    }
+    @Override
+    public List<Fiche> getFichesSheetByIQP(Long idIQP) {
+        User iqp = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        if(iqp.getRole().equals(Role.IQP) || iqp.getRole().equals(Role.ADMIN)){
+            return  ficheRepository.findFicheByIQPAndActionNotAndStatusNot(iqp , Fiche.FicheAction.DELETE , Fiche.FicheStatus.REJECTEDIPDF );
+        }else{
+            throw new RuntimeException("L'utilisateur n'a pas le rôle IQP requis.");
+        }
+    }
+    @Override
+    public List<Fiche> getFichesSheetByOperateur(Long idOperateur) {
+        User operateur = userRepository.findById(idOperateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        Set<UserZone> zones = operateur.getUserZones();
+        List<Fiche> fiches = new ArrayList<>();
+        for(UserZone u : zones){
+            //fiches.addAll(ficheRepository.findByZoneAndStatus(u.getZone() , Fiche.FicheStatus.ACCEPTEDIQP));
+        }
+        return  fiches;
+    }
+    @Override
+    public List<Fiche> getFichesSheetByAdmin(Long idAdmin) {
+        User admin = userRepository.findById(idAdmin).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        Set<UserZone> zones = admin.getUserZones();
+        List<Fiche> fiches = new ArrayList<>();
+        for(UserZone u : zones){
+            //fiches.addAll(ficheRepository.findByZone(u.getZone()));
+        }
+        return  fiches;
+    }
 
+    //delete
+    @Override
+    public Fiche deleteFiche(long idFiche, long idSupprimateur) {
+        Fiche fiche = ficheRepository.findById(idFiche).orElseThrow(() -> new RuntimeException("fiche introuvable"));
+        User actionneur = userRepository.findById(idSupprimateur).orElseThrow(() -> new RuntimeException("actionneur introuvable"));
 
+        fiche.setStatus(Fiche.FicheStatus.DELETED);
+        fiche.setActionneur(actionneur);
+        fiche.setAction(Fiche.FicheAction.DELETE);
+        return ficheRepository.save(fiche);
+    }
+
+    //expiration
     @Override
     public boolean verifierEtMettreAJourFichesExpirees() {
         List<Fiche> fichesExpirees = ficheRepository.findByStatusNotAndExpirationDateBefore(Fiche.FicheStatus.EXPIRED,LocalDateTime.now());
@@ -476,6 +437,29 @@ public class FicheServiceImp implements FicheService {
         return updated;
     }
 
+    @Transactional
+    @Scheduled(fixedRate = 4 * 60 * 60 * 1000)
+    public void sendExpirationReminder() {
+        List<Fiche> fiches = ficheRepository.findByStatusNot(Fiche.FicheStatus.DELETED);
+        System.out.println("test  5 min");
+        for (Fiche fiche : fiches) {
+            if (fiche.getStatus().equals(Fiche.FicheStatus.ACCEPTEDIPDF) || fiche.getStatus().equals(Fiche.FicheStatus.PENDING)) {
+
+                LocalDateTime currentTime = LocalDateTime.now();
+                LocalDateTime expirationDate = fiche.getExpirationDate();
+
+                long hoursUntilExpiration = ChronoUnit.HOURS.between(currentTime, expirationDate);
+
+                // Si la fiche doit être validée dans les prochaines 24 heures, envoyer un rappel
+                if (hoursUntilExpiration <= 24 && hoursUntilExpiration > 0) {
+                    //reminderMail(fiche , hoursUntilExpiration);
+                }
+            }
+        }
+    }
+
+
+    // pdf
     @Override
     public String saveFile(MultipartFile file) throws Exception {
 
@@ -504,7 +488,6 @@ public class FicheServiceImp implements FicheService {
 
         return fileName; // Retourne juste le nom du fichier
     }
-
     @Override
     public Resource loadPdf(String filename) {
         try {
@@ -525,58 +508,178 @@ public class FicheServiceImp implements FicheService {
         }
     }
 
-    @Override
-    public List<Fiche> getFichesSheetByUserZones(Long idUser) {
-        User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        Set<UserZone> zones = user.getUserZones();
-        List<Fiche> fiches = new ArrayList<>();
-        for (UserZone u : zones) {
-            Zone zone = u.getZone();
-            //fiches.addAll(ficheRepository.findFichesByZone(zone));
-            fiches.addAll(ficheZoneRepository.findByZoneAndStatusNot(zone, Fiche.FicheStatus.DELETED));
-            fiches.addAll(ficheLigneRepository.findByLigneZoneAndStatusNot(zone, Fiche.FicheStatus.DELETED));
-            fiches.addAll(ficheOperationRepository.findByOperationLigneZoneAndStatusNot(zone , Fiche.FicheStatus.DELETED));
-        }
-        return  fiches;
-    }
 
-    @Override
-    public List<Fiche> getFichesSheetByIPDF(Long idIPDF) {
-        User ipdf = userRepository.findById(idIPDF).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        if(ipdf.getRole().equals(Role.IPDF) || ipdf.getRole().equals(Role.SUPERUSER) ){
-            return ficheRepository.findFicheByIPDFAndActionNot(ipdf , Fiche.FicheAction.DELETE );
-        }
-        throw new RuntimeException("L'utilisateur n'a pas le rôle IPDF requis.");
-    }
+    //mails
+    public void addFicheMail(Fiche fiche, Zone zone){
+        List<UserZone> usersToNotify = userZoneRepository.findByZone(zone);
+        List<User> usersWithPermission = new ArrayList<>();
 
-    @Override
-    public List<Fiche> getFichesSheetByIQP(Long idIQP) {
-        User iqp = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        if(iqp.getRole().equals(Role.IQP) || iqp.getRole().equals(Role.SUPERUSER)){
-            return  ficheRepository.findFicheByIQPAndActionNotAndStatusNot(iqp , Fiche.FicheAction.DELETE , Fiche.FicheStatus.REJECTEDIPDF );
+        for (UserZone userZone : usersToNotify) {
+            Groupe userGroup = userZone.getUser().getGroupe();
+            boolean hasPermission = userGroup.getPermissions().stream()
+                    .anyMatch(permission -> permission.getNom().equals("valider_fiche_IPDF"));
+            if (hasPermission && !userZone.getUser().getGroupe().getNom().equals("ADMIN") && !userZone.getUser().getGroupe().getNom().equals("SUPERUSER")) {
+                usersWithPermission.add(userZone.getUser());
+            }
+        }
+        for (User user : usersWithPermission) {
+            nService.notifyIPDFAboutFicheInjection(fiche, user);
+        }
+
+        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
+        List<User> superUsers =userRepository.findByGroupe(superuser);
+        for(User u : superUsers){
+            nService.notifySuperUserAboutNewFiche(fiche, u);
+        }
+
+        Groupe admin = groupeRepository.findByNom("ADMIN");
+        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
+        for(User u : admins){
+            nService.notifySuperUserAboutNewFiche(fiche, u);
+        }
+        // maaaaaaill done
+    }
+    public void validationIPDFMail(Fiche fiche ){
+        Zone zone = null;
+        if(fiche.getTypeFiche().equals("OPERATION")){
+            FicheOperation ficheOperation = (FicheOperation) fiche;
+            zone = ficheOperation.getOperation().getLigne().getZone();
+        }else if(fiche.getTypeFiche().equals("LIGNE")){
+            FicheLigne ficheLigne = (FicheLigne) fiche;
+            zone = ficheLigne.getLigne().getZone();
         }else{
-            throw new RuntimeException("L'utilisateur n'a pas le rôle IQP requis.");
+            FicheZone ficheZone = (FicheZone) fiche;
+            zone = ficheZone.getZone();
         }
-    }
-    @Override
-    public List<Fiche> getFichesSheetByOperateur(Long idOperateur) {
-        User operateur = userRepository.findById(idOperateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        Set<UserZone> zones = operateur.getUserZones();
-        List<Fiche> fiches = new ArrayList<>();
-        for(UserZone u : zones){
-            //fiches.addAll(ficheRepository.findByZoneAndStatus(u.getZone() , Fiche.FicheStatus.ACCEPTEDIQP));
-        }
-        return  fiches;
-    }
-    @Override
-    public List<Fiche> getFichesSheetByAdmin(Long idAdmin) {
-        User admin = userRepository.findById(idAdmin).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        Set<UserZone> zones = admin.getUserZones();
-        List<Fiche> fiches = new ArrayList<>();
-        for(UserZone u : zones){
-            //fiches.addAll(ficheRepository.findByZone(u.getZone()));
-        }
-        return  fiches;
-    }
+        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
+        List<User> superUsers=userRepository.findByGroupe(superuser);
+        Groupe admin = groupeRepository.findByNom("ADMIN");
+        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
 
+        if(fiche.getStatus().equals(Fiche.FicheStatus.ACCEPTEDIPDF)){
+            nService.notifyPreparateurAboutIPDFAcceptance(fiche);
+            for(User u : superUsers){
+                nService.notifySuperUserAboutIPDFAcceptence(fiche, u);
+            }
+            for(User u : admins){
+                nService.notifySuperUserAboutIPDFAcceptence(fiche, u);
+            }
+            List<UserZone> usersToNotify = userZoneRepository.findByZone(zone);
+            List<User> usersWithPermission = new ArrayList<>();
+
+            for (UserZone userZone : usersToNotify) {
+                Groupe userGroup = userZone.getUser().getGroupe();
+                boolean hasPermission = userGroup.getPermissions().stream()
+                        .anyMatch(permission -> permission.getNom().equals("valider_fiche_IQP"));
+                if (hasPermission && !userZone.getUser().getGroupe().getNom().equals("ADMIN") && !userZone.getUser().getGroupe().getNom().equals("SUPERUSER")) {
+                    usersWithPermission.add(userZone.getUser());
+                }
+            }
+            for (User user : usersWithPermission) {
+                nService.notifyIQPAboutFicheValidationByIPDF(fiche , user);
+            }
+
+        }else{
+            nService.notifyPreparateurAboutIPDFRejection(fiche);
+            for(User u : superUsers){
+                nService.notifySuperUserAboutIPDFRejection(fiche, u);
+            }
+            for(User u : admins){
+                nService.notifySuperUserAboutIPDFRejection(fiche, u);
+            }
+        }
+
+    }
+    public void validationIqpMail(Fiche fiche){
+        Zone zone = null;
+        if(fiche.getTypeFiche().equals("OPERATION")){
+            FicheOperation ficheOperation = (FicheOperation) fiche;
+            zone = ficheOperation.getOperation().getLigne().getZone();
+        }else if(fiche.getTypeFiche().equals("LIGNE")){
+            FicheLigne ficheLigne = (FicheLigne) fiche;
+            zone = ficheLigne.getLigne().getZone();
+        }else{
+            FicheZone ficheZone = (FicheZone) fiche;
+            zone = ficheZone.getZone();
+        }
+        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
+        List<User> superUsers=userRepository.findByGroupe(superuser);
+        Groupe admin = groupeRepository.findByNom("ADMIN");
+        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
+
+        if(fiche.getStatus().equals(Fiche.FicheStatus.ACCEPTEDIQP)){
+            nService.notifyPreparateurAboutIQPAcceptance(fiche);
+            for(User u : superUsers){
+                nService.notifySuperUserAboutIQPValidation(fiche , u);
+            }
+            for(User u : admins){
+                nService.notifySuperUserAboutIQPValidation(fiche, u);
+            }
+        }else{
+            nService.notifyPreparateurAboutIQPRejection(fiche);
+            for(User u : superUsers){
+                nService.notifySuperUserAboutIQPRejection(fiche, u);
+            }
+            for(User u : admins){
+                nService.notifySuperUserAboutIQPRejection(fiche, u);
+            }
+        }
+
+    }
+    public void reminderMail(Fiche fiche , long hoursUntilExpiration){
+        Zone zone = null;
+        if(fiche.getTypeFiche().equals("OPERATION")){
+            FicheOperation ficheOperation = (FicheOperation) fiche;
+            zone = ficheOperation.getOperation().getLigne().getZone();
+        }else if(fiche.getTypeFiche().equals("LIGNE")){
+            FicheLigne ficheLigne = (FicheLigne) fiche;
+            zone = ficheLigne.getLigne().getZone();
+        }else{
+            FicheZone ficheZone = (FicheZone) fiche;
+            zone = ficheZone.getZone();
+        }
+        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
+        List<User> superUsers=userRepository.findByGroupe(superuser);
+        Groupe admin = groupeRepository.findByNom("ADMIN");
+        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
+
+        if(fiche.getStatus().equals(Fiche.FicheStatus.PENDING)){
+            List<UserZone> usersToNotify = userZoneRepository.findByZone(zone);
+            List<User> usersWithPermission = new ArrayList<>();
+
+            for (UserZone userZone : usersToNotify) {
+                Groupe userGroup = userZone.getUser().getGroupe();
+                boolean hasPermission = userGroup.getPermissions().stream()
+                        .anyMatch(permission -> permission.getNom().equals("valider_fiche_IPDF"));
+                if (hasPermission && !userZone.getUser().getGroupe().getNom().equals("ADMIN") && !userZone.getUser().getGroupe().getNom().equals("SUPERUSER")) {
+                    usersWithPermission.add(userZone.getUser());
+                }
+            }
+            for (User user : usersWithPermission) {
+                nService.sendExpirationReminderForFiche(fiche, hoursUntilExpiration , user);
+            }
+        }else{
+            List<UserZone> usersToNotify = userZoneRepository.findByZone(zone);
+            List<User> usersWithPermission = new ArrayList<>();
+
+            for (UserZone userZone : usersToNotify) {
+                Groupe userGroup = userZone.getUser().getGroupe();
+                boolean hasPermission = userGroup.getPermissions().stream()
+                        .anyMatch(permission -> permission.getNom().equals("valider_fiche_IQP"));
+                if (hasPermission && !userZone.getUser().getGroupe().getNom().equals("ADMIN") && !userZone.getUser().getGroupe().getNom().equals("SUPERUSER")) {
+                    usersWithPermission.add(userZone.getUser());
+                }
+            }
+            for (User user : usersWithPermission) {
+                nService.sendExpirationReminderForFiche(fiche, hoursUntilExpiration , user);
+            }
+        }
+        for(User u : superUsers){
+            nService.sendExpirationReminderForFiche(fiche, hoursUntilExpiration , u);
+        }
+
+        for(User u : admins){
+            nService.sendExpirationReminderForFiche(fiche, hoursUntilExpiration , u);
+        }
+    }
 }

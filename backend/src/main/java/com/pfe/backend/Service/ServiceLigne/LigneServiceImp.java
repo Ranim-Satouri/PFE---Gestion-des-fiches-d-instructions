@@ -4,14 +4,17 @@ package com.pfe.backend.Service.ServiceLigne;
 import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.*;
 import com.pfe.backend.Service.ServiceOperation.OperationService;
+import com.pfe.backend.Service.ServiceUser.UserIservice;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +25,7 @@ public class LigneServiceImp implements LigneService {
     private ZoneRepository zoneRepository;
     private OperationRepository operationRepo;
     private OperationService operationService;
+    private UserIservice userService;
     private FicheLigneRepository ficheLigneRepo;
 
     public ResponseEntity<?> addLigne(Ligne ligne , Long idActionneur){
@@ -94,4 +98,17 @@ public class LigneServiceImp implements LigneService {
     public List<Ligne> getLignes() {
         return ligneRepository.findAll();
     }
+
+    @Override
+    public List<Ligne> getLignesByUserZones(long idUser) {
+
+        Set<UserZone> zones = userService.getUserZones(idUser);
+        List<Ligne> lignes = new ArrayList<>();
+        for (UserZone userzone : zones) {
+            lignes.addAll(ligneRepository.findByZoneAndIsDeletedFalse(userzone.getZone()));
+        }
+
+        return lignes;
+    }
+
 }

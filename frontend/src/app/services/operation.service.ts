@@ -12,6 +12,9 @@ private apiUrl = 'http://localhost:8080/operation';
   getAll(): Observable<Operation[]> {
     return this.http.get<Operation[]>(`${this.apiUrl}/activeOperations`);
   }
+  getOperationsByUserZones(idUser : number): Observable<Operation[]> {
+    return this.http.get<Operation[]>(`${this.apiUrl}/getOperationsByUserZones/${idUser}`);
+  }
   addOperation(operation: Operation, idActionneur: number): Observable<any> {
     const params = new HttpParams()
                   .set('idActionneur',idActionneur)

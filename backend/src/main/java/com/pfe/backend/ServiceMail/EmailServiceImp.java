@@ -12,7 +12,7 @@ public class EmailServiceImp implements EmailService {
     private JavaMailSender mailSender;
     @Async
     public void sendEmail(String to, String subject, String body) {
-        System.out.println(to);
+        //System.out.println(to);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);

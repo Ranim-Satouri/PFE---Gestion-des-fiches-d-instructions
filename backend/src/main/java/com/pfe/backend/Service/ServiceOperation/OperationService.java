@@ -11,4 +11,5 @@ public interface OperationService {
     void DeleteOperation(Long idOperation ,Long idActionneur);
     List<Operation> getActiveOperations();
     List<Operation> getOperations();
+    List<Operation> getOperationsByUserZones(long idUser);
 }

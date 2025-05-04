@@ -54,4 +54,14 @@ public class ProduitController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @GetMapping("/getProduitsByUserZones/{idUser}")
+    public ResponseEntity<?> getProduitsByUserZones(@PathVariable long idUser){
+        try {
+            return ResponseEntity.ok(produitService.getProduitsByUserZones(idUser));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+    }
 }

@@ -15,6 +15,9 @@ export class FamilleService {
   getAll(): Observable<Famille[]> {
     return this.http.get<Famille[]>(`${this.apiUrl}/activeFamilies`);
   }
+  getFamillesByUserZones(idUser : number): Observable<Famille[]> {
+    return this.http.get<Famille[]>(`${this.apiUrl}/getFamillesByUserZones/${idUser}`);
+  }
   deleteFamille(idFamille: number | undefined , idSupprimateur: number  ): Observable<any> {
     const params = new HttpParams()
                   .set('idActionneur',idSupprimateur);
@@ -60,4 +63,5 @@ getFamilleHistory(idFamille: number): Observable<FamilleHistoryDTO[]> {
       })
   );
 }
+
 }

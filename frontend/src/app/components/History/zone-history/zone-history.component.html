@@ -44,18 +44,17 @@
               </td>
             </tr>
             <!-- Détails dans un collapse -->
-            <tr *ngIf="isExpanded(entry.revisionNumber)" class="bg-gray-50 dark:text-gray-800 dark:bg-gray-700">
-              <td colspan="4">
+            <tr *ngIf="isExpanded(entry.revisionNumber)" class="w-full bg-gray-50 dark:text-gray-800 dark:bg-gray-700">
+              <td colspan="5">
                 <div class="p-3 border-l-4 border-blue-600 dark:border-blue-500">
-                  <!-- Conteneur des détails avec ombre et coins arrondis -->
-                  <div class="max-w-4xl bg-white w-full rounded-lg shadow-xl dark:bg-gray-700">
-                    <!-- Tableau pour les détails -->
+                  <!-- Utilisez 'w-full' pour s'assurer que le collapse prend toute la largeur -->
+                  <div class="w-full bg-white rounded-lg shadow-xl dark:bg-gray-700">
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 dark:bg-gray-800">
                       <thead class="text-xs text-gray-700 uppercase bg-blue-50 dark:bg-gray-600 dark:text-gray-400">
                         <tr>
                           <th scope="col" class="px-6 py-3"></th>
-                          <th scope="col" class="px-6 py-3">Valeur Précédente</th> <!-- Inversé -->
-                          <th scope="col" class="px-6 py-3">Valeur Actuelle</th>   <!-- Inversé -->
+                          <th scope="col" class="px-6 py-3">Valeur Précédente</th>
+                          <th scope="col" class="px-6 py-3">Valeur Actuelle</th>
                         </tr>
                       </thead>
                       <tbody>

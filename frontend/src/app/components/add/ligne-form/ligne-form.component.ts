@@ -6,6 +6,7 @@ import { User } from '../../../models/User';
 import { LigneService } from '../../../services/ligne.service';
 import { Zone } from '../../../models/Zone';
 import { ZoneService } from '../../../services/zone.service';
+import { UserZoneService } from '../../../services/user-zone.service';
 @Component({
   selector: 'app-ligne-form',
   standalone: true,
@@ -15,7 +16,7 @@ import { ZoneService } from '../../../services/zone.service';
 })
 export class LigneFormComponent {
   @Output() close = new EventEmitter<void>();
-    constructor(private ligneService: LigneService,private zoneService : ZoneService) {}
+    constructor(private ligneService: LigneService,private zoneService : ZoneService ,private userZoneService: UserZoneService) {}
     userConnected !: User;
     successMessage: string = '';
     errorMessage = '';
@@ -53,12 +54,31 @@ export class LigneFormComponent {
         });
       }
     }
+    // loadZones() {
+    //   this.zoneService.getAll().subscribe(zones => {
+    //     this.zones = zones;
+    //     this.filteredZones = zones; // Initialiser avec tous les zones
+    //     this.zoneNames= zones.map(zone => zone.nom);
+    // })};
     loadZones() {
-      this.zoneService.getAll().subscribe(zones => {
-        this.zones = zones;
-        this.filteredZones = zones; // Initialiser avec tous les zones
-        this.zoneNames= zones.map(zone => zone.nom);
-    })};
+      console.log(this.userConnected.idUser!);
+      if(this.userConnected.groupe?.nom === "SUPERUSER"){
+        console.log('superuser');
+        this.zoneService.getAll().subscribe(zones => {
+          this.zones = zones;
+          this.filteredZones = zones;
+          this.zoneNames= zones.map(zone => zone.nom);
+        })
+      }else{
+        console.log('mech superuser');
+        this.userZoneService.getUserZones(this.userConnected.idUser!).subscribe(userZones => {
+          const zones = userZones.map(zone => zone.zone);
+          this.zones = zones;
+          this.filteredZones = zones;
+          this.zoneNames= zones.map(zone => zone.nom);
+        })
+      }
+  };
   
     addLigne() {
       if (this.ligneForm.valid) {

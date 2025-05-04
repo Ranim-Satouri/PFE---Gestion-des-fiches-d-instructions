@@ -5,14 +5,17 @@ import com.pfe.backend.Repository.FicheOperationRepository;
 import com.pfe.backend.Repository.LigneRepository;
 import com.pfe.backend.Repository.OperationRepository;
 import com.pfe.backend.Repository.UserRepository;
+import com.pfe.backend.Service.ServiceUser.UserIservice;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +25,7 @@ public class OperationServiceImp implements OperationService {
     private OperationRepository operationRepository;
     private LigneRepository ligneRepository;
     private FicheOperationRepository ficheOperationRepo;
+    private UserIservice userService;
 
     public ResponseEntity<?> addOperation(Operation operation , Long idActionneur){
         User actionneur = userRepository.findById(idActionneur)
@@ -88,5 +92,21 @@ public class OperationServiceImp implements OperationService {
     @Override
     public List<Operation> getOperations() {
         return operationRepository.findAll();
+    }
+
+    @Override
+    public List<Operation> getOperationsByUserZones(long idUser) {
+
+        Set<UserZone> zones = userService.getUserZones(idUser);
+        List<Ligne> lignes = new ArrayList<>();
+        for (UserZone userzone : zones) {
+            lignes.addAll(ligneRepository.findByZoneAndIsDeletedFalse(userzone.getZone()));
+        }
+        List<Operation> operations = new ArrayList<>();
+
+        for (Ligne ligne : lignes) {
+            operations.addAll(operationRepository.findByLigneAndIsDeletedFalse(ligne));
+        }
+        return operations;
     }
 }

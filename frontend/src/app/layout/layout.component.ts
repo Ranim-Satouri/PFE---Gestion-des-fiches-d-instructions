@@ -1,17 +1,19 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, HostListener, Inject, PLATFORM_ID } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Component, HostListener, Inject, OnInit, PLATFORM_ID, ViewChild  } from '@angular/core';
 import { ThemeService } from '../config/theme.service';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { Menu } from '../models/Menu';
+import { ProfilComponent } from '../components/profil/profil.component';
 import { User } from '../models/User';
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule, RouterModule, ProfilComponent],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css'
 })
 export class LayoutComponent {
+  @ViewChild('profileDialog') profileDialog!: ProfilComponent;
   isDarkMode: boolean;
   isSideBarOpen : boolean = JSON.parse(localStorage.getItem('sidebarState') || 'true');
   isSideBarHidden : boolean =true;
@@ -42,11 +44,11 @@ export class LayoutComponent {
     }  }
   }
   logout() {
-    localStorage.removeItem('token'); 
-    localStorage.removeItem('refreshToken'); 
-    localStorage.removeItem('user');  
-    localStorage.removeItem('groupe'); 
-    localStorage.removeItem('groupeNom'); 
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    localStorage.removeItem('groupe');
+    localStorage.removeItem('groupeNom');
     localStorage.removeItem('selectedSidebarItem');
     this.router.navigate(['/']);
   }
@@ -84,7 +86,14 @@ export class LayoutComponent {
     return this.router.url;
   }
   hasMenu(menuName: string): boolean {
-    return this.menus.some(menu => menu.nom === menuName);  
+    return this.menus.some(menu => menu.nom === menuName);
+  }
+
+  openProfileDialog(): void {
+    if (this.profileDialog) {
+      this.profileDialog.showProfileDialog(123); // 123 est l'ID de l'utilisateur
+      this.isListOpen = false;
+    }
   }
 
 }

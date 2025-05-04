@@ -13,6 +13,9 @@ export class ProduitService {
   getAll(): Observable<Produit[]> {
         return this.http.get<Produit[]>(`${this.apiUrl}/activeProducts`);
   }
+  getProduitsByUserZones(idUser : number): Observable<Produit[]> {
+        return this.http.get<Produit[]>(`${this.apiUrl}/getProduitsByUserZones/${idUser}`);
+  }
   deleteProduit(idProduit: number | undefined, idSupprimateur: number ): Observable<any> {
     const params = new HttpParams()
               .set('idActionneur',idSupprimateur);

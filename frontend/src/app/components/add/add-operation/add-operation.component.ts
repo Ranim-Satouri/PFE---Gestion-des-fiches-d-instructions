@@ -57,11 +57,22 @@ export class AddOperationComponent {
     }
   }
   loadLignes() {
-    this.ligneService.getAll().subscribe(lignes => {
-      this.lignes = lignes;
-      this.filteredLignes = lignes; // Initialiser avec tous les lignes
-      this.ligneNames= lignes.map(ligne => ligne.nom);
-  })};
+    if(this.userConnected.groupe?.nom === "SUPERUSER"){
+      console.log('superuser');
+      this.ligneService.getAll().subscribe(lignes => {
+        this.lignes = lignes;
+        this.filteredLignes = lignes; // Initialiser avec tous les lignes
+        this.ligneNames= lignes.map(ligne => ligne.nom);
+      });
+    }else{
+      console.log('mech superuser');
+      this.ligneService.getLignesByUserZones(this.userConnected.idUser!).subscribe(lignes => {
+        this.lignes = lignes;
+        this.filteredLignes = lignes; // Initialiser avec tous les lignes
+        this.ligneNames= lignes.map(ligne => ligne.nom);
+    })};
+  }
+
 
   addOperation() {
     if (this.operationForm.valid) {

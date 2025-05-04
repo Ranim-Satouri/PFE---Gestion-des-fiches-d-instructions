@@ -72,5 +72,15 @@ public class FamilleController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'ajout des zones : " + e.getMessage());
         }
     }
+
+    @GetMapping("/getFamillesByUserZones/{idUser}")
+    public ResponseEntity<?> getFamillesByUserZones(@PathVariable long idUser){
+        try {
+            return ResponseEntity.ok(familleService.getFamillesByUserZones(idUser));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+
+    }
 }
 

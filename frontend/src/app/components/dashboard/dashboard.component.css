@@ -1,0 +1,27 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+.powerbi-iframe {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* CSS supplémentaire pour masquer les éléments d'interface */
+:host ::ng-deep .toolbar, 
+:host ::ng-deep .powerbi-toolbar, 
+:host ::ng-deep header,
+:host ::ng-deep .actionBar,
+:host ::ng-deep .reportHeader {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

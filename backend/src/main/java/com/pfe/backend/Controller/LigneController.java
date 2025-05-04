@@ -49,6 +49,12 @@ public class LigneController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @GetMapping("/getLignesByUserZones/{userId}")
+    public List<Ligne> getLignesByUserZones(@PathVariable Long userId) {
+        return ligneService.getLignesByUserZones(userId);
+    }
+
     @GetMapping("/activeLignes")
     public ResponseEntity<List<Ligne>> getActiveLignes() {
         return ResponseEntity.ok(ligneService.getActiveLignes());
