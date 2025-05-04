@@ -45,14 +45,29 @@ export class FamilleListComponent {
   }
 
   getFamilles() {
-    this.familleService.getAll().subscribe({
-      next : (response :Famille[]) => {
-        this.familles = response.sort((a, b) => b.idFamille! - a.idFamille!);
-      },
-      error: (error: any) => {
-        console.error('fetching familles error:', error);
-      },
-    });
+    if(this.userConnected.groupe?.nom === "SUPERUSER"){
+        console.log('superuser');
+        this.familleService.getAll().subscribe({
+          next : (response :Famille[]) => {
+            this.familles = response.sort((a, b) => b.idFamille! - a.idFamille!);
+          },
+          error: (error: any) => {
+            console.error('fetching familles error:', error);
+          },
+        });
+      }else{
+        console.log('mech superuser');
+        this.familleService.getFamillesByUserZones(this.userConnected.idUser!).subscribe({
+          next : (response :Famille[]) => {
+            console.log(response);
+
+            this.familles = response.sort((a, b) => b.idFamille! - a.idFamille!);
+          },
+          error: (error: any) => {
+            console.error('fetching familles error:', error);
+          },
+        });
+      }
   }
 
   deleteFamille(idFamille: number | undefined): void {

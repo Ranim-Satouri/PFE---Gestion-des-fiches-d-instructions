@@ -46,15 +46,29 @@ constructor(private familleService: FamilleService,private produitService: Produ
     this.getFamilles();
   }
   getFamilles() {
-      this.familleService.getAll().subscribe({
-        next : (response :Famille[]) => {
-          this.families = response;
-          this.familleNames = response.map(famille => famille.nomFamille);
-        },
-        error : (error : any) => {
-          console.error('fetching familles error:', error);
-        }
-      });
+    if(this.userConnected.groupe?.nom === "SUPERUSER"){
+        console.log('superuser');
+        this.familleService.getAll().subscribe({
+          next : (response :Famille[]) => {
+            this.families = response;
+            this.familleNames = response.map(famille => famille.nomFamille);
+          },
+          error : (error : any) => {
+            console.error('fetching familles error:', error);
+          }
+        });
+      }else{
+        console.log('mech superuser');
+        this.familleService.getFamillesByUserZones(this.userConnected.idUser!).subscribe({
+          next : (response :Famille[]) => {
+            this.families = response;
+            this.familleNames = response.map(famille => famille.nomFamille);
+          },
+          error : (error : any) => {
+            console.error('fetching familles error:', error);
+          },
+        });
+      }
   }
 
   onFamilleSearchChange(event: Event) {

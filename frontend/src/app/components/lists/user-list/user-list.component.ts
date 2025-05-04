@@ -261,6 +261,9 @@ adjustGrpDropdownPosition() {
     });
   }
   getZoneNames(user: User): string {
+    if(user.groupe && user.groupe.nom === "SUPERUSER"){
+      return "Tous"
+    }
     if (user.zones && user.zones.length > 0) {
       return user.zones.map(zone => zone.nom).join(', ');
     }

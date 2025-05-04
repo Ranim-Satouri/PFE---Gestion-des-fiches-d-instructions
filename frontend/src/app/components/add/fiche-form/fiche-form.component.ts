@@ -130,11 +130,41 @@ export class FicheFormComponent {
 
   //load data
   loadProduits() {
-    this.produitService.getAll().subscribe(produits => {
-      this.produits = produits;
-      this.filteredProduits = produits;
-      this.produitNames = produits.map(produit => produit.nomProduit);
-    });
+    // this.produitService.getAll().subscribe(produits => {
+    //   this.produits = produits;
+    //   this.filteredProduits = produits;
+    //   this.produitNames = produits.map(produit => produit.nomProduit);
+    // });
+
+    if(this.userConnected.groupe?.nom === "SUPERUSER"){
+      console.log('superuser');
+      this.produitService.getAll().subscribe({
+        next : (produits :Produit[]) => {
+          console.log('fetching produits success:', produits);
+
+          this.produits = produits;
+          this.filteredProduits = produits;
+          this.produitNames = produits.map(produit => produit.nomProduit);
+        },
+        error : (error : any) => {
+          console.error('fetching produits error:', error);
+        }
+      });
+    }else{
+      console.log('mech superuser');
+      this.produitService.getProduitsByUserZones(this.userConnected.idUser!).subscribe({
+        next : (produits :Produit[]) => {
+          console.log('fetching produits success:', produits);
+          this.produits = produits;
+          this.filteredProduits = produits;
+          this.produitNames = produits.map(produit => produit.nomProduit);
+        },
+        error : (error : any) => {
+          console.error('fetching produits error:', error);
+        }
+      });
+    }
+    
   }
   loadLignes() {
     this.ligneService.getAll().subscribe(lignes => {

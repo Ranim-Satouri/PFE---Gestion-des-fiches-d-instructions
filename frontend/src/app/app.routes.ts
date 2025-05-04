@@ -15,6 +15,8 @@ import { ZoneListComponent } from './components/lists/zone-list/zone-list.compon
 import { ParticlesComponent } from './components/particles/particles.component';
 import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './pages/login/login.component';
+import { ProfilComponent } from './components/profil/profil.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 export const routes: Routes = [
     { path: '', component: LoginComponent },
     { path : 'history/:idUser', component: UserHistoryComponent },
@@ -44,7 +46,8 @@ export const routes: Routes = [
             { path: 'userlist', component: UserListComponent },
             { path: 'groupelist', component: GroupeListComponent },
             { path: 'lignelist', component: LigneListComponent },
-            { path: 'operationlist', component: OperationListComponent }
+            { path: 'operationlist', component: OperationListComponent },
+            { path: 'dashboard', component: DashboardComponent }
         ]
     },
     {

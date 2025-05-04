@@ -202,19 +202,37 @@ export class ProduitListComponent {
     this.showAddPorduitForm = false;
   }
   getProduits() {
-    this.produitService.getAll().subscribe({
-      next : (response :Produit[]) => {
-        console.log('fetching produits success:', response);
-
-        this.produits = response.sort((a, b) => b.idProduit! - a.idProduit!);
-        this.filteredProducts = [...this.produits]; // Initialize
-        this.applyFilters();
-      },
-      error : (error : any) => {
-        console.error('fetching produits error:', error);
-      }
-    });
+    if(this.userConnected.groupe?.nom === "SUPERUSER"){
+      console.log('superuser');
+      this.produitService.getAll().subscribe({
+        next : (response :Produit[]) => {
+          console.log('fetching produits success:', response);
+  
+          this.produits = response.sort((a, b) => b.idProduit! - a.idProduit!);
+          this.filteredProducts = [...this.produits]; // Initialize
+          this.applyFilters();
+        },
+        error : (error : any) => {
+          console.error('fetching produits error:', error);
+        }
+      });
+    }else{
+      console.log('mech superuser');
+      this.produitService.getProduitsByUserZones(this.userConnected.idUser!).subscribe({
+        next : (response :Produit[]) => {
+          console.log('fetching produits success:', response);
+  
+          this.produits = response.sort((a, b) => b.idProduit! - a.idProduit!);
+          this.filteredProducts = [...this.produits]; // Initialize
+          this.applyFilters();
+        },
+        error : (error : any) => {
+          console.error('fetching produits error:', error);
+        }
+      });
+    }
   }
+   
   getUserConnected(){
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
