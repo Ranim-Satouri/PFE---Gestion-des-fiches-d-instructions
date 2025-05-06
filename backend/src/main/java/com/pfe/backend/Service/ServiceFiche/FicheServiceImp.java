@@ -30,6 +30,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -424,7 +425,9 @@ public class FicheServiceImp implements FicheService {
     //expiration
     @Override
     public boolean verifierEtMettreAJourFichesExpirees() {
-        List<Fiche> fichesExpirees = ficheRepository.findByStatusNotAndExpirationDateBefore(Fiche.FicheStatus.EXPIRED,LocalDateTime.now());
+        List<Fiche.FicheStatus> etatsAExclure = Arrays.asList(Fiche.FicheStatus.EXPIRED, Fiche.FicheStatus.ACCEPTEDIQP);
+        //List<Fiche> fichesExpirees = ficheRepository.findFichesNonFinalesEtExpirees(etatsAExclure, LocalDateTime.now());
+        List<Fiche> fichesExpirees = ficheRepository.findFichesNonFinalesEtExpirees(etatsAExclure,LocalDateTime.now());
         boolean updated = false;
         if(!fichesExpirees.isEmpty()){
             for (Fiche fiche : fichesExpirees) {

@@ -15,7 +15,8 @@ module.exports = {
         sky: "#62cff4" ,
         sky2:"#2c67f2",
         sky3:"#3c8ce7",
-        sky4:"#736efe"
+        sky4:"#736efe",
+        profil:"#495b73"
         
       },
       keyframes: {

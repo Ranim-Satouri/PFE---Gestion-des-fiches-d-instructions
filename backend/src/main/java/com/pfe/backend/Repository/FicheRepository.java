@@ -21,4 +21,8 @@ public interface FicheRepository extends JpaRepository<Fiche,Long> {
     List<Fiche> findByProduit(Produit produit);
     List<Fiche> findByStatusNotAndExpirationDateBefore(Fiche.FicheStatus status ,LocalDateTime expirationDate);
 
+    @Query("SELECT f FROM Fiche f WHERE f.status NOT IN :statuses AND f.expirationDate < :now")
+    List<Fiche> findFichesNonFinalesEtExpirees(@Param("statuses") List<Fiche.FicheStatus> statuses, @Param("now") LocalDateTime now);
+
+
 }

@@ -8,7 +8,7 @@ export class AccessControlService {
 
   // Configuration des accès par nom de groupe (chaîne)
   private readonly groupeAccessMap: Record<string, string[]> = {
-    'SUPERUSER': ['userlist','/fichelist'],
+    'SUPERUSER': ['userlist','/fichelist', '/dashboard'],
     'ADMIN': ['/fichelist'],
     'PREPARATEUR': ['/fichelist'],
     'IPDF': ['/fichelist'],

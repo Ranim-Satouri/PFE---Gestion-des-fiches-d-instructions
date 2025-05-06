@@ -19,10 +19,10 @@ import { GroupeService } from '../../../services/groupe.service';
 })
 export class AddGroupeComponent {
   @Output() close = new EventEmitter<void>();
-  constructor(private userService:UserService, private menuService: MenuService,private permissionService: PermissionService, private groupeService: GroupeService) {}
+  constructor(private userService:UserService, private menuService: MenuService,private groupeService: GroupeService) {}
   currentStep : number = 1;
   userConnected !: User;
-  steps = ["Groupe", "Utilsateurs", "Menu","Permissions"];
+  steps = ["Groupe", "Menu & Permissions" , "Utilsateurs"];
   users: User[] = [];
   menus: Menu[] = [];
   permissions: Permission[] = [];
@@ -40,6 +40,9 @@ export class AddGroupeComponent {
   isNewGroup: boolean = true;
   successMessage: string = '';
   errorMessage = '';
+  menuPermissions: { [menuId: number]: Permission[] } = {};
+  expandedMenus = new Set<number>(); // pour suivre les menus ouverts
+  disabledPermissions: Set<number> = new Set<number>();
 
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
@@ -48,31 +51,62 @@ export class AddGroupeComponent {
     }
     this.getUsers(); 
     this.getMenus();
-    this.getPermissions();
+    
     if (this.groupe && this.groupe.idGroupe) {
       this.isNewGroup = false;
       this.groupeForm = new FormGroup({
         nom: new FormControl(this.groupe.nom, [Validators.required])
       });
-      this.selectedMenus = new Set(this.groupe.menus?.map(menu => menu.idMenu!));
+  
+      // Charger les permissions sélectionnées
       this.selectedPermissions = new Set(this.groupe.permissions?.map(permission => permission.idPermission!));
-
+  
+      // Si tu veux que les selectedMenus soient basés sur les selectedPermissions lors de la mise à jour
+      const permissions = this.groupe?.permissions || [];
+      const uniqueMenusMap = new Map<number, Menu>();
+  
+      for (const permission of permissions) {
+        const menu = permission.menu;
+        if (menu && !uniqueMenusMap.has(menu.idMenu)) {
+          uniqueMenusMap.set(menu.idMenu, menu);
+        }
+      }
+  
+      // Affichage menus déjà associés à des permissions
+      this.menus = Array.from(uniqueMenusMap.values());
+  
+      // Initialisation des menus cochés
+      this.selectedMenus = new Set(this.menus.map(m => m.idMenu!));
+      console.log(this.selectedMenus);
+  
+      // Ajouter les menus sélectionnés à menuPermissions
+      this.menuPermissions = {}; // Initialiser un objet pour stocker les permissions par menu
+      for (const menu of this.menus) {
+        // Ajouter les permissions associées au menu
+        //this.menuPermissions[menu.idMenu!] = this.groupe.permissions?.filter(permission => permission.menu?.idMenu === menu.idMenu!) || [];
+        this.loadPermissionsByMenu(menu.idMenu);
+      }
+  
+      console.log('Menu Permissions:', this.menuPermissions);
     } else {
-      // Initialize form for new group
       this.groupeForm = new FormGroup({
         nom: new FormControl('', [Validators.required])
       });
     }
   }
+  
+
   goToPreviousStep() {
     if (this.currentStep > 1) {
       this.currentStep--;
     }
   }
+
   // Fermer le formulaire
   closeForm() {
     this.close.emit();
   }
+
   // Méthode appelée lors de la soumission du formulaire
   onGroupNameSubmit(buttonType: string): void {
     if (this.groupeForm.valid) {
@@ -185,27 +219,21 @@ export class AddGroupeComponent {
       this.currentStep++;
     }
   }
-  getMenus(){
-    // Récupérer tous les menus
-    this.menuService.getAllMenus().subscribe((menus) => {
-      this.menus = menus; 
-    },
-    (error) => {
-      console.error('Erreur lors de la récupération des permissions', error);
-    });
-  }
-  getPermissions(){
-    // Récupérer toutes les permissions
-    this.permissionService.getAllPermissions().subscribe(
-      (permissions) => {
-        this.permissions = permissions; 
+  getMenus() {
+    this.menuService.getAllMenus().subscribe(
+      (menus) => {
+        // Exclure les menus dont le nom est 'groupes', 'zones' ou 'utilisateurs' (insensible à la casse)
+        const nomsExclus = ['groupes', 'zones', 'utilisateurs'];
+        this.menus = menus.filter(menu =>
+          !nomsExclus.includes(menu.nom.toLowerCase())
+        );
       },
       (error) => {
-        console.error('Erreur lors de la récupération des permissions', error);
+        console.error('Erreur lors de la récupération des menus', error);
       }
-    
     );
   }
+  
   getUsers(){
     this.userService.getAll().subscribe(
       (data: User[]) => {
@@ -277,6 +305,7 @@ export class AddGroupeComponent {
   }
   // Méthode pour ajouter les relations (menus, permissions, utilisateurs) après l'enregistrement du groupe
   addRelationsToGroup(): void {
+    console.log("pppppppppppppppp",this.selectedPermissions)
     const array1 = Array.from(new Set(this.groupe.permissions?.map(p => p.idPermission!)));
     const array2 = Array.from(this.selectedPermissions);
     const array3 = Array.from(new Set(this.groupe.menus?.map(m => m.idMenu!)));
@@ -284,9 +313,9 @@ export class AddGroupeComponent {
     const array5 = Array.from(new Set(this.users?.filter(user => user.groupe?.idGroupe === this.groupe.idGroupe).map(user => user.idUser!)));
     const array6 = Array.from(this.selectedUsers);
 
-    if(!array1.every(item => array2.includes(item)) || !array2.every(item => array1.includes(item)) || !array3.every(item => array4.includes(item)) 
+    if(!array1.every(item => array2.includes(item)) || !array2.every(item => array1.includes(item)) 
       || !array4.every(item => array3.includes(item))|| !array5.every(item => array6.includes(item)) || !array6.every(item => array5.includes(item)) ){
-      this.groupeService.addRelationsToGroup(this.groupe.idGroupe!, Array.from(this.selectedMenus), Array.from(this.selectedPermissions), Array.from(this.selectedUsers), this.userConnected.idUser!)
+      this.groupeService.addRelationsToGroup(this.groupe.idGroupe!, Array.from(this.selectedPermissions), Array.from(this.selectedUsers), this.userConnected.idUser!)
       .subscribe(response => {
         console.log('Relations ajoutées avec succès:', response);
         // this.successMessage = `Groupe "${this.groupe.nom}" ajoutée avec succès !`;
@@ -310,16 +339,10 @@ export class AddGroupeComponent {
       this.selectedUsers.add(userId);
     }
   }
-  // Sélectionner un menu
-  toggleMenuSelection(menuId: number) {
-    if (this.selectedMenus.has(menuId)) {
-      this.selectedMenus.delete(menuId);
-    } else {
-      this.selectedMenus.add(menuId);
-    }
-  }
+
   // Sélectionner une permission
   togglePermissionSelection(permissionId: number) {
+    
     if (this.selectedPermissions.has(permissionId)) {
       this.selectedPermissions.delete(permissionId);
     } else {
@@ -339,14 +362,14 @@ export class AddGroupeComponent {
     }
   }
 
-  selectAllPermissions(event: Event ) {
-    const isChecked = (event.target as HTMLInputElement).checked;
-    if (isChecked) {
-      this.filteredPermissions.forEach(permission => this.selectedPermissions.add(permission.idPermission!));
-    } else {
-      this.selectedPermissions.clear();
-    }
-  }
+  // selectAllPermissions(event: Event ) {
+  //   const isChecked = (event.target as HTMLInputElement).checked;
+  //   if (isChecked) {
+  //     this.filteredPermissions.forEach(permission => this.selectedPermissions.add(permission.idPermission!));
+  //   } else {
+  //     this.selectedPermissions.clear();
+  //   }
+  // }
   selectAllUsers(event: Event ) {
     const isChecked = (event.target as HTMLInputElement).checked;
     if (isChecked) {
@@ -355,12 +378,106 @@ export class AddGroupeComponent {
       this.selectedUsers.clear();
     }
   }
-  selectAllMenus(event: Event ) {
-    const isChecked = (event.target as HTMLInputElement).checked;
-    if (isChecked) {
-      this.filteredMenus.forEach(menu => this.selectedMenus.add(menu.idMenu!));
+  // selectAllMenus(event: Event ) {
+  //   const isChecked = (event.target as HTMLInputElement).checked;
+  //   if (isChecked) {
+  //     this.filteredMenus.forEach(menu => this.selectedMenus.add(menu.idMenu!));
+  //   } else {
+  //     this.selectedMenus.clear();
+  //   }
+  // }
+
+ 
+  // loadPermissionsByMenu(menuId: number): void {
+  //   if (!this.menuPermissions[menuId]) {
+  //     this.menuService.getPermissionsByMenu(menuId).subscribe(
+  //       (permissions: Permission[]) => {
+  //         this.menuPermissions[menuId] = permissions;
+  //       },
+  //       (error) => {
+  //         console.error(`Erreur lors du chargement des permissions pour le menu ${menuId}`, error);
+  //       }
+  //     );
+  //   }
+  // }
+  toggleMenuCollapse(menuId: number) {
+    if (this.expandedMenus.has(menuId)) {
+      this.expandedMenus.delete(menuId);
     } else {
-      this.selectedMenus.clear();
+      this.expandedMenus.clear(); 
+      this.expandedMenus.add(menuId);
+      this.loadPermissionsByMenu(menuId);
     }
   }
+  
+  toggleMenuSelection(menuId: number) {
+    console.log("toggle")
+    console.log(menuId)
+    if (!this.selectedMenus.has(menuId)) {
+      this.expandedMenus.clear(); // Fermer tous les autres menus ouverts
+    }
+    if (this.selectedMenus.has(menuId)) {
+      // Désélectionner le menu
+      console.log("1");
+      this.selectedMenus.delete(menuId);
+      this.expandedMenus.delete(menuId); // Fermer le collapse
+  
+      // Supprimer toutes les permissions associées à ce menu de selectedPermissions
+      const menuPermissions = this.menuPermissions[menuId] || [];
+      menuPermissions.forEach(permission => {
+        this.selectedPermissions.delete(permission.idPermission!);
+      });
+      delete this.menuPermissions[menuId];
+      console.log(this.selectedMenus)
+      console.log(this.selectedPermissions);
+    } else {
+      console.log("2");
+      // Sélectionner le menu
+      this.selectedMenus.add(menuId);
+      this.expandedMenus.add(menuId); // Ouvrir le collapse
+  
+      // Charger les permissions du menu
+      this.loadPermissionsByMenu(menuId);
+    }
+  }
+  
+ 
+  
+  loadPermissionsByMenu(menuId: number) {
+    if (!this.menuPermissions[menuId]) {
+      this.menuService.getPermissionsByMenu(menuId).subscribe(
+        (permissions: Permission[]) => {
+          // Récupérer le nom du menu pour une meilleure gestion
+          const menuName = this.menus.find(menu => menu.idMenu === menuId)?.nom;
+  
+          if (menuName) {
+            console.log('Permissions pour le menu:', permissions);
+  
+            // Trouver la permission avec l'ID le plus petit
+            const smallestPermission = permissions.reduce((prev, curr) => 
+              prev.idPermission! < curr.idPermission! ? prev : curr
+            );
+  
+            console.log('Permission avec l\'ID le plus petit:', smallestPermission);
+  
+            // Ajouter cette permission à la liste des permissions sélectionnées
+            if (smallestPermission) {
+              this.selectedPermissions.add(smallestPermission.idPermission!);
+              this.disabledPermissions = new Set([smallestPermission.idPermission!]); // Ajout de l'ID de la permission désactivée
+            }
+  
+            // Ajouter toutes les permissions du menu dans `menuPermissions`
+            this.menuPermissions[menuId] = permissions;
+  
+            console.log('Permissions sélectionnées après modification:', this.selectedPermissions);
+          }
+        },
+        (error) => {
+          console.error('Erreur lors du chargement des permissions pour le menu', error);
+        }
+      );
+    }
+  }
+  
+  
 }

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Menu } from '../models/Menu';
+import { Permission } from '../models/Permission';
 
 @Injectable({
   providedIn: 'root'
@@ -15,5 +16,8 @@ export class MenuService {
   // Méthode pour récupérer tous les menus
   getAllMenus(): Observable<Menu[]> {
     return this.http.get<Menu[]>(this.apiUrl);  // Appel GET à l'API backend
+  }
+  getPermissionsByMenu(idMenu : number): Observable<Permission[]> {
+    return this.http.get<Permission[]>(`${this.apiUrl}/getPermissionsByMenu/${idMenu}`);  // Appel GET à l'API backend
   }
 }

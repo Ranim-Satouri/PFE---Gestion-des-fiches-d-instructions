@@ -53,12 +53,11 @@ public class GroupeController {
     }
     @PostMapping("/addRelationsToGroup")
     public ResponseEntity<?> addRelationsToGroup(@RequestParam Long groupId,
-                                                      @RequestParam List<Long> menuIds,
                                                       @RequestParam List<Long> permissionIds,
                                                       @RequestParam List<Long> userIds,
                                                       @RequestParam Long idActionneur) {
         try {
-            Groupe result = groupeService.addRelationsToGroup(groupId, menuIds, permissionIds, userIds, idActionneur);
+            Groupe result = groupeService.addRelationsToGroup(groupId, permissionIds, userIds, idActionneur);
             return ResponseEntity.ok(result);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());

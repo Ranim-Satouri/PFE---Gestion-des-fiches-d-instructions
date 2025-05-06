@@ -12,4 +12,5 @@ public interface LigneService {
     List<Ligne> getActiveLignes();
     List<Ligne> getLignes();
     List<Ligne> getLignesByUserZones(long idUser);
+
 }

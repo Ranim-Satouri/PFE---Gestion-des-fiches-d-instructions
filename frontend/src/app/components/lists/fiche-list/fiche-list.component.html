@@ -44,11 +44,11 @@
               [(ngModel)]="indiceSearchText"
               (input)="applyFilters()"
               class="uniform-placeholder w-full sm:w-[10%] h-10 px-3 py-2 rounded-lg bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none transition-all duration-200" />
-      <!-- Ligne Input -->
-      <div class="relative w-full  sm:w-[10%]">
-        <input placeholder="Ligne" [(ngModel)]="ligneSearchText" (input)="applyFilters()"
-        class="uniform-placeholder w-full h-10 px-4 py-2 rounded-lg bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none transition-all duration-200"  />
-            </div>
+          <!-- Ligne Input -->
+          <div class="relative w-full  sm:w-[10%]">
+            <input placeholder="Ligne" [(ngModel)]="ligneSearchText" (input)="applyFilters()"
+              class="uniform-placeholder w-full h-10 px-4 py-2 rounded-lg bg-white dark:bg-gray-700 dark:text-white border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none transition-all duration-200"  />
+          </div>
         <!-- Operation Input -->
         <div class="relative w-full  sm:w-[10%]">
             <input
@@ -121,7 +121,9 @@
                     class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                  </svg> </div> <span style="font-size: 13px">{{ zone.nom }}</span> </label>
+                  </svg> 
+                </div> 
+                <span style="font-size: 13px">{{ zone.nom }}</span> </label>
             </div>
           </div>
 
@@ -220,7 +222,7 @@
                     <th scope="col" class="px-2 py-2 font-medium">{{fiche.produit.ref}}</th>
                     <th scope="col" class="px-2 py-2 font-medium">{{fiche.produit.indice}}</th>
                     <th scope="col" class="px-2 py-2 font-medium">{{fiche.produit.famille.nomFamille}}</th>
-                    <th class="px-2 py-2">
+                    <th class="px-2 py-2 font-medium">
                         <ng-container *ngIf="fiche.typeFiche === 'OPERATION'"> {{ fiche.operation?.ligne?.zone?.nom }}</ng-container>
 
                         <ng-container *ngIf="fiche.typeFiche === 'LIGNE'"> {{ fiche.ligne?.zone?.nom }}</ng-container>
@@ -229,14 +231,14 @@
                     </th>
 
                       <!-- Données de la Ligne -->
-                    <th class="px-2 py-2">
+                    <th class="px-2 py-2 font-medium">
                         <ng-container *ngIf="fiche.typeFiche === 'OPERATION'">{{ fiche.operation?.ligne?.nom }}</ng-container>
 
                         <ng-container *ngIf="fiche.typeFiche === 'LIGNE'">{{ fiche.ligne?.nom }} </ng-container>
 
                         <ng-container *ngIf="fiche.typeFiche === 'ZONE'">Tous</ng-container>
                     </th>
-                    <th class="px-2 py-2">
+                    <th class="px-2 py-2 font-medium">
                         <ng-container *ngIf="fiche.typeFiche === 'OPERATION'">{{fiche.operation?.nom}} </ng-container>
 
                         <ng-container *ngIf="fiche.typeFiche === 'LIGNE'">Tous </ng-container>
@@ -346,7 +348,7 @@
                     </th>
 
                     <th class="px-4 py-2 text-right relative">
-                        <div class="relative inline-block text-left" *ngIf="hasPermission('modifier_fiche') || hasPermission('consulter_historique') || hasPermission('supprimer_fiche') || fiche.ficheAQL !== '' ">
+                        <div class="relative inline-block text-left" *ngIf="hasPermission('modifier_fiche') || hasPermission('consulter_historique_fiche') || hasPermission('supprimer_fiche') || fiche.ficheAQL !== '' ">
                             <button (click)="toggleDropdown(i, $event,fiche)"
                             [ngClass]="{'dark:bg-gray-600 bg-gray-300': dropdownOpen === i , ' bg-transparent': dropdownOpen !== i }"
                             class="p-1 dark:hover:bg-gray-600  hover:bg-gray-300 rounded-full focus:outline-none">
@@ -406,7 +408,7 @@
                                 </a>
                                 </li>
                                 <li>
-                                <a *ngIf="hasPermission('consulter_historique')" (click)="openFicheHistory(fiche.idFiche)"
+                                <a *ngIf="hasPermission('consulter_historique_fiche')" (click)="openFicheHistory(fiche.idFiche)"
                                  class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- History Icon -->
                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
