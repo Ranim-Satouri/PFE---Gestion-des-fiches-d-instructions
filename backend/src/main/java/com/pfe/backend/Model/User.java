@@ -55,8 +55,7 @@ public class User implements UserDetails {
         userZone.setIdActionneur(idActionneur);
         this.userZones.add(userZone);}
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private UserGenre genre;
+    @Column(nullable = true)    private UserGenre genre;
     public enum UserGenre { FEMME , HOMME ; }
 
     @UpdateTimestamp

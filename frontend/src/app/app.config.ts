@@ -5,7 +5,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideRouter, Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { routes } from './app.routes';
-
+import { loadingInterceptor } from './loading.interceptor';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
   const http = inject(HttpClient);
@@ -61,7 +61,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }), // Add for change detection
     provideRouter(routes),
     provideClientHydration(),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, loadingInterceptor])),
     provideAnimationsAsync()
   ]
 };

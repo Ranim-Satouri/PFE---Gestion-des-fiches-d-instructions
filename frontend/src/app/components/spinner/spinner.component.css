@@ -110,7 +110,8 @@
     top: 100%;
     margin-top: 20px;
     text-align: center;
-    color: var(--text);
+
+    /* color: var(--text); */
   }
   
   @keyframes page-2 {

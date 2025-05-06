@@ -45,8 +45,8 @@ export class RegisterFormComponent {
     selectedGroupe: Groupe | null | undefined;
     filteredGroupes: Groupe[] = [];
     searchText:string ="" ;
-    filteredRoles: Role[] = [];
-    role?:Role;
+    // filteredRoles: Role[] = [];
+    // role?:Role;
     private fb =inject(FormBuilder);
   // Définition du formulaire
     registerForm : FormGroup =this.fb.group({
@@ -55,9 +55,10 @@ export class RegisterFormComponent {
     matricule : ['',Validators.required],
     email : ['',Validators.required],
     numero :[''],
-    genre: [''],
-    role: [''] ,
-    zones: this.fb.array([])  ,  status : [''] ,
+    genre: [null],
+    // role: [''] ,
+    zones: this.fb.array([])  , 
+     status : [null] ,
     groupe: [null], });
   ngOnChanges() {
         console.log('ngOnChanges triggered, userToUpdate:', this.userToUpdate);
@@ -68,10 +69,9 @@ export class RegisterFormComponent {
             matricule: this.userToUpdate.matricule || '',
             email: this.userToUpdate.email || '',
             numero: this.userToUpdate.num || '',
-            genre: this.userToUpdate.genre || '',
-            role: this.userToUpdate.role || null,
+            genre: this.userToUpdate.genre || null,
             groupe: this.userToUpdate.groupe || null,
-            status: this.userToUpdate.status || ''    });
+            status: this.userToUpdate.status || null    });
 
           if (this.userToUpdate.groupe?.nom) {
             this.searchText = this.userToUpdate.groupe.nom;
@@ -176,9 +176,9 @@ export class RegisterFormComponent {
       matricule: this.registerForm.value.matricule,
       email: this.registerForm.value.email,
       num: this.registerForm.value.numero,
-      genre: this.registerForm.value.genre.toUpperCase(),
-      role: this.registerForm.value.role ? this.registerForm.value.role.toUpperCase() : null,
-      groupe: groupeValue && typeof groupeValue === 'object' && groupeValue.idGroupe ? groupeValue : null, status: this.registerForm.value.status,
+      genre: this.registerForm.value.genre ? this.registerForm.value.genre.toUpperCase() : null,
+      // role: this.registerForm.value.role ? this.registerForm.value.role.toUpperCase() : null,
+      groupe: groupeValue && typeof groupeValue === 'object' && groupeValue.idGroupe ? groupeValue : null, status: this.registerForm.value.status || null,
       zones: this.registerForm.value.zones.map((zoneId: number) => ({ idZone: zoneId } as Zone))};
 
       const idActionneur = this.userConnected.idUser!;
@@ -259,14 +259,14 @@ export class RegisterFormComponent {
       const user: any = {
         nom: this.registerForm.value.nom,
         prenom: this.registerForm.value.prenom,
-        genre: this.registerForm.value.genre.toUpperCase(),
+        genre: this.registerForm.value.genre ? this.registerForm.value.genre.toUpperCase() : null,
         email: this.registerForm.value.email,
         matricule: this.registerForm.value.matricule,
         password: "123456",
         num: this.registerForm.value.numero,
         actionneur: this.userConnected.idUser!,
-        status: this.registerForm.value.status,
-        role:  "ADMIN",
+        status: this.registerForm.value.status||null
+        // role:  "ADMIN",
         // modifieLe: new Date(),
       };
       const idActionneur = this.userConnected.idUser!;

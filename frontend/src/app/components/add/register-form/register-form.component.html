@@ -167,10 +167,9 @@
                     class="peer block h-10 rounded-lg ring-1 text-gray-500 focus:border-blue-400 px-2 ring-gray-300
                      focus:ring-sky-600 w-full  focus:outline-none focus:ring focus:ring-opacity-40
                      dark:bg-gray-900 dark:text-gray-500 border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
-                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 transition-all duration-200 appearance-none dark:ring-gray-600 "
-                 >
+                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 transition-all duration-200 appearance-none dark:ring-gray-600 ">
                      
-                    <option hidden value="" selected disabled>Genre</option>
+                    <option hidden [ngValue]="null" selected disabled>Genre</option>
                     <option value="FEMME" >Femme</option>
                     <option value="HOMME" >Homme</option>
                   </select>
@@ -283,7 +282,7 @@
                     class="peer block h-10 rounded-lg ring-2 text-gray-500 focus:border-blue-400 px-2 ring-gray-300 focus:ring-sky-600 w-full focus:outline-none focus:ring
                      focus:ring-opacity-40  dark:text-gray-400 dark:bg-gray-900 dark:shadow-gray-900 focus:ring-blue-500  dark:focus:ring-blue-500  dark:ring-gray-600  
                      dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 appearance-none">
-                    <option hidden value="" selected disabled>Status</option>
+                    <option hidden [ngValue]="null" selected disabled>Status</option>
                     <option value="ACTIVE">ACTIVE</option>
                     <option value="INACTIVE">INACTIVE</option>
                   </select>
@@ -321,8 +320,7 @@
                     <div class="flex items-center justify-between px-3 py-2">
                       <span class="text-sm text-gray-700 focus:ring-blue-500 
                       dark:bg-gray-900 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
-                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 border-none"
-                        >{{ (registerForm.get("zones")?.value || []).length }} sélectionnées</span>
+                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 border-none">{{ (registerForm.get("zones")?.value || []).length }} sélectionnées</span>
                     </div>
                     <fieldset class="p-3">
                       <legend class="sr-only" id="zone">Checkboxes</legend>
@@ -360,13 +358,8 @@
                 class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
                 data-hs-stepper-back-btn="">
                 <svg class="shrink-0 size-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24" height="24"
-                  viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round">
+                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2"vstroke-linecap="round" stroke-linejoin="round">
                   <path d="m15 18-6-6 6-6"></path>
                 </svg>
                 Retour

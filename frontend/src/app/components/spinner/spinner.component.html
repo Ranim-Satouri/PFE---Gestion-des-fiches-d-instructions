@@ -1,4 +1,5 @@
- <div  class="flex items-center justify-center h-screen">
+ <div 
+ *ngIf="isLoading" class="flex items-center justify-center h-screen fixed inset-0 bg-gray-800 bg-opacity-50 z-50">
 <div class="loader">
     <div>
       <ul>
@@ -33,5 +34,5 @@
           </svg>
         </li>
       </ul>
-    </div><span>Loading...</span></div>
+    </div><span class="load text-white font-bold">Loading...</span></div>
 </div>
