@@ -33,4 +33,62 @@
   ::-webkit-scrollbar-track {
     background-color: transparent !important; /* Fond clair */
   }
-  
+  /* Assurez-vous que l'input est bien aligné et visible */
+:host ::ng-deep .custom-password {
+  width: 100%;
+}
+
+:host ::ng-deep .custom-password .p-password {
+  width: 100%;
+}
+/* Style pour le mode sombre */
+:host ::ng-deep .dark .custom-password .p-inputtext {
+  background-color: #1f2937; /* Fond gris foncé pour le mode sombre */
+  border-color: #4b5563; /* Bordure sombre */
+  color: #e5e7eb; /* Texte clair */
+}
+
+
+
+/* Style au focus pour améliorer la visibilité */
+:host ::ng-deep .custom-password .p-inputtext:focus {
+  outline: none;
+  border-color: #3b82f6; /* Bordure bleue au focus */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Ombre bleue subtile */
+}
+:host ::ng-deep .custom-password .p-inputtext {
+  /* Désactiver les suggestions de mots de passe */
+  -webkit-appearance: none; /* Supprime les styles natifs */
+  appearance: none;
+  /* Autres styles existants */
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+  background-color: #ffffff;
+  color: #1f2937;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+/* Forcer la désactivation des suggestions */
+:host ::ng-deep .custom-password .p-inputtext::-webkit-credentials-auto-fill-button,
+:host ::ng-deep .custom-password .p-inputtext::-webkit-credentials-auto-fill-button:hover,
+:host ::ng-deep .custom-password .p-inputtext::-webkit-credentials-auto-fill-button:focus {
+  display: none !important; /* Masquer les boutons de suggestion */
+}
+
+/* Cible la popover de feedback du mot de passe */
+:host ::ng-deep .p-password-panel {
+  width: 200px !important; /* Ajustez la largeur selon vos besoins (par exemple, 200px) */
+  padding: 0.5rem; /* Réduisez le padding pour une apparence plus compacte */
+  font-size: 0.875rem; /* Taille de police plus petite pour le texte */
+}
+
+/* Ajuste le texte à l'intérieur de la popover
+:host ::ng-deep .p-password-panel .p-password-meter-label {
+  font-size: 0.875rem; /* Taille du texte pour "Faible", "Moyen", "Fort" }*/ 
+
+/* Ajuste la jauge de force */
+:host ::ng-deep .p-password-panel .p-password-meter {
+  height: 8px; /* Réduisez la hauteur de la jauge */
+}

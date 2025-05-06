@@ -1,16 +1,16 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, inject } from '@angular/core';
-import { User } from '../../models/User';
-import { UserService } from '../../services/user.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { TableModule } from 'primeng/table';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
+import { PasswordModule } from 'primeng/password'; // Ajoutez cette importation
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { PLATFORM_ID } from '@angular/core';
+import { TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
+import { User } from '../../models/User';
 import { Zone } from '../../models/Zone';
 import { UserZoneService } from '../../services/user-zone.service';
-
+import { UserService } from '../../services/user.service';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-profil',
   standalone: true,
@@ -19,8 +19,8 @@ import { UserZoneService } from '../../services/user-zone.service';
     TableModule,
     ButtonModule,
     TooltipModule,
-    DialogModule,
-    ProgressSpinnerModule
+    DialogModule,FormsModule,
+    ProgressSpinnerModule,PasswordModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './profil.component.html',
@@ -33,10 +33,14 @@ export class ProfilComponent implements OnInit {
   error: string | null = null;
   zones !: Zone[];
 
+  showPasswordInput: boolean = false; // Contrôle l'affichage du champ de mot de passe
+  newPassword: string = ''; // Stocke le nouveau mot de passe
+  confirmPassword: string = ''; // Stocke la confirmation du mot de passe
+  passwordError: string | null = null; // Erreur pour le mot de passe
   private platformId = inject(PLATFORM_ID);
   isBrowser = isPlatformBrowser(this.platformId);
 
-  constructor( private userZoneService: UserZoneService) {}
+  constructor(private userZoneService: UserZoneService, private userService: UserService) {}
 
   ngOnInit(): void {
     // Chargement seulement côté client
@@ -96,7 +100,9 @@ export class ProfilComponent implements OnInit {
   }
 
   isModalVisible: boolean = false;
-
+  onPasswordInput() {
+    this.passwordError = null;
+  }
   // Méthode pour ouvrir le modal
   openPasswordModal(event: Event): void {
     event.preventDefault();  // Empêche le comportement par défaut du lien
@@ -106,5 +112,37 @@ export class ProfilComponent implements OnInit {
   // Méthode pour fermer le modal
   closePasswordModal(): void {
     this.isModalVisible = false;
+  }
+    // Méthode pour basculer l'affichage du champ de mot de passe
+  togglePasswordInput() {
+    this.showPasswordInput = !this.showPasswordInput;
+    this.newPassword = ''; // Réinitialiser les champs
+    this.confirmPassword = '';
+    this.passwordError = null;
+  }
+  changePassword() {
+    
+    if (this.newPassword.length < 6) {
+      this.passwordError = 'Le mot de passe doit contenir au moins 6 caractères.';
+      return;
+    }
+
+    this.loading = true;
+    if (this.user && this.user.idUser !== undefined) {
+      const idActionneur = this.user.idUser; // À remplacer par la valeur correcte
+           this.userService.updatePassword(this.user.idUser, this.newPassword, idActionneur).subscribe({        next: (response) => {
+          this.loading = false;
+          this.showPasswordInput = false;
+          this.error = response; // Affiche "Mot de passe mis à jour avec succès"
+        },
+        error: (err) => {
+          this.loading = false;
+          this.passwordError = 'Erreur lors du changement de mot de passe.';
+          console.error(err);
+        },
+      });
+    } else {
+      this.passwordError = 'Utilisateur non valide ou identifiant manquant.';
+    }
   }
 }

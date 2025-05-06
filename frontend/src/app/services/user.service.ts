@@ -81,6 +81,14 @@ updateUser(idUser:number, user:User , idActionneur:number):Observable<any>
 removeZone(idUser: number, idZone: number, idActionneur: number): Observable<any> {
   return this.http.delete(`${this.apiUrl}/retirerZoneAUser/${idUser}/${idZone}/${idActionneur}`);
 }
+updatePassword(idUser: number, password: string, idActionneur: number): Observable<any> {
+  console.log("user", idUser);
+  console.log("act", idActionneur);
+  const params = new HttpParams()
+    .set('newPassword', password)
+    .set('idActionneur', idActionneur.toString());
+  return this.http.put<string>(`${this.apiUrl2}/password/${idUser}`, null, { params });
+}
 
 //  getZoneUsers(idZone: number): Observable<User_Zone[]> {
 //     return this.http.get<User_Zone[]>(`${this.apiUrl2}/zone-users/${idZone}`);

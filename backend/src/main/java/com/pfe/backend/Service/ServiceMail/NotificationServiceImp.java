@@ -1,11 +1,10 @@
-package com.pfe.backend.ServiceMail;
+package com.pfe.backend.Service.ServiceMail;
 
 
 import com.pfe.backend.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 

@@ -8,10 +8,9 @@ import { routes } from './app.routes';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
-  const refreshToken = localStorage.getItem('refreshToken');
   const http = inject(HttpClient);
   const router = inject(Router);
-  console.log('AuthInterceptor - URL:', req.url, 'Token:', token, 'RefreshToken:', refreshToken);
+  console.log('AuthInterceptor - URL:', req.url, 'Token:', token);
 
   if (req.url.includes('/api/v1/auth') || req.url.includes('/api/v1/auth/refresh')) {
     return next(req.clone({ withCredentials: true }));
@@ -46,7 +45,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                 );
               } else if (err.status === 403) {
                 console.error('403 Forbidden - Access denied');
-                router.navigate(['/access-denied']);
+                // router.navigate(['/access-denied']);
               }
               return throwError(() => err);
             })

@@ -3,7 +3,7 @@ package com.pfe.backend.Service.ServiceFiche;
 import com.pfe.backend.DTO.FicheHistoryDTO;
 import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.*;
-import com.pfe.backend.ServiceMail.NotificationService;
+import com.pfe.backend.Service.ServiceMail.NotificationService;
 import com.pfe.backend.configuration.EncryptionUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -27,6 +27,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.*;
 
 @Service

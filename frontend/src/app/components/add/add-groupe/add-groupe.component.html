@@ -269,7 +269,7 @@
                           <!-- Permissions Collapse Section -->
                         <tr *ngIf="expandedMenus.has(menu.idMenu!)">
                             <td colspan="2" class="px-6 py-2 bg-gray-50 dark:bg-gray-800/50">
-                                <div *ngIf="menuPermissions[menu.idMenu!]; else loadingPermissions" class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-2">
+                                <div *ngIf="menuPermissions[menu.idMenu!]; " class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-2">
                                     <div class="flex flex-col space-y-2">
                                         <label *ngFor="let permission of menuPermissions[menu.idMenu!]" 
                                                 class="flex items-center gap-2 text-sm p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer relative">
@@ -291,7 +291,7 @@
                                         </label>
                                     </div>
                                 </div>
-                            <ng-template #loadingPermissions>
+                            <!-- <ng-template #loadingPermissions> fel td ken famma ba3d ; else loadingPermissions
                                 <div class="flex items-center justify-center py-3">
                                 <svg class="animate-spin h-5 w-5 text-blue-600 dark:text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -299,7 +299,7 @@
                                 </svg>
                                 <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">Chargement des permissions...</span>
                                 </div>
-                            </ng-template>
+                            </ng-template> -->
                             </td>
                         </tr>
   

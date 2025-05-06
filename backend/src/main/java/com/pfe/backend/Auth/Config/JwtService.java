@@ -23,7 +23,7 @@
      @Value("${jwt.refresh-token.expiration:604800000}") // 7 jours par défaut
      private long REFRESH_TOKEN_EXPIRATION;
 
-     private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60; // 1 minute pour les tests
+     private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60; // 1 minute pour les tests
 
      public String extractUsername(String token) {
          return extractClaim(token, Claims::getSubject);

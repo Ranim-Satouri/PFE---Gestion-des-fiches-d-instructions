@@ -1,4 +1,4 @@
-package com.pfe.backend.ServiceMail;
+package com.pfe.backend.Service.ServiceMail;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

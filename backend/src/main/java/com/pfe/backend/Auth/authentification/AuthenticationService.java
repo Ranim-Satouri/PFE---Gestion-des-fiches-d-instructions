@@ -2,10 +2,12 @@ package com.pfe.backend.Auth.authentification;
 import com.pfe.backend.Auth.Config.JwtService;
 import com.pfe.backend.Auth.Exception.InactiveAccountException;
 import com.pfe.backend.Auth.Exception.NoGroupException;
+import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Repository.GroupeRepository;
 import com.pfe.backend.Repository.UserRepository;
+import com.pfe.backend.Service.ServiceMail.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,8 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     @Autowired
     private final GroupeRepository groupeRepository;
+    @Autowired
+    private final EmailService emailService;
     public AuthenticationResponse register(RegisterRequest request, Long idCreator) {
         //this register will allow us to create a user , save it to the db and return the generated token out of it
         // Récupérer l'email de l'utilisateur qui crée le compte (SuperUser/Admin)
@@ -83,16 +87,32 @@ public class AuthenticationService {
                   groupe.addUser(user); // uniquement si groupe non null
               }
             user = repository.save(user);
+            registreMail(user);
         }
             var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
             //we need to encode our pwd before saving it so we neeed to inject our passwordencoder Service
-        String groupeNom = user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe";
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .user(user)
                 .groupe(user.getGroupe() != null ? user.getGroupe().getNom() : "Aucun groupe")
                 .build();
+    }
+    public void registreMail(User user) {
+
+        String subject = "Votre compte Instructis a été créé";
+        String text = "Bonjour " + user.getPrenom() + " " + user.getNom() + ",\n\n"
+                + "Votre compte sur la plateforme Instructis a été créé avec succès.\n\n"
+                + "Voici vos informations de connexion :\n"
+                + "Matricule: " + user.getMatricule() + "\n"
+                + "Mot de passe temporaire: 123456"  + "\n\n"
+                + "Pour des raisons de sécurité, nous vous recommandons fortement de :\n"
+                + "1. Vous connecter immédiatement avec ces identifiants\n"
+                + "2. Changer votre mot de passe dans la section 'Mon profil'\n\n"
+                + "Cordialement,\n"
+                + "L'équipe Instructis\n"
+                + "Sagemcom";
+
+        emailService.sendEmail(user.getEmail(), subject, text);
     }
     public AuthenticationResponse authenticate(AuthenticationRequest request,HttpServletResponse response) {
         try {
@@ -144,4 +164,5 @@ public class AuthenticationService {
         user.setActionneur(actionneur);
         repository.save(user);
     }
+
 }
