@@ -47,25 +47,25 @@ public class Groupe {
     private List<Permission> permissions= new ArrayList<>();
 
 //    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "groupe_menus",joinColumns = @JoinColumn(name = "idGroupe"),
-            inverseJoinColumns = @JoinColumn(name = "idMenu"))
-    private List<Menu> menus = new ArrayList<>();
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinTable(name = "groupe_menus",joinColumns = @JoinColumn(name = "idGroupe"),
+//            inverseJoinColumns = @JoinColumn(name = "idMenu"))
+//    private List<Menu> menus = new ArrayList<>();
    //helper methods , for bette functionning
     public void addUser(User user) {
         users.add(user);
         user.setGroupe(this);
     }
-    public void removeUser(User user) {
-        users.remove(user);
-        user.setGroupe(null);
-    }
+//    public void removeUser(User user) {
+//        users.remove(user);
+//        user.setGroupe(null);
+//    }
     public void addPermission(Permission permission) {
         this.permissions.add(permission);
         permission.getGroupes().add(this);
     }
-    public void addMenu(Menu menu) {
-        this.menus.add(menu);
-        menu.getGroupes().add(this);
-    }
+//    public void addMenu(Menu menu) {
+//        this.menus.add(menu);
+//        menu.getGroupes().add(this);
+//    }
 }

@@ -89,12 +89,12 @@ public class GroupeServiceImp implements GroupeService {
     }
 
     @Override
-    public Groupe addRelationsToGroup(Long groupId, List<Long> menuIds, List<Long> permissionIds, List<Long> userIds , Long idActionneur) {
+    public Groupe addRelationsToGroup(Long groupId, List<Long> permissionIds, List<Long> userIds , Long idActionneur) {
         Groupe groupe = groupeRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Groupe non trouvé"));
 
-        List<Menu> selectedMenus = menuRepository.findAllById(menuIds);
-        groupe.setMenus(selectedMenus);
+//        List<Menu> selectedMenus = menuRepository.findAllById(menuIds);
+//        groupe.setMenus(selectedMenus);
 
         List<Permission> selectedPermissions = permissionRepository.findAllById(permissionIds);
         groupe.setPermissions(selectedPermissions);

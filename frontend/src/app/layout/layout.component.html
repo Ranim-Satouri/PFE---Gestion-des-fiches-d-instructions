@@ -96,7 +96,7 @@ border-solid border-b shadow-md
     </button>
     <ul class="space-y-2  sm:mt-10 mt-2 font-semibold">
         <li *ngIf="hasMenu('Dashboard')">
-            <a href="/dahsboard" [ngClass]="{'bg-gray-200 dark:bg-gray-700 dark:text-white': getCurrentPath() === '/dashboard'}"
+            <a href="/dashboard" [ngClass]="{'bg-gray-200 dark:bg-gray-700 dark:text-white': getCurrentPath() === '/dashboard'}"
              class="h-[40px] flex items-center pl-[9.5px] text-gray-900 rounded-lg dark:text-gray-400 hover:bg-gray-200 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white group" 
              >
                 <svg  class="w-5 h-5 transition duration-75 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
@@ -116,7 +116,7 @@ border-solid border-b shadow-md
             </a>
         </li>
      
-        <li *ngIf="hasMenu('utilsateurs')">
+        <li *ngIf="hasMenu('utilisateurs')">
             <a href="/userlist" class="h-[40px] flex items-center pl-[9.5px] text-gray-900 rounded-lg dark:text-gray-400 hover:bg-gray-200 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white group" 
             [ngClass]="{'bg-gray-200 dark:bg-gray-700 dark:text-white': getCurrentPath() === '/userlist'}">
             <svg class="shrink-0 w-5 h-5  transition duration-75 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">

@@ -33,15 +33,26 @@ export class LayoutComponent {
     //   // console.warn("Erreur lors de la récupération de sidebarState:", error);
     // }
     if (isPlatformBrowser(this.platformId)) {
-    try {
-      this.currentUser = JSON.parse(localStorage.getItem('user')!);
-      this.matricule = this.currentUser.matricule;
-      this.email = this.currentUser.email;
-      this.nom = this.currentUser.nom;
-      this.menus = this.currentUser.groupe?.menus!;
-    } catch (error) {
-      // console.warn("Erreur lors de la récupération de sidebarState:", error);
-    }  }
+      try {
+        this.currentUser = JSON.parse(localStorage.getItem('user')!);
+        this.matricule = this.currentUser.matricule;
+        this.email = this.currentUser.email;
+        this.nom = this.currentUser.nom;
+        //recuperer les permissions
+        const permissions = this.currentUser.groupe?.permissions || [];
+        const uniqueMenusMap = new Map<number, any>();
+        for (const permission of permissions) {
+          const menu = permission.menu;
+          if (menu && !uniqueMenusMap.has(menu.idMenu)) {
+            uniqueMenusMap.set(menu.idMenu, menu);
+          }
+        }
+        this.menus = Array.from(uniqueMenusMap.values());
+        
+      } catch (error) {
+        // console.warn("Erreur lors de la récupération de sidebarState:", error);
+      }  
+    }
   }
   logout() {
     localStorage.removeItem('token');

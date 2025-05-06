@@ -23,4 +23,8 @@ public class Permission {
     @JsonIgnore
     @ManyToMany(mappedBy = "permissions", fetch = FetchType.LAZY)
     private List<Groupe> groupes;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idMenu")
+    private Menu menu;
 }

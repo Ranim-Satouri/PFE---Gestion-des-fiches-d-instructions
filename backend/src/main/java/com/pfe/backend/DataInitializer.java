@@ -32,63 +32,65 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Vérifier et insérer les menus
-        addMenuIfNotExists("Dashboard");
-        addMenuIfNotExists("fiches");
-        addMenuIfNotExists("utilsateurs");
-        addMenuIfNotExists("zones");
-        addMenuIfNotExists("produits");
-        addMenuIfNotExists("familles");
-        addMenuIfNotExists("groupes");
-        addMenuIfNotExists("lignes");
-        addMenuIfNotExists("operations");
+        // Création des menus avec leurs permissions
+        createMenuWithPermissions("Dashboard", List.of("consulter_dashboard"));
 
-        // Vérifier et insérer les permissions
-        addPermissionIfNotExists("consulter_famille");
-        addPermissionIfNotExists("creer_famille");
-        addPermissionIfNotExists("modifier_famille");
-        addPermissionIfNotExists("supprimer_famille");
+        createMenuWithPermissions("fiches", List.of(
+                "consulter_fiche", "creer_fiche", "modifier_fiche", "supprimer_fiche",
+                "valider_fiche_IQP", "valider_fiche_IPDF" , "consulter_historique_fiche"
+        ));
 
-        addPermissionIfNotExists("consulter_produit");
-        addPermissionIfNotExists("creer_produit");
-        addPermissionIfNotExists("modifier_produit");
-        addPermissionIfNotExists("supprimer_produit");
+        createMenuWithPermissions("utilisateurs", List.of(
+                "consulter_utilisateur", "creer_utilisateur", "modifier_utilisateur",
+                "supprimer_utilisateur", "activer_desactiver_utilisateur" ,"consulter_historique_utilisateur"
+        ));
 
-        addPermissionIfNotExists("consulter_zone");
-        addPermissionIfNotExists("creer_zone");
-        addPermissionIfNotExists("modifier_zone");
-        addPermissionIfNotExists("supprimer_zone");
+        createMenuWithPermissions("zones", List.of(
+                "consulter_zone", "creer_zone", "modifier_zone", "supprimer_zone"
+        ));
 
-        addPermissionIfNotExists("consulter_fiche");
-        addPermissionIfNotExists("creer_fiche");
-        addPermissionIfNotExists("modifier_fiche");
-        addPermissionIfNotExists("supprimer_fiche");
-        addPermissionIfNotExists("valider_fiche_IQP");
-        addPermissionIfNotExists("valider_fiche_IPDF");
+        createMenuWithPermissions("produits", List.of(
+                "consulter_produit", "creer_produit", "modifier_produit", "supprimer_produit"
+        ));
 
-        addPermissionIfNotExists("consulter_utilisateur");
-        addPermissionIfNotExists("creer_utilisateur");
-        addPermissionIfNotExists("modifier_utilisateur");
-        addPermissionIfNotExists("supprimer_utilisateur");
-        addPermissionIfNotExists("activer_desactiver_utilisateur");
+        createMenuWithPermissions("familles", List.of(
+                "consulter_famille", "creer_famille", "modifier_famille", "supprimer_famille"
+        ));
 
-        addPermissionIfNotExists("consulter_groupe");
-        addPermissionIfNotExists("creer_groupe");
-        addPermissionIfNotExists("modifier_groupe");
-        addPermissionIfNotExists("supprimer_groupe");
+        createMenuWithPermissions("groupes", List.of(
+                "consulter_groupe", "creer_groupe", "modifier_groupe", "supprimer_groupe"
+        ));
 
-        addPermissionIfNotExists("consulter_ligne");
-        addPermissionIfNotExists("creer_ligne");
-        addPermissionIfNotExists("modifier_ligne");
-        addPermissionIfNotExists("supprimer_ligne");
+        createMenuWithPermissions("lignes", List.of(
+                "consulter_ligne", "creer_ligne", "modifier_ligne", "supprimer_ligne"
+        ));
 
-        addPermissionIfNotExists("consulter_operation");
-        addPermissionIfNotExists("creer_operation");
-        addPermissionIfNotExists("modifier_operation");
-        addPermissionIfNotExists("supprimer_operation");
-
-        addPermissionIfNotExists("consulter_historique");
+        createMenuWithPermissions("operations", List.of(
+                "consulter_operation", "creer_operation", "modifier_operation", "supprimer_operation"
+        ));
         addSuperuserGroupIfNotExists();
+    }
+
+    private void createMenuWithPermissions(String menuName, List<String> permissions) {
+        // Vérifie si le menu existe déjà
+        Menu menu = menuRepository.findByNom(menuName);
+        if (menu == null) {
+            menu = new Menu();
+            menu.setNom(menuName);
+            menu = menuRepository.save(menu);
+        }
+        System.out.println(permissions);
+        // Ajoute les permissions liées à ce menu
+        for (String permName : permissions) {
+            if (permissionRepository.findByNom(permName) == null) {
+                System.out.println(permName);
+                Permission permission = new Permission();
+                permission.setNom(permName);
+                permission.setMenu(menu); // Lien vers le menu
+                System.out.println(permission.getMenu().getIdMenu());
+                permissionRepository.save(permission);
+            }
+        }
     }
 
     private void addMenuIfNotExists(String menuName) {
@@ -99,18 +101,17 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
-    private void addPermissionIfNotExists(String permissionName) {
-        if (permissionRepository.findByNom(permissionName) == null) {  // Vérifier si la permission existe déjà
-            Permission permission = new Permission();
-            permission.setNom(permissionName);
-            permissionRepository.save(permission);
-        }
-    }
+//    private void addPermissionIfNotExists(String permissionName) {
+//        if (permissionRepository.findByNom(permissionName) == null) {  // Vérifier si la permission existe déjà
+//            Permission permission = new Permission();
+//            permission.setNom(permissionName);
+//            permissionRepository.save(permission);
+//        }
+//    }
 
     private void addSuperuserGroupIfNotExists() {
         if (groupeRepository.findByNom("SUPERUSER") == null) {
-            // Fetch all menus and permissions
-            List<Menu> allMenus = menuRepository.findAll();
+            // Fetch all  permissions
             List<Permission> allPermissions = permissionRepository.findAll();
 
             // Create the "SUPERUSER" group
@@ -120,19 +121,10 @@ public class DataInitializer implements CommandLineRunner {
                     .actionneur(null)
                     .modifieLe(LocalDateTime.now())
                     .users(new ArrayList<>())
-                    .menus(new ArrayList<>()) // Initialize here
                     .permissions(new ArrayList<>()) // Initialize here
                     .isDeleted(false)
                     .build();
 
-            // Add all menus and permissions using helper methods
-            for (Menu menu : allMenus) {
-                // Initialize the groupes collection if it's null
-                if (menu.getGroupes() == null) {
-                    menu.setGroupes(new ArrayList<>());
-                }
-                superuserGroup.addMenu(menu);
-            }
             for (Permission permission : allPermissions) {
                 // Initialize the groupes collection if it's null
                 if (permission.getGroupes() == null) {

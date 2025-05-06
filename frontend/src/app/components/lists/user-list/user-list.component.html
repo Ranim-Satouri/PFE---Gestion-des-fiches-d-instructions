@@ -224,7 +224,7 @@
 
 
                     <th class="px-4 py-2 text-right relative">
-                        <div *ngIf="hasPermission('supprimer_utilisateur')  || hasPermission('consulter_historique') || hasPermission('modifier_utilisateur')" class="relative inline-block text-left">
+                        <div *ngIf="hasPermission('supprimer_utilisateur')  || hasPermission('consulter_historique_utilisateur') || hasPermission('modifier_utilisateur')" class="relative inline-block text-left">
                             <button (click)="toggleDropdown(i, $event)"
                             [ngClass]="{'dark:bg-gray-600 bg-gray-300': dropdownOpen === i , ' bg-transparent': dropdownOpen !== i}"
                             class="p-1 dark:hover:bg-gray-600  hover:bg-gray-300 rounded-full focus:outline-none">
@@ -251,7 +251,7 @@
                                             <path d="M13.5 6.5l4 4"></path><path d="M16 19h6"></path></svg>
                                         Modifier</a>
                                 </li>
-                                <li *ngIf="hasPermission('consulter_historique')">
+                                <li *ngIf="hasPermission('consulter_historique_utilisateur')">
                                 <a (click)="openUserHistory(user.idUser)"
                                  class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- History Icon -->

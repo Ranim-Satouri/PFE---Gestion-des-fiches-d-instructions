@@ -1,10 +1,12 @@
 package com.pfe.backend.Controller;
 
 import com.pfe.backend.Model.Menu;
+import com.pfe.backend.Model.Permission;
 import com.pfe.backend.Service.ServiceMenu.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,5 +21,9 @@ public class MenuController {
     public ResponseEntity<List<Menu>> getAllMenus() {
         List<Menu> menus = menuService.getAllMenus();
         return ResponseEntity.ok(menus);
+    }
+    @GetMapping("/getPermissionsByMenu/{idMenu}")
+    public ResponseEntity<List<Permission>> getPermissionsByMenu(@PathVariable long idMenu) {
+        return ResponseEntity.ok(menuService.getPermissionsByMenu(idMenu));
     }
 }
