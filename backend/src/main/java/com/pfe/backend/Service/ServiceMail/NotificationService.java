@@ -1,4 +1,4 @@
-package com.pfe.backend.ServiceMail;
+package com.pfe.backend.Service.ServiceMail;
 
 import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.User;

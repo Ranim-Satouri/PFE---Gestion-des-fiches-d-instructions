@@ -94,12 +94,13 @@ const groupeRoutes: Record<string, string> = {
 'IPDF': '/fichelist',
 'IQP': '/fichelist',
 'OPERATEUR': '/fichelist',
+'Test': '/fichelist',
 '': '/access-denied',
   };
   const route = groupeRoutes[groupeNom];
   if (!route) {
   console.error(`Aucune route définie pour le groupe : ${groupeNom}`);
-  this.router.navigate(['/access-denied']);
+  this.router.navigate(['/fichelist']);
   return;
   }
   console.log('Redirection vers:', route);

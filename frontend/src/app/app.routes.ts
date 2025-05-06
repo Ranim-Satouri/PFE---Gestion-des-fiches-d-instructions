@@ -17,11 +17,13 @@ import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ProfilComponent } from './components/profil/profil.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 export const routes: Routes = [
     { path: '', component: LoginComponent },
     { path : 'history/:idUser', component: UserHistoryComponent },
     {path : "zone-history/:idZone", component : ZoneHistoryComponent},
     {path : "famille-history/:idFamille", component : FamilleHistoryComponent},
+    {path : 'spinner', component: SpinnerComponent},
     {
       path:'particles' ,
       component :ParticlesComponent,

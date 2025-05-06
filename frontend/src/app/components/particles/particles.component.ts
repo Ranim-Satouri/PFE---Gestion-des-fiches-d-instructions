@@ -32,7 +32,7 @@ export class ParticlesComponent implements AfterViewInit {
           },
           particles: {
             number: {
-              value: 100, // Nombre de particules au debut
+              value: 120, // Nombre de particules au debut
             },
             color: {
               value: [

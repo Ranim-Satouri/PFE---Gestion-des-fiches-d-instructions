@@ -63,14 +63,14 @@ border-solid border-b shadow-md
                 </div>
                 <ul class="py-1" role="none">
                     <li>
-                        <a href="#" (click)="openProfileDialog(); $event.preventDefault()" class="block px-4 py-2 mx-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Profil</a>
+                        <a (click)="openProfileDialog(); $event.preventDefault()" class="block px-4 py-2 mx-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Profile</a>
                     </li>
-                  <li>
-                    <a href="#" class="block px-4 py-2 mx-2 rounded-lg  text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</a>
+                  <!-- <li>
+                    <a  class="block px-4 py-2 mx-2 rounded-lg  text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</a>
                   </li>
                   <li>
                     <a href="#" class="block px-4 py-2 mx-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
-                  </li>
+                  </li> -->
                   <li>
                     <a (click)="logout()" class="block px-4 py-2 mx-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Déconnexion</a>
                   </li>
@@ -96,7 +96,7 @@ border-solid border-b shadow-md
     </button>
     <ul class="space-y-2  sm:mt-10 mt-2 font-semibold">
         <li *ngIf="hasMenu('Dashboard')">
-            <a href="/dahsboard" [ngClass]="{'bg-gray-200 dark:bg-gray-700 dark:text-white': getCurrentPath() === '/dashboard'}"
+            <a href="/dashboard" [ngClass]="{'bg-gray-200 dark:bg-gray-700 dark:text-white': getCurrentPath() === '/dashboard'}"
              class="h-[40px] flex items-center pl-[9.5px] text-gray-900 rounded-lg dark:text-gray-400 hover:bg-gray-200 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white group" 
              >
                 <svg  class="w-5 h-5 transition duration-75 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">

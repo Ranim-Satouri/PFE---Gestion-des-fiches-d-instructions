@@ -88,7 +88,6 @@ public ResponseEntity<AuthenticationResponse> register(
         @RequestBody RegisterRequest request,
         @RequestParam(required = false) Long idCreator) {
     System.out.println("d5alna");
-    System.out.println(request);
     try {
         System.out.println("hani f try");
         AuthenticationResponse response = Aservice.register(request, idCreator);
@@ -105,13 +104,25 @@ public ResponseEntity<AuthenticationResponse> register(
 //            HttpServletResponse response) {
 //        return ResponseEntity.ok(Aservice.authenticate(request, response));
 //    }
-    @PutMapping("/{idUser}/password")
+    @PutMapping("/password/{idUser}")
     public ResponseEntity<String> updatePassword(
             @PathVariable Long idUser,
             @RequestParam String newPassword,
             @RequestParam Long idActionneur) {
-        Aservice.updatePassword(idUser, newPassword, idActionneur);
-        return ResponseEntity.ok("Mot de passe mis à jour avec succès");
+
+        try {
+            // Validation minimale
+            if (newPassword == null || newPassword.isBlank()) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Aservice.updatePassword(idUser, newPassword, idActionneur);
+            return ResponseEntity.noContent().build();
+
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la mise à jour du mot de passe");
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 }
