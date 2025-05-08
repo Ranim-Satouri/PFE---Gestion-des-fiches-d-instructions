@@ -22,7 +22,7 @@ export class AddGroupeComponent {
   constructor(private userService:UserService, private menuService: MenuService,private groupeService: GroupeService) {}
   currentStep : number = 1;
   userConnected !: User;
-  steps = ["Groupe", "Menu & Permissions" , "Utilsateurs"];
+  steps = ["Groupe", "Menu & Permissions"];
   users: User[] = [];
   menus: Menu[] = [];
   permissions: Permission[] = [];
@@ -49,7 +49,6 @@ export class AddGroupeComponent {
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
-    this.getUsers(); 
     this.getMenus();
     
     if (this.groupe && this.groupe.idGroupe) {
@@ -83,7 +82,6 @@ export class AddGroupeComponent {
       this.menuPermissions = {}; // Initialiser un objet pour stocker les permissions par menu
       for (const menu of this.menus) {
         // Ajouter les permissions associées au menu
-        //this.menuPermissions[menu.idMenu!] = this.groupe.permissions?.filter(permission => permission.menu?.idMenu === menu.idMenu!) || [];
         this.loadPermissionsByMenu(menu.idMenu);
       }
   
@@ -95,20 +93,28 @@ export class AddGroupeComponent {
     }
   }
   
-
   goToPreviousStep() {
     if (this.currentStep > 1) {
       this.currentStep--;
     }
   }
 
-  // Fermer le formulaire
   closeForm() {
     this.close.emit();
   }
 
-  // Méthode appelée lors de la soumission du formulaire
-  onGroupNameSubmit(buttonType: string): void {
+  onSubmit(){
+    if(this.isNewGroup){
+      console.log("new group")
+      this.onGroupNameSubmit();
+    }else{
+      this.onGroupNameUpdate();
+    }
+   
+
+  }
+
+  onGroupNameSubmit(): void {
     if (this.groupeForm.valid) {
       const newGroupe: Groupe = {
         nom: this.groupeForm.value.nom,
@@ -121,22 +127,13 @@ export class AddGroupeComponent {
             this.groupe = response; 
             this.isNewGroup = false;
             this.errorMessage = '';
-           
-            if (buttonType === 'create') {
-              // this.successMessage = `Groupe "${response.nom}" ajoutée avec succès !`;
-    
-              // setTimeout(() => {
-                this.closeForm();
-              //   this.successMessage = '';
-              // }, 2000);
-            } else if (buttonType === 'createAndAssign') {
-              this.goToNextStep();
-            }
+            //this.goToNextStep();
+            this.addRelationsToGroup();
+            
       },
         error: (err) => {
           this.successMessage = '';
           console.error('Erreur lors de l’ajout :', err);
-  
           if (err.status === 404) {
             this.errorMessage = "Actionneur introuvable";
           } else if (err.status === 409) {
@@ -144,7 +141,6 @@ export class AddGroupeComponent {
           } else {
             this.errorMessage = "Une erreur inattendue est survenue.";
           }
-  
           setTimeout(() => {
             this.errorMessage = '';
           }, 2000);
@@ -153,9 +149,8 @@ export class AddGroupeComponent {
     } else {
       this.groupeForm.markAllAsTouched();
     }
-    
   }
-  onGroupNameUpdate(buttonType: string): void {
+  onGroupNameUpdate(): void {
     if (this.groupeForm.valid) {
       console.log(this.groupeForm.value.nom)
       const newGroupe: Groupe = {
@@ -169,16 +164,8 @@ export class AddGroupeComponent {
             this.groupe = response; 
             this.isNewGroup = false;    
             this.errorMessage = '';
-           
-            if (buttonType === 'create') {
-              this.successMessage = `Groupe "${response.nom}" modifiée avec succès !`;   
-              setTimeout(() => {
-                this.closeForm();
-                this.successMessage = '';
-              }, 2000);
-            } else if (buttonType === 'createAndAssign') {
-              this.goToNextStep();
-            }
+            //this.goToNextStep();
+            this.addRelationsToGroup();
         },
         error: (err) => {
          
@@ -204,21 +191,21 @@ export class AddGroupeComponent {
     
   }
 
-  // Méthode pour définir l'étape active
   setStep(step: number) {
-    if (this.groupeForm.valid && this.groupe.nom === this.groupeForm.value.nom ) {
-      this.currentStep = step;
-    } else {
-      this.groupeForm.markAllAsTouched();
-    }
+    // if (this.groupeForm.valid && this.groupe.nom === this.groupeForm.value.nom ) {
+    //   this.currentStep = step;
+    // } else {
+    //   this.groupeForm.markAllAsTouched();
+    // }
+    this.currentStep = step;
   }
 
-  // Méthode pour passer à l'étape suivante
   goToNextStep() {
     if (this.currentStep < this.steps.length) {
       this.currentStep++;
     }
   }
+
   getMenus() {
     this.menuService.getAllMenus().subscribe(
       (menus) => {
@@ -234,53 +221,6 @@ export class AddGroupeComponent {
     );
   }
   
-  getUsers(){
-    this.userService.getAll().subscribe(
-      (data: User[]) => {
-        if (this.groupe && this.groupe.idGroupe) {
-          this.users = data.filter(user => !user.groupe || !user.groupe.idGroupe || user.groupe?.idGroupe === this.groupe.idGroupe);
-          this.selectedUsers = new Set(this.users?.filter(user => user.groupe?.idGroupe === this.groupe.idGroupe).map(user => user.idUser!)); // hatytha lenna mech fel ngOninit khater feha this.users wel fel oninit mazelt null 
-        }else{
-          this.users = data.filter(user => !user.groupe || !user.groupe.idGroupe );
-        }
-      },
-      (error) => {
-        console.error('Erreur lors de la récupération des utilisateurs', error);
-      }
-    );
-  }
-  get filteredUsers(): User[] {
-    return this.users.filter(user => {
-      const matchesSearch =
-        `${user.nom} ${user.prenom} ${user.matricule}`.toLowerCase().includes(this.userSearchText.toLowerCase());
-      const isAssigned = this.selectedUsers.has(user.idUser!);
-  
-      const matchesAffectation = this.affectationFilter === 'Affectés'
-        ? isAssigned
-        : this.affectationFilter === 'Non affectés'
-          ? !isAssigned
-          : true;
-  
-      return matchesSearch  && matchesAffectation;
-    });
-  }
-  get filteredPermissions(): Permission[] {
-    return this.permissions.filter(permission => {
-      const matchesSearch =
-        `${permission.nom}`.toLowerCase().includes(this.permessionSearchText.toLowerCase());
-  
-    
-      const isAssigned = this.selectedPermissions.has(permission.idPermission!);
-  
-      const matchesAffectation = this.affectationFilter === 'Affectés'
-        ? isAssigned
-        : this.affectationFilter === 'Non affectés'
-          ? !isAssigned
-          : true;
-  
-      return matchesSearch  && matchesAffectation;
-    });
-  }
   get filteredMenus(): Menu[] {
     return this.menus.filter(menu => {
       const matchesSearch =
@@ -303,18 +243,19 @@ export class AddGroupeComponent {
     this.affectationFilter = state;
     this.showSelectorDropdown = false;
   }
-  // Méthode pour ajouter les relations (menus, permissions, utilisateurs) après l'enregistrement du groupe
   addRelationsToGroup(): void {
     console.log("pppppppppppppppp",this.selectedPermissions)
     const array1 = Array.from(new Set(this.groupe.permissions?.map(p => p.idPermission!)));
     const array2 = Array.from(this.selectedPermissions);
-    const array3 = Array.from(new Set(this.groupe.menus?.map(m => m.idMenu!)));
-    const array4 = Array.from(this.selectedMenus);
-    const array5 = Array.from(new Set(this.users?.filter(user => user.groupe?.idGroupe === this.groupe.idGroupe).map(user => user.idUser!)));
-    const array6 = Array.from(this.selectedUsers);
-
-    if(!array1.every(item => array2.includes(item)) || !array2.every(item => array1.includes(item)) 
-      || !array4.every(item => array3.includes(item))|| !array5.every(item => array6.includes(item)) || !array6.every(item => array5.includes(item)) ){
+    if(array2.length === 0 ){
+      this.successMessage = '';
+      this.errorMessage = "Un groupe doit avoir au moins une permission."; 
+      setTimeout(() => {
+          this.errorMessage = '';
+      }, 2000);
+    }else if (array1.every(item => array2.includes(item)) && array2.every(item => array1.includes(item))){
+      this.closeForm();
+    }else{
       this.groupeService.addRelationsToGroup(this.groupe.idGroupe!, Array.from(this.selectedPermissions), Array.from(this.selectedUsers), this.userConnected.idUser!)
       .subscribe(response => {
         console.log('Relations ajoutées avec succès:', response);
@@ -327,19 +268,8 @@ export class AddGroupeComponent {
       }, error => {
         console.error('Erreur lors de l\'ajout des relations:', error);
       });
-    }else{
-      this.closeForm();
     }
   }
- // Sélectionner un utilisateur
-  toggleUserSelection(userId: number) {
-    if (this.selectedUsers.has(userId)) {
-      this.selectedUsers.delete(userId);
-    } else {
-      this.selectedUsers.add(userId);
-    }
-  }
-
   // Sélectionner une permission
   togglePermissionSelection(permissionId: number) {
     
@@ -349,6 +279,7 @@ export class AddGroupeComponent {
       this.selectedPermissions.add(permissionId);
     }
   }
+
   @HostListener('document:click', ['$event'])
   closeDropdown(event: MouseEvent) {
     const target = event.target as HTMLElement;
@@ -362,44 +293,6 @@ export class AddGroupeComponent {
     }
   }
 
-  // selectAllPermissions(event: Event ) {
-  //   const isChecked = (event.target as HTMLInputElement).checked;
-  //   if (isChecked) {
-  //     this.filteredPermissions.forEach(permission => this.selectedPermissions.add(permission.idPermission!));
-  //   } else {
-  //     this.selectedPermissions.clear();
-  //   }
-  // }
-  selectAllUsers(event: Event ) {
-    const isChecked = (event.target as HTMLInputElement).checked;
-    if (isChecked) {
-      this.filteredUsers.forEach(user => this.selectedUsers.add(user.idUser!));
-    } else {
-      this.selectedUsers.clear();
-    }
-  }
-  // selectAllMenus(event: Event ) {
-  //   const isChecked = (event.target as HTMLInputElement).checked;
-  //   if (isChecked) {
-  //     this.filteredMenus.forEach(menu => this.selectedMenus.add(menu.idMenu!));
-  //   } else {
-  //     this.selectedMenus.clear();
-  //   }
-  // }
-
- 
-  // loadPermissionsByMenu(menuId: number): void {
-  //   if (!this.menuPermissions[menuId]) {
-  //     this.menuService.getPermissionsByMenu(menuId).subscribe(
-  //       (permissions: Permission[]) => {
-  //         this.menuPermissions[menuId] = permissions;
-  //       },
-  //       (error) => {
-  //         console.error(`Erreur lors du chargement des permissions pour le menu ${menuId}`, error);
-  //       }
-  //     );
-  //   }
-  // }
   toggleMenuCollapse(menuId: number) {
     if (this.expandedMenus.has(menuId)) {
       this.expandedMenus.delete(menuId);
@@ -441,8 +334,6 @@ export class AddGroupeComponent {
     }
   }
   
- 
-  
   loadPermissionsByMenu(menuId: number) {
     if (!this.menuPermissions[menuId]) {
       this.menuService.getPermissionsByMenu(menuId).subscribe(
@@ -478,6 +369,5 @@ export class AddGroupeComponent {
       );
     }
   }
-  
   
 }
