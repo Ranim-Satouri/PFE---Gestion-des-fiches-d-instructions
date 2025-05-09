@@ -155,9 +155,8 @@
                 dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 dark:peer-focus:text-gray-500"> Matricule</label>
               </div> <br />
              
-              <!--num et genre-->          
               <div class="flex flex-row space-x-3 bg-inherit rounded-lg w-full ">
-                <!-- Num -->
+                <!-- Genre -->
 
                 <div class="relative bg-inherit w-full">
                   <select
@@ -195,24 +194,31 @@
                   placeholder="email"
                   formControlName="email"
                   [ngClass]="{
-                    'border-red-500 ring-red-500':
-                      registerForm.get('email')?.invalid && registerForm.get('email')?.touched,
-                    'border-gray-400 dark:border-gray-700': !(
-                      registerForm.get('email')?.invalid && registerForm.get('email')?.touched )}" />
+                    'border-red-500 ring-red-500': registerForm.get('email')?.invalid && registerForm.get('email')?.touched,
+                    'border-gray-400 dark:border-gray-700': !(registerForm.get('email')?.invalid && registerForm.get('email')?.touched)
+                  }" />
 
                 <label for="email"
                 class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white px-1 peer-placeholder-shown:text-base
                 peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-blue-600 peer-focus:text-sm
                 transition-all dark:border-none dark:bg-gray-900 dark:text-white dark:shadow-gray-900 dark:focus:ring-blue-500 dark:border-gray-600
                 dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 dark:peer-focus:text-gray-500"> Email</label>
-              </div>
+             <!-- Message d'erreur pour email -->
+              <div
+              *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+              class="text-red-500 text-xs mt-1">
+              <span 
+              *ngIf="registerForm.get('email')?.errors?.['email']">Veuillez entrer un email valide.</span>
+            </div>
+          </div>
+       
               <div class="relative bg-white mt-4 rounded-lg 5.5">
                 <input type="text" id="numero" name="numero"
                   class="peer bg-transparent h-10 w-full rounded-lg text-gray-800 placeholder-transparent ring-2 px-2 ring-gray-300 focus:ring-blue-500 
                    focus:ring-sky-600 focus:outline-none                  
                    dark:bg-gray-900 dark:text-white  dark:shadow-gray-900 dark:focus:ring-blue-500 dark:border-gray-600 
                    dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 dark:ring-gray-600 "
-                  placeholder="Password"
+                  placeholder="Numéro"
                   formControlName="numero"
                   [ngClass]="{
                     'border-red-500 ring-red-500': registerForm.get('numero')?.invalid && registerForm.get('numero')?.touched,
@@ -221,134 +227,134 @@
                 <label  for="numero" class="absolute cursor-text left-2 -top-3 text-sm text-gray-500 bg-white px-1 peer-placeholder-shown:text-base
                 peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3 peer-focus:text-blue-600 peer-focus:text-sm
                 transition-all dark:border-none dark:bg-gray-900 dark:text-white dark:shadow-gray-900 dark:focus:ring-blue-500 dark:border-gray-600
-                dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 dark:peer-focus:text-gray-500"> Numéro</label><br />
-              </div> <br />
-            </div>
-            <!-- End Second Content -->
-            <!-- 3 Content -->
+                dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 dark:peer-focus:text-gray-500"> Numéro</label>
+                
+                <!-- <br /> -->
+              <!-- Message d'erreur pour numéro -->
             <div
-              *ngIf="currentStep === 3"
-              class="border-gray-200 rounded-xl  w-full min-w-[400px] h-auto dark:bg-gray-900 dark:border-none ">
-              <!-- Groupe and Status Row -->
-              <div class="flex flex-row space-x-3 bg-white rounded-lg w-full dark:bg-gray-900 dark:border-none">
-                <div class="relative w-full z-50">
-                  <input #groupeInput
-                    class="peer block h-10 rounded-lg ring-2 text-gray-500 focus:ring-blue-500  px-2 ring-gray-300 focus:ring-sky-600 w-full focus:outline-none focus:ring
-                    focus:ring-opacity-40  dark:text-gray-400 dark:bg-gray-900 dark:shadow-gray-900  dark:focus:ring-blue-500  dark:ring-gray-600  
-                    dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500"
-                    type="text"
-                    [ngModel]="searchText"
-                    (ngModelChange)="onSearchChange($event)"
-                    [ngModelOptions]="{standalone: true}"
-                    (focus)="showDropdown = true"
-                    placeholder="Groupe" autocomplete="off"
-                    name="searchText"/>
-                  <div class="absolute top-1/2 end-3 -translate-y-1/2 cursor-pointer" (click)="toggleDropdown()">
-                    <svg  class="shrink-0 size-3.5 text-gray-500" xmlns="http://www.w3.org/2000/svg"  width="24" height="24" viewBox="0 0 24 24"
-                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="m7 15 5 5 5-5"></path> <path d="m7 9 5-5 5 5"></path>
-                    </svg>
-                  </div>
-                  <!-- <div
-                  *ngIf="showDropdown"
-                  id="dropDown"
-                  #groupeDropdownn
-                  class="fixed bg-white shadow-md w-fit dark:bg-gray-900 border border-gray-50 rounded-lg max-h-40 overflow-y-auto z-[1001]">
-                  <div
-                  *ngFor="let groupe of filteredGroupes"
-                   (click)="selectGroupe(groupe)"
-                    class="cursor-pointer py-2 px-4 text-sm text-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600" >
-                     {{ groupe.nom }}                
-                   </div>
-                </div> -->
-                <ul
-                  *ngIf="showDropdown"
-                  id="dropDown"
-                  #groupeDropdownn
-                  class="absolute z-10 w-full bg-white dark:bg-gray-900 outline-none border-2 border-gray-300 rounded-lg dark:border-gray-700  mt-2 max-h-[120px] overflow-y-auto shadow-lg"
-                >
-                  <li
-                  *ngFor="let groupe of filteredGroupes"
-                  (click)="selectGroupe(groupe)"
-                    class="px-4 py-2 m-2 rounded-lg text-sm text-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
-                  >
-                  {{ groupe.nom }} 
-                  </li>
-                </ul>
-                </div>
-                <div class="relative bg-inherit w-full ">
-                  <select  id="status"
-                    formControlName="status"
-                    class="peer block h-10 rounded-lg ring-2 text-gray-500 focus:border-blue-400 px-2 ring-gray-300 focus:ring-sky-600 w-full focus:outline-none focus:ring
-                     focus:ring-opacity-40  dark:text-gray-400 dark:bg-gray-900 dark:shadow-gray-900 focus:ring-blue-500  dark:focus:ring-blue-500  dark:ring-gray-600  
-                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 appearance-none">
-                    <option hidden [ngValue]="null" selected disabled>Status</option>
-                    <option value="ACTIVE">ACTIVE</option>
-                    <option value="INACTIVE">INACTIVE</option>
-                  </select>
-                  <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
-                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-                  </svg>
-                </div>
-              </div><br />
-
-              <!-- Zone Section -->
-              <div class="relative flex sm:gap-6 ml-3">
-                <details class="group w-full">
-                  <summary
-                    class="flex items-center justify-between border-b border-gray-300 pb-1 text-gray-700 transition-colors hover:border-gray-400 hover:text-gray-900 w-full">
-                    <span class="text-sm font-medium dark:bg-gray-900 dark:text-gray-500 border dark:shadow-gray-900 focus:ring-blue-500   dark:focus:ring-blue-500  dark:border-gray-600 
-                      dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 
-                      transition-all duration-200  border-none">
-                      Zone
-                    </span>
-                    <span class="transition-transform group-open:-rotate-180 dark:bg-gray-900 dark:text-white border dark:shadow-gray-900 focus:ring-blue-500  dark:focus:ring-blue-500  dark:border-gray-600 
-                      dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 dark:border-none border-none mr-3">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                          fill="none" viewBox="0 0 24 24" stroke-width="1.6" stroke="currentColor" class="size-4 dark:text-gray-500" border="none">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </span>
-                  </summary>
-                  <!-- Dropdown -->
-                  <div
-                    class="absolute bg-white overflow-y-auto shadow-md w-[65%]  border-gray-50 rounded-lg left-0 top-full mt-1 max-h-20 focus:ring-blue-500 
-                     divide-y divide-gray-300 dark:bg-gray-900 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
-                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 transition-all duration-200"
-                  >
-                    <div class="flex items-center justify-between px-3 py-2">
-                      <span class="text-sm text-gray-700 focus:ring-blue-500 
-                      dark:bg-gray-900 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500  dark:border-gray-600 
-                     dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 border-none">{{ (registerForm.get("zones")?.value || []).length }} sélectionnées</span>
-                    </div>
-                    <fieldset class="p-3">
-                      <legend class="sr-only" id="zone">Checkboxes</legend>
-                      <div class="flex flex-col items-start gap-3">
-                        <!-- Removed absolute from here -->
-                        <label
-                          *ngFor="let zone of zones"
-                          class="inline-flex items-center gap-3
-                          dark:bg-gray-900 dark:text-white border-none dark:shadow-gray-900  dark:border-none">
-                          <input
-                            type="checkbox"
-                            class="size-5 rounded border-gray-300 shadow-sm focus:
-                            dark:bg-gray-900 dark:text-white border dark:shadow-gray-900
-                             dark:border-none dark:ring-gray-600 "
-                            [checked]="(registerForm.get('zones')?.value || []).includes(zone.idZone)"
-                            [value]="zone.idZone"
-                            (change)="toggleZoneSelection(zone.idZone || 1)"/>
-                          <span class="text-sm font-medium text-gray-700 border-none focus:ring-blue-500 
-                          dark:bg-gray-900 dark:text-white border dark:shadow-gray-900  dark:focus:ring-blue-500 dark:border-none  ">
-                          {{ zone.nom}}</span>
-                        </label>
-                      </div>
-                    </fieldset>
-                  </div>
-                </details>
-              </div>
+            *ngIf="registerForm.get('numero')?.invalid && registerForm.get('numero')?.touched"
+            class="text-red-500 text-xs mt-1">
+            <span *ngIf="registerForm.get('numero')?.errors?.['pattern']">Le numéro doit contenir uniquement des chiffres.</span>
+          </div>
+        </div>
+        <div class="relative w-full mt-5 z-50">
+          <input #groupeInput
+            class="peer block h-10 rounded-lg ring-2 text-gray-500 focus:ring-blue-500  px-2 ring-gray-300 focus:ring-sky-600 w-full focus:outline-none focus:ring
+            focus:ring-opacity-40  dark:text-gray-400 dark:bg-gray-900 dark:shadow-gray-900  dark:focus:ring-blue-500  dark:ring-gray-600  
+            dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500"
+            type="text"
+            [ngModel]="searchText"
+            (ngModelChange)="onSearchChange($event)"
+            [ngModelOptions]="{standalone: true}"
+            (focus)="showDropdown = true"
+            placeholder="Groupe" autocomplete="off"
+            name="searchText"/>
+          <div class="absolute top-1/2 end-3 -translate-y-1/2 cursor-pointer" (click)="toggleDropdown()">
+            <svg  class="shrink-0 size-3.5 text-gray-500" xmlns="http://www.w3.org/2000/svg"  width="24" height="24" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m7 15 5 5 5-5"></path> <path d="m7 9 5-5 5 5"></path>
+            </svg>
+          </div>
+        <ul
+          *ngIf="showDropdown" id="dropDown"
+          #groupeDropdownn
+          class="absolute z-10 w-full bg-white dark:bg-gray-900 outline-none border-2 border-gray-300 rounded-lg dark:border-gray-700  mt-2 max-h-[120px] overflow-y-auto shadow-lg">
+          <li
+          *ngFor="let groupe of filteredGroupes"
+          (click)="selectGroupe(groupe)"
+            class="px-4 py-2 m-2 rounded-lg text-sm text-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
+          {{ groupe.nom }} </li></ul>
+        </div>
+        <br />
+        </div>
+            <!-- End Second Content -->
+       <!-- 3 Content -->
+<div
+ *ngIf="currentStep === 3"
+class="border-gray-200 rounded-xl w-full min-w-[400px] h-auto dark:bg-gray-900 dark:border-none">
+  <!-- Zones et Status Row -->
+  <div class="flex flex-row space-x-4 bg-white rounded-lg w-full dark:bg-gray-900 dark:border-none">
+    <!-- Zone Section -->
+    <div class="w-1/2 relative">
+      <details class="group w-full">
+        <summary
+          class="flex items-center justify-between h-10 px-2 rounded-lg border border-gray-300 text-gray-700 transition-colors hover:border-gray-400 hover:text-gray-900 
+            dark:bg-gray-900 dark:text-gray-500 dark:border-gray-600 dark:hover:border-gray-400 dark:hover:text-white focus:ring-blue-500 
+            dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md dark:focus:shadow-blue-500 transition-all duration-200 cursor-pointer">
+          <span class="text-sm font-medium">
+            {{ (registerForm.get("zones")?.value || []).length > 0 ? getSelectedZoneNames() : 'Zone' }}</span>
+          <span class="transition-transform group-open:-rotate-180">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke-width="1.6" stroke="currentColor" class="size-4 dark:text-gray-500">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+            </svg></span>
+        </summary>
+   
+        <!-- Dropdown -->
+        <div
+          class="absolute bg-white overflow-y-auto shadow-md w-full border-gray-50 rounded-lg left-0 top-full mt-1 max-h-20 divide-y divide-gray-300 
+            dark:bg-gray-900 dark:text-white dark:border-gray-600 dark:shadow-gray-900 dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-200 z-1000">
+          <div class="flex items-center justify-between px-3 py-1">
+            <span class="text-sm text-gray-700 dark:text-white">
+              {{ (registerForm.get("zones")?.value || []).length }} sélectionnées
+            </span>
+          </div>
+          <fieldset class="p-3">
+            <legend class="sr-only" id="zone">Checkboxes</legend>
+            <div class="flex flex-col items-start gap-3">
+              <label
+                *ngFor="let zone of zones"
+                class="inline-flex items-center gap-3 dark:text-white">
+                <input
+                  type="checkbox"
+                  [checked]="(registerForm.get('zones')?.value || []).includes(zone.idZone)"
+                  [value]="zone.idZone"
+                  (change)="toggleZoneSelection(zone.idZone || 1)"
+                     class="hidden peer" />
+                
+                    <!-- Le carré qui change avec input -->
+                    <div class="w-4 h-4  flex items-center justify-center rounded border-2 border-gray-400 
+                                peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
+                        <!-- Le tick SVG -->
+                        <svg class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor"
+                             stroke-width="3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg></div><span>{{ zone.nom }}</span></label>
             </div>
-            <!-- End First Content -->
+          </fieldset>
+        </div>
+      </details>
+           <!-- Message d'erreur pour les zones -->
+           <div
+           *ngIf="registerForm.errors?.['zonesRequired'] && registerForm.touched"
+           class="text-red-500 text-xs mt-1">
+           Veuillez sélectionner au moins une zone pour ce groupe.
+         </div>
+    </div> 
+   <!-- Status Section -->
+  <div class="w-1/2">
+    <div class="relative">
+      <select
+        id="status"
+        formControlName="status"
+        class="peer block h-10 rounded-lg ring-2 text-gray-500 focus:border-blue-400 px-2 ring-gray-300 focus:ring-blue-500 w-full focus:outline-none focus:ring 
+          focus:ring-opacity-40 dark:text-gray-400 dark:bg-gray-900 dark:shadow-gray-900 dark:ring-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500 
+          focus:shadow-md dark:focus:shadow-blue-500 appearance-none">
+        <option hidden [ngValue]="null" selected disabled>Status</option>
+        <option value="ACTIVE">ACTIVE</option>
+        <option value="INACTIVE">INACTIVE</option>
+      </select>
+      <svg
+        class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
+        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </div>
+  </div>
+</div>
+<br />
+</div>
+            <!-- End 3 Content -->
             <!-- Button Group -->
             <div class="mt-5 flex justify-between items-center gap-x-2">
               <!-- Bouton Retour : visible uniquement si currentStep !== 1 -->

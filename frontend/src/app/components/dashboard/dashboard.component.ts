@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router, RouterModule } from '@angular/router';
-import { Chart } from 'chart.js/auto';
+// import { Chart } from 'chart.js/auto';
 
 @Component({
   selector: 'app-dashboard',

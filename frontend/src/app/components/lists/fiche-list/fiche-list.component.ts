@@ -595,7 +595,7 @@ adjustGrpDropdownPosition() {
   }
 
   generateQrCode(fileName: string) {
-      const serverUrl = `http://192.168.1.16:8080/fiche/getPdf/${fileName}`;
+      const serverUrl = `http://192.168.1.108:8080/fiche/getPdf/${fileName}`;
       //const serverUrl = `https://9007-197-0-185-128.ngrok-free.app/fiche/getPdf/${fileName}`;
       QRCode.toDataURL(serverUrl, { errorCorrectionLevel: 'H' })
         .then(url => {

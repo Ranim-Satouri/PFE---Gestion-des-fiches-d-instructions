@@ -46,43 +46,65 @@
                 </svg>
               </div>
              </div>
-            <div class="relative w-full sm:w-[20%]" #zoneToggleButton (click)="toggleZoneDropdown()" >
-                <div
-                    class="uniform-placeholder cursor-pointer py-2.5 px-4 h-10 block w-[full] border border-gray-300 rounded-lg text-sm bg-white text-gray-600 
-                    focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 dark:text-gray-400
-                    dark:bg-gray-700 dark:focus:border-blue-300 dark:border-gray-600 dark:shadow-gray-900
-                        dark:focus:ring-blue-500 dark:focus:border dark:focus:shadow-blue-500 transition-all duration-200" >
-                    {{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Sélectionner des zones' }}</div>
-                <div
-                    class="absolute top-1/2 right-3 mt-[1px]  -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
-                    <svg class="shrink-0 size-3.5 text-gray-500 w-4 h-4" xmlns="http://www.w3.org/2000/svg"
-                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round"> <path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path>
-                    </svg>
-                </div>
+          <!-- Zone Section -->
+    <div class="relative w-full sm:w-[30%]" #zoneToggleButton (click)="toggleZoneDropdown()">
+        <div
+          [ngClass]="{
+            'border-blue-400': zoneDropdownOpen,
+            'ring': zoneDropdownOpen,
+            'ring-blue-300': zoneDropdownOpen,
+            'ring-opacity-40': zoneDropdownOpen,
+            'border-gray-300': !zoneDropdownOpen,
+            'dark:focus:border-blue-300': zoneDropdownOpen,
+            'dark:shadow-gray-900': zoneDropdownOpen,
+            'dark:focus:ring-blue-500': zoneDropdownOpen,
+            'dark:focus:border': zoneDropdownOpen,
+            'dark:focus:shadow-blue-500': zoneDropdownOpen
+          }"
+          class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-4 h-10 block w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden"
+        >
+          <span class="text-sm font-medium">
+            {{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Sélectionner des zones' }}
+          </span>
+        </div>
+        <div
+          class="absolute top-1/2 right-3 mt-[1px] -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
+        >
+          <svg
+            class="shrink-0 size-3.5 text-gray-500 w-4 h-4"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m7 15 5 5 5-5"></path>
+            <path d="m7 9 5-5 5 5"></path>
+          </svg>
+        </div>
+        <div
+          *ngIf="zoneDropdownOpen"
+          #zoneDropdown
+          class="absolute z-[1001] w-full bg-white dark:text-gray-300 dark:bg-gray-800 border-2 rounded-lg shadow-lg overflow-y-auto max-h-28 mt-1 dark:border-gray-700"
+        >
+          <label
+            *ngFor="let zone of zones"
+            class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+          >
+            <input
+              type="checkbox" [value]="zone.idZone" (change)="onCheckboxChange($event)"
+              [checked]="zone.idZone !== undefined && selectedZones.includes(zone.idZone)"
+              class="hidden peer"/>
             <div
-                *ngIf="zoneDropdownOpen"
-                #zoneDropdown
-                class="absolute z-[1001] w-full  bg-white dark:text-gray-300 dark:bg-gray-800 border-2 rounded-lg shadow-lg w-full max-h-60 overflow-y-scroll mt-2 dark:border-gray-700">
-                <label *ngFor="let zone of zones" class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
-                    <!-- Input caché -->
-                    <input type="checkbox"
-                           [value]="zone.idZone"
-                           (change)="onCheckboxChange($event)"
-                           [checked]="zone.idZone !== undefined && selectedZones.includes(zone.idZone)"
-                           class="hidden peer" />
-                
-                    <!-- Le carré qui change avec input -->
-                    <div class="w-4 h-4 mr-2 flex items-center justify-center rounded border-2 border-gray-400 
-                                peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
-                        <!-- Le tick SVG -->
-                        <svg class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor"
-                             stroke-width="3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                        </svg></div><span>{{ zone.nom }}</span></label>
-
+              class="w-4 h-4 mr-2 flex items-center justify-center rounded border-2 border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
+              <svg
+                class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor"
+                stroke-width="3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
             </div>
-            </div >
+            <span>{{ zone.nom }}</span>
+          </label>
+        </div>
+      </div>
               <!-- groupe Input and Dropdown -->
               <div class="relative w-full sm:w-[20%]" (click)="toggleGrpDropdown()">
                 <input
@@ -105,7 +127,7 @@
                 <ul
                 *ngIf="showGrpDropdown" id="groupeDropdown"  #groupeDropdown
                 class="absolute z-1000 w-full bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 
-                rounded-lg mt-1  sm:max-h-60 max-h-[120px] overflow-y-auto shadow-lg"
+                rounded-lg mt-1  overflow-y-auto max-h-28 shadow-lg"
                 [ngClass]="{'invisible': !isGrpDropdownPositioned}" >
                     <li
                     *ngFor="let groupe of filteredGroupes"
@@ -145,24 +167,16 @@
                   </th>
                     <th scope="col" class="px-4 py-3 ">Matricule</th>
                     <th scope="col" class="px-2 py-3 ">
-                        <div class="flex items-center">
-                            Nom Complet
-                        </div>
+                        <div class="flex items-center">Nom Complet</div>
                     </th>
                     <th scope="col" class="px-4 py-3 ">
-                        <div class="flex items-center">
-                            E-mail
-                        </div>
+                        <div class="flex items-center">E-mail</div>
                     </th>
                     <th scope="col" class="px-4 py-3 ">
-                        <div class="flex items-center">
-                            Groupe
-                        </div>
+                        <div class="flex items-center">Groupe</div>
                     </th>
                     <th *ngIf="!hasPermission('modifier_utilisateur')"  scope="col" class="px-4 py-3 ">
-                        <div class="flex items-center">
-                            Situation
-                        </div>
+                        <div class="flex items-center">Situation</div>
                     </th>
                     <!-- <th *ngIf="hasPermission('modifier_utilisateur')"  scope="col" class="px-4 py-3 ">
                         <div class="flex items-center">
@@ -274,14 +288,9 @@
                                         <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
                                         <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
                                       </svg>
-                                    Supprimer
-                                </a>
-                                </li>
+                                    Supprimer</a></li>
                             </ul>
-                            </div>
-                        </div>
-                    </th>
-
+                            </div></div></th>
                 </tr>
             </tbody>
         </table>

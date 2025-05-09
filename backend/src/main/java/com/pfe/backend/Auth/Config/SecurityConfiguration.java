@@ -32,11 +32,12 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/fiche/getPdf/**").permitAll()
+                        .requestMatchers("/fiche/**").authenticated()
                         .requestMatchers("/user/**").authenticated()
                         .requestMatchers("/groupe/**").authenticated()
                         .requestMatchers("/zone/**").authenticated()
                         .requestMatchers("/famille/**").authenticated()
-                        .requestMatchers("/fiche/**").authenticated()
                         .requestMatchers("/produit/**").authenticated()
 //                        .requestMatchers("/ficheAudit/**").permitAll()
 //                        .requestMatchers("/groupe/**").permitAll()
