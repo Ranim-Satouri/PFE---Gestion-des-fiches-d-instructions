@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Transactional //Keeps the session open for the entire operation, allowing lazy loading to work.
@@ -69,6 +70,7 @@ public class DataInitializer implements CommandLineRunner {
                 "consulter_operation", "creer_operation", "modifier_operation", "supprimer_operation"
         ));
         addSuperuserGroupIfNotExists();
+        addPreparateurGroupIfNotExists();
     }
 
     private void createMenuWithPermissions(String menuName, List<String> permissions) {
@@ -135,6 +137,82 @@ public class DataInitializer implements CommandLineRunner {
 
             // Save the group
             groupeRepository.save(superuserGroup);
+        }
+    }
+    private void addPreparateurGroupIfNotExists() {
+        if (groupeRepository.findByNom("PREPARATEUR") == null) {
+            // Récupérer les menus nécessaires
+            Menu fichesMenu = menuRepository.findByNom("fiches");
+            Menu lignesMenu = menuRepository.findByNom("lignes");
+            Menu operationsMenu = menuRepository.findByNom("operations");
+            Menu zonesMenu = menuRepository.findByNom("zones");
+            Menu dashboard = menuRepository.findByNom("Dashboard");
+            Menu produit = menuRepository.findByNom("produits");
+            Menu famille = menuRepository.findByNom("familles");
+            // Vérifier que tous les menus existent
+            if (fichesMenu == null || lignesMenu == null || operationsMenu == null || zonesMenu == null || dashboard == null || produit == null || famille == null) {
+                throw new IllegalStateException("Un ou plusieurs menus (fiches, lignes, operations, zones) doivent exister avant de créer le groupe PREPARATEUR");
+            }
+            System.out.println("Menus trouvés : fiches (ID = " + fichesMenu.getIdMenu() + "), lignes (ID = " + lignesMenu.getIdMenu() + "), operations (ID = " + operationsMenu.getIdMenu() + "), zones (ID = " + zonesMenu.getIdMenu() + ")");
+
+            // Récupérer les permissions
+            // 1. Permissions de "fiches" sauf "consulter_historique_fiche"
+            List<Permission> fichesPermissions = permissionRepository.findByMenu(fichesMenu)
+                    .stream()
+                    .filter(permission -> !List.of("consulter_historique_fiche", "valider_fiche_IQP", "valider_fiche_IPDF").contains(permission.getNom()))
+                    .collect(Collectors.toList());
+            List<Permission> famillePermissions = permissionRepository.findByMenu(famille)
+                    .stream()
+                    .filter(permission -> !permission.getNom().equals("supprimer_famille"))
+                    .collect(Collectors.toList());
+            // 2. Toutes les permissions de "lignes"
+            List<Permission> lignesPermissions = permissionRepository.findByMenu(lignesMenu);
+            List<Permission> dashboardPermissions = permissionRepository.findByMenu(dashboard);
+            List<Permission> produitPermissions = permissionRepository.findByMenu(produit);
+            // 3. Toutes les permissions de "operations"
+            List<Permission> operationsPermissions = permissionRepository.findByMenu(operationsMenu);
+
+            // 4. Permission "consulter_zone" de "zones"
+            List<Permission> zonePermission = permissionRepository.findByMenu(zonesMenu)
+                    .stream()
+                    .filter(permission -> permission.getNom().equals("consulter_zone"))
+                    .collect(Collectors.toList());
+
+            // Combiner toutes les permissions
+            List<Permission> preparateurPermissions = new ArrayList<>();
+            preparateurPermissions.addAll(fichesPermissions);
+            preparateurPermissions.addAll(lignesPermissions);
+            preparateurPermissions.addAll(operationsPermissions);
+            preparateurPermissions.addAll(zonePermission);
+            preparateurPermissions.addAll(dashboardPermissions);
+            preparateurPermissions.addAll(produitPermissions);
+            preparateurPermissions.addAll(famillePermissions);
+            System.out.println("Permissions pour PREPARATEUR : " + preparateurPermissions.stream().map(Permission::getNom).collect(Collectors.toList()));
+
+            // Créer le groupe "PREPARATEUR"
+            Groupe preparateurGroup = Groupe.builder()
+                    .nom("PREPARATEUR")
+                    .actionneur(null)
+                    .modifieLe(LocalDateTime.now())
+                    .users(new ArrayList<>())
+                    .permissions(new ArrayList<>())
+                    .isDeleted(false)
+                    .build();
+
+            // Associer les permissions au groupe
+            for (Permission permission : preparateurPermissions) {
+                if (permission.getGroupes() == null) {
+                    permission.setGroupes(new ArrayList<>());
+                }
+                preparateurGroup.addPermission(permission);
+                System.out.println("Permission ajoutée à PREPARATEUR : " + permission.getNom());
+            }
+
+            // Sauvegarder le groupe
+            groupeRepository.save(preparateurGroup);
+            System.out.println("Groupe PREPARATEUR créé avec " + preparateurPermissions.size() + " permissions");
+        } else {
+            System.out.println("Groupe PREPARATEUR déjà existant");
         }
     }
 }

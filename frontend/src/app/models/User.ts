@@ -16,7 +16,7 @@ export interface User {
   actionneur?: User | number | null;
   modifieLe?: Date;
   zones?: Zone[];
-  role : Role;
+  // role : Role;
 }
   export enum Role {
     SUPERUSER= "SUPERUSER",

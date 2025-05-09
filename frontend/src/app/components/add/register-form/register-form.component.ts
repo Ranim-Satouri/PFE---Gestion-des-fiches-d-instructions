@@ -15,6 +15,12 @@ import { ZoneService } from '../../../services/zone.service';
 export class RegisterFormComponent {
   @ViewChild('groupeInput', { static: false }) groupeInput!: ElementRef;
   @ViewChild('groupeDropdown', { static: false }) groupeDropdown!: ElementRef;
+  @ViewChild('zonesDropdown', { static: false }) zonesDropdown!: ElementRef; 
+
+  showDropdown: boolean = false; // Pour le dropdown du groupe
+  isZonesDropdownOpen: boolean = false; // Pour le dropdown des zones
+  isStatusArrowRotated: boolean = false;
+  isGenreArrowRotated: boolean = false;
   //event pour l'update
   @Input() userToUpdate: User | null = null;
   @Output() close = new EventEmitter<void>();
@@ -24,7 +30,6 @@ export class RegisterFormComponent {
   userConnected !: User;
   steps = ["Informations Personnelles", "Coordonnées", "Profil Utilisateur"];
   currentStep = 1;
-  showDropdown = false;
   // Liste des zones
   zones: Zone[] = [];
   groupes: Groupe[] = [];
@@ -60,8 +65,8 @@ export class RegisterFormComponent {
   prenom: ['',Validators.required],
   matricule : ['',Validators.required],
   email: ['', [Validators.required, Validators.email]],
-  numero: ['', Validators.pattern('^\\d+$')],
-  genre: [null],
+  numero: ['', [Validators.pattern('^\\d+$'), Validators.minLength(8)]], // Ajout de minLength 
+   genre: [null],
   zones: this.fb.array([]),
   status: [null],
   groupe: [null, [Validators.required, this.groupeValidator()]]
@@ -113,9 +118,6 @@ export class RegisterFormComponent {
         this.groupes = groupes;
         this.filteredGroupes = this.groupes;
         console.log('Groupes chargés depuis le backend:', this.groupes);}, error: (error) => { console.error('Erreur lors du chargement des groupes:', error);}}); }
-
-
-
     
 //     Validators.pattern('^\d+$') :
 // ^ : Début de la chaîne.
@@ -386,26 +388,32 @@ showFailAlert() {this.showSuccessAlert = false ; this.showEchecAlert = true; set
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
     if (this.showDropdown) { this.filterGroupes(); this.adjustDropdownPosition(); } }
-  @HostListener('document:click', ['$event'])
-  closeDropdown(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    const dropdown = document.getElementById(`dropDown`);
-    const button = target.closest('button[data-dropdown-toggle]');
-    // Vérifiez si le clic est en dehors du dropdown et du bouton
-    if (this.showDropdown !== null && dropdown && !dropdown.contains(target) && !button) { this.showDropdown = false; }}
-
-
+    @HostListener('document:click', ['$event'])
+    closeDropdown(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+  
+      // Fermer le dropdown du groupe
+      const groupeDropdown = document.getElementById('dropDown');
+      const groupeButton = target.closest('button[data-dropdown-toggle]');
+      if (this.showDropdown && groupeDropdown && !groupeDropdown.contains(target) && !groupeButton) {
+        this.showDropdown = false;
+      }
+  
+      // Fermer le dropdown des zones
+      const zonesDropdown = this.zonesDropdown?.nativeElement as HTMLDetailsElement;
+      const zonesDropdownContent = document.getElementById('zonesDropdownContent');
+      if (
+        zonesDropdown &&
+        this.isZonesDropdownOpen &&
+        !zonesDropdown.contains(target) &&
+        (!zonesDropdownContent || !zonesDropdownContent.contains(target))
+      ) {
+        this.isZonesDropdownOpen = false;
+        zonesDropdown.open = false;
+        console.log('Zones dropdown closed');
+      }    }
+      toggleStatusArrow(isOpen: boolean) {
+        this.isStatusArrowRotated = isOpen;
+        this.isGenreArrowRotated = isOpen;
+      }
 }
-  // toggleZoneSelection(idZone: number) {
-  //   const zonesArray: FormArray = this.registerForm.get('zones') as FormArray;
-  //   const index = zonesArray.controls.findIndex((control) => control.value === idZone);
-
-  //   if (index === -1) {
-  //     // Ajouter la zone
-  //     zonesArray.push(this.fb.control(idZone));
-  //   } else {
-  //     // Retirer la zone
-  //     zonesArray.removeAt(index);
-  //   }
-  //   console.log('Zones sélectionnées:', zonesArray.value);
-  // }

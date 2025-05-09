@@ -168,32 +168,32 @@ public class FicheController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-    @GetMapping("/getFichesByPreparateur/{idPreparateur}")
-    public ResponseEntity<?> getFichesByPreparateur(@PathVariable Long idPreparateur) {
-        try{
-            return new ResponseEntity<>(ficheService.getFichesByPreparateur(idPreparateur), HttpStatus.OK);
-        }catch(RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
+//    @GetMapping("/getFichesByPreparateur/{idPreparateur}")
+//    public ResponseEntity<?> getFichesByPreparateur(@PathVariable Long idPreparateur) {
+//        try{
+//            return new ResponseEntity<>(ficheService.getFichesByPreparateur(idPreparateur), HttpStatus.OK);
+//        }catch(RuntimeException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
+//
+//    @GetMapping("/getFichesSheetByIPDF/{idIPDF}")
+//    public ResponseEntity<?> getFichesSheetByIPDF(@PathVariable Long idIPDF) {
+//        try {
+//            return new ResponseEntity<>(ficheService.getFichesSheetByIPDF(idIPDF), HttpStatus.OK);
+//        }catch(RuntimeException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
 
-    @GetMapping("/getFichesSheetByIPDF/{idIPDF}")
-    public ResponseEntity<?> getFichesSheetByIPDF(@PathVariable Long idIPDF) {
-        try {
-            return new ResponseEntity<>(ficheService.getFichesSheetByIPDF(idIPDF), HttpStatus.OK);
-        }catch(RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/getFichesSheetByIQP/{idIQP}")
-    public ResponseEntity<?> getFichesSheetByIQP(@PathVariable Long idIQP) {
-        try{
-            return new ResponseEntity<>(ficheService.getFichesSheetByIQP(idIQP), HttpStatus.OK);
-        }catch(RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
+//    @GetMapping("/getFichesSheetByIQP/{idIQP}")
+//    public ResponseEntity<?> getFichesSheetByIQP(@PathVariable Long idIQP) {
+//        try{
+//            return new ResponseEntity<>(ficheService.getFichesSheetByIQP(idIQP), HttpStatus.OK);
+//        }catch(RuntimeException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }
+//    }
     @GetMapping("/getFichesSheetByOperateur/{idOperateur}")
     public ResponseEntity<?> getFichesSheetByOperateur(@PathVariable Long idOperateur) {
         try{

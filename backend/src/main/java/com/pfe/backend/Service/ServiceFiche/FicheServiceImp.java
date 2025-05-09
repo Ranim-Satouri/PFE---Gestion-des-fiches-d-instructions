@@ -349,15 +349,15 @@ public class FicheServiceImp implements FicheService {
     public List<Fiche> getFiches() {
         return ficheRepository.findByStatusNot(Fiche.FicheStatus.DELETED);
     }
-    @Override
-    public List<Fiche> getFichesByPreparateur(Long idPreparateur) {
-        User preparateur = userRepository.findById(idPreparateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        if(preparateur.getRole().equals(Role.PREPARATEUR ) || preparateur.getRole().equals(Role.ADMIN)){
-            return ficheRepository.findFicheByPreparateurAndActionNot(preparateur , Fiche.FicheAction.DELETE);
-        }else{
-            throw new RuntimeException("L'utilisateur n'a pas le rôle Preparateur requis.");
-        }
-    }
+//    @Override
+//    public List<Fiche> getFichesByPreparateur(Long idPreparateur) {
+//        User preparateur = userRepository.findById(idPreparateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+//        if(preparateur.getRole().equals(Role.PREPARATEUR ) || preparateur.getRole().equals(Role.ADMIN)){
+//            return ficheRepository.findFicheByPreparateurAndActionNot(preparateur , Fiche.FicheAction.DELETE);
+//        }else{
+//            throw new RuntimeException("L'utilisateur n'a pas le rôle Preparateur requis.");
+//        }
+//    }
     @Override
     public List<Fiche> getFichesSheetByUserZones(Long idUser) {
         User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
@@ -372,23 +372,23 @@ public class FicheServiceImp implements FicheService {
         }
         return  fiches;
     }
-    @Override
-    public List<Fiche> getFichesSheetByIPDF(Long idIPDF) {
-        User ipdf = userRepository.findById(idIPDF).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        if(ipdf.getRole().equals(Role.IPDF) || ipdf.getRole().equals(Role.ADMIN) ){
-            return ficheRepository.findFicheByIPDFAndActionNot(ipdf , Fiche.FicheAction.DELETE );
-        }
-        throw new RuntimeException("L'utilisateur n'a pas le rôle IPDF requis.");
-    }
-    @Override
-    public List<Fiche> getFichesSheetByIQP(Long idIQP) {
-        User iqp = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-        if(iqp.getRole().equals(Role.IQP) || iqp.getRole().equals(Role.ADMIN)){
-            return  ficheRepository.findFicheByIQPAndActionNotAndStatusNot(iqp , Fiche.FicheAction.DELETE , Fiche.FicheStatus.REJECTEDIPDF );
-        }else{
-            throw new RuntimeException("L'utilisateur n'a pas le rôle IQP requis.");
-        }
-    }
+//    @Override
+//    public List<Fiche> getFichesSheetByIPDF(Long idIPDF) {
+//        User ipdf = userRepository.findById(idIPDF).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+//        if(ipdf.getRole().equals(Role.IPDF) || ipdf.getRole().equals(Role.ADMIN) ){
+//            return ficheRepository.findFicheByIPDFAndActionNot(ipdf , Fiche.FicheAction.DELETE );
+//        }
+//        throw new RuntimeException("L'utilisateur n'a pas le rôle IPDF requis.");
+//    }
+//    @Override
+//    public List<Fiche> getFichesSheetByIQP(Long idIQP) {
+//        User iqp = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+//        if(iqp.getRole().equals(Role.IQP) || iqp.getRole().equals(Role.ADMIN)){
+//            return  ficheRepository.findFicheByIQPAndActionNotAndStatusNot(iqp , Fiche.FicheAction.DELETE , Fiche.FicheStatus.REJECTEDIPDF );
+//        }else{
+//            throw new RuntimeException("L'utilisateur n'a pas le rôle IQP requis.");
+//        }
+//    }
     @Override
     public List<Fiche> getFichesSheetByOperateur(Long idOperateur) {
         User operateur = userRepository.findById(idOperateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
