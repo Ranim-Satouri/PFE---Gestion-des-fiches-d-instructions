@@ -46,15 +46,20 @@ export class FicheFormComponent {
   filteredLignes: Ligne[] = [];
   filteredOperations: Operation[] = [];
 
+  //pour stocker les donnes avant de les filtrer behc najjem dima narja3 lel valeurs initiaux 
+  fZones: Zone[] = [];
+  fLignes: Ligne[] = [];
+  fOperations: Operation[] = [];
+
   produitSearch = '';
   ligneSearch = '';
   operationSearch = '';
   zoneSearch = '';
 
-  produitNames: string[] = [];
-  zoneNames: string[] = [];
-  ligneNames: string[] = [];
-  operationNames: string[] = [];
+  // produitNames: string[] = [];
+  // zoneNames: string[] = [];
+  // ligneNames: string[] = [];
+  // operationNames: string[] = [];
 
   zoneSelected: boolean = false;
   ligneSelected: boolean = false;
@@ -130,21 +135,14 @@ export class FicheFormComponent {
 
   //load data
   loadProduits() {
-    // this.produitService.getAll().subscribe(produits => {
-    //   this.produits = produits;
-    //   this.filteredProduits = produits;
-    //   this.produitNames = produits.map(produit => produit.nomProduit);
-    // });
-
     if(this.userConnected.groupe?.nom === "SUPERUSER"){
       console.log('superuser');
       this.produitService.getAll().subscribe({
         next : (produits :Produit[]) => {
           console.log('fetching produits success:', produits);
-
           this.produits = produits;
           this.filteredProduits = produits;
-          this.produitNames = produits.map(produit => produit.nomProduit);
+          //this.produitNames = produits.map(produit => produit.nomProduit);
         },
         error : (error : any) => {
           console.error('fetching produits error:', error);
@@ -157,7 +155,7 @@ export class FicheFormComponent {
           console.log('fetching produits success:', produits);
           this.produits = produits;
           this.filteredProduits = produits;
-          this.produitNames = produits.map(produit => produit.nomProduit);
+          //this.produitNames = produits.map(produit => produit.nomProduit);
         },
         error : (error : any) => {
           console.error('fetching produits error:', error);
@@ -170,13 +168,13 @@ export class FicheFormComponent {
     this.ligneService.getAll().subscribe(lignes => {
       this.lignes = lignes;
       this.filteredLignes = lignes;
-      this.ligneNames= lignes.map(ligne => ligne.nom);
+      //this.ligneNames= lignes.map(ligne => ligne.nom);
   })};
   loadOperations() {
     this.operationService.getAll().subscribe(operations => {
       this.operations = operations;
       this.filteredOperations = operations; // Initialiser avec tous les operations
-      this.operationNames= operations.map(operation => operation.nom);
+      //this.operationNames= operations.map(operation => operation.nom);
   })};
   loadZones() {
     console.log(this.userConnected.idUser!);
@@ -185,7 +183,7 @@ export class FicheFormComponent {
       this.zoneService.getAll().subscribe(zones => {
         this.zones = zones;
         //this.filteredZones = zones;
-        this.zoneNames= zones.map(zone => zone.nom);
+        //this.zoneNames= zones.map(zone => zone.nom);
       })
     }else{
       console.log('mech superuser');
@@ -193,7 +191,7 @@ export class FicheFormComponent {
         const zones = userZones.map(zone => zone.zone);
         this.zones = zones;
         //this.filteredZones = zones;
-        this.zoneNames= zones.map(zone => zone.nom);
+        //this.zoneNames= zones.map(zone => zone.nom);
       })
     }
   };
@@ -220,11 +218,11 @@ export class FicheFormComponent {
     const value = input.value;
     this.ligneSearch = value;
     if (!this.ligneSearch) {
-      this.filteredLignes = this.lignes; // Si aucun texte n'est saisi, afficher tous les produits
+      this.filteredLignes = this.fLignes; // Si aucun texte n'est saisi, afficher tous les produits
       return;
     }
 
-    this.filteredLignes = this.lignes.filter(z =>
+    this.filteredLignes = this.fLignes.filter(z =>
       z.nom.toLowerCase().includes(this.ligneSearch.toLowerCase()) // Filtrage insensible à la casse
     );
     this.showLigneDropdown = true; // Afficher la liste déroulante
@@ -234,11 +232,11 @@ export class FicheFormComponent {
     const value = input.value;
     this.operationSearch = value;
     if (!this.operationSearch) {
-      this.filteredOperations = this.operations; // Si aucun texte n'est saisi, afficher tous les produits
+      this.filteredOperations = this.fOperations; // Si aucun texte n'est saisi, afficher tous les produits
       return;
     }
 
-    this.filteredOperations = this.operations.filter(z =>
+    this.filteredOperations = this.fOperations.filter(z =>
       z.nom.toLowerCase().includes(this.operationSearch.toLowerCase()) // Filtrage insensible à la casse
     );
     this.showOperationDropdown = true; // Afficher la liste déroulante
@@ -248,11 +246,11 @@ export class FicheFormComponent {
     const value = input.value;
     this.zoneSearch = value;
     if (!this.zoneSearch) {
-      this.filteredZones = this.zones; 
+      this.filteredZones = this.fZones; 
       return;
     }
 
-    this.filteredZones = this.zones.filter(z =>
+    this.filteredZones = this.fZones.filter(z =>
       z.nom.toLowerCase().includes(this.zoneSearch.toLowerCase()) // Filtrage insensible à la casse
     );
     this.showZoneDropdown = true; // Afficher la liste déroulante
@@ -273,10 +271,10 @@ export class FicheFormComponent {
     }
     this.zoneService.getZonesPourProduit(produit.idProduit!).subscribe(zones => {
       //this.filteredZones = zones;
-      console.log("zones ",zones);
-      console.log("this.zones " , this.zones);
+      //this.zones = zones;
       this.filteredZones =  this.zones.filter(zone => 
-        zones.some(produitZone => produitZone.idZone === zone.idZone))
+         zones.some(produitZone => produitZone.idZone === zone.idZone))
+      this.fZones = this.filteredZones
     });
     console.log(this.filteredZones);
   }
@@ -292,6 +290,7 @@ export class FicheFormComponent {
       this.zoneSelected = true;
     }
     this.filteredLignes = this.lignes.filter(ligne => ligne.zone.idZone === zone.idZone);
+    this.fLignes = this.filteredLignes;
     this.updated = true;
   }
 
@@ -299,15 +298,15 @@ export class FicheFormComponent {
     this.Form.get('ligne')?.setValue(ligne);
     this.ligneSearch = ligne.nom;
     this.showLigneDropdown = false;
-    this.ligneSelected = true;
+    //this.ligneSelected = true;
     if(this.ligneSelected) {
       this.clearOperationSearch();
     }else{
       this.ligneSelected = true;
     }
     this.filteredOperations = this.operations.filter(operation => operation.ligne.idLigne === ligne.idLigne);
+    this.fOperations = this.filteredOperations;
     this.updated = true;
-
   }
   selectOperation(operation : Operation) {
     this.Form.get('operation')?.setValue(operation);
@@ -368,14 +367,15 @@ export class FicheFormComponent {
   clearLigneSearch() {
     this.ligneSearch = '';
     this.Form.get('ligne')?.setValue(null);
-    this.filteredLignes = this.lignes;
+    this.filteredLignes = this.fLignes;
     this.showLigneDropdown = false;
+    this.ligneSelected = false;
     this.clearOperationSearch();
   }
   clearOperationSearch() {
     this.operationSearch = '';
     this.Form.get('operation')?.setValue(null);
-    this.filteredOperations = this.operations;
+    this.filteredOperations = this.fOperations;
     this.showOperationDropdown = false;
   }
   clearProduitSearch() {
@@ -388,7 +388,8 @@ export class FicheFormComponent {
   clearZoneSearch() {
     this.zoneSearch = '';
     this.Form.get('zone')?.setValue(null);
-    this.filteredZones = [];
+    this.filteredZones = this.fZones;
+    //this.zoneNames= zones.map(zone => zone.nom);
     this.showZoneDropdown = false;
     this.zoneSelected = false;
     this.clearLigneSearch();
@@ -624,7 +625,5 @@ export class FicheFormComponent {
     this.close.emit();
   }
 
-
-   
 }
 

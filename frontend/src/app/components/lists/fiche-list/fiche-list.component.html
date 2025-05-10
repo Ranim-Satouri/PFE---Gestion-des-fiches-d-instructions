@@ -397,7 +397,7 @@
                                 </a>
                                 </li> -->
                                 <li>
-                                <a *ngIf="hasPermission('modifier_fiche')" (click)="openUpdateForm(fiche)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                <a *ngIf="(hasPermission('modifier_fiche') && fiche.status !== FicheStatus.ACCEPTEDIQP && fiche.status !== FicheStatus.EXPIRED) ||  userConnected.groupe?.nom === 'SUPERUSER'" (click)="openUpdateForm(fiche)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- Pencil Icon -->
                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                                         <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
@@ -415,7 +415,7 @@
                                     <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0-1.38-5H1"/><path d="M12 7v5l3 3"/></svg>
                                     Historique</a></li>
                                 <li>
-                                <a  *ngIf="hasPermission('supprimer_fiche')" class="flex items-center  mx-1 px-4 py-2 text-red-600 hover:bg-red-500 dark:hover:bg-red-600 hover:text-white dark:hover:text-white rounded-lg cursor-pointer transition-all"
+                                <a  *ngIf="(hasPermission('supprimer_fiche') && fiche.status !== FicheStatus.ACCEPTEDIQP && fiche.status !== FicheStatus.EXPIRED) ||  userConnected.groupe?.nom === 'SUPERUSER'" class="flex items-center  mx-1 px-4 py-2 text-red-600 hover:bg-red-500 dark:hover:bg-red-600 hover:text-white dark:hover:text-white rounded-lg cursor-pointer transition-all"
                                     (click)="openDeleteModel(fiche)">
                                     <!-- Trash Icon -->
                                     <svg class="w-5 h-5 mr-3  " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">

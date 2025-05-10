@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface FicheLigneRepository extends JpaRepository<FicheLigne,Long> {
     List<FicheLigne> findByLigneZoneAndStatusNot(Zone zone , Fiche.FicheStatus status);
+    List<FicheLigne> findByLigneZoneAndStatus(Zone zone , Fiche.FicheStatus status);
     List<FicheLigne> findByLigneAndStatusNot(Ligne ligne , Fiche.FicheStatus status);
 
 }

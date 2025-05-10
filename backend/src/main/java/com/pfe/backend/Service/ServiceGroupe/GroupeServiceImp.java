@@ -99,17 +99,17 @@ public class GroupeServiceImp implements GroupeService {
         List<Permission> selectedPermissions = permissionRepository.findAllById(permissionIds);
         groupe.setPermissions(selectedPermissions);
 
-        List<User> currentUsers = new ArrayList<>(groupe.getUsers());
-        for (User user : currentUsers) {
-            if (!userIds.contains(user.getIdUser())) {
-                user.setGroupe(null);
-                userRepository.save(user);
-            }
-        }
-        List<User> selectedUsers = userRepository.findAllById(userIds);
-        for (User user : selectedUsers) {
-            userService.attribuerGroupe(user.getIdUser(), groupe.getIdGroupe(), idActionneur);
-        }
+//        List<User> currentUsers = new ArrayList<>(groupe.getUsers());
+//        for (User user : currentUsers) {
+//            if (!userIds.contains(user.getIdUser())) {
+//                user.setGroupe(null);
+//                userRepository.save(user);
+//            }
+//        }
+//        List<User> selectedUsers = userRepository.findAllById(userIds);
+//        for (User user : selectedUsers) {
+//            userService.attribuerGroupe(user.getIdUser(), groupe.getIdGroupe(), idActionneur);
+//        }
         return groupeRepository.save(groupe);
     }
 }

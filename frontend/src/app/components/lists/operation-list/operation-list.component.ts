@@ -127,9 +127,9 @@ export class OperationListComponent {
         if (this.hasPermission('modifier_operation')) {
           dropdownHeight += 45.5; 
         }
-        if (this.hasPermission('consulter_historique')) {
-          dropdownHeight += 45.5; 
-        }
+        // if (this.hasPermission('consulter_historique')) {
+        //   dropdownHeight += 45.5; 
+        // }
         if (this.hasPermission('supprimer_operation')) {
           dropdownHeight += 45.5; 
         }

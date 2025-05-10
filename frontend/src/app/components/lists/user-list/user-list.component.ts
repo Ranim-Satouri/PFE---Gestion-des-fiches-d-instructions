@@ -331,7 +331,7 @@ adjustGrpDropdownPosition() {
          if (this.hasPermission('modifier_utilisateur')) {
            dropdownHeight += 45.5;
          }
-         if (this.hasPermission('consulter_historique')) {
+         if (this.hasPermission('consulter_historique_utilisateur')) {
            dropdownHeight += 45.5;
          }
          if (this.hasPermission('supprimer_utilisateur')) {

@@ -98,7 +98,7 @@ situationDropdownOpen = false;
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
-   this.getFiches();
+  this.getFiches();
   this.getZones(); // Charger les zones
   this.getFamilles(); 
   this.checkFicheStatusPeriodically();
@@ -120,6 +120,8 @@ situationDropdownOpen = false;
       });
     }else{
       console.log('mech superuser');
+      if(this.hasPermission("consulter_fiche_validées") && this.hasPermission("consulter_fiche_non_validées")){
+        console.log('consulter_fiche_validées et consulter_fiche_non_validées');
       this.FicheService.getFichesByUserZones(this.userConnected.idUser!).subscribe({
         next: (response: Fiche[]) => {
           this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
@@ -131,6 +133,16 @@ situationDropdownOpen = false;
         }
         
       });}
+      else if(this.hasPermission("consulter_fiche_validées") && !this.hasPermission("consulter_fiche_non_validées")){
+        console.log('consulter_fiche_validées et !consulter_fiche_non_validées');
+        this.FicheService.getFichesByOperateur(this.userConnected.idUser!).subscribe({
+          next: (response: Fiche[]) => {
+            this.fiches = response.sort((a, b) => b.idFiche! - a.idFiche!);
+            this.filteredFiches = [...this.fiches]; 
+            this.applyFilters(); 
+          }
+        });
+      }}
   }
 //----------------------------------------------------------------------------------------------------
    // Fetch the list of Famille
@@ -478,13 +490,13 @@ adjustGrpDropdownPosition() {
         //const dropdownHeight = 190; // kol ma nbaddelou nzidou walla na9sou haja fel drop down lezem nbadlou height ta3 lenna
         let dropdownHeight = 0;
 
-        if (this.hasPermission('modifier_fiche')) {
+        if ((this.hasPermission('modifier_fiche') && fiche.status !== FicheStatus.ACCEPTEDIQP && fiche.status !== FicheStatus.EXPIRED) ||  this.userConnected.groupe?.nom === 'SUPERUSER') {
           dropdownHeight += 44.5;
         }
-        if (this.hasPermission('consulter_historique')) {
+        if (this.hasPermission('consulter_historique_fiche')) {
           dropdownHeight += 44.5;
         }
-        if (this.hasPermission('supprimer_fiche')) {
+        if ((this.hasPermission('supprimer_fiche') && fiche.status !== FicheStatus.ACCEPTEDIQP && fiche.status !== FicheStatus.EXPIRED) ||  this.userConnected.groupe?.nom === 'SUPERUSER') {
           dropdownHeight += 44.5;
         }
         if (fiche.ficheAQL !== '') {

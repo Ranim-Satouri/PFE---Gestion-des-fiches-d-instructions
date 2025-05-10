@@ -87,28 +87,28 @@ export class AddProduitFormComponent {
     this.showDropdown = false;
   }
 
-  addFamille(nom: string) {
-    const newFamille: Famille = {
-      nomFamille: nom,
-      actionneur : this.userConnected
-    };
-    this.familleService.addFamille(newFamille , this.userConnected.idUser!).subscribe({
-      next: (famille) => {
-        console.log('Famille ajoutée :', famille);
-        this.errorMessage='';
-        this.successMessage = `Famille "${famille.nomFamille}" ajouté avec succès !`;
-        setTimeout(() => {
-          this.successMessage = '';
-        }, 3000);
-        this.families.push(famille); // Mets à jour ta liste
-        this.familleNames.push(nom);
-        this.selectFamille(famille); 
-      },
-      error: (err) => {
-        console.error('Erreur lors de l’ajout :', err);
-      }
-    });
-  }
+  // addFamille(nom: string) {
+  //   const newFamille: Famille = {
+  //     nomFamille: nom,
+  //     actionneur : this.userConnected
+  //   };
+  //   this.familleService.addFamille(newFamille , this.userConnected.idUser!).subscribe({
+  //     next: (famille) => {
+  //       console.log('Famille ajoutée :', famille);
+  //       this.errorMessage='';
+  //       this.successMessage = `Famille "${famille.nomFamille}" ajouté avec succès !`;
+  //       setTimeout(() => {
+  //         this.successMessage = '';
+  //       }, 3000);
+  //       this.families.push(famille); // Mets à jour ta liste
+  //       this.familleNames.push(nom);
+  //       this.selectFamille(famille); 
+  //     },
+  //     error: (err) => {
+  //       console.error('Erreur lors de l’ajout :', err);
+  //     }
+  //   });
+  // }
   clearFamilleSearch() {
     this.familleSearch = '';
     this.productForm.get('famille')?.setValue(null);

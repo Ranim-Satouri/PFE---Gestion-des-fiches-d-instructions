@@ -37,7 +37,7 @@ public class DataInitializer implements CommandLineRunner {
         createMenuWithPermissions("Dashboard", List.of("consulter_dashboard"));
 
         createMenuWithPermissions("fiches", List.of(
-                "consulter_fiche", "creer_fiche", "modifier_fiche", "supprimer_fiche",
+                "consulter_fiche_validées","consulter_fiche_non_validées", "creer_fiche", "modifier_fiche", "supprimer_fiche",
                 "valider_fiche_IQP", "valider_fiche_IPDF" , "consulter_historique_fiche"
         ));
 

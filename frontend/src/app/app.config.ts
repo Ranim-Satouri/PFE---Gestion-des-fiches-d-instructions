@@ -10,7 +10,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
   const http = inject(HttpClient);
   const router = inject(Router);
-  console.log('AuthInterceptor - URL:', req.url, 'Token:', token);
+  //console.log('AuthInterceptor - URL:', req.url, 'Token:', token);
 
   if (req.url.includes('/api/v1/auth') || req.url.includes('/api/v1/auth/refresh')) {
     return next(req.clone({ withCredentials: true }));
@@ -22,13 +22,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       });
       return next(cloned).pipe(
           catchError((err) => {
-              console.log('Interceptor caught error:', err);
-              console.log('Error status:', err.status, 'Error message:', err.message);
+              //console.log('Interceptor caught error:', err);
+              //console.log('Error status:', err.status, 'Error message:', err.message);
               if (err.status === 401) {
-                console.log('401 Unauthorized - Attempting to refresh token');
+                //console.log('401 Unauthorized - Attempting to refresh token');
                 return http.post('http://localhost:8080/api/v1/auth/refresh', {}, { withCredentials: true }).pipe(
                   switchMap((res: any) => {
-                    console.log('Token refreshed:', res);
+                    //console.log('Token refreshed:', res);
                     localStorage.setItem('token', res.token);
                     const retryReq = req.clone({
                       setHeaders: { Authorization: `Bearer ${res.token}` }
@@ -36,7 +36,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                     return next(retryReq);
                   }),
                   catchError((refreshErr) => {
-                    console.error('Refresh token failed:', refreshErr);
+                    //console.error('Refresh token failed:', refreshErr);
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
                     router.navigate(['/']);
@@ -44,7 +44,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                   })
                 );
               } else if (err.status === 403) {
-                console.error('403 Forbidden - Access denied');
+                //console.error('403 Forbidden - Access denied');
                 // router.navigate(['/access-denied']);
               }
               return throwError(() => err);

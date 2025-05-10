@@ -106,6 +106,10 @@
             <span class="font-medium">{{ p.nomProduit }}  </span>
             <span class="text-sm text-gray-600 dark:text-gray-400">{{ p.ref }}-{{ p.indice }}</span>
           </li>
+          <li *ngIf="filteredProduits.length === 0"
+            class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 italic">
+          Aucun produit correspondant trouvé.
+        </li>
         </ul>
       </div>
       
@@ -171,6 +175,11 @@
         >
           {{ z.nom }} 
         </li>
+        <li *ngIf="filteredZones.length === 0"
+          class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 italic">
+          Aucune zone correspondante trouvée.
+        </li>
+
       </ul>
     </div>
     <div *ngIf="Form.get('zone')?.invalid && Form.get('zone')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
@@ -235,6 +244,11 @@
         >
           {{ z.nom }} 
         </li>
+        <li *ngIf="filteredLignes.length === 0"
+          class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 italic">
+        Aucune ligne correspondante trouvée.
+      </li>
+
       </ul>
     </div>
     <div *ngIf="Form.get('ligne')?.invalid && Form.get('ligne')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
@@ -299,6 +313,11 @@
         >
           {{ z.nom }} 
         </li>
+        <li *ngIf="filteredOperations.length === 0"
+          class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 italic">
+        Aucune operation correspondante trouvée.
+      </li>
+
       </ul>
     </div>
     <div *ngIf="Form.get('operation')?.invalid && Form.get('operation')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">

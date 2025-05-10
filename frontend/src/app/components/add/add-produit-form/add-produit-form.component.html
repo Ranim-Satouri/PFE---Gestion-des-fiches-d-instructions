@@ -59,15 +59,8 @@
           placeholder="Nom"
           formControlName="nom"
           class="w-full p-2  rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
-          dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
-          [ngClass]="{
-            'border-red-500 ring-red-500': productForm.get('nom')?.invalid && productForm.get('nom')?.touched && formSubmitted,
-            'border-gray-400 dark:border-gray-700': !(productForm.get('nom')?.invalid && productForm.get('nom')?.touched)
-          }"
+          dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200 border-gray-400 dark:border-gray-700"
         />
-        <div *ngIf="productForm.get('nom')?.invalid && productForm.get('nom')?.touched && formSubmitted" class="text-red-500 dark:text-red-400 text-sm mt-1">
-          Le nom du produit est requis.
-        </div>
       </div>
 
       <!-- Référence -->
@@ -78,7 +71,7 @@
           placeholder="Référence"
           formControlName="reference"
           class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800  dark:text-white border-2  text-sm transition  focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
-          dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
+          dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200 "
           [ngClass]="{
             'border-red-500 ring-red-500': productForm.get('reference')?.invalid && productForm.get('reference')?.touched && formSubmitted,
             'border-gray-400 dark:border-gray-700': !(productForm.get('reference')?.invalid && productForm.get('reference')?.touched)
@@ -162,7 +155,11 @@
             >
               {{ f.nomFamille }}
             </li>
-            <li
+            <li *ngIf="filteredFamilles.length === 0"
+              class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 italic">
+              Aucune famille correspondante trouvée.
+            </li>
+            <!-- <li
                 *ngIf="familleSearch && !familleNames.includes(familleSearch)"
                 (click)="addFamille(familleSearch)"
                 class="px-4 py-2 m-2 rounded-lg text-blue-600 dark:text-blue-400 hover:bg-blue-600/20 dark:hover:bg-blue-600/20 cursor-pointer flex flex-row gap-2 "
@@ -173,11 +170,11 @@
                 <path d="M12 9v6"></path>
               </svg>
               <p>Ajouter "<span class="italic">{{ familleSearch }}</span>"</p>
-            </li>
+            </li> -->
           </ul>
         </div>
         <div *ngIf="productForm.get('famille')?.invalid && productForm.get('famille')?.touched && formSubmitted" class="text-red-500 dark:text-red-400 text-sm mt-1">
-          Veuillez sélectionner ou ajouter une famille.
+          Veuillez sélectionner une famille.
         </div>
       </div>
 

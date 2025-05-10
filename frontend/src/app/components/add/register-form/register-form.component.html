@@ -21,7 +21,7 @@
       </svg>
       <div class="ms-3 text-sm font-medium">
         <span *ngIf="!alreadyExist">Veuillez vérifier les champs que vous avez saisis !</span>
-        <span *ngIf="alreadyExist">Un utilsateur avec cet matricule existe déjà.</span>
+        <span *ngIf="alreadyExist">Un utilisateur avec cet matricule existe déjà.</span>
       </div>
       <button 
       (click)="hideAlert()" 
@@ -258,6 +258,17 @@
               <path d="m7 15 5 5 5-5"></path> <path d="m7 9 5-5 5 5"></path>
             </svg>
           </div>
+          <button
+            *ngIf="searchText"
+            (click)="clearGroupeSearch()"
+            type="button"
+            class="absolute right-8 mr-[2px] top-1/2 mt-[1px] -translate-y-1/2 dark:text-gray-400 text-gray-500  transition rounded-full border-2 border-gray-500 dark:border-gray-400  hover:bg-gray-200"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="10" height="10" stroke-width="2">
+              <path d="M18 6l-12 12"></path>
+              <path d="M6 6l12 12"></path>
+            </svg>
+          </button>
         <ul
           *ngIf="showDropdown" id="dropDown"
           #groupeDropdownn
@@ -266,7 +277,13 @@
           *ngFor="let groupe of filteredGroupes"
           (click)="selectGroupe(groupe)"
             class="px-4 py-2 m-2 rounded-lg text-sm text-gray-800 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer">
-          {{ groupe.nom }} </li></ul>
+          {{ groupe.nom }} 
+        </li>
+        <li *ngIf="filteredGroupes.length === 0"
+            class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 italic">
+          Aucun groupe correspondant trouvé.
+        </li>
+        </ul>
         </div>
         <br />
         </div>

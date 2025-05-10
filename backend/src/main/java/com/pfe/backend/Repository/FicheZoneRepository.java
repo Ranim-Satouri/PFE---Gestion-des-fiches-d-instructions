@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface FicheZoneRepository extends JpaRepository<FicheZone,Long> {
     List<FicheZone> findByZoneAndStatusNot(Zone zone , Fiche.FicheStatus status);
+    List<FicheZone> findByZoneAndStatus(Zone zone , Fiche.FicheStatus status);
 }

@@ -96,9 +96,9 @@ export class ZoneListComponent {
         if (this.hasPermission('modifier_zone')) {
           dropdownHeight += 44.5; 
         }
-        if (this.hasPermission('consulter_historique')) {
-          dropdownHeight += 44.5; 
-        }
+        // if (this.hasPermission('consulter_historique')) {
+        //   dropdownHeight += 44.5; 
+        // }
         if (this.hasPermission('supprimer_zone')) {
           dropdownHeight += 44.5; 
         }

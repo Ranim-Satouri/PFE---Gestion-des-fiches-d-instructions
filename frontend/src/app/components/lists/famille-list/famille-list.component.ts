@@ -148,9 +148,9 @@ export class FamilleListComponent {
         if (this.hasPermission('modifier_famille')) {
           dropdownHeight += 44.5; 
         }
-        if (this.hasPermission('consulter_historique')) {
-          dropdownHeight += 44.5; 
-        }
+        // if (this.hasPermission('consulter_historique')) {
+        //   dropdownHeight += 44.5; 
+        // }
         if (this.hasPermission('supprimer_famille')) {
           dropdownHeight += 44.5; 
         }

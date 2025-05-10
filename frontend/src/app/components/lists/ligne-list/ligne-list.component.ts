@@ -122,9 +122,9 @@ export class LigneListComponent {
        if (this.hasPermission('modifier_ligne')) {
          dropdownHeight += 45.5; 
        }
-       if (this.hasPermission('consulter_historique')) {
-         dropdownHeight += 45.5; 
-       }
+      //  if (this.hasPermission('consulter_historique')) {
+      //    dropdownHeight += 45.5; 
+      //  }
        if (this.hasPermission('supprimer_ligne')) {
          dropdownHeight += 45.5; 
        }
