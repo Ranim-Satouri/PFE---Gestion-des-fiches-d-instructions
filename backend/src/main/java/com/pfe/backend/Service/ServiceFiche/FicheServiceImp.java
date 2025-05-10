@@ -394,8 +394,16 @@ public class FicheServiceImp implements FicheService {
         User operateur = userRepository.findById(idOperateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
         Set<UserZone> zones = operateur.getUserZones();
         List<Fiche> fiches = new ArrayList<>();
-        for(UserZone u : zones){
-            //fiches.addAll(ficheRepository.findByZoneAndStatus(u.getZone() , Fiche.FicheStatus.ACCEPTEDIQP));
+//        for(UserZone u : zones){
+//
+//            fiches.addAll(ficheRepository.findByZoneAndStatus(u.getZone() , Fiche.FicheStatus.ACCEPTEDIQP));
+//        }
+        for (UserZone u : zones) {
+            Zone zone = u.getZone();
+            //fiches.addAll(ficheRepository.findFichesByZone(zone));
+            fiches.addAll(ficheZoneRepository.findByZoneAndStatus(zone, Fiche.FicheStatus.ACCEPTEDIQP));
+            fiches.addAll(ficheLigneRepository.findByLigneZoneAndStatus(zone, Fiche.FicheStatus.ACCEPTEDIQP));
+            fiches.addAll(ficheOperationRepository.findByOperationLigneZoneAndStatus(zone , Fiche.FicheStatus.ACCEPTEDIQP));
         }
         return  fiches;
     }

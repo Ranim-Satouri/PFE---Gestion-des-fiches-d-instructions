@@ -70,7 +70,7 @@
                 }"
             />
             <div *ngIf="ligneForm.get('nom')?.invalid && ligneForm.get('nom')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
-              Le nom de l'ligne est requis.
+              Le nom de la ligne est requis.
             </div>
             </div>     
             <!-- Zone -->
@@ -89,10 +89,7 @@
                     'border-red-500 ring-red-500': ligneForm.get('zone')?.invalid && ligneForm.get('zone')?.touched,
                     'border-gray-400 dark:border-gray-700': !(ligneForm.get('zone')?.invalid && ligneForm.get('zone')?.touched)
                   }"
-                  
                 />
-          
-          
                 <!-- Dropdown toggle icon -->
                   <div
                   class="absolute top-1/2 right-3 mt-[1px]  -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
@@ -129,6 +126,10 @@
                     class="px-4 py-2 m-2 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
                   >
                     {{ z.nom }} 
+                  </li>
+                  <li *ngIf="filteredZones.length === 0"
+                    class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 italic">
+                    Aucune zone correspondante trouvée.
                   </li>
                 </ul>
               </div>

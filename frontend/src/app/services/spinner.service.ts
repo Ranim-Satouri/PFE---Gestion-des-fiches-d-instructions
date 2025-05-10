@@ -12,7 +12,7 @@ export class SpinnerService {
   show(): void {
     this.requestCount++;
     if (this.requestCount === 1) {
-      console.log('LoadingService: Afficher le spinner');
+      //console.log('LoadingService: Afficher le spinner');
       this.isLoadingSubject.next(true);
     }
   }
@@ -21,7 +21,7 @@ export class SpinnerService {
     this.requestCount--;
     if (this.requestCount <= 0) {
       this.requestCount = 0;
-      console.log('LoadingService: Masquer le spinner');
+      //console.log('LoadingService: Masquer le spinner');
       this.isLoadingSubject.next(false);
     }
   }

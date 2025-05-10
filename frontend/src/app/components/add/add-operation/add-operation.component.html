@@ -130,6 +130,10 @@
                   >
                   {{ ligne.nom }} {{ ligne.zone.nom }} 
                   </li>
+                  <li *ngIf="filteredLignes.length === 0"
+                    class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 italic">
+                    Aucune ligne correspondante trouvée.
+                  </li>
                 </ul>
               </div>
               <div *ngIf="operationForm.get('ligne')?.invalid && operationForm.get('ligne')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">

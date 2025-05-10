@@ -45,7 +45,14 @@ export class UserZoneAssignComponent {
       assignedUserZones: this.userZoneService.getZoneUsers(this.idZone)
     }).subscribe({
       next: ({ allUsers, assignedUserZones }) => {
-        this.users = allUsers;
+        // ⚠️ Filtrer les utilisateurs qui n'ont pas le groupe "SUPERUSER"
+      const filteredUsers = allUsers.filter(user =>
+        !user.groupe || user.groupe.nom !== 'SUPERUSER'
+      );
+
+      this.users = filteredUsers;
+
+      //this.users = allUsers;
   
         const assignedIds = assignedUserZones.map(uz => uz.user.idUser);
   

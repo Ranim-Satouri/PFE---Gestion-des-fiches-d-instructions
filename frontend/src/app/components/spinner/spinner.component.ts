@@ -17,7 +17,7 @@ export class SpinnerComponent implements OnInit {
   ngOnInit(): void {
     // Vérifier si la route est '/spinner'
     this.isTestMode = this.route.snapshot.url.some(segment => segment.path === 'spinner');
-    console.log('SpinnerComponent: isTestMode =', this.isTestMode);
+    //console.log('SpinnerComponent: isTestMode =', this.isTestMode);
 
     if (this.isTestMode) {
       // Forcer l'affichage du spinner en mode test
@@ -25,7 +25,7 @@ export class SpinnerComponent implements OnInit {
     } else {
       // Mode global : écouter LoadingService
       this.spinnerService.isLoading$.subscribe((isLoading) => {
-        console.log('SpinnerComponent: isLoading =', isLoading);
+        //console.log('SpinnerComponent: isLoading =', isLoading);
         this.isLoading = isLoading;
       });
     }

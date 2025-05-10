@@ -139,6 +139,13 @@ export class RegisterFormComponent {
       this.searchText = groupe.nom;                      // valeur affichée
       this.showDropdown = false;
     }
+
+    clearGroupeSearch() {
+      this.searchText = '';
+      this.registerForm.get('groupe')?.setValue(null);
+      this.filteredGroupes = this.groupes;
+      //this.showProduitDropdown = false;
+    }
   // Navigation entre les étapes
   goToNextStep() {
     if (this.currentStep < 3) {
@@ -383,8 +390,9 @@ showFailAlert() {this.showSuccessAlert = false ; this.showEchecAlert = true; set
     this.searchText = value;
     this.filteredGroupes = this.groupes.filter(groupe =>
       groupe.nom.toLowerCase().includes(value.toLowerCase())
-    ); this.showDropdown = true;
-     }
+    );
+    this.showDropdown = true;
+  }
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
     if (this.showDropdown) { this.filterGroupes(); this.adjustDropdownPosition(); } }

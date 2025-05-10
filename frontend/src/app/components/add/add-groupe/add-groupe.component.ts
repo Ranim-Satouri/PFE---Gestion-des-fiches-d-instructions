@@ -110,8 +110,6 @@ export class AddGroupeComponent {
     }else{
       this.onGroupNameUpdate();
     }
-   
-
   }
 
   onGroupNameSubmit(): void {
@@ -158,33 +156,37 @@ export class AddGroupeComponent {
         actionneur: this.userConnected
       };
         
-      this.groupeService.updateGroupe(newGroupe, this.groupe.idGroupe ,this.userConnected.idUser!).subscribe({
-        next: (response) => {
-            console.log(response); 
-            this.groupe = response; 
-            this.isNewGroup = false;    
-            this.errorMessage = '';
-            //this.goToNextStep();
-            this.addRelationsToGroup();
-        },
-        error: (err) => {
-         
-          this.successMessage = '';
-          console.error('Erreur lors de l’ajout :', err);
-  
-          if (err.status === 404) {
-            this.errorMessage = "Actionneur introuvable";
-          } else if (err.status === 409) {
-            this.errorMessage = "Un groupe avec ce nom existe déjà.";
-          } else {
-            this.errorMessage = "Une erreur inattendue est survenue.";
+      if(this.groupe.nom !== this.groupeForm.value.nom){
+        this.groupeService.updateGroupe(newGroupe, this.groupe.idGroupe ,this.userConnected.idUser!).subscribe({
+          next: (response) => {
+              console.log(response); 
+              this.groupe = response; 
+              this.isNewGroup = false;    
+              this.errorMessage = '';
+              //this.goToNextStep();
+              this.addRelationsToGroup();
+          },
+          error: (err) => {
+           
+            this.successMessage = '';
+            console.error('Erreur lors de l’ajout :', err);
+    
+            if (err.status === 404) {
+              this.errorMessage = "Actionneur introuvable";
+            } else if (err.status === 409) {
+              this.errorMessage = "Un groupe avec ce nom existe déjà.";
+            } else {
+              this.errorMessage = "Une erreur inattendue est survenue.";
+            }
+    
+            setTimeout(() => {
+              this.errorMessage = '';
+            }, 2000);
           }
-  
-          setTimeout(() => {
-            this.errorMessage = '';
-          }, 2000);
-        }
-      });
+        });
+      }else{
+        this.addRelationsToGroup();
+      }
     } else {
       this.groupeForm.markAllAsTouched();
     }
@@ -270,6 +272,10 @@ export class AddGroupeComponent {
       });
     }
   }
+
+  private readonly PERM_VALIDER_IQP_ID = 7;
+  private readonly PERM_VALIDER_IPDF_ID = 8;
+  private readonly PERM_CONSULTER_NON_VAL_ID = 3;
   // Sélectionner une permission
   togglePermissionSelection(permissionId: number) {
     
@@ -277,6 +283,15 @@ export class AddGroupeComponent {
       this.selectedPermissions.delete(permissionId);
     } else {
       this.selectedPermissions.add(permissionId);
+      const isValidationPermission = 
+      permissionId === this.PERM_VALIDER_IQP_ID || 
+      permissionId === this.PERM_VALIDER_IPDF_ID;
+      if (isValidationPermission) {
+        if (this.selectedPermissions.has(this.PERM_CONSULTER_NON_VAL_ID)) {
+          this.selectedPermissions.add(this.PERM_CONSULTER_NON_VAL_ID);
+        }
+      
+      }
     }
   }
 
@@ -320,7 +335,7 @@ export class AddGroupeComponent {
       menuPermissions.forEach(permission => {
         this.selectedPermissions.delete(permission.idPermission!);
       });
-      delete this.menuPermissions[menuId];
+      //delete this.menuPermissions[menuId];
       console.log(this.selectedMenus)
       console.log(this.selectedPermissions);
     } else {
@@ -335,7 +350,9 @@ export class AddGroupeComponent {
   }
   
   loadPermissionsByMenu(menuId: number) {
+    console.log("loadPermissionsByMenu",menuId)
     if (!this.menuPermissions[menuId]) {
+      console.log("loadPermissionsByMenu 2",menuId);
       this.menuService.getPermissionsByMenu(menuId).subscribe(
         (permissions: Permission[]) => {
           // Récupérer le nom du menu pour une meilleure gestion
@@ -367,7 +384,26 @@ export class AddGroupeComponent {
           console.error('Erreur lors du chargement des permissions pour le menu', error);
         }
       );
-    }
+    }else{
+      // Récupérer le nom du menu pour une meilleure gestion
+      const menuName = this.menus.find(menu => menu.idMenu === menuId)?.nom;
+  
+      if (menuName) {
+        console.log('Permissions pour le menu:', this.menuPermissions[menuId]);
+
+        // Trouver la permission avec l'ID le plus petit
+        const smallestPermission = this.menuPermissions[menuId].reduce((prev, curr) => 
+          prev.idPermission! < curr.idPermission! ? prev : curr
+        );
+
+        console.log('Permission avec l\'ID le plus petit:', smallestPermission);
+
+        // Ajouter cette permission à la liste des permissions sélectionnées
+        if (smallestPermission) {
+          this.selectedPermissions.add(smallestPermission.idPermission!);
+          this.disabledPermissions = new Set([smallestPermission.idPermission!]); // Ajout de l'ID de la permission désactivée
+        }
+    }}
   }
   
 }

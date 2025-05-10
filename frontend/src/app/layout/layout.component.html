@@ -183,7 +183,7 @@ border-solid border-b shadow-md
             <span *ngIf="isSideBarOpen" class="flex-1 ms-3 whitespace-nowrap">Sign In</span>
             </a>
         </li> -->
-        <li  *ngIf="hasPermission('consulter_fiche')">
+        <li  *ngIf="hasPermission('consulter_fiche_validées') || hasPermission('consulter_fiche_non_validées')">
             <a href="/fichelist" class="h-[40px] flex items-center pl-[9.5px] text-gray-900 rounded-lg dark:text-gray-400 hover:bg-gray-200 hover:text-black dark:hover:bg-gray-700 dark:hover:text-white group" 
             [ngClass]="{'bg-gray-200 dark:bg-gray-700 dark:text-white': getCurrentPath() === '/fichelist'}">
             <svg class="shrink-0 w-5 h-5 transition duration-75 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">

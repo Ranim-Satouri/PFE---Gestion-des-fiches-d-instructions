@@ -6,7 +6,7 @@ import { SpinnerService } from './services/spinner.service';
 
 export const loadingInterceptor = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
   const loadingService = inject(SpinnerService);
-  console.log('LoadingInterceptor - Début requête:', req.url);
+  //console.log('LoadingInterceptor - Début requête:', req.url);
 
   // Ignorer certaines requêtes (ex: refresh token)
   if (req.url.includes('/api/v1/auth/refresh')) {
@@ -16,7 +16,7 @@ export const loadingInterceptor = (req: HttpRequest<unknown>, next: HttpHandlerF
   loadingService.show();
   return next(req).pipe(
     finalize(() => {
-      console.log('LoadingInterceptor - Fin requête:', req.url);
+      //console.log('LoadingInterceptor - Fin requête:', req.url);
       loadingService.hide();
     })
   );
