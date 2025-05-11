@@ -1,5 +1,6 @@
 package com.pfe.backend.Auth.authentification;
 import com.pfe.backend.Auth.Config.JwtService;
+import com.pfe.backend.Auth.Config.RefreshTokenRepository;
 import com.pfe.backend.Auth.Exception.InactiveAccountException;
 import com.pfe.backend.Auth.Exception.NoGroupException;
 import com.pfe.backend.Model.Fiche;
@@ -163,6 +164,11 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setActionneur(actionneur);
         repository.save(user);
+    }
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    public void revokeRefreshTokens(User user) {
+        refreshTokenRepository.deleteByUser(user);
     }
 
 }

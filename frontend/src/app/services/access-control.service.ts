@@ -33,7 +33,15 @@ export class AccessControlService {
 canAccess(path: string): boolean {
   return this.getAllowedInterfaces().some(route => path.startsWith(route));
 }
+// Obtenir le groupe courant
+getCurrentGroupe(): Groupe | undefined {
+  return this.currentGroupe;
+}
 
+// Méthode temporaire pour la compatibilité avec l'ancienne logique
+getCurrentGroupeNom(): string | undefined {
+  return this.currentGroupe?.nom;
+}
 // // Vérifier si l'utilisateur a une permission spécifique
 // hasPermission(permissionNom: string): boolean {
 //   if (!this.currentGroupe || !this.currentGroupe.permission) {
@@ -50,13 +58,5 @@ canAccess(path: string): boolean {
 //   return this.currentGroupe.menus.map(m => m.nom);
 // }
 
-// Obtenir le groupe courant
-getCurrentGroupe(): Groupe | undefined {
-  return this.currentGroupe;
-}
 
-// Méthode temporaire pour la compatibilité avec l'ancienne logique
-getCurrentGroupeNom(): string | undefined {
-  return this.currentGroupe?.nom;
-}
 }
