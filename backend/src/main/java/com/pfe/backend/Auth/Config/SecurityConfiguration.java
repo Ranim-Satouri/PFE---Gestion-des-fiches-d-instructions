@@ -39,16 +39,19 @@ public class SecurityConfiguration {
                         .requestMatchers("/zone/**").authenticated()
                         .requestMatchers("/famille/**").authenticated()
                         .requestMatchers("/produit/**").authenticated()
-                        .requestMatchers("/groupe/**").authenticated()
                         .requestMatchers("/ligne/**").authenticated()
                         .requestMatchers("/operation/**").authenticated()
                         .requestMatchers("/menus/**").authenticated()
                         .requestMatchers("/permissions/**").authenticated()
-                        .anyRequest().authenticated()
+                        .anyRequest().denyAll()
+
+//                        .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build(); }
+//   .denyAll() configure Spring Security pour retourner une erreur HTTP 403 Forbidden pour toute requête qui ne correspond à aucun des requestMatchers définis.
+//    Cela garantit que seuls les endpoints explicitement listés dans la configuration sont accessibles (soit avec .permitAll(), soit avec .authenticated()).
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

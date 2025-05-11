@@ -40,7 +40,18 @@ export class LoginComponent {
         };
         localStorage.setItem('user', JSON.stringify(user));
         console.log('User stocké:', user);
-        this.redirectToGroupeDashboard(user.groupe?.nom);
+        // Définir le groupe dans AccessControlService
+        if (user.groupe) {
+          this.accessControlService.setCurrentGroupe(user.groupe);
+          console.log('Groupe défini:', user.groupe.nom);
+          this.redirectToGroupeDashboard(user.groupe.nom);
+        } else {
+          console.error('Aucun groupe dans la réponse');
+          this.loginError = 'Aucun groupe assigné. Veuillez contacter votre administrateur.';
+          this.router.navigate(['/access-denied'], {
+            state: { message: 'Vous ne faites partie d\'aucun groupe' }
+          });
+        }
       },
       error: (err) => {
         console.error('Erreur de connexion:', err);
@@ -86,26 +97,38 @@ export class LoginComponent {
       }
     });
   }
-private redirectToGroupeDashboard(groupeNom: string) {
-const groupeRoutes: Record<string, string> = {
-'SUPERUSER': '/userlist',
-'ADMIN': '/fichelist',
-'PREPARATEUR': '/fichelist',
-'IPDF': '/fichelist',
-'IQP': '/fichelist',
-'OPERATEUR': '/fichelist',
-'Test': '/fichelist',
-'': '/access-denied',
-  };
-  const route = groupeRoutes[groupeNom];
-  if (!route) {
-  console.error(`Aucune route définie pour le groupe : ${groupeNom}`);
-  this.router.navigate(['/fichelist']);
-  return;
+  private redirectToGroupeDashboard(groupeNom: string) {
+    // Rediriger vers la première route autorisée basée sur les permissions
+    const allowedInterfaces = this.accessControlService.getAllowedInterfaces();
+    console.log('Interfaces autorisées:', allowedInterfaces);
+
+    // Par défaut, rediriger vers /dashboard si disponible, sinon /fichelist
+    const defaultRoute = allowedInterfaces.includes('/dashboard') ? '/dashboard' : '/fichelist';
+    const route = allowedInterfaces.length > 0 ? allowedInterfaces[0] : defaultRoute;
+
+    console.log('Redirection vers:', route);
+    this.router.navigate([route]);
   }
-  console.log('Redirection vers:', route);
-  this.router.navigate([route]);
-  }
+// private redirectToGroupeDashboard(groupeNom: string) {
+// const groupeRoutes: Record<string, string> = {
+// 'SUPERUSER': '/userlist',
+// 'ADMIN': '/fichelist',
+// 'PREPARATEUR': '/fichelist',
+// 'IPDF': '/fichelist',
+// 'IQP': '/fichelist',
+// 'OPERATEUR': '/fichelist',
+// 'Test': '/fichelist',
+// '': '/access-denied',
+//   };
+//   const route = groupeRoutes[groupeNom];
+//   if (!route) {
+//   console.error(`Aucune route définie pour le groupe : ${groupeNom}`);
+//   this.router.navigate(['/fichelist']);
+//   return;
+//   }
+//   console.log('Redirection vers:', route);
+//   this.router.navigate([route]);
+//   }
   clearError() {
     this.loginError = null;
   }
