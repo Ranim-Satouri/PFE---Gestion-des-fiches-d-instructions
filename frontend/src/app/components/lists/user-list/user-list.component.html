@@ -118,6 +118,17 @@
                      (input)="onGroupeSearchChange($event)"
                      placeholder="Groupe"
                      name="searchText" />
+                    <button
+                      *ngIf="searchText"
+                      (click)="clearGroupeSearch()"
+                      type="button"
+                      class="absolute right-8 mr-[2px] top-1/2 mt-[1px] -translate-y-1/2 dark:text-gray-400 text-gray-500  transition rounded-full border-2 border-gray-500 dark:border-gray-400  hover:bg-gray-200"
+                      >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="10" height="10" stroke-width="2">
+                        <path d="M18 6l-12 12"></path>
+                        <path d="M6 6l12 12"></path>
+                      </svg>
+                  </button>
                 <div
                 #grpArrowButton class="absolute top-1/2 end-3 -translate-y-1/2 cursor-pointer "  >
                   <svg class="shrink-0 size-3.5 text-gray-500 w-4 h-4" xmlns="http://www.w3.org/2000/svg"
@@ -299,7 +310,7 @@
     <!-- Pagination Controls -->
     <div class=" flex sm:flex-row justify-between items-center px-4 rounded-lg h-10 flex-col gap-4">
         <div class="text-sm text-slate-500">
-            Affichage <b>{{ (page - 1) * itemsPerPage + 1 }}</b> - <b>{{ (page * itemsPerPage > users.length ? users.length : page * itemsPerPage) }}</b> de <b>{{ users.length }}</b> éléments
+            Affichage <b>{{ (page - 1) * itemsPerPage + 1 }}</b> - <b>{{ (page * itemsPerPage > filteredUsers.length ? filteredUsers.length : page * itemsPerPage) }}</b> de <b>{{ filteredUsers.length }}</b> éléments
         </div>
         <div class="flex space-x-3 flex-row sm:flex-row flex-col">
              <form class="max-w-sm mx-auto flex flex-row gap-3 items-center ">
@@ -310,7 +321,7 @@
                      <option value="10">10</option>
                      <option value="15">15</option>
                      <option value="20">20</option>
-                    <option *ngIf="users.length > 20" value="{{users.length}}">{{users.length}}</option>
+                    <option *ngIf="filteredUsers.length > 20" value="{{filteredUsers.length}}">{{filteredUsers.length}}</option>
                 </select>
                 <!-- Flèche SVG personnalisée -->
                 <svg class="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

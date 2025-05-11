@@ -117,7 +117,8 @@ export class RegisterFormComponent {
       next: (groupes) => {
         this.groupes = groupes;
         this.filteredGroupes = this.groupes;
-        console.log('Groupes chargés depuis le backend:', this.groupes);}, error: (error) => { console.error('Erreur lors du chargement des groupes:', error);}}); }
+        console.log('Groupes chargés depuis le backend:', this.groupes);}, error: (error) => { console.error('Erreur lors du chargement des groupes:', error);}});
+  }
     
 //     Validators.pattern('^\d+$') :
 // ^ : Début de la chaîne.

@@ -217,7 +217,7 @@
     <!-- Pagination Controls -->
     <div class="flex sm:flex-row justify-between items-center px-4  rounded-lg h-10 flex-col gap-4">
         <div class="text-sm text-slate-500">
-            Affichage <b>{{ (page - 1) * itemsPerPage + 1 }}</b> - <b>{{ (page * itemsPerPage > produits.length ? produits.length : page * itemsPerPage) }}</b> de <b>{{ produits.length }}</b> éléments
+            Affichage <b>{{ (page - 1) * itemsPerPage + 1 }}</b> - <b>{{ (page * itemsPerPage > filteredProducts.length ? filteredProducts.length : page * itemsPerPage) }}</b> de <b>{{ filteredProducts.length }}</b> éléments
         </div>
     <div class="flex space-x-3 flex-row sm:flex-row flex-col">
 
@@ -229,7 +229,7 @@
                     <option value="10">10</option>
                     <option value="15">15</option>
                     <option value="20">20</option>
-                    <option *ngIf="produits.length > 20" value="{{produits.length}}">{{produits.length}}</option>
+                    <option *ngIf="filteredProducts.length > 20" value="{{filteredProducts.length}}">{{filteredProducts.length}}</option>
 
                 </select>
                 <!-- Flèche SVG personnalisée -->

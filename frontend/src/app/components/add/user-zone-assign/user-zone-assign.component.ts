@@ -66,8 +66,12 @@ export class UserZoneAssignComponent {
   }
   getGroupes() {
     this.groupeService.getAll().subscribe({
-      next : (response :Groupe[]) => {
-        this.groupes = response.map(groupe => groupe.nom);
+      next: (response: Groupe[]) => {
+        // Filtrer les groupes pour exclure "SUPERUSER"
+        this.groupes = response
+          .filter(groupe => groupe.nom !== 'SUPERUSER')
+          .map(groupe => groupe.nom);
+  
         console.log('groupes:', this.groupes);
       },
       error: (error: any) => {
@@ -75,6 +79,7 @@ export class UserZoneAssignComponent {
       },
     });
   }
+  
 
   toggleUser(user: User) {
     if (this.selectedUsers.has(user.idUser!)) {

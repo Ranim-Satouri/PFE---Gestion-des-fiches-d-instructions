@@ -462,7 +462,7 @@ public class FicheServiceImp implements FicheService {
 
                 // Si la fiche doit être validée dans les prochaines 24 heures, envoyer un rappel
                 if (hoursUntilExpiration <= 24 && hoursUntilExpiration > 0) {
-                    //reminderMail(fiche , hoursUntilExpiration);
+                    reminderMail(fiche , hoursUntilExpiration);
                 }
             }
         }

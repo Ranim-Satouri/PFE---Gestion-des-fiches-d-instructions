@@ -87,39 +87,7 @@ constructor(private familleService: FamilleService,private produitService: Produ
     this.showDropdown = false;
   }
 
-  addFamille(nom: string) {
-    const newFamille: Famille = {
-      nomFamille: nom,
-      actionneur : this.userConnected
-    };
-    this.familleService.addFamille(newFamille , this.userConnected.idUser!).subscribe({
-      next: (famille) => {
-        console.log('Famille ajoutée :', famille);
-        this.errorMessage='';
-        this.successMessage = `Famille "${famille.nomFamille}" ajouté avec succès !`;
-        setTimeout(() => {
-          this.successMessage = '';
-        }, 3000);
-        this.families.push(famille); // Mets à jour ta liste
-        this.familleNames.push(nom);
-        this.selectFamille(famille); // Si besoin de lier à ton formulaire
-      },
-      error: (err) => {
-        console.error('Erreur lors de l’ajout :', err);
-        this.successMessage = '';
-        if (err.status === 404) {
-          this.errorMessage = "Actionneur introuvable";
-        } else if (err.status === 409) {
-          this.errorMessage = "Une famille avec ce nom existe déjà.";
-        } else {
-          this.errorMessage = "Une erreur inattendue est survenue.";
-        }
-        setTimeout(() => {
-          this.errorMessage = '';
-        }, 4000);
-      }
-    });
-  }
+
   clearFamilleSearch() {
     this.familleSearch = '';
     this.productForm.get('famille')?.setValue(null);

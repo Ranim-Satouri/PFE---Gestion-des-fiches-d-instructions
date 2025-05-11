@@ -180,13 +180,14 @@
 </div>
 
 <app-delete-confirm
-    [isOpen]="isDeleteModelOpen"
-    [title]="'cette famille'"
-    [message1]="'Toutes les produits associées à cette famille seront également supprimées.'"
-    [message2]="'Pour les conserver, vous devez les réaffecter à une autre famille avant de procéder.'"
-    (onConfirm)="deleteFamille(selectedFamille)"
-    (onCancel)="closeDeleteModel()">
+  [isOpen]="isDeleteModelOpen"
+  [title]="'cette famille'"
+  [message1]="'La suppression de cette famille entraînera également la suppression de tous les produits qui y sont associés, ainsi que des fiches d’instructions liées à ces produits.'"
+  [message2]="'Pour conserver ces éléments, vous devez les réaffecter à une autre famille avant de procéder.'"
+  (onConfirm)="deleteFamille(selectedFamille)"
+  (onCancel)="closeDeleteModel()">
 </app-delete-confirm>
+
 
 <app-add-famille-form
     [currentStep]="step"

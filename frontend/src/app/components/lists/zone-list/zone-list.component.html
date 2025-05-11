@@ -193,11 +193,12 @@
 <app-delete-confirm
   [isOpen]="isDeleteModelOpen"
   [title]="'cette zone'"
-  [message1]="'Toutes les fiches d’instructions associées à cette zone seront également supprimées.'"
-  [message2]="'Pour les conserver, vous devez les réaffecter à une autre zone avant de procéder.'"
+  [message1]="'La suppression de cette zone entraînera également la suppression de toutes les lignes, opérations et fiches d’instructions qui y sont associés.'"
+  [message2]="'Pour conserver ces éléments, vous devez les réaffecter à une autre zone avant de procéder.'"
   (onConfirm)="deleteZone(selectedZone)"
   (onCancel)="closeDeleteModel()">
 </app-delete-confirm>
+
 
 
 <app-user-zone-assign
