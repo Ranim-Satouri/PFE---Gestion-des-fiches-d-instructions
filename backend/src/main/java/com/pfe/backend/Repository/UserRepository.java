@@ -4,7 +4,11 @@ import com.pfe.backend.Model.Groupe;
 import com.pfe.backend.Model.Role;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Model.Zone;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,4 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByMatricule(String matricule);
     List<User> findByGroupe(Groupe groupe);
     List<User> findByGroupeAndUserZones_Zone(Groupe groupe , Zone zone);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT u FROM User u WHERE u.matricule = :matricule")
+    Optional<User> findByMatriculeWithLock(@Param("matricule") String matricule);
 }

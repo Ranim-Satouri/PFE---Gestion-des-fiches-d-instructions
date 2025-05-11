@@ -151,7 +151,7 @@ public class DataInitializer implements CommandLineRunner {
             // 2. Toutes les permissions de "lignes"
             List<Permission> lignesPermissions = permissionRepository.findByMenu(lignesMenu).stream().filter(permission -> !permission.getNom().equals("supprimer_ligne")).collect(Collectors.toList());
             List<Permission> dashboardPermissions = permissionRepository.findByMenu(dashboard);
-            List<Permission> produitPermissions = permissionRepository.findByMenu(produit);
+            List<Permission> produitPermissions = permissionRepository.findByMenu(produit).stream().filter(permission -> !permission.getNom().equals("supprimer_produit")).collect(Collectors.toList());;
             // 3. Toutes les permissions de "operations"
             List<Permission> operationsPermissions = permissionRepository.findByMenu(operationsMenu).stream()
                     .filter(permission -> !permission.getNom().equals("supprimer_operation")).collect(Collectors.toList());
@@ -397,7 +397,7 @@ public class DataInitializer implements CommandLineRunner {
             }
             List<Permission> dashboardPermissions = permissionRepository.findByMenu(dashboard);
             List<Permission> fichesPermissions = permissionRepository.findByMenu(fichesMenu).stream()
-                    .filter(permission ->permission.getNom().equals("consulter_fiche")).collect(Collectors.toList());
+                    .filter(permission ->permission.getNom().equals("consulter_fiche_validées")).collect(Collectors.toList());
 
             List<Permission>  OPERATEURPermissions = new ArrayList<>();
             OPERATEURPermissions.addAll(fichesPermissions);

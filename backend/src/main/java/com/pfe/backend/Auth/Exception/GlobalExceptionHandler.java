@@ -1,5 +1,6 @@
 package com.pfe.backend.Auth.Exception;
 
+import jakarta.persistence.TransactionRequiredException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -50,5 +51,10 @@ public class GlobalExceptionHandler {
             default:
                 return "Erreur inconnue";
         }
+    }
+    @ExceptionHandler(TransactionRequiredException.class)
+    public ResponseEntity<String> handleTransactionRequiredException(TransactionRequiredException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Transaction error: " + ex.getMessage());
     }
 }

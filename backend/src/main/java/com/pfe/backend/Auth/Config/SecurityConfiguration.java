@@ -39,21 +39,16 @@ public class SecurityConfiguration {
                         .requestMatchers("/zone/**").authenticated()
                         .requestMatchers("/famille/**").authenticated()
                         .requestMatchers("/produit/**").authenticated()
-//                        .requestMatchers("/ficheAudit/**").permitAll()
-//                        .requestMatchers("/groupe/**").permitAll()
-//                        .requestMatchers("/ligne/**").permitAll()
-//                        .requestMatchers("/operation/**").permitAll()
-//                        .requestMatchers("/menus/**").permitAll()
-//                        .requestMatchers("/permissions/**").permitAll()
-
+                        .requestMatchers("/groupe/**").authenticated()
+                        .requestMatchers("/ligne/**").authenticated()
+                        .requestMatchers("/operation/**").authenticated()
+                        .requestMatchers("/menus/**").authenticated()
+                        .requestMatchers("/permissions/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
-
+        return http.build(); }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
