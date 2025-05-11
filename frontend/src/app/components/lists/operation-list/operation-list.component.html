@@ -183,11 +183,13 @@
 </div>
 
 <app-delete-confirm 
-    [isOpen]="isDeleteModelOpen"
-    [title]="'cette operation'"
-    (onConfirm)="deleteOperation(selectedOperation)"
-    (onCancel)="closeDeleteModel()">
-</app-delete-confirm> 
+  [isOpen]="isDeleteModelOpen"
+  [title]="'cette opération'"
+  [message1]="'La suppression de cette opération entraînera également la suppression de toutes les fiches d’instructions qui y sont associées.'"
+  [message2]="'Pour conserver ces fiches, vous devez les réaffecter à une autre opération avant de procéder.'"
+  (onConfirm)="deleteOperation(selectedOperation)"
+  (onCancel)="closeDeleteModel()">
+</app-delete-confirm>
 
 
 <app-add-operation

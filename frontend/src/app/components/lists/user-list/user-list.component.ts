@@ -425,6 +425,11 @@ adjustGrpDropdownPosition() {
     return permissions.some(permission => permission.nom === permissionName);
   }
 
+  clearGroupeSearch() {
+    this.searchText = '';
+    this.filteredUsers = this.users;
+    //this.showProduitDropdown = false;
+  }
 // closeUserHistory(): void {
 //   this.showHistoryPopup = false;
 //   this.selectedUserId = null;

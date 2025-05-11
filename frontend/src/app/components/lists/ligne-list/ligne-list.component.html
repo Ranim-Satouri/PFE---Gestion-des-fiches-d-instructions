@@ -176,20 +176,20 @@
                     </svg>
                 </div>
             </form>
-            
             <pagination-controls (pageChange)="page = $event" class="text-gray-800 dark:text-white " previousLabel="Précédent" nextLabel="Suivant" ></pagination-controls>
             </div>
     </div>
 </div>
 
 <app-delete-confirm 
-    [isOpen]="isDeleteModelOpen"
-    [title]="'cette ligne de production'"
-    [message1]="'Toutes les operations associées à cette ligne de production seront également supprimées.'"
-    [message2]="'Pour les conserver, vous devez les réaffecter à une autre ligne avant de procéder.'"
-    (onConfirm)="deleteLigne(selectedLigne)"
-    (onCancel)="closeDeleteModel()">
+  [isOpen]="isDeleteModelOpen"
+  [title]="'cette ligne de production'"
+  [message1]="'La suppression de cette ligne de production entraînera également la suppression de toutes les opérations qui y sont associées, ainsi que les fiches d’instructions liées à ces opérations.'"
+  [message2]="'Pour conserver ces éléments, vous devez les réaffecter à une autre ligne avant de procéder.'"
+  (onConfirm)="deleteLigne(selectedLigne)"
+  (onCancel)="closeDeleteModel()">
 </app-delete-confirm>
+
 
 
 <app-ligne-form

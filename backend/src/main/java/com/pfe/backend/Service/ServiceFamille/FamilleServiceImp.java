@@ -5,6 +5,7 @@ import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.FamilleRepository;
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.ZoneRepository;
+import com.pfe.backend.Service.ServiceProduit.ProduitService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,7 @@ public class FamilleServiceImp implements FamilleService {
     private ZoneRepository zoneRepository;
     @PersistenceContext
     private EntityManager entityManager;
-
+    private ProduitService produitService;
     public List<FamilleHistoriqueDTO> getFamilleHistory(Long familleId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         List<Object[]> revisions = auditReader.createQuery()
@@ -136,8 +137,9 @@ public class FamilleServiceImp implements FamilleService {
         Famille famille = familleRepository.findById(idFam).orElseThrow(()-> new RuntimeException("Famille introuvable !"));
         User actionneur = userRepository.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
         for (Produit produit : famille.getProduits()) {
-            produit.setDeleted(true);
-            produit.setActionneur(actionneur);
+            produitService.DeleteProduit(produit.getIdProduit() , actionneur.getIdUser());
+//            produit.setDeleted(true);
+//            produit.setActionneur(actionneur);
         }
         famille.getZones().clear();
         famille.setActionneur(actionneur);

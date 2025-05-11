@@ -118,9 +118,11 @@
             (input)="onFamilleSearchChange($event)"
            
             class="w-full p-2 rounded-lg bg-gray-50  dark:bg-gray-800 text-gray-800 dark:text-white border-2  text-sm transition focus:outline-none  border-gray-400 dark:border-gray-700 shadow-sm 
-            dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"
-           
-            
+            dark:shadow-gray-900 focus:ring-1 focus:ring-blue-400 focus:border-blue-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:shadow-md focus:shadow-blue-200  transition-all duration-200"   
+            [ngClass]="{
+              'border-red-500 ring-red-500': productForm.get('famille')?.invalid && productForm.get('famille')?.touched && formSubmitted,
+              'border-gray-400 dark:border-gray-700': !(productForm.get('famille')?.invalid && productForm.get('famille')?.touched)
+            }"    
             />
               <!-- Dropdown toggle icon -->
             <div
@@ -158,17 +160,9 @@
             >
               {{ f.nomFamille }}
             </li>
-            <li
-              *ngIf="familleSearch && !familleNames.includes(familleSearch)"
-              (click)="addFamille(familleSearch)"
-              class="px-4 py-2 m-2 rounded-lg text-blue-600 dark:text-blue-400 hover:bg-blue-600/20 dark:hover:bg-blue-600/20 cursor-pointer flex flex-row gap-2 "
-            >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" stroke-width="2" class="mt-[3px]">
-              <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-              <path d="M9 12h6"></path>
-              <path d="M12 9v6"></path>
-            </svg>
-              <p>Ajouter "<span class="italic">{{ familleSearch }}</span>"</p>
+            <li *ngIf="filteredFamilles.length === 0"
+              class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 italic">
+              Aucune famille correspondante trouvée.
             </li>
           </ul>
         </div>
