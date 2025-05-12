@@ -80,14 +80,20 @@ export class FicheFormComponent {
     if (this.fiche && this.fiche.idFiche) {
       this.isEditMode = true;
       this.zoneSelected = true;
-      this.ligneSelected = true;
+      this.produitSelected = true;
+      this.zoneService.getZonesPourProduit(this.fiche.produit.idProduit!).subscribe(zones => {
+        this.filteredZones =  this.zones.filter(zone => 
+           zones.some(produitZone => produitZone.idZone === zone.idZone))
+        this.fZones = this.filteredZones
+      });
       this.produitSearch = `${this.fiche.produit.nomProduit} ${this.fiche.produit.ref} - ${this.fiche.produit.indice}`;
 
       if (this.fiche.typeFiche === 'OPERATION') {
         this.zoneSearch = this.fiche.operation?.ligne?.zone?.nom || '';
         this.ligneSearch = this.fiche.operation?.ligne?.nom || '';
         this.operationSearch = this.fiche.operation?.nom || '';
-
+        this.operationSelected = true;
+        this.ligneSelected = true;
         this.Form = new FormGroup({
           produit: new FormControl(this.fiche.produit, [Validators.required]),
           zone: new FormControl(this.fiche.operation?.ligne?.zone, [Validators.required]),
@@ -111,7 +117,8 @@ export class FicheFormComponent {
         this.zoneSearch = this.fiche.ligne?.zone?.nom || '';
         this.ligneSearch = this.fiche.ligne?.nom || '';
         this.operationSearch = '';
-
+        
+        this.ligneSelected = true;
         this.Form = new FormGroup({
           produit: new FormControl(this.fiche.produit, [Validators.required]),
           zone: new FormControl(this.fiche.ligne?.zone, [Validators.required]),
@@ -119,6 +126,7 @@ export class FicheFormComponent {
           operation: new FormControl('', []),
           fichier: new FormControl(null),
         });
+        
       }
     } else {
       console.log('Aucune fiche trouvée, mode ajout activé.');
@@ -167,14 +175,25 @@ export class FicheFormComponent {
   loadLignes() {
     this.ligneService.getAll().subscribe(lignes => {
       this.lignes = lignes;
-      this.filteredLignes = lignes;
-      //this.ligneNames= lignes.map(ligne => ligne.nom);
+      if(this.isEditMode){ // hedhy 3maltha bech kif nabda fel update directement njib el filtredlignes mel onInit (aandna deux cas , cas ennou el type operation w type ligne)
+        if(this.fiche.typeFiche === 'OPERATION'){
+          this.filteredLignes = this.lignes.filter(ligne => ligne.zone.idZone === this.fiche.operation?.ligne.zone.idZone);
+        }else{
+          this.filteredLignes = this.lignes.filter(ligne => ligne.zone.idZone === this.fiche.ligne?.zone.idZone);
+        }
+        this.fLignes = this.filteredLignes;
+      }
   })};
   loadOperations() {
     this.operationService.getAll().subscribe(operations => {
       this.operations = operations;
-      this.filteredOperations = operations; // Initialiser avec tous les operations
-      //this.operationNames= operations.map(operation => operation.nom);
+      //this.filteredOperations = operations; // Initialiser avec tous les operations
+      if(this.isEditMode){
+        this.filteredOperations = this.operations.filter(operation => operation.ligne.idLigne === this.fiche.operation?.ligne.idLigne);
+        this.fOperations = this.filteredOperations;
+    //     this.filteredOperations = this.operations.filter(operation => operation.ligne.idLigne === ligne.idLigne);
+    // this.fOperations = this.filteredOperations;
+      }
   })};
   loadZones() {
     console.log(this.userConnected.idUser!);
@@ -195,6 +214,9 @@ export class FicheFormComponent {
       })
     }
   };
+
+
+
 
   // Gérer l'événement de saisie dans l'input pour recherche
   onProduitSearchChange(event: Event) {
@@ -255,6 +277,9 @@ export class FicheFormComponent {
     );
     this.showZoneDropdown = true; // Afficher la liste déroulante
   }
+
+
+
 
   // Gerer la selection
   selectProduit(produit: Produit) {
@@ -317,6 +342,9 @@ export class FicheFormComponent {
 
   }
 
+
+
+
   // Basculer l'affichage du dropdown
   toggleProduitDropdown() {
     this.showZoneDropdown = false;
@@ -363,6 +391,8 @@ export class FicheFormComponent {
     }
   }
 
+
+
   // clear search
   clearLigneSearch() {
     this.ligneSearch = '';
@@ -394,6 +424,14 @@ export class FicheFormComponent {
     this.zoneSelected = false;
     this.clearLigneSearch();
   }
+
+
+
+
+
+
+
+
 
   // selection de fiche dinstruction pdf
   onFileSelected(event: any) {

@@ -144,7 +144,7 @@ export class AddProduitFormComponent {
           if(this.newProduit){
             this.produitAdded.emit(response); // <-- ICI on retourne le produit au parent
           }
-          this.familleSearch = '';
+          
         },
         error: (err) => {
           this.successMessage = '';

@@ -137,7 +137,10 @@ constructor(private familleService: FamilleService,private produitService: Produ
                 this.errorMessage = '';
               }, 4000);
             }
-          });}
+          });
+        }else{
+            this.close.emit();
+          }
     } else {
       this.productForm.markAllAsTouched();
     }
