@@ -180,8 +180,8 @@ toggleSituationDropdown() {
 situationsMap: { [key: string]: string } = {
   'Expirée': 'EXPIRED',
   'En attente': 'PENDING',
-  'IPDF': 'APPROUVEDIPDF',
-  'IQP': 'APPROUVEDIQP',
+  'IPDF': 'ACCEPTEDIPDF',
+  'IQP': 'ACCEPTEDIQP',
   'Rejetée IPDF': 'REJECTEDIPDF',
   'Rejetée IQP': 'REJECTEDIQP',
 

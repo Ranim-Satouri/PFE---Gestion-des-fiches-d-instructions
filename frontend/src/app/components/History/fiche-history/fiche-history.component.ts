@@ -6,7 +6,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { first } from 'rxjs/operators';
-import { FicheHistoryDTO } from '../../../models/FicheHistoryDTO';
+import { FicheHistoryDTO } from '../../../models/FicheHistoryDto';
 import { FormsModule } from '@angular/forms';
 
 

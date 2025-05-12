@@ -44,6 +44,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/operation/**").authenticated()
                         .requestMatchers("/menus/**").authenticated()
                         .requestMatchers("/permissions/**").authenticated()
+                        .requestMatchers("/dashboard/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)
