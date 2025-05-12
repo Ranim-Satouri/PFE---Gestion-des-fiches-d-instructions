@@ -163,95 +163,126 @@ export class RegisterFormComponent {
   // Fermer le formulaire
   closeForm() { this.close.emit(); }
   //l update
-  updateUser() {
-    if (!this.userToUpdate || !this.userToUpdate.idUser) {
-      console.error('Utilisateur à mettre à jour non défini ou ID manquant');
-      this.showFailAlert(); // Alerte d'échec si userToUpdate est invalide
-      return;
-    }if (!this.userConnected || !this.userConnected.idUser) {
-      console.error('Utilisateur connecté non défini ou ID manquant');
-      return;
-    }
-    const groupeValue = this.registerForm.get('groupe')?.value;
-    console.log('Valeur du contrôle groupe avant mise à jour :', groupeValue);
-    const updatedUser: User = {
-      ...this.userToUpdate,
-      nom: this.registerForm.value.nom,
-      prenom: this.registerForm.value.prenom,
-      matricule: this.registerForm.value.matricule,
-      email: this.registerForm.value.email,
-      num: this.registerForm.value.numero,
-      genre: this.registerForm.value.genre ? this.registerForm.value.genre.toUpperCase() : null,
-      // role: this.registerForm.value.role ? this.registerForm.value.role.toUpperCase() : null,
-      groupe: groupeValue && typeof groupeValue === 'object' && groupeValue.idGroupe ? groupeValue : null, status: this.registerForm.value.status || null,
-      zones: this.registerForm.value.zones.map((zoneId: number) => ({ idZone: zoneId } as Zone))};
-
-      const idActionneur = this.userConnected.idUser!;
-      const selectedGroupe = this.registerForm.get('groupe')?.value;
-      const previousGroupe = this.userToUpdate.groupe;
-
-    // Vérifier si le groupe a changé (en tenant compte que les deux peuvent être null)
-    if ( selectedGroupe?.idGroupe !== previousGroupe?.idGroupe &&
-      (selectedGroupe || previousGroupe) // S'assurer qu'au moins l'un des deux est défini
-    ) {
-      this.userService.attribuerGroupe(this.userToUpdate.idUser, selectedGroupe?.idGroupe || null, idActionneur).subscribe({
-        next: () => {
-          console.log('✅ Groupe mis à jour avec succès');
-          this.userUpdated.emit();
-        },
-        error: (error) => {
-          console.error('❌ Erreur lors de la mise à jour du groupe', error);
-          this.showFailAlert(); }
-      });}
-    this.userService.updateUser(this.userToUpdate.idUser, updatedUser, idActionneur).subscribe({
-      next: (response) => {
-        console.log('✅ Utilisateur mis à jour avec succès', response);
-        this.showSuccessAlert = true; // Alerte de succès pour la mise à jour de l'utilisateur
-        // Compare old zones with new zones
-        const oldZoneIds = this.userToUpdate!.zones?.map(zone => zone.idZone) || [];
-        const newZoneIds = this.registerForm.get('zones')?.value || [];
-
-        // Zones to remove (in old but not in new)
-        const zonesToRemove = oldZoneIds.filter(zoneId => !newZoneIds.includes(zoneId));
-        // Zones to add (in new but not in old)
-        const zonesToAdd = newZoneIds.filter((zoneId: number) => !oldZoneIds.includes(zoneId));
-
-        // Remove zones
-        let removeObservables = zonesToRemove.map(zoneId => {
-          if (zoneId !== undefined) { return this.userService.removeZone(this.userToUpdate!.idUser!, zoneId, idActionneur);}
-          return null;
-        }).filter(obs => obs !== null);
-        // Chain the removal of zones
-        if (removeObservables.length > 0) {
-          forkJoin(removeObservables).subscribe({
-            next: () => {
-              console.log('✅ Zones supprimées avec succès');
-              this.addZones(zonesToAdd, idActionneur); },
-            error: (error: any) => {
-              console.error('❌ Erreur lors de la suppression des zones', error);
-            }});} else {
-          // If no zones to remove, proceed to add new zones
-          this.addZones(zonesToAdd, idActionneur);
-          } },
-      error: (error) => {console.error('❌ Erreur lors de la mise à jour de l\'utilisateur', error);}
-    });
+ updateUser() {
+  if (!this.userToUpdate || !this.userToUpdate.idUser) {
+    console.error('Utilisateur à mettre à jour non défini ou ID manquant');
+    this.showFailAlert();
+    return;
   }
-  addZones(zonesToAdd: number[], idActionneur: number) {
-    if (zonesToAdd.length > 0) {
-      let addObservables = zonesToAdd.map(zoneId =>
-        this.userService.attribuerZone(this.userToUpdate!.idUser!, zoneId, idActionneur) );
-      forkJoin(addObservables).subscribe({
-        next: () => {
-          console.log('✅ Zones ajoutées avec succès');
-          // this.userUpdated.emit();
-          this.showAlertAndClose();  },
-        error: (error) => {
-          this.showFailAlert();
-          console.error('❌ Erreur lors de l\'ajout des zones', error);}
-      }); } else {
-      // If no zones to add, emit events to close the form
-      this.userUpdated.emit();this.showAlertAndClose(); }}
-  // Soumettre le formulaire
+
+  if (!this.userConnected || !this.userConnected.idUser) {
+    console.error('Utilisateur connecté non défini ou ID manquant');
+    return;
+  }
+
+  const idActionneur = this.userConnected.idUser!;
+  const updatedUser: User = {
+    ...this.userToUpdate,
+    nom: this.registerForm.value.nom,
+    prenom: this.registerForm.value.prenom,
+    matricule: this.registerForm.value.matricule,
+    email: this.registerForm.value.email,
+    num: this.registerForm.value.numero,
+    genre: this.registerForm.value.genre ? this.registerForm.value.genre.toUpperCase() : null,
+    groupe: this.registerForm.value.groupe,
+    status: this.registerForm.value.status || null,
+    zones: this.registerForm.value.zones.map((zoneId: number) => ({ idZone: zoneId } as Zone))
+  };
+
+  // 1. Mise à jour de l'utilisateur de base
+  this.userService.updateUser(this.userToUpdate.idUser, updatedUser, idActionneur).subscribe({
+    next: (response) => {
+      console.log('✅ Utilisateur mis à jour avec succès', response);
+      
+      // 2. Gestion du groupe (si modifié)
+      const selectedGroupe = this.registerForm.get('groupe')?.value;
+      const previousGroupe = this.userToUpdate?.groupe;
+
+      if (selectedGroupe?.idGroupe !== previousGroupe?.idGroupe) {
+        this.userService.attribuerGroupe(this.userToUpdate?.idUser!, selectedGroupe?.idGroupe || null, idActionneur)
+          .subscribe({
+            next: () => {
+              console.log('✅ Groupe mis à jour avec succès');
+              this.handleZoneUpdates(idActionneur); // Passer à la gestion des zones
+            },
+            error: (error) => {
+              console.error('❌ Erreur groupe', error);
+              this.showFailAlert();
+            }
+          });
+      } else {
+        this.handleZoneUpdates(idActionneur); // Passer directement aux zones si groupe inchangé
+      }
+    },
+    error: (error) => {
+      console.error('❌ Erreur mise à jour utilisateur', error);
+      this.showFailAlert();
+    }
+  });
+}
+
+// Nouvelle méthode pour gérer les zones
+private handleZoneUpdates(idActionneur: number) {
+  const oldZoneIds = this.userToUpdate!.zones?.map(zone => zone.idZone) || [];
+  const newZoneIds = this.registerForm.get('zones')?.value || [];
+
+  const zonesToRemove = oldZoneIds.filter(zoneId => !newZoneIds.includes(zoneId));
+  const zonesToAdd = newZoneIds.filter((zoneId: number) => !oldZoneIds.includes(zoneId));
+
+  // Créer un tableau d'observables pour les suppressions
+  const removeObservables = zonesToRemove
+    .filter(zoneId => zoneId !== undefined)
+    .map(zoneId => this.userService.removeZone(this.userToUpdate!.idUser!, zoneId, idActionneur));
+
+  // Exécuter les suppressions si nécessaire
+  if (removeObservables.length > 0) {
+    forkJoin(removeObservables).subscribe({
+      next: () => {
+        console.log('✅ Zones supprimées avec succès');
+        this.addZones(zonesToAdd, idActionneur);
+      },
+      error: (error) => {
+        console.error('❌ Erreur suppression zones', error);
+        this.showFailAlert();
+      }
+    });
+  } else {
+    this.addZones(zonesToAdd, idActionneur);
+  }
+}
+
+// Modifier addZones pour toujours montrer l'alerte
+private addZones(zonesToAdd: number[], idActionneur: number) {
+  if (zonesToAdd.length > 0) {
+    const addObservables = zonesToAdd.map(zoneId =>
+      this.userService.attribuerZone(this.userToUpdate!.idUser!, zoneId, idActionneur)
+    );
+
+    forkJoin(addObservables).subscribe({
+      next: () => {
+        console.log('✅ Zones ajoutées avec succès');
+        this.showSuccessAlertAndClose();
+      },
+      error: (error) => {
+        console.error('❌ Erreur ajout zones', error);
+        this.showFailAlert();
+      }
+    });
+  } else {
+    // Même si pas de zones à ajouter, on montre le succès
+    this.showSuccessAlertAndClose();
+  }
+}
+
+// Nouvelle méthode pour l'alerte de succès
+private showSuccessAlertAndClose() {
+  this.showSuccessAlert = true;
+  setTimeout(() => {
+    this.showSuccessAlert = false;
+    this.userUpdated.emit();
+    this.closeForm();
+  }, 3000);
+}
   submitForm() {
     this.registerForm.markAllAsTouched();
     this.zonesErrorMessage = null; // Réinitialiser le message des zones

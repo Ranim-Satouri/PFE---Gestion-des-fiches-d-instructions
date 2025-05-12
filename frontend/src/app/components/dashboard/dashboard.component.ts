@@ -3,13 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router, RouterModule } from '@angular/router';
 import { FicheService } from '../../services/fiche.service';
-import { NgChartsModule } from 'ng2-charts';
+// import { NgChartsModule } from 'ng2-charts';
 // import { Chart } from 'chart.js/auto';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule , RouterModule, NgChartsModule],
+  imports: [CommonModule , RouterModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
   
