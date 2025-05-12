@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Fiche } from '../models/Fiche';
-import { FicheHistoryDTO } from '../models/FicheHistoryDTO';
+import { FicheHistoryDTO } from '../models/FicheHistoryDto';
 @Injectable({
   providedIn: 'root'
 })
@@ -142,4 +142,5 @@ export class FicheService {
     
   //   return this.http.put(`${this.apiUrl}/updateFicheOperation`, fiche);
   // }
+
 }

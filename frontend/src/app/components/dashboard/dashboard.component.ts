@@ -2,21 +2,24 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router, RouterModule } from '@angular/router';
+import { FicheService } from '../../services/fiche.service';
+import { NgChartsModule } from 'ng2-charts';
 // import { Chart } from 'chart.js/auto';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule , RouterModule],
+  imports: [CommonModule , RouterModule, NgChartsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
+  
 })
 
 export class DashboardComponent  implements OnInit{
   reportUrl!: string;
   safeReportUrl!: SafeResourceUrl;
   
-  constructor(private sanitizer: DomSanitizer) { }
+ constructor(private sanitizer: DomSanitizer) { }
   
   ngOnInit(): void {
     const baseUrl = 'https://app.powerbi.com/view?r=eyJrIjoiMTExMzQxYmItNDI4ZC00MDViLThiOGEtMDYwOWRkN2MzZmFmIiwidCI6ImRiZDY2NjRkLTRlYjktNDZlYi05OWQ4LTVjNDNiYTE1M2M2MSIsImMiOjl9';
@@ -36,6 +39,6 @@ export class DashboardComponent  implements OnInit{
     
     this.safeReportUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.reportUrl);
   }
-
+ 
   
 }
