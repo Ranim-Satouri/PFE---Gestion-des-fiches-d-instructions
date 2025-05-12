@@ -74,6 +74,36 @@ public class FicheServiceImp implements FicheService {
 
             FicheHistoryDTO dto = new FicheHistoryDTO();
             dto.setIdFiche(fiche.getIdFiche());
+// Gestion des sous-classes pour récupérer Zone, Ligne, Operation
+            if (fiche instanceof FicheZone) {
+                FicheZone ficheZone = (FicheZone) fiche;
+                dto.setIdZone(ficheZone.getZone() != null ? ficheZone.getZone().getIdZone() : null);
+                dto.setZoneNom(ficheZone.getZone() != null ? ficheZone.getZone().getNom() : null);
+            } else if (fiche instanceof FicheLigne) {
+                FicheLigne ficheLigne = (FicheLigne) fiche;
+                dto.setIdLigne(ficheLigne.getLigne() != null ? ficheLigne.getLigne().getIdLigne() : null);
+                dto.setLigneNom(ficheLigne.getLigne() != null ? ficheLigne.getLigne().getNom() : null);
+                // Récupérer la Zone associée à la Ligne
+                if (ficheLigne.getLigne() != null && ficheLigne.getLigne().getZone() != null) {
+                    dto.setIdZone(ficheLigne.getLigne().getZone().getIdZone());
+                    dto.setZoneNom(ficheLigne.getLigne().getZone().getNom());
+                }
+            } else if (fiche instanceof FicheOperation) {
+                FicheOperation ficheOperation = (FicheOperation) fiche;
+                dto.setIdOperation(ficheOperation.getOperation() != null ? ficheOperation.getOperation().getIdOperation() : null);
+                dto.setOperationNom(ficheOperation.getOperation() != null ? ficheOperation.getOperation().getNom() : null);
+                // Récupérer la Ligne et la Zone associées à l'Operation
+                if (ficheOperation.getOperation() != null && ficheOperation.getOperation().getLigne() != null) {
+                    dto.setIdLigne(ficheOperation.getOperation().getLigne().getIdLigne());
+                    dto.setLigneNom(ficheOperation.getOperation().getLigne().getNom());
+                    // Récupérer la Zone associée à la Ligne
+                    if (ficheOperation.getOperation().getLigne().getZone() != null) {
+                        dto.setIdZone(ficheOperation.getOperation().getLigne().getZone().getIdZone());
+                        dto.setZoneNom(ficheOperation.getOperation().getLigne().getZone().getNom());
+                    }
+                }
+            }
+
             dto.setRevisionNumber(revisionEntity.getId());
             dto.setRevisionType(revisionType);
             dto.setStatus(fiche.getStatus() != null ? fiche.getStatus().toString() : null);
@@ -88,11 +118,10 @@ public class FicheServiceImp implements FicheService {
             dto.setActionneurMatricule(fiche.getActionneur() != null ? fiche.getActionneur().getNom() + " " + fiche.getActionneur().getPrenom() : null);
             dto.setPreparateurMatricule(fiche.getPreparateur() != null ? fiche.getPreparateur().getNom() + " " + fiche.getPreparateur().getPrenom() : null);
             dto.setIpdfMatricule(fiche.getIPDF() != null ? fiche.getIPDF().getNom() + " " + fiche.getIPDF().getPrenom() : null);
-            dto.setIqpMatricule(fiche.getIQP() != null ? fiche.getIQP().getNom() + " " + fiche.getIQP().getPrenom(): null);
+            dto.setIqpMatricule(fiche.getIQP() != null ? fiche.getIQP().getNom() + " " + fiche.getIQP().getPrenom() : null);
 
             history.add(dto);
         }
-
         return history;
     }
 

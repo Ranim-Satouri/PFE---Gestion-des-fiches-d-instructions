@@ -20,8 +20,7 @@
     <!-- Toggle icon -->
     <div
       class="absolute top-[20px] right-3 mt-[1px] -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
-      (click)="showSelectorDropdown = !showSelectorDropdown"
-    >
+      (click)="showSelectorDropdown = !showSelectorDropdown">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path d="m7 10 5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
@@ -35,13 +34,10 @@
     <ul
       *ngIf="showSelectorDropdown"
       id="dropdownAffectation"
-      class="absolute z-50 right-0 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg mt-2 max-h-[120px] overflow-y-auto shadow-lg text-sm"
-    >
+      class="absolute z-50 right-0 w-full bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 rounded-lg mt-2 max-h-[120px] overflow-y-auto shadow-lg text-sm">
       <li
         (click)="selectAction('')"
-        class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
-      >
-        Toutes
+        class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer">Toutes
       </li>
       <li
         (click)="selectAction('APPROUVE')"
@@ -51,15 +47,12 @@
       </li>
       <li
         (click)="selectAction('INSERT')"
-        class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
-      >
+        class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer">
         Insertion
       </li>
       <li
         (click)="selectAction('UPDATE')"
-        class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
-      >
-        Mis à jour
+        class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer">Mis à jour
       </li>
     </ul>
   </div>
@@ -203,9 +196,62 @@
                               </svg>
                           </td>
                       </tr>
-                      
-                      
-                        <!-- Commentaire -->
+                      <!-- Zone -->
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                    <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Zone</td>
+                    <td class="px-6 py-4 text-gray-500 dark:text-gray-400 wrap-text">
+                      <span *ngIf="hasFieldChanged(entry, 'zoneNom')">
+                        {{ getPreviousValue(entry, 'zoneNom') || '-' }}
+                      </span>
+                      <span *ngIf="!hasFieldChanged(entry, 'zoneNom')">-</span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2 wrap-text">
+                      {{ entry.zoneNom || '-' }}
+                      <svg *ngIf="hasFieldChanged(entry, 'zoneNom')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 20h9"/>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                      </svg>
+                    </td>
+                  </tr>
+                  <!-- Ligne -->
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                    <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Ligne</td>
+                    <td class="px-6 py-4 text-gray-500 dark:text-gray-400 wrap-text">
+                      <span *ngIf="hasFieldChanged(entry, 'ligneNom')">
+                        {{ getPreviousValue(entry, 'ligneNom') || '-' }}
+                      </span>
+                      <span *ngIf="!hasFieldChanged(entry, 'ligneNom')">
+                        {{ entry.typeFiche === 'ZONE' ? 'Tous' : '-' }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2 wrap-text">
+                      {{ entry.ligneNom || (entry.typeFiche === 'ZONE' ? 'Tous' : '-') }}
+                      <svg *ngIf="hasFieldChanged(entry, 'ligneNom')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 20h9"/>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                      </svg>
+                    </td>
+                  </tr>
+                  <!-- Opération -->
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
+                    <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Opération</td>
+                    <td class="px-6 py-4 text-gray-500 dark:text-gray-400 wrap-text">
+                      <span *ngIf="hasFieldChanged(entry, 'operationNom')">
+                        {{ getPreviousValue(entry, 'operationNom') || '-' }}
+                      </span>
+                      <span *ngIf="!hasFieldChanged(entry, 'operationNom')">
+                        {{ entry.typeFiche === 'ZONE' || entry.typeFiche === 'LIGNE' ? 'Tous' : '-' }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-900 dark:text-gray-200 inline-flex items-center gap-2 wrap-text">
+                      {{ entry.operationNom || (entry.typeFiche === 'ZONE' || entry.typeFiche === 'LIGNE' ? 'Tous' : '-') }}
+                      <svg *ngIf="hasFieldChanged(entry, 'operationNom')" class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 20h9"/>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                      </svg>
+                    </td>
+                  </tr>
+                         <!-- Commentaire -->
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 border-b">
                           <td class="px-6 py-4 text-gray-600 dark:text-gray-400">Commentaire</td>
                           <td class="px-6 py-4 text-gray-500 dark:text-gray-400 wrap-text">

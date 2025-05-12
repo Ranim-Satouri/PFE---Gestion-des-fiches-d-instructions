@@ -11,6 +11,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class FicheHistoryDTO {
     private Long idFiche; // ID de la fiche
+    private Long idZone;
+    private Long idLigne;
+    private Long idOperation;
+    private String zoneNom;
+    private String ligneNom;
+    private String operationNom;
     private Integer revisionNumber; // Numéro de révision
     private String revisionType; // Type de révision (ADD, MOD, DEL)
     private LocalDateTime revisionDate; // Date de la modification
