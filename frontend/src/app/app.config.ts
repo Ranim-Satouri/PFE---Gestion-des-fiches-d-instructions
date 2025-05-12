@@ -6,7 +6,7 @@ import { provideRouter, Router } from '@angular/router';
 import { catchError, debounceTime, of, switchMap, throwError } from 'rxjs';
 import { routes } from './app.routes';
 import { loadingInterceptor } from './loading.interceptor';
-
+import { HasPermissionDirective } from './has-permission.directive';
 let isRefreshing = false; // Verrou pour éviter plusieurs refresh simultanés
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
@@ -89,6 +89,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(),
     provideHttpClient(withFetch(), withInterceptors([authInterceptor, loadingInterceptor])),
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    { provide: HasPermissionDirective, useClass: HasPermissionDirective }
   ]
 };

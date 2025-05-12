@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
 import { RegisterFormComponent } from './components/add/register-form/register-form.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FamilleHistoryComponent } from './components/History/famille-history/famille-history.component';
 import { UserHistoryComponent } from './components/History/user-history/user-history.component';
 import { ZoneHistoryComponent } from './components/History/zone-history/zone-history.component';
@@ -13,16 +14,15 @@ import { ProduitListComponent } from './components/lists/produit-list/produit-li
 import { UserListComponent } from './components/lists/user-list/user-list.component';
 import { ZoneListComponent } from './components/lists/zone-list/zone-list.component';
 import { ParticlesComponent } from './components/particles/particles.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
+import { RoleAccessGuard } from './guards/role-access.guard';
 import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './pages/login/login.component';
-import { ProfilComponent } from './components/profil/profil.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { SpinnerComponent } from './components/spinner/spinner.component';
 export const routes: Routes = [
-    { path: '', component: LoginComponent },
-    { path : 'history/:idUser', component: UserHistoryComponent },
-    {path : "zone-history/:idZone", component : ZoneHistoryComponent},
-    {path : "famille-history/:idFamille", component : FamilleHistoryComponent},
+    { path: '', component: LoginComponent},
+    { path : 'history/:idUser', component: UserHistoryComponent,canActivate: [RoleAccessGuard]  },
+    {path : "zone-history/:idZone", component : ZoneHistoryComponent ,canActivate: [RoleAccessGuard] },
+    {path : "famille-history/:idFamille", component : FamilleHistoryComponent ,canActivate: [RoleAccessGuard] },
     {path : 'spinner', component: SpinnerComponent},
     {
       path:'particles' ,
@@ -35,20 +35,21 @@ export const routes: Routes = [
     },
   {
     path: 'form',
-    component: RegisterFormComponent
+    component: RegisterFormComponent ,canActivate: [RoleAccessGuard] 
   },
     {
         path: '',
         component: LayoutComponent,
+        canActivate: [RoleAccessGuard],
         children: [
-            { path: 'fichelist', component: FicheListComponent},
+            { path: 'fichelist', component: FicheListComponent },
             { path: 'famillelist', component: FamilleListComponent },
             { path: 'zonelist', component: ZoneListComponent },
-            { path: 'produitlist', component: ProduitListComponent },
-            { path: 'userlist', component: UserListComponent },
+            { path: 'produitlist', component: ProduitListComponent},
+            { path: 'userlist', component: UserListComponent},
             { path: 'groupelist', component: GroupeListComponent },
             { path: 'lignelist', component: LigneListComponent },
-            { path: 'operationlist', component: OperationListComponent },
+            { path: 'operationlist', component: OperationListComponent},
             { path: 'dashboard', component: DashboardComponent }
         ]
     },

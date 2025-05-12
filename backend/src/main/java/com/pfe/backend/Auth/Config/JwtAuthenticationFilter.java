@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        boolean shouldNotFilter = path.startsWith("/api/v1/auth/");
+        boolean shouldNotFilter = path.startsWith("/api/v1/auth/")|| path.startsWith("/fiche/getPdf");
         System.out.println("JwtAuthenticationFilter - shouldNotFilter pour " + path + ": " + shouldNotFilter);
         return shouldNotFilter;
     }

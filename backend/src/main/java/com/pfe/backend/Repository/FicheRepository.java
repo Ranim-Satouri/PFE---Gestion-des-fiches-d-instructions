@@ -24,5 +24,5 @@ public interface FicheRepository extends JpaRepository<Fiche,Long> {
     @Query("SELECT f FROM Fiche f WHERE f.status NOT IN :statuses AND f.expirationDate < :now")
     List<Fiche> findFichesNonFinalesEtExpirees(@Param("statuses") List<Fiche.FicheStatus> statuses, @Param("now") LocalDateTime now);
 
-    long countByStatus(Fiche.FicheStatus status);
+
 }

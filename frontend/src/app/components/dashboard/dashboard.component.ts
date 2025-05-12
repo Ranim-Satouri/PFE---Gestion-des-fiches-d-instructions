@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Router, RouterModule } from '@angular/router';
-import { DashboardService } from '../../services/dashboard.service';
 import { FicheService } from '../../services/fiche.service';
 import { NgChartsModule } from 'ng2-charts';
 // import { Chart } from 'chart.js/auto';
