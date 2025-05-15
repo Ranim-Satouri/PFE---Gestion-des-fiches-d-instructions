@@ -136,11 +136,16 @@ public class FamilleServiceImp implements FamilleService {
     {
         Famille famille = familleRepository.findById(idFam).orElseThrow(()-> new RuntimeException("Famille introuvable !"));
         User actionneur = userRepository.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+        System.out.println(famille.getProduits().size());
         for (Produit produit : famille.getProduits()) {
-            produitService.DeleteProduit(produit.getIdProduit() , actionneur.getIdUser());
+            System.out.println("test");
+            if(!produit.isDeleted()){
+                produitService.DeleteProduit(produit.getIdProduit() , actionneur.getIdUser());
+            }
 //            produit.setDeleted(true);
 //            produit.setActionneur(actionneur);
         }
+        System.out.println("test ----------------------");
         famille.getZones().clear();
         famille.setActionneur(actionneur);
         famille.setDeleted(true);

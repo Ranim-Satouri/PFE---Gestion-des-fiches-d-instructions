@@ -30,7 +30,7 @@
 
 
 <!-- pop up commentaire de rejet -->
-<div class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center" *ngIf="isRejetModalOpen">
+<div class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center bg-black/70 bg-opacity-50" *ngIf="isRejetModalOpen">
     <div class="bg-gray-100  dark:bg-gray-900 rounded-lg shadow-lg w-[90%] max-w-md p-6 space-y-4 relative  text-sm border dark:border-gray-700">        
         <textarea [(ngModel)]="rejetComment"
                 placeholder="Entrez un commentaire de rejet..."
@@ -53,8 +53,8 @@
 </div>
     
 <!-- Modal Upload AQL -->
-<div *ngIf="isUploadAQLModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-[90%] max-w-md text-sm">
+<div *ngIf="isUploadAQLModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 bg-opacity-50">
+    <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md w-[90%] max-w-md text-sm">
         <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Ajouter une fiche AQL</h2>
 
         <!-- <input type="file"  accept="application/pdf" class=" w-full border rounded p-2 dark:bg-gray-700 dark:text-white"/> -->

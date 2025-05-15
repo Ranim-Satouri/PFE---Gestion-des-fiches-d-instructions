@@ -98,11 +98,11 @@ situationDropdownOpen = false;
     if (userFromLocalStorage) {
       this.userConnected = JSON.parse(userFromLocalStorage);
     }
-  this.getFiches();
-  this.getZones(); // Charger les zones
-  this.getFamilles(); 
-  this.checkFicheStatusPeriodically();
-  this.getLignes(); 
+    this.getFiches();
+    this.getZones(); // Charger les zones
+    this.getFamilles(); 
+    this.checkFicheStatusPeriodically();
+    this.getLignes(); 
   }
   getFiches() {
     
@@ -451,14 +451,18 @@ adjustGrpDropdownPosition() {
 
   // Status filter handler
   onStatusChange() {this.applyFilters(); }
-//----------------------------------------------------------------------------------------------------
+  //----------------------------------------------------------------------------------------------------
   checkFicheStatusPeriodically() {
     setInterval(() => {
       this.FicheService.checkFicheStatusUpdate().subscribe(updated => {
+        console.log('Reeeefreeeeshhhhhh');
+        console.log('Updated status:', updated);
         if (updated) {
+          console.log('Fiche status updated');
           if(updated === true){window.location.reload(); }
+          // if(updated === true){this.getFiches(); }
         }});}, 60000);
-        }
+  }
 
   deleteFiche(idFiche: number | undefined ): void {
     this.FicheService.deleteFiche(idFiche,this.userConnected.idUser || 1 ).subscribe({
@@ -499,7 +503,7 @@ adjustGrpDropdownPosition() {
         if ((this.hasPermission('supprimer_fiche') && fiche.status !== FicheStatus.ACCEPTEDIQP && fiche.status !== FicheStatus.EXPIRED) ||  this.userConnected.groupe?.nom === 'SUPERUSER') {
           dropdownHeight += 44.5;
         }
-        if (fiche.ficheAQL !== '') {
+        if (fiche.status ===  'ACCEPTEDIQP') {
           dropdownHeight += 44.5;
         }
         const spaceBelow = window.innerHeight - rect.bottom;   // lenna a partir men 9adeh bedhabet ywali yaffichi el fou9

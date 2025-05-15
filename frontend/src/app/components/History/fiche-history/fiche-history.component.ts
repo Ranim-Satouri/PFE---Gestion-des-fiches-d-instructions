@@ -131,6 +131,8 @@ export class FicheHistoryComponent {
         return 'Mis à jour';
       case 'INSERT':
         return 'Insertion';
+      case 'EXPIRE':
+        return 'Expiration';
       default:
         return 'Toutes'; // Valeur par défaut si aucune action n'est sélectionnée
     }

@@ -147,6 +147,8 @@ public class FicheServiceImp implements FicheService {
         existingFiche.setAction(Fiche.FicheAction.UPDATE);
         existingFiche.setCommentaire(ficheZone.getCommentaire());
         if(!existingFiche.getPdf().equals(ficheZone.getPdf())){
+            existingFiche.setCommentaire("");
+            existingFiche.setFicheAQL("");
             LocalDateTime currentDateTime = LocalDateTime.now();
             LocalDateTime expirationDate = currentDateTime.plusHours(24);
             existingFiche.setExpirationDate(expirationDate);
@@ -186,6 +188,9 @@ public class FicheServiceImp implements FicheService {
         existingFiche.setAction(Fiche.FicheAction.UPDATE);
         existingFiche.setPdf(ficheLigne.getPdf());
         if(!existingFiche.getPdf().equals(ficheLigne.getPdf())){
+            existingFiche.setCommentaire("");
+            existingFiche.setFicheAQL("");
+
             LocalDateTime currentDateTime = LocalDateTime.now();
             LocalDateTime expirationDate = currentDateTime.plusHours(24);
             existingFiche.setExpirationDate(expirationDate);
@@ -224,6 +229,8 @@ public class FicheServiceImp implements FicheService {
         existingFiche.setStatus(ficheOperation.getStatus());
         existingFiche.setAction(Fiche.FicheAction.UPDATE);
         if(!existingFiche.getPdf().equals(ficheOperation.getPdf())){
+            existingFiche.setCommentaire("");
+            existingFiche.setFicheAQL("");
             LocalDateTime currentDateTime = LocalDateTime.now();
             LocalDateTime expirationDate = currentDateTime.plusHours(24);
             existingFiche.setExpirationDate(expirationDate);
@@ -469,6 +476,8 @@ public class FicheServiceImp implements FicheService {
         if(!fichesExpirees.isEmpty()){
             for (Fiche fiche : fichesExpirees) {
                 fiche.setStatus(Fiche.FicheStatus.EXPIRED);
+                fiche.setAction(Fiche.FicheAction.EXPIRE);
+                //fiche.setActionneur(null);
                 ficheRepository.save(fiche);
             }
             updated = true;

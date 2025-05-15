@@ -54,6 +54,10 @@
         (click)="selectAction('UPDATE')"
         class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer">Mis à jour
       </li>
+      <li
+        (click)="selectAction('EXPIRE')"
+        class="px-2 py-2 m-1 text-4 text-gray-800 rounded-lg dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer">Expiration
+      </li>
     </ul>
   </div>
     <!-- Contenu -->
@@ -84,8 +88,8 @@
                 {{ entry.modifieLe |date:'dd/MM/yyyy, HH:mm:ss' }}
               </td>
               <td class="px-6 py-4">
-                {{ entry.actionneurMatricule }}
-              </td>
+                {{ entry.status === 'EXPIRED' ? '-' : entry.actionneurMatricule }}
+              </td>              
               <td class="px-6 py-4 ">
                 <ng-container [ngSwitch]="entry.action">
                     <span *ngSwitchCase="'APPROUVE'" >
@@ -96,6 +100,9 @@
                     </span>
                     <span *ngSwitchCase="'UPDATE'" >
                         Mis à jour
+                    </span>
+                    <span *ngSwitchCase="'EXPIRE'" >
+                        Expiration
                     </span>
                     <span *ngSwitchDefault >
                         {{ entry.action || '-' }}
