@@ -156,7 +156,7 @@
                       *ngIf="!isNewOperation"
                       (click)="updateOperation()"
                       type="button"
-                      [disabled]="operationForm.invalid || ( operation.nom=== operationForm.value.nom && operationForm.value.ligne.nom === operation.ligne.nom )"
+                      [disabled]="operationForm.invalid || ( operation.nom=== operationForm.value.nom && operationForm.value.ligne.nom + ' ' + operationForm.value.ligne.zone.nom  === operation.ligne.nom + ' ' + operation.ligne.zone.nom )"
                       class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                   >
                       Modifier
