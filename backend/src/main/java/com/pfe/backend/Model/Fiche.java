@@ -48,7 +48,7 @@ public class Fiche {
     @Column(length = 10)
     private FicheAction action;
     public enum FicheAction{
-        INSERT , UPDATE , DELETE , APPROUVE;
+        INSERT , UPDATE , DELETE , APPROUVE, EXPIRE;
     }
 
     @UpdateTimestamp

@@ -76,6 +76,10 @@ public class ProduitServiceImp implements ProduitService {
         @Override
         public void DeleteProduit(Long idProduit ,Long idActionneur)
         {
+            System.out.println("test 63625214");
+            System.out.println(idProduit);
+            System.out.println(idActionneur);
+
             Produit prod = produitRepository.findById(idProduit)
                     .orElseThrow(() -> new RuntimeException("produit introuvable"));
             User actionneur = userRepo.findById(idActionneur)
@@ -84,9 +88,12 @@ public class ProduitServiceImp implements ProduitService {
             prod.setActionneur(actionneur);
             List<Fiche> fiches = ficheRepo.findByProduit(prod);
             for (Fiche fiche : fiches) {
-                fiche.setStatus(Fiche.FicheStatus.DELETED);
-                fiche.setAction(Fiche.FicheAction.DELETE);
-                fiche.setActionneur(actionneur);
+                if(fiche.getStatus() != Fiche.FicheStatus.DELETED){
+                    fiche.setStatus(Fiche.FicheStatus.DELETED);
+                    fiche.setAction(Fiche.FicheAction.DELETE);
+                    fiche.setActionneur(actionneur);
+                }
+
             }
             ficheRepo.saveAll(fiches);
             produitRepository.save(prod);

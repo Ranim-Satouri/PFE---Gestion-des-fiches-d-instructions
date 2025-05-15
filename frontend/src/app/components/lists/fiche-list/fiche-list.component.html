@@ -369,7 +369,7 @@
 
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 font-medium space-y-1" >
                                 <li>
-                                <a (click)="downloadFile(fiche.ficheAQL!)" [ngClass]="{ 'hidden' : fiche.ficheAQL === ''}" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                <a (click)="downloadFile(fiche.ficheAQL!)" [ngClass]="{ 'hidden' : fiche.status !== FicheStatus.ACCEPTEDIQP}" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- File Icon -->
                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
                                         <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
@@ -502,7 +502,7 @@
     </div>
 </div> -->
   <!-- Modal pour commentaire -->
-<div *ngIf="isCommentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70  ">
+<div *ngIf="isCommentModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 bg-opacity-50 ">
     <div
       class="relative bg-gray-100 dark:bg-gray-900 rounded-lg shadow-2xl p-6 w-full max-w-md mx-4 animate-fade-in-up transition-all border dark:border-gray-700"
     >
@@ -528,7 +528,7 @@
   </div>
 
 
-<div *ngIf="isQrPopupOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 bg-opacity-50 ">
+<div *ngIf="isQrPopupOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 bg-opacity-50 ">
     <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg max-w-sm w-full space-y-4  border  dark:border-gray-700 ">
       <h3 class="text-xl font-semibold text-center text-gray-800 dark:text-white">QR Code</h3>
       <div class="flex justify-center">
