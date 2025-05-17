@@ -469,7 +469,8 @@ public class FicheServiceImp implements FicheService {
     //expiration
     @Override
     public boolean verifierEtMettreAJourFichesExpirees() {
-        List<Fiche.FicheStatus> etatsAExclure = Arrays.asList(Fiche.FicheStatus.EXPIRED, Fiche.FicheStatus.ACCEPTEDIQP);
+        List<Fiche.FicheStatus> etatsAExclure = Arrays.asList(Fiche.FicheStatus.EXPIRED, Fiche.FicheStatus.ACCEPTEDIQP , Fiche.FicheStatus.DELETED
+        );
         //List<Fiche> fichesExpirees = ficheRepository.findFichesNonFinalesEtExpirees(etatsAExclure, LocalDateTime.now());
         List<Fiche> fichesExpirees = ficheRepository.findFichesNonFinalesEtExpirees(etatsAExclure,LocalDateTime.now());
         boolean updated = false;

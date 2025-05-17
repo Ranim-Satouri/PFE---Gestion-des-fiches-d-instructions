@@ -56,7 +56,7 @@ public class ProduitServiceImp implements ProduitService {
        public ResponseEntity<?> updateProduit(Long idProduit, Long idFamille, Produit newProduitData ,Long idActionneur)
         {
             Famille famille = familleRepository.findById(idFamille).orElseThrow(()-> new RuntimeException("Famille introuvable ! "));
-            Produit produit = produitRepository.findById(idProduit).orElseThrow(() -> new RuntimeException("Produit introuvable"));;
+            Produit produit = produitRepository.findById(idProduit).orElseThrow(() -> new RuntimeException("Produit introuvable"));
             User actionneur = userRepo.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
 
             Optional<Produit> existingProduit = produitRepository.findByIndiceAndRefAndIsDeleted(newProduitData.getIndice(),newProduitData.getRef(),false);
@@ -66,7 +66,12 @@ public class ProduitServiceImp implements ProduitService {
                         .body("Un produit avec le même indice et reference existe déjà");
             }
 
-            if(newProduitData.getNomProduit()!=null ) produit.setNomProduit(newProduitData.getNomProduit());
+            if(newProduitData.getNomProduit()!=null ) {
+                if (newProduitData.getNomProduit().isEmpty()) {
+                    newProduitData.setNomProduit(newProduitData.getRef() + "-" + newProduitData.getIndice());
+                }
+                produit.setNomProduit(newProduitData.getNomProduit());
+            };
             if(newProduitData.getRef()!=null ) produit.setRef(newProduitData.getRef());
             if(newProduitData.getIndice()!=null ) produit.setIndice(newProduitData.getIndice());
             produit.setFamille(famille);

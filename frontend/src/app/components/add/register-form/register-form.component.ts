@@ -289,7 +289,7 @@ private showSuccessAlertAndClose() {
     this.registerForm.updateValueAndValidity();
     if (!this.registerForm.valid) {
       if (this.registerForm.errors?.['zonesRequired']) {
-        this.zonesErrorMessage = 'Veuillez sélectionner au moins une zone pour ce groupe.';
+        this.zonesErrorMessage = 'Veuillez sélectionner au moins une zone pour cet utilisateur.';
       }
       console.log('❌ Formulaire invalide !', this.registerForm.errors);
       this.showFailAlert();

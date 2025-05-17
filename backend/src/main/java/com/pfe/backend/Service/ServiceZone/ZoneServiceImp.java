@@ -40,6 +40,7 @@ public class ZoneServiceImp implements ZoneService {
     private LigneRepository ligneRepo;
     private ProduitRepository produitRepo;
     private LigneService serviceLigne;
+    private FicheZoneRepository ficheZoneRepo;
     @Override
     public ResponseEntity<List<Zone>> getAllZones() {
         return ResponseEntity.ok().body(zoneRepository.findAll());
@@ -76,6 +77,12 @@ public class ZoneServiceImp implements ZoneService {
         List<Ligne> lignes = ligneRepo.findByZoneAndIsDeletedFalse(zone);
         for (Ligne ligne : lignes) {
             serviceLigne.DeleteLigne(ligne.getIdLigne() , actionneur.getIdUser());
+        }
+        List<FicheZone> fichesZone = ficheZoneRepo.findByZoneAndStatusNot(zone , Fiche.FicheStatus.DELETED);
+        for (Fiche fiche : fichesZone) {
+            fiche.setStatus(Fiche.FicheStatus.DELETED);
+            fiche.setAction(Fiche.FicheAction.DELETE);
+            fiche.setActionneur(actionneur);
         }
         zoneRepository.save(zone);
     }
