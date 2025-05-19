@@ -165,10 +165,35 @@ public class AuthenticationService {
         user.setActionneur(actionneur);
         repository.save(user);
     }
+    public void ResetPassword(Long idUser, Long idActionneur) {
+        User user = repository.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        User actionneur = repository.findById(idActionneur)
+                .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
+        user.setPassword(passwordEncoder.encode("123456"));
+        user.setActionneur(actionneur);
+        repository.save(user);
+        sendResetPasswordEmail(user);
+    }
     private final RefreshTokenRepository refreshTokenRepository;
 
     public void revokeRefreshTokens(User user) {
         refreshTokenRepository.deleteByUser(user);
     }
+    public void sendResetPasswordEmail(User user) {
+        String subject = "Réinitialisation de votre mot de passe Instructis";
+        String text = "Bonjour " + user.getPrenom() + " " + user.getNom() + ",\n\n"
+                + "Votre mot de passe sur la plateforme Instructis a été réinitialisé avec succès.\n\n"
+                + "Vous pouvez désormais accéder à la plateforme avec les informations suivantes :\n"
+                + "Matricule: " + user.getMatricule() + "\n"
+                + "Mot de passe temporaire: 123456" + "\n\n"
+                + "Pour des raisons de sécurité, nous vous recommandons fortement de :\n"
+                + "1. Vous connecter immédiatement avec ces identifiants\n"
+                + "2. Modifier votre mot de passe dans la section 'Mon profil' après votre première connexion\n\n"
+                + "Cordialement,\n"
+                + "L'équipe Instructis\n"
+                + "Sagemcom";
 
+        emailService.sendEmail(user.getEmail(), subject, text);
+    }
 }

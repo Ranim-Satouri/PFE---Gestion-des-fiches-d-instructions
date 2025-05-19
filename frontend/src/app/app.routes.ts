@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
 import { RegisterFormComponent } from './components/add/register-form/register-form.component';
+import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FamilleHistoryComponent } from './components/History/famille-history/famille-history.component';
 import { UserHistoryComponent } from './components/History/user-history/user-history.component';
@@ -19,6 +20,7 @@ import { RoleAccessGuard } from './guards/role-access.guard';
 import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './pages/login/login.component';
 export const routes: Routes = [
+    { path: 'modal', component: ConfirmModalComponent },
     { path: '', component: LoginComponent},
     { path : 'history/:idUser', component: UserHistoryComponent,canActivate: [RoleAccessGuard]  },
     {path : "zone-history/:idZone", component : ZoneHistoryComponent ,canActivate: [RoleAccessGuard] },

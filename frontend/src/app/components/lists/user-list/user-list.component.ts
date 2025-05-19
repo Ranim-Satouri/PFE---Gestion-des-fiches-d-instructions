@@ -16,8 +16,10 @@ import { ZoneService } from '../../../services/zone.service';
 import { RegisterFormComponent } from '../../add/register-form/register-form.component';
 import { DeleteConfirmComponent } from '../../delete-confirm/delete-confirm.component';
 import { UserHistoryComponent } from '../../History/user-history/user-history.component';
+import { ConfirmModalComponent } from '../../confirm-modal/confirm-modal.component';
+
 @Component({selector: 'app-user-list', standalone: true,
-  imports: [NgxPaginationModule, CommonModule, FormsModule, RegisterFormComponent, DeleteConfirmComponent,FilterPipe,UserHistoryComponent],
+  imports: [NgxPaginationModule, CommonModule, FormsModule, RegisterFormComponent, DeleteConfirmComponent,FilterPipe,UserHistoryComponent,ConfirmModalComponent],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css'})
 export class UserListComponent implements  OnDestroy {
@@ -27,6 +29,7 @@ export class UserListComponent implements  OnDestroy {
   @ViewChild('zoneToggleButton', { static: false }) zoneToggleButton?: ElementRef;
   @ViewChild('zoneDropdown', { static: false }) zoneDropdown?: ElementRef;
   @ViewChild('userHistoryComponent', { static: false }) userHistoryComponent?: UserHistoryComponent;
+  @ViewChild('confirmModal', { static: false }) confirmModal?: ConfirmModalComponent;
     private observer?: MutationObserver;
 //hisstorique
 showHistoryPopup: boolean = false;
@@ -56,7 +59,9 @@ selectedUserId: number | null = null;
   filteredGroupes: Groupe[] = [];
   isGrpDropdownPositioned = false;
   showGrpDropdown = false;
-
+  // Messages de notification
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
   ngOnInit() {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
@@ -85,6 +90,42 @@ openUserHistory(idUser: number | undefined): void {
     console.error('UserHistoryComponent is not initialized');
   }
 }
+// Méthode pour ouvrir le modal de confirmation
+  openConfirmModal(idUser: number | undefined): void {
+    if (!idUser) {
+      console.error('ID utilisateur non défini pour cet utilisateur');
+      return;
+    }
+
+    const idActionneur = this.userConnected?.idUser;
+    if (!idActionneur) {
+      console.error('ID actionneur non défini (utilisateur connecté non trouvé)');
+      return;
+    }
+
+    if (this.confirmModal) {
+      this.dropdownOpen = null;
+      this.confirmModal.openConfirmModal(idUser, idActionneur);
+    } else {
+      console.error('Confirm Modal is not initialized');
+    }
+  }
+handleResult(event: { success: boolean, message: string }): void {
+    if (event.success) {
+      this.successMessage = event.message;
+      this.errorMessage = null;
+    } else {
+      this.errorMessage = event.message;
+      this.successMessage = null;
+    }
+
+    // Faire disparaître le message après 5 secondes
+    setTimeout(() => {
+      this.successMessage = null;
+      this.errorMessage = null;
+      this.cdr.detectChanges();
+    }, 5000);
+  }
 loadGroupes() {
   this.groupeService.getAll().subscribe({
     next: (groupes) => {

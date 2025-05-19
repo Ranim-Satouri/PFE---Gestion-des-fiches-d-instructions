@@ -10,7 +10,14 @@ export class UserService {
   private apiUrl = 'http://localhost:8080/user';
   private apiUrl2 = 'http://localhost:8080/api/v1/auth';
   constructor(private http: HttpClient) { }
-  
+ 
+  resetPassword(idUser: number, idActionneur: number): Observable<void> {
+    const url = `${this.apiUrl2}/reset-password/${idUser}/${idActionneur}`;
+    return this.http.put<void>(url, null)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
   getUserHistory(idUser: number): Observable<UserHistoryDTO[]> {
     console.log("Appel de getUserHistory avec idUser:", idUser);
     return this.http.get<UserHistoryDTO[]>(`${this.apiUrl}/history/${idUser}`).pipe(

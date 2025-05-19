@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
-import { ParticlesComponent } from '../../components/particles/particles.component';
-import {UserService} from '../../services/user.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {Router} from '@angular/router';
-import {AccessControlService} from '../../services/access-control.service';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ParticlesComponent } from '../../components/particles/particles.component';
+import { AccessControlService } from '../../services/access-control.service';
+import { UserService } from '../../services/user.service';
 @Component({
   selector: 'app-login',
   standalone: true,

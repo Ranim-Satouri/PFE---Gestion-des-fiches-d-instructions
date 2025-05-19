@@ -30,11 +30,9 @@
 
      @Autowired
      private RefreshTokenRepository refreshTokenRepository;
-     private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 5; // 1 minute pour les tests
+     private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15; // 1 minute pour les tests
 
-     public String extractUsername(String token) {
-         return extractClaim(token, Claims::getSubject);
-     }
+     public String extractUsername(String token) { return extractClaim(token, Claims::getSubject); }
 
      public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
          final Claims claims = extractAllClaims(token);
