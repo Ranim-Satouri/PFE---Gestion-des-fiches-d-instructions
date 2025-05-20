@@ -19,7 +19,7 @@ export class AccessControlService {
     'familles': '/famillelist',
     'groupes': '/groupelist',
     'lignes': '/lignelist',
-    'operations': '/operationlist'
+    'operations': '/operationlist',
   };
 
   constructor() {this.restoreGroupeFromStorage();}

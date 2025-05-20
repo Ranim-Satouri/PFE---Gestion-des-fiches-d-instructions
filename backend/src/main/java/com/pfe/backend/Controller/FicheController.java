@@ -1,5 +1,5 @@
 package com.pfe.backend.Controller;
-
+import java.util.Arrays;
 import com.pfe.backend.DTO.FicheHistoryDTO;
 import com.pfe.backend.Model.Fiche;
 import com.pfe.backend.Model.FicheLigne;
@@ -18,12 +18,29 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.ArrayList;
 @RequestMapping("/fiche")
 @RestController
 public class FicheController {
     @Autowired
     private FicheService ficheService;
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Fiche>> searchFiches(
+            @RequestParam String requete,
+            @RequestParam Long idUser,
+            @RequestParam(required = false) String situations
+    ) {
+        List<String> situationList = new ArrayList<>();
+        if (situations != null && !situations.isEmpty()) {
+            situationList = Arrays.asList(situations.split(","));
+        }
+
+        List<Fiche> result = ficheService.rechercheAvancee(requete, idUser, situationList);
+        return ResponseEntity.ok(result);
+    }
+
+
     @GetMapping("/fiche-history/{idFiche}")
     public ResponseEntity<List<FicheHistoryDTO>> getFicheHistory(@PathVariable Long idFiche) {
         List<FicheHistoryDTO> history = ficheService.getFicheHistory(idFiche);

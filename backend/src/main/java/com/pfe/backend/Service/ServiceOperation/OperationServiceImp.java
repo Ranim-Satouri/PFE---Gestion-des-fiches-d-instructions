@@ -55,9 +55,11 @@ public class OperationServiceImp implements OperationService {
         Ligne ligne = ligneRepository.findById(NewOperationData.getLigne().getIdLigne())
                 .orElseThrow(() -> new RuntimeException("ligne introuvable"));
         if(existingOperation.isPresent()){
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body("une operation avec le même nom existe déjà");
+            if(existingOperation.get().getIdOperation() != idOperation) {
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body("une operation avec le même nom existe déjà");
+            }
         }
         if(NewOperationData.getNom()!=null ) operation.setNom(NewOperationData.getNom());
         operation.setActionneur(actionneur);

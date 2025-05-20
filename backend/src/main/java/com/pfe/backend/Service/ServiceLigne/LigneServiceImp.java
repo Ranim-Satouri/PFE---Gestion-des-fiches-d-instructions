@@ -54,10 +54,13 @@ public class LigneServiceImp implements LigneService {
         Zone zone = zoneRepository.findById(NewLigneData.getZone().getIdZone())
                 .orElseThrow(() -> new RuntimeException("zone introuvable"));
         Optional<Ligne> existingLigne = ligneRepository.findBynomAndIsDeletedAndZone(NewLigneData.getNom(), false , NewLigneData.getZone());
+
         if(existingLigne.isPresent()){
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body("une ligne avec le même nom et zone existe déjà");
+            if(existingLigne.get().getIdLigne() != idLigne){
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body("une ligne avec le même nom et zone existe déjà");
+            }
         }
         if(NewLigneData.getNom()!=null ) ligne.setNom(NewLigneData.getNom());
         ligne.setActionneur(actionneur);

@@ -121,9 +121,11 @@ public class FamilleServiceImp implements FamilleService {
         User actionneur = userRepository.findById(idActionneur).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
         Optional<Famille> existingFamille = familleRepository.findByNomFamilleAndIsDeleted(NewfamilyData.getNomFamille(), false);
         if (existingFamille.isPresent()) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body("Une famille avec le même nom existe déjà");
+            if(existingFamille.get().getIdFamille() != idFam){
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body("Une famille avec le même nom existe déjà");
+            }
         }
         if(NewfamilyData.getNomFamille()!=null ) famille.setNomFamille(NewfamilyData.getNomFamille());
         famille.setActionneur(actionneur);

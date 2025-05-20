@@ -34,4 +34,5 @@ public interface FicheService {
     Fiche updateFicheOperation(FicheOperation ficheOperation);
     List<Fiche> getFichesSheetByUserZones(Long idUser);
     List<FicheHistoryDTO> getFicheHistory(Long ficheId);
+    List<Fiche> rechercheAvancee(String requete, Long idUser, List<String> situations);
 }

@@ -1,5 +1,6 @@
 package com.pfe.backend.Service.ServiceFiche;
 
+import com.pfe.backend.DTO.FicheDTO;
 import com.pfe.backend.DTO.FicheHistoryDTO;
 import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.*;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -54,6 +56,42 @@ public class FicheServiceImp implements FicheService {
     private EntityManager entityManager;
     @Autowired
     private GroupeRepository groupeRepository;
+
+
+    @Override
+    public List<Fiche> rechercheAvancee(String requete, Long idUser, List<String> situations) {
+        User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
+        List<Fiche> fiches = new ArrayList<>();
+        if(user.getGroupe().getNom().equals("SUPERUSER")){
+            fiches = getFiches();
+        }else{
+            fiches = getFichesSheetByUserZones(idUser);
+        }
+
+        // Si des statuts sont sélectionnés, on filtre
+        if (situations != null && !situations.isEmpty()) {
+            fiches = fiches.stream()
+                    .filter(f -> situations.contains(f.getStatus().name()))
+                    .collect(Collectors.toList());
+        }
+        // Mapper en DTO
+        List<FicheDTO> fichesDto = fiches.stream()
+                .map(f -> new FicheDTO(f.getIdFiche(), f.getPdf()))
+                .collect(Collectors.toList());
+        System.out.println(fichesDto);
+
+
+
+        List<Fiche> fichesCompletes = fichesDto.stream()
+                .map(dto -> ficheRepository.findById(dto.getIdFiche()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        return fichesCompletes;
+    }
+
+
 
     //historique
     public List<FicheHistoryDTO> getFicheHistory(Long ficheId) {
@@ -731,4 +769,5 @@ public class FicheServiceImp implements FicheService {
             nService.sendExpirationReminderForFiche(fiche, hoursUntilExpiration , u);
         }
     }
+
 }

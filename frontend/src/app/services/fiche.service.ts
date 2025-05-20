@@ -143,4 +143,14 @@ export class FicheService {
   //   return this.http.put(`${this.apiUrl}/updateFicheOperation`, fiche);
   // }
 
+  searchFichesAvancee( requete: string,situations: string[], idUser: number): Observable<Fiche[]> {
+  const params = {
+    requete: requete || '',
+    idUser: idUser.toString(),
+    situations: situations.join(',') // format "EXPIRED,PENDING"
+  };
+
+  return this.http.get<Fiche[]>(`${this.apiUrl}/search`, { params });
+}
+
 }
