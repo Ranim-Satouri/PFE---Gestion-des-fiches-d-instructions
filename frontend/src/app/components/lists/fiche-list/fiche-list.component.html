@@ -8,9 +8,9 @@
             <input
               type="search"
               [(ngModel)]="searchbar" placeholder="Rechercher ..."
-              class="no-native-clear uniform-placeholder  w-full h-10 px-4 py-2 text-gray-900 bg-white
+              class="no-native-clear uniform-placeholder  w-full h-10 px-4 py-2 text-gray-900 bg-white  shadow-sm
                dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-400
-                dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:border-blue-500
+                dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:border-blue-500 focus:shadow-md focus:shadow-blue-200 dark:focus:shadow-blue-500 
                  dark:text-white outline-none transition-all duration-200"/>
             <!-- Search Icon -->
             <button class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -94,19 +94,19 @@
           <div class="relative w-full sm:w-[10%]" #zoneToggleButton (click)="toggleZoneDropdown()">
             <div   
              [ngClass]="{
-            'border-blue-500': zoneDropdownOpen,
+                     'border-blue-500': zoneDropdownOpen,
             'ring': zoneDropdownOpen,
             'ring-blue-500': zoneDropdownOpen,
             'ring-opacity-40': zoneDropdownOpen,
+            'dark:ring-opacity-100': zoneDropdownOpen,
             'border-gray-300': !zoneDropdownOpen,
-            'dark:focus:border-blue-400': zoneDropdownOpen,
+            'dark:focus:border-blue-500': zoneDropdownOpen,
             'dark:shadow-gray-900': zoneDropdownOpen,
             'dark:focus:ring-blue-500': zoneDropdownOpen,
             'dark:focus:border': zoneDropdownOpen,
-            'dark:focus:shadow-blue-500': zoneDropdownOpen
+            'dark:focus:shadow-blue-500': zoneDropdownOpen,'dark:focus:shadow-md': zoneDropdownOpen
           }"
-            class="uniform-placeholder flex flex-wrap items-center cursor-pointer  rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:shadow-gray-900 whitespace-normal overflow-hidden
-            w-full h-10 px-4 py-2 border dark:text-gray-400 transition-all duration-200"
+          class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-4 h-10  w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden"
             >{{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Zone' }}</div>
             <div class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
               <svg class="shrink-0 size-3.5"
@@ -146,10 +146,11 @@
             'dark:shadow-gray-900': situationDropdownOpen,
             'dark:focus:ring-blue-500': situationDropdownOpen,
             'dark:focus:border': situationDropdownOpen,
-            'dark:focus:shadow-blue-500':situationDropdownOpen
+           'dark:focus:shadow-blue-500':  situationDropdownOpen, 'dark:ring-opacity-100':situationDropdownOpen,
+           'dark:focus:shadow-md':  situationDropdownOpen
           }"
-        class="uniform-placeholder flex flex-wrap items-center cursor-pointer  rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:shadow-gray-900 whitespace-normal overflow-hidden
-            w-full h-10 px-4 py-2 border dark:text-gray-400 transition-all duration-200">
+          class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-4 h-10  w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden">
+
         {{ selectedSituations.length > 0 ? getSelectedSituationNames() : 'Situation' }}
         </div>
           <div

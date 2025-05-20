@@ -87,16 +87,17 @@
     <div class="relative w-full sm:w-[30%]" #zoneToggleButton (click)="toggleZoneDropdown()">
         <div
           [ngClass]="{
-            'border-blue-400': zoneDropdownOpen,
+            'border-blue-500': zoneDropdownOpen,
             'ring': zoneDropdownOpen,
-            'ring-blue-300': zoneDropdownOpen,
+            'ring-blue-500': zoneDropdownOpen,
             'ring-opacity-40': zoneDropdownOpen,
+            'dark:ring-opacity-100': zoneDropdownOpen,
             'border-gray-300': !zoneDropdownOpen,
-            'dark:focus:border-blue-300': zoneDropdownOpen,
+            'dark:focus:border-blue-500': zoneDropdownOpen,
             'dark:shadow-gray-900': zoneDropdownOpen,
             'dark:focus:ring-blue-500': zoneDropdownOpen,
             'dark:focus:border': zoneDropdownOpen,
-            'dark:focus:shadow-blue-500': zoneDropdownOpen
+            'dark:focus:shadow-blue-500': zoneDropdownOpen,'dark:focus:shadow-md': zoneDropdownOpen
           }"
           class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-4 h-10  w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden"
         >
