@@ -92,38 +92,43 @@
           </div>
           <!-- Zone Dropdown -->
           <div class="relative w-full sm:w-[10%]" #zoneToggleButton (click)="toggleZoneDropdown()">
-            <div
-            class="uniform-placeholder w-full h-10 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-400 focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 focus:border-blue-400 dark:focus:border-blue-500 outline-none transition-all duration-200"
-            >
-            {{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Zone' }}
-            </div>
+            <div   
+             [ngClass]="{
+            'border-blue-500': zoneDropdownOpen,
+            'ring': zoneDropdownOpen,
+            'ring-blue-500': zoneDropdownOpen,
+            'ring-opacity-40': zoneDropdownOpen,
+            'border-gray-300': !zoneDropdownOpen,
+            'dark:focus:border-blue-400': zoneDropdownOpen,
+            'dark:shadow-gray-900': zoneDropdownOpen,
+            'dark:focus:ring-blue-500': zoneDropdownOpen,
+            'dark:focus:border': zoneDropdownOpen,
+            'dark:focus:shadow-blue-500': zoneDropdownOpen
+          }"
+            class="uniform-placeholder flex flex-wrap items-center cursor-pointer  rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:shadow-gray-900 whitespace-normal overflow-hidden
+            w-full h-10 px-4 py-2 border dark:text-gray-400 transition-all duration-200"
+            >{{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Zone' }}</div>
             <div class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
               <svg class="shrink-0 size-3.5"
                 xmlns="http://www.w3.org/2000/svg" width="24"height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path>
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path>
               </svg>
             </div>
             <div
               *ngIf="zoneDropdownOpen" #zoneDropdown
-              class="absolute w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg z-[1000]  dark:text-gray-400">
+              class="absolute w-full bg-gray-100  dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg z-[1000]  dark:text-gray-400">
               <label *ngFor="let zone of zones"
-                class="flex items-center px-4 py-2  hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer ">
+                class="flex items-center px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">
                 <input
                   type="checkbox"
-                  [value]="zone.idZone"
-                  (change)="onCheckboxChange($event)"
-                  [checked]="zone.idZone !== undefined && selectedZones.includes(zone.idZone)"
+                  [value]="zone.idZone" (change)="onCheckboxChange($event)" [checked]="zone.idZone !== undefined && selectedZones.includes(zone.idZone)"
                   class="hidden peer"/>
                 <div
-                  class="w-4 h-4 mr-2 flex items-center justify-center rounded border-2  border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
+                  class="w-4 h-4 mr-2 flex  min-w-4 items-center justify-center rounded border-2 border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
                   <svg
-                    class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                  </svg> 
-                </div> 
-                <span style="font-size: 13px">{{ zone.nom }}</span> </label>
+                    class="w-4 h-4 min-w-4 text-white hidden" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg> </div> <span style="font-size: 13px">{{ zone.nom }}</span> </label>
             </div>
           </div>
 
@@ -131,8 +136,20 @@
         <div class="relative w-full sm:w-[10%]" #situationToggleButton id="situationToggleButton" (click)="toggleSituationDropdown()">
           <!-- Situation Dropdown -->
         <div
-        class="w-full h-10 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 uniform-placeholder focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 focus:border-blue-400 dark:focus:border-blue-500 cursor-pointer transition-all duration-200"
-        >
+           [ngClass]="{
+            'border-blue-500': situationDropdownOpen,
+            'ring': situationDropdownOpen,
+            'ring-blue-500': situationDropdownOpen,
+            'ring-opacity-40': situationDropdownOpen,
+            'border-gray-300': !zoneDropdownOpen,
+            'dark:focus:border-blue-400':situationDropdownOpen,
+            'dark:shadow-gray-900': situationDropdownOpen,
+            'dark:focus:ring-blue-500': situationDropdownOpen,
+            'dark:focus:border': situationDropdownOpen,
+            'dark:focus:shadow-blue-500':situationDropdownOpen
+          }"
+        class="uniform-placeholder flex flex-wrap items-center cursor-pointer  rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:shadow-gray-900 whitespace-normal overflow-hidden
+            w-full h-10 px-4 py-2 border dark:text-gray-400 transition-all duration-200">
         {{ selectedSituations.length > 0 ? getSelectedSituationNames() : 'Situation' }}
         </div>
           <div
@@ -146,7 +163,7 @@
           <div
             *ngIf="situationDropdownOpen"
             #situationDropdown id="situationDropdown"
-            class="absolute w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg z-[1000] dark:text-gray-400">
+            class="absolute w-full bg-gray-100  dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg z-[1000]  dark:text-gray-400">
             <label  *ngFor="let situation of situations"
               class="flex items-center px-3 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">
               <input
@@ -155,7 +172,7 @@
                 (change)="onSituationCheckboxChange($event)"
                 [checked]="selectedSituations.includes(situation)"
                 class="hidden peer "/>
-              <div class="w-4 h-4 mr-2 flex items-center justify-center rounded border-2 border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
+              <div class="w-4 h-4 min-w-4 mr-2 flex items-center justify-center rounded border-2 border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
                 <svg class="w-4 h-4 text-white hidden"
                   fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />

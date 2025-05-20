@@ -98,23 +98,18 @@
             'dark:focus:border': zoneDropdownOpen,
             'dark:focus:shadow-blue-500': zoneDropdownOpen
           }"
-          class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-4 h-10 block w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden"
+          class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-4 h-10  w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden"
         >
-          <span class="text-sm font-medium">
-            {{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Sélectionner des zones' }}
+          <span class="text-sm font-medium">{{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Sélectionner des zones' }}
           </span>
         </div>
         <div
-          class="absolute top-1/2 right-3 mt-[1px] -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
-        >
+          class="absolute top-1/2 right-3 mt-[1px] -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
           <svg
-            class="shrink-0 size-3.5 text-gray-500 w-4 h-4"
-            xmlns="http://www.w3.org/2000/svg"
+            class="shrink-0 size-3.5 text-gray-500 w-4 h-4" xmlns="http://www.w3.org/2000/svg"
             width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m7 15 5 5 5-5"></path>
-            <path d="m7 9 5-5 5 5"></path>
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path>
           </svg>
         </div>
         <div
@@ -131,7 +126,7 @@
               [checked]="zone.idZone !== undefined && selectedZones.includes(zone.idZone)"
               class="hidden peer"/>
             <div
-              class="w-4 h-4 mr-2 flex items-center justify-center rounded border-2 border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
+              class="w-4 h-4 mr-2 min-w-4 flex items-center justify-center rounded border-2 border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
               <svg
                 class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor"
                 stroke-width="3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
