@@ -225,13 +225,28 @@ getSelectedSituationNames(): string {
     let filtered = [...this.fiches];
 
     // Filter by Zone
-    if (this.selectedZones.length > 0) {
-      filtered = filtered.filter((fiche) => {
-        const matchesZone = fiche.zone && fiche.zone.idZone !== undefined && this.selectedZones.includes(fiche.zone.idZone);
-        console.log(`Fiche ID: ${fiche.idFiche}, Zone ID: ${fiche.zone?.idZone}, Matches: ${matchesZone}`);
-        return matchesZone;
-      });
-    } // Filter by Situation
+  if (this.selectedZones.length > 0) {
+    filtered = filtered.filter((fiche) => {
+      let zoneId: number | undefined;
+
+      // Si la zone est directement définie dans la fiche
+      if (fiche.zone?.idZone !== undefined) {
+        zoneId = fiche.zone.idZone;
+      }
+      // Si pas de zone directe, chercher via la ligne
+      else if (fiche.ligne?.zone?.idZone !== undefined) {
+        zoneId = fiche.ligne.zone.idZone;
+      }
+      // Si pas de ligne ou de zone directe, chercher via l'opération
+      else if (fiche.operation?.ligne?.zone?.idZone !== undefined) {
+        zoneId = fiche.operation.ligne.zone.idZone;
+      }
+
+      const matchesZone = zoneId !== undefined && this.selectedZones.includes(zoneId);
+      console.log(`Fiche ID: ${fiche.idFiche}, Zone ID déduite: ${zoneId}, Matches: ${matchesZone}`);
+      return matchesZone;
+    });
+  }// Filter by Situation
     if (this.selectedSituations.length > 0) {
       filtered = filtered.filter((fiche) => {
         const matchesSituation = fiche.status && this.selectedSituations.includes(fiche.status);

@@ -131,15 +131,14 @@ public class DataInitializer implements CommandLineRunner {
             Menu fichesMenu = menuRepository.findByNom("fiches");
             Menu lignesMenu = menuRepository.findByNom("lignes");
             Menu operationsMenu = menuRepository.findByNom("operations");
-            Menu zonesMenu = menuRepository.findByNom("zones");
             Menu dashboard = menuRepository.findByNom("Dashboard");
             Menu produit = menuRepository.findByNom("produits");
             Menu famille = menuRepository.findByNom("familles");
             // Vérifier que tous les menus existent
-            if (fichesMenu == null || lignesMenu == null || operationsMenu == null || zonesMenu == null || dashboard == null || produit == null || famille == null) {
-                throw new IllegalStateException("Un ou plusieurs menus (fiches, lignes, operations, zones) doivent exister avant de créer le groupe PREPARATEUR");
+            if (fichesMenu == null || lignesMenu == null || operationsMenu == null  || dashboard == null || produit == null || famille == null) {
+                throw new IllegalStateException("Un ou plusieurs menus (fiches, lignes, operations) doivent exister avant de créer le groupe PREPARATEUR");
             }
-            System.out.println("Menus trouvés : fiches (ID = " + fichesMenu.getIdMenu() + "), lignes (ID = " + lignesMenu.getIdMenu() + "), operations (ID = " + operationsMenu.getIdMenu() + "), zones (ID = " + zonesMenu.getIdMenu() + ")");
+            System.out.println("Menus trouvés : fiches (ID = " + fichesMenu.getIdMenu() + "), lignes (ID = " + lignesMenu.getIdMenu() + "), operations (ID = " + operationsMenu.getIdMenu() + ")");
             // Récupérer les permissions
             // 1. Permissions de "fiches" sauf "consulter_historique_fiche"
             List<Permission> fichesPermissions = permissionRepository.findByMenu(fichesMenu)
@@ -155,16 +154,11 @@ public class DataInitializer implements CommandLineRunner {
             // 3. Toutes les permissions de "operations"
             List<Permission> operationsPermissions = permissionRepository.findByMenu(operationsMenu).stream()
                     .filter(permission -> !permission.getNom().equals("supprimer_operation")).collect(Collectors.toList());
-            // 4. Permission "consulter_zone" de "zones"
-            List<Permission> zonePermission = permissionRepository.findByMenu(zonesMenu)
-                    .stream()
-                    .filter(permission -> permission.getNom().equals("consulter_zone")).collect(Collectors.toList());
             // Combiner toutes les permissions
             List<Permission> preparateurPermissions = new ArrayList<>();
             preparateurPermissions.addAll(fichesPermissions);
             preparateurPermissions.addAll(lignesPermissions);
             preparateurPermissions.addAll(operationsPermissions);
-            preparateurPermissions.addAll(zonePermission);
             preparateurPermissions.addAll(dashboardPermissions);
             preparateurPermissions.addAll(produitPermissions);
             preparateurPermissions.addAll(famillePermissions);
@@ -196,15 +190,14 @@ public class DataInitializer implements CommandLineRunner {
             Menu fichesMenu = menuRepository.findByNom("fiches");
             Menu lignesMenu = menuRepository.findByNom("lignes");
             Menu operationsMenu = menuRepository.findByNom("operations");
-            Menu zonesMenu = menuRepository.findByNom("zones");
             Menu dashboard = menuRepository.findByNom("Dashboard");
             Menu produit = menuRepository.findByNom("produits");
             Menu famille = menuRepository.findByNom("familles");
             // Vérifier que tous les menus existent
-            if (fichesMenu == null || lignesMenu == null || operationsMenu == null || zonesMenu == null || dashboard == null || produit == null || famille == null) {
+            if (fichesMenu == null || lignesMenu == null || operationsMenu == null || dashboard == null || produit == null || famille == null) {
                 throw new IllegalStateException("Un ou plusieurs menus (fiches, lignes, operations, zones) doivent exister avant de créer le groupe IPDF");
             }
-            System.out.println("Menus trouvés : fiches (ID = " + fichesMenu.getIdMenu() + "), lignes (ID = " + lignesMenu.getIdMenu() + "), operations (ID = " + operationsMenu.getIdMenu() + "), zones (ID = " + zonesMenu.getIdMenu() + ")");
+            System.out.println("Menus trouvés : fiches (ID = " + fichesMenu.getIdMenu() + "), lignes (ID = " + lignesMenu.getIdMenu() + "), operations (ID = " + operationsMenu.getIdMenu() + ")");
 
             List<Permission> dashboardPermissions = permissionRepository.findByMenu(dashboard);
             List<Permission> fichesPermissions = permissionRepository.findByMenu(fichesMenu).stream()
@@ -224,16 +217,12 @@ public class DataInitializer implements CommandLineRunner {
             List<Permission> operationsPermissions = permissionRepository.findByMenu(operationsMenu).stream()
                     .filter(permission ->  permission.getNom().equals("consulter_operation")).collect(Collectors.toList());
             // 4. Permission "consulter_zone" de "zones"
-            List<Permission> zonePermission = permissionRepository.findByMenu(zonesMenu)
-                    .stream()
-                    .filter(permission -> permission.getNom().equals("consulter_zone"))
-                    .collect(Collectors.toList());
+
             // Combiner toutes les permissions
             List<Permission> IPDFPermissions = new ArrayList<>();
             IPDFPermissions.addAll(fichesPermissions);
             IPDFPermissions.addAll(lignesPermissions);
             IPDFPermissions.addAll(operationsPermissions);
-            IPDFPermissions.addAll(zonePermission);
             IPDFPermissions.addAll(dashboardPermissions);
             IPDFPermissions.addAll(produitPermissions);
             IPDFPermissions.addAll(famillePermissions);
@@ -264,15 +253,15 @@ public class DataInitializer implements CommandLineRunner {
             Menu fichesMenu = menuRepository.findByNom("fiches");
             Menu lignesMenu = menuRepository.findByNom("lignes");
             Menu operationsMenu = menuRepository.findByNom("operations");
-            Menu zonesMenu = menuRepository.findByNom("zones");
+//            Menu zonesMenu = menuRepository.findByNom("zones");
             Menu dashboard = menuRepository.findByNom("Dashboard");
             Menu produit = menuRepository.findByNom("produits");
             Menu famille = menuRepository.findByNom("familles");
 
-            if (fichesMenu == null || lignesMenu == null || operationsMenu == null || zonesMenu == null || dashboard == null || produit == null || famille == null) {
-                throw new IllegalStateException("Un ou plusieurs menus (fiches, lignes, operations, zones) doivent exister avant de créer le groupe IPDF");
+            if (fichesMenu == null || lignesMenu == null || operationsMenu == null || dashboard == null || produit == null || famille == null) {
+                throw new IllegalStateException("Un ou plusieurs menus (fiches, lignes, operations) doivent exister avant de créer le groupe IQP");
             }
-            System.out.println("Menus trouvés : fiches (ID = " + fichesMenu.getIdMenu() + "), lignes (ID = " + lignesMenu.getIdMenu() + "), operations (ID = " + operationsMenu.getIdMenu() + "), zones (ID = " + zonesMenu.getIdMenu() + ")");
+            System.out.println("Menus trouvés : fiches (ID = " + fichesMenu.getIdMenu() + "), lignes (ID = " + lignesMenu.getIdMenu() + "), operations (ID = " + operationsMenu.getIdMenu() + ")");
 
             List<Permission> dashboardPermissions = permissionRepository.findByMenu(dashboard);
             List<Permission> fichesPermissions = permissionRepository.findByMenu(fichesMenu).stream()
@@ -292,16 +281,11 @@ public class DataInitializer implements CommandLineRunner {
             List<Permission> operationsPermissions = permissionRepository.findByMenu(operationsMenu).stream()
                     .filter(permission ->  permission.getNom().equals("consulter_operation")).collect(Collectors.toList());
             // 4. Permission "consulter_zone" de "zones"
-            List<Permission> zonePermission = permissionRepository.findByMenu(zonesMenu)
-                    .stream()
-                    .filter(permission -> permission.getNom().equals("consulter_zone"))
-                    .collect(Collectors.toList());
             // Combiner toutes les permissions
             List<Permission>  IQPPermissions = new ArrayList<>();
             IQPPermissions.addAll(fichesPermissions);
             IQPPermissions.addAll(lignesPermissions);
             IQPPermissions.addAll(operationsPermissions);
-            IQPPermissions.addAll(zonePermission);
             IQPPermissions.addAll(dashboardPermissions);
             IQPPermissions.addAll(produitPermissions);
             IQPPermissions.addAll(famillePermissions);
@@ -332,15 +316,14 @@ public class DataInitializer implements CommandLineRunner {
             Menu fichesMenu = menuRepository.findByNom("fiches");
             Menu lignesMenu = menuRepository.findByNom("lignes");
             Menu operationsMenu = menuRepository.findByNom("operations");
-            Menu zonesMenu = menuRepository.findByNom("zones");
             Menu dashboard = menuRepository.findByNom("Dashboard");
             Menu produit = menuRepository.findByNom("produits");
             Menu famille = menuRepository.findByNom("familles");
 
-            if (fichesMenu == null || lignesMenu == null || operationsMenu == null || zonesMenu == null || dashboard == null || produit == null || famille == null) {
+            if (fichesMenu == null || lignesMenu == null || operationsMenu == null  || dashboard == null || produit == null || famille == null) {
                 throw new IllegalStateException("Un ou plusieurs menus (fiches, lignes, operations, zones) doivent exister avant de créer le groupe IPDF");
             }
-            System.out.println("Menus trouvés : fiches (ID = " + fichesMenu.getIdMenu() + "), lignes (ID = " + lignesMenu.getIdMenu() + "), operations (ID = " + operationsMenu.getIdMenu() + "), zones (ID = " + zonesMenu.getIdMenu() + ")");
+            System.out.println("Menus trouvés : fiches (ID = " + fichesMenu.getIdMenu() + "), lignes (ID = " + lignesMenu.getIdMenu() + "), operations (ID = " + operationsMenu.getIdMenu()+")");
 
             List<Permission> dashboardPermissions = permissionRepository.findByMenu(dashboard);
             List<Permission> fichesPermissions = permissionRepository.findByMenu(fichesMenu).stream()
@@ -355,15 +338,11 @@ public class DataInitializer implements CommandLineRunner {
             List<Permission> produitPermissions = permissionRepository.findByMenu(produit);
             List<Permission> operationsPermissions = permissionRepository.findByMenu(operationsMenu);
             // 4. Permission "consulter_zone" de "zones"
-            List<Permission> zonePermission = permissionRepository.findByMenu(zonesMenu)
-                    .stream()
-                    .filter(permission -> permission.getNom().equals("consulter_zone")).collect(Collectors.toList());
-            // Combiner toutes les permissions
+
             List<Permission>  ADMINPermissions = new ArrayList<>();
             ADMINPermissions.addAll(fichesPermissions);
             ADMINPermissions.addAll(lignesPermissions);
             ADMINPermissions.addAll(operationsPermissions);
-            ADMINPermissions.addAll(zonePermission);
             ADMINPermissions.addAll(dashboardPermissions);
             ADMINPermissions.addAll(produitPermissions);
             ADMINPermissions.addAll(famillePermissions);

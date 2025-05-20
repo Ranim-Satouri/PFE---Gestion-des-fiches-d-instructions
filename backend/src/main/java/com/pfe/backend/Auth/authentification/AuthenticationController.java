@@ -42,11 +42,8 @@ public class AuthenticationController {
         return ResponseEntity.ok("Profil de l'utilisateur : " + auth.getName());
     }
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request,
-            HttpServletResponse response) {
-        return ResponseEntity.ok(Aservice.authenticate(request, response));
-    }
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request, HttpServletResponse response)
+    { return ResponseEntity.ok(Aservice.authenticate(request, response)); }
 
     @PostMapping("/refresh")
     @Transactional
@@ -60,8 +57,7 @@ public class AuthenticationController {
             for (Cookie cookie : cookies) {
                 if ("refreshToken".equals(cookie.getName())) {
                     refreshToken = cookie.getValue();
-                    break;
-                }
+                    break;}
             }
         }
         if (refreshToken == null) {
@@ -154,23 +150,27 @@ public ResponseEntity<AuthenticationResponse> register(
 //    }
     @PutMapping("/password/{idUser}")
     public ResponseEntity<String> updatePassword(
-            @PathVariable Long idUser,
-            @RequestParam String newPassword,
-            @RequestParam Long idActionneur) {
-
+            @PathVariable Long idUser, @RequestParam String newPassword,  @RequestParam Long idActionneur) {
         try {
             // Validation minimale
             if (newPassword == null || newPassword.isBlank()) {
                 return ResponseEntity.badRequest().build();
             }
-
             Aservice.updatePassword(idUser, newPassword, idActionneur);
             return ResponseEntity.noContent().build();
-
         } catch (Exception e) {
             System.out.println("Erreur lors de la mise à jour du mot de passe");
             return ResponseEntity.internalServerError().build();
         }
     }
-
+    @PutMapping("/reset-password/{idUser}/{idActionneur}")
+    public ResponseEntity<?> ResetPassword(
+            @PathVariable Long idUser,  @PathVariable Long idActionneur) {
+        try {
+            Aservice.ResetPassword(idUser, idActionneur);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

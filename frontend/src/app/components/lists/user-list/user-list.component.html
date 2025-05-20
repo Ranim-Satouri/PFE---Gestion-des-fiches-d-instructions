@@ -1,3 +1,40 @@
+<!-- Notifications (placées au début pour éviter les interférences) -->
+<div
+  *ngIf="successMessage"
+  class="fixed top-10 left-0 right-0 z-[100] flex justify-center">
+  <div class="w-full max-w-fit flex items-center justify-between gap-3 p-3 rounded-lg border border-green-400 bg-green-50 dark:bg-green-900/10 dark:border-green-700 text-green-800 dark:text-green-300 text-sm shadow-lg">
+    <div class="flex items-center gap-2 w-full">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+        <path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95"></path>
+        <path d="M3.69 8.56a9 9 0 0 0 -.69 3.44"></path>
+        <path d="M3.69 15.44a9 9 0 0 0 1.95 2.92"></path>
+        <path d="M8.56 20.31a9 9 0 0 0 3.44 .69"></path>
+        <path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95"></path>
+        <path d="M20.31 15.44a9 9 0 0 0 .69 -3.44"></path>
+        <path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92"></path>
+        <path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69"></path>
+        <path d="M9 12l2 2l4 -4"></path>
+      </svg>
+      <span class="flex-1">{{ successMessage }}</span>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="errorMessage"
+  class="fixed top-8 left-0 right-0 z-[100] flex justify-center"
+>
+  <div class="w-full max-w-md flex items-center justify-between gap-3 p-3 rounded-md border border-red-400 bg-red-50 dark:bg-red-900/10 dark:border-red-700 text-red-800 dark:text-red-300 text-sm shadow-lg">
+    <div class="flex items-center gap-2 w-full">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
+        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+        <path d="M12 9v4"></path>
+        <path d="M12 16v.01"></path>
+      </svg>
+      <span class="flex-1">{{ errorMessage }}</span>
+    </div>
+  </div>
+</div>
 <div class="h-full flex flex-col">
     <div class="w-full z-50 bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 flex flex-col justify-around">
         <!-- Search Bar and Button Row -->
@@ -50,34 +87,30 @@
     <div class="relative w-full sm:w-[30%]" #zoneToggleButton (click)="toggleZoneDropdown()">
         <div
           [ngClass]="{
-            'border-blue-400': zoneDropdownOpen,
+            'border-blue-500': zoneDropdownOpen,
             'ring': zoneDropdownOpen,
-            'ring-blue-300': zoneDropdownOpen,
+            'ring-blue-500': zoneDropdownOpen,
             'ring-opacity-40': zoneDropdownOpen,
+            'dark:ring-opacity-100': zoneDropdownOpen,
             'border-gray-300': !zoneDropdownOpen,
-            'dark:focus:border-blue-300': zoneDropdownOpen,
+            'dark:focus:border-blue-500': zoneDropdownOpen,
             'dark:shadow-gray-900': zoneDropdownOpen,
             'dark:focus:ring-blue-500': zoneDropdownOpen,
             'dark:focus:border': zoneDropdownOpen,
-            'dark:focus:shadow-blue-500': zoneDropdownOpen
+            'dark:focus:shadow-blue-500': zoneDropdownOpen,'dark:focus:shadow-md': zoneDropdownOpen
           }"
-          class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-4 h-10 block w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden"
+          class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-4 h-10  w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden"
         >
-          <span class="text-sm font-medium">
-            {{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Sélectionner des zones' }}
+          <span class="text-sm font-medium">{{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Sélectionner des zones' }}
           </span>
         </div>
         <div
-          class="absolute top-1/2 right-3 mt-[1px] -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
-        >
+          class="absolute top-1/2 right-3 mt-[1px] -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
           <svg
-            class="shrink-0 size-3.5 text-gray-500 w-4 h-4"
-            xmlns="http://www.w3.org/2000/svg"
+            class="shrink-0 size-3.5 text-gray-500 w-4 h-4" xmlns="http://www.w3.org/2000/svg"
             width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m7 15 5 5 5-5"></path>
-            <path d="m7 9 5-5 5 5"></path>
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path>
           </svg>
         </div>
         <div
@@ -94,7 +127,7 @@
               [checked]="zone.idZone !== undefined && selectedZones.includes(zone.idZone)"
               class="hidden peer"/>
             <div
-              class="w-4 h-4 mr-2 flex items-center justify-center rounded border-2 border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
+              class="w-4 h-4 mr-2 min-w-4 flex items-center justify-center rounded border-2 border-gray-400 peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-checked:[&>svg]:block transition-colors duration-300 ease-in-out">
               <svg
                 class="w-4 h-4 text-white hidden" fill="none" stroke="currentColor"
                 stroke-width="3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -161,30 +194,25 @@
             </button>
             </div>
        </div>
-    </div>
+    
+      </div>
       <!-- class="px-6 py-2 w-full rounded-md flex-1 outline-none bg-white
         border-gray-300 focus:ring-2  focus:ring-blue-400 focus:border-blue-400 focus:shadow-md focus:shadow-blue-200
           dark:border-gray-600 shadow-sm dark:shadow-gray-900
           dark:bg-gray-700 dark:text-white border
            dark:focus:ring-blue-500 dark:focus:border-blue-500  dark:focus:shadow-blue-500 transition-all duration-200 "
       /> -->
-
       <div class="relative z-10  mb-2 shadow-md rounded-lg max-h-[calc(100%-132px)] custom-scrollbar-container overflow-auto " (scroll)="onScroll()">
         <table class=" w-full text-xs text-left rtl:text-right text-gray-700 dark:text-gray-400 ">
             <thead class="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-gray-400 sticky-top">
                 <tr>
                   <th scope="col" class="px-4 py-3 ">
-                    <div class="flex items-center">
-                        #
-                    </div>
+                    <div class="flex items-center">#</div>
                   </th>
                     <th scope="col" class="px-4 py-3 ">Matricule</th>
-                    <th scope="col" class="px-2 py-3 ">
-                        <div class="flex items-center">Nom Complet</div>
-                    </th>
+                    <th scope="col" class="px-2 py-3 "><div class="flex items-center">Nom Complet</div></th>
                     <th scope="col" class="px-4 py-3 ">
-                        <div class="flex items-center">E-mail</div>
-                    </th>
+                        <div class="flex items-center">E-mail</div></th>
                     <th scope="col" class="px-4 py-3 ">
                         <div class="flex items-center">Groupe</div>
                     </th>
@@ -201,11 +229,7 @@
                             Activé
                         </div>
                     </th>
-                    <th scope="col" class="px-4 py-2">
-                        <div class="flex items-center">
-                            Zones
-                        </div>
-                    </th>
+                    <th scope="col" class="px-4 py-2"><div class="flex items-center">Zones</div></th>
                     <th scope="col" class="px-4 py-3 ">
                         <div class="flex items-center">
                             Modifié le
@@ -244,12 +268,8 @@
                             <div class="relative w-9 h-5 bg-gray-400  rounded-full peer dark:bg-gray-500 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-gray-100 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-200 after:border-gray-100 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500 dark:peer-checked:bg-blue-500  peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-300"></div>
                         </label>
                     </th>
-                    <th scope="col" class="px-4 py-2 max-w-40 font-medium">
-                        {{ getZoneNames(user) }}
-                    </th>
+                    <th scope="col" class="px-4 py-2 max-w-40 font-medium">{{ getZoneNames(user) }}</th>
                     <th scope="col" class="px-4 py-2 font-medium">{{user.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
-
-
                     <th class="px-4 py-2 text-right relative">
                         <div *ngIf="hasPermission('supprimer_utilisateur')  || hasPermission('consulter_historique_utilisateur') || hasPermission('modifier_utilisateur')" class="relative inline-block text-left">
                             <button (click)="toggleDropdown(i, $event)"
@@ -277,6 +297,13 @@
                                             <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path>
                                             <path d="M13.5 6.5l4 4"></path><path d="M16 19h6"></path></svg>
                                         Modifier</a>
+                                </li>
+                                         <li *ngIf="hasPermission('modifier_utilisateur')">
+                                    <a (click)="openConfirmModal(user.idUser)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                        <!-- Pencil Icon -->
+                                     <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g id="Change_password">
+                                      <path d="M464.4326,147.54a9.8985,9.8985,0,0,0-17.56,9.1406,214.2638,214.2638,0,0,1-38.7686,251.42c-83.8564,83.8476-220.3154,83.874-304.207-.0088a9.8957,9.8957,0,0,0-16.8926,7.0049v56.9a9.8965,9.8965,0,0,0,19.793,0v-34.55A234.9509,234.9509,0,0,0,464.4326,147.54Z"/><path d="M103.8965,103.9022c83.8828-83.874,220.3418-83.8652,304.207-.0088a9.8906,9.8906,0,0,0,16.8926-6.9961v-56.9a9.8965,9.8965,0,0,0-19.793,0v34.55C313.0234-1.3556,176.0547,3.7509,89.9043,89.9012A233.9561,233.9561,0,0,0,47.5674,364.454a9.8985,9.8985,0,0,0,17.56-9.1406A214.2485,214.2485,0,0,1,103.8965,103.9022Z"/><path d="M126.4009,254.5555v109.44a27.08,27.08,0,0,0,27,27H358.5991a27.077,27.077,0,0,0,27-27v-109.44a27.0777,27.0777,0,0,0-27-27H153.4009A27.0805,27.0805,0,0,0,126.4009,254.5555ZM328,288.13a21.1465,21.1465,0,1,1-21.1465,21.1464A21.1667,21.1667,0,0,1,328,288.13Zm-72,0a21.1465,21.1465,0,1,1-21.1465,21.1464A21.1667,21.1667,0,0,1,256,288.13Zm-72,0a21.1465,21.1465,0,1,1-21.1465,21.1464A21.1667,21.1667,0,0,1,184,288.13Z"/><path d="M343.6533,207.756V171.7538a87.6533,87.6533,0,0,0-175.3066,0V207.756H188.14V171.7538a67.86,67.86,0,0,1,135.7208,0V207.756Z"/></g></svg>
+                                        Réinitialiser </a>
                                 </li>
                                 <li *ngIf="hasPermission('consulter_historique_utilisateur')">
                                 <a (click)="openUserHistory(user.idUser)"
@@ -353,3 +380,4 @@
     [userToUpdate]="selectedUser"
     (userUpdated)="onUserUpdated()">
 </app-register-form>
+<app-confirm-modal #confirmModal (onResult)="handleResult($event)"></app-confirm-modal>
