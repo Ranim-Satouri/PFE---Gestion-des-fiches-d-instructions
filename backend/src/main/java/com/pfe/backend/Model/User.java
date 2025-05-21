@@ -8,10 +8,9 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.envers.NotAudited;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,6 +36,7 @@ public class User implements UserDetails {
     private String prenom;
     private String email;
     @JsonIgnore
+    @NotAudited
     private String password;
     private String num;
     @Enumerated(EnumType.STRING)

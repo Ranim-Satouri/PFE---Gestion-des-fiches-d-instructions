@@ -138,7 +138,17 @@ export class LoginComponent {
   
   blurInput(input: HTMLInputElement) {
     // Optionnel : si tu veux qu’il perde le focus quand la souris sort
-    // input.blur();
+    input.blur();
   }
-  
+openGmailForPasswordReset(): void {
+  const to = 'contact.instructis@gmail.com';
+  const subject = encodeURIComponent('Réinitialisation de mot de passe - Instructis');
+  const body = encodeURIComponent(
+    `Bonjour l’équipe Instructis,\n\nJe vous contacte car j’ai oublié mon mot de passe pour accéder à l’application.\n\nMon matricule : ${this.matricule || 'non fourni'}\n\nPouvez-vous m’aider à réinitialiser mon mot de passe ?\n\nMerci d’avance pour votre support.\n\nBien cordialement,\n[Votre prénom et nom]`
+  );
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${subject}&body=${body}`;
+
+  window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+}
+
   }
