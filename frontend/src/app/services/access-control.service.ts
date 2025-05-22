@@ -20,6 +20,7 @@ export class AccessControlService {
     'groupes': '/groupelist',
     'lignes': '/lignelist',
     'operations': '/operationlist',
+    'advancedSearch': '/advancedSearch',
   };
 
   constructor() {this.restoreGroupeFromStorage();}

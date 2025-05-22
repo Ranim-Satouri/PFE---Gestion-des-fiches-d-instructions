@@ -6,10 +6,10 @@ import lombok.*;
 @Setter
 @ToString
 public class FicheDTO {
-    private Long idFiche;
-    private String fileName;
+    private Long id;
+    private String filename;
     public FicheDTO(Long idFiche, String fileName) {
-        this.idFiche = idFiche;
-        this.fileName = fileName;
+        this.id = idFiche;
+        this.filename = fileName;
     }
 }

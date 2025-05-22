@@ -186,4 +186,19 @@ export class FicheValidationComponent {
     const permissions = this.userConnected.groupe?.permissions || []; 
     return permissions.some(permission => permission.nom === permissionName);  
   }
+
+  fix() {
+    // Appeler le service pour envoyer le texte à corriger
+    this.FicheService.correctText(this.rejetComment).subscribe(
+      (response) => {
+        // Manipuler la réponse de l'API
+        console.log('Texte corrigé:', response);
+        this.rejetComment = response.response;
+      },
+      (error) => {
+        // Gérer les erreurs si l'appel échoue
+        console.error('Erreur lors de l\'appel API', error);
+      }
+    );
+  }
 }

@@ -194,7 +194,17 @@ border-solid border-b shadow-md
             <!-- <span *ngIf="isSideBarOpen" class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 mr-2 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span> -->
             </a>
         </li>
-        
+        <li  *ngIf="hasPermission('consulter_fiche_validées') || hasPermission('consulter_fiche_non_validées')">
+            <a routerLink="/dashboard" class="h-[40px] flex items-center pl-[6px] text-white rounded-lg dark:text-gray-400 hover:bg-gray-400 dark:hover:bg-gray-700 dark:hover:text-white group" 
+            [ngClass]="{'bg-gray-400 dark:bg-gray-700 dark:text-white': getCurrentPath() === '/dashboard'}">
+            <svg class="shrink-0 w-6 h-6 transition duration-75 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"  fill="currentColor" viewBox="0 0 24 24">
+                 <path fill-rule="evenodd" d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm.5 5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm0 5c.47 0 .917-.092 1.326-.26l1.967 1.967a1 1 0 0 0 1.414-1.414l-1.817-1.818A3.5 3.5 0 1 0 11.5 17Z" clip-rule="evenodd"/>
+            </svg>
+
+            <span *ngIf="isSideBarOpen" class="flex-1 ms-3 whitespace-nowrap">Recherche avancée</span>
+            <!-- <span *ngIf="isSideBarOpen" class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 mr-2 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span> -->
+            </a>
+        </li>
     </ul>
 </aside>
 

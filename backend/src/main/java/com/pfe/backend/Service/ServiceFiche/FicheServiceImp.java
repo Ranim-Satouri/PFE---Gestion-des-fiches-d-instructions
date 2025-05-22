@@ -1,7 +1,11 @@
 package com.pfe.backend.Service.ServiceFiche;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pfe.backend.DTO.FicheDTO;
+import com.pfe.backend.DTO.FicheAdvancedDTO;
 import com.pfe.backend.DTO.FicheHistoryDTO;
+import com.pfe.backend.DTO.FicheScoreDTO;
 import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.*;
 import com.pfe.backend.Service.ServiceMail.NotificationService;
@@ -17,8 +21,10 @@ import org.hibernate.envers.query.AuditEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import javax.crypto.SecretKey;
 import java.io.File;
@@ -51,7 +57,12 @@ public class FicheServiceImp implements FicheService {
     private OperationRepository operationRepository;
     private NotificationService nService;
 
-    private static final String STORAGE_DIR = "C:\\Users\\Ranim\\Desktop\\pdf_storage\\";
+//    private static final String STORAGE_DIR = "C:\\Users\\Ranim\\Desktop\\pdf_storage\\";
+        private static final String STORAGE_DIR = Paths.get(System.getProperty("user.dir"))
+                .getParent()   // remonter d'un niveau
+                .resolve("fiches")
+                .toAbsolutePath()
+                .toString();
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired
@@ -74,24 +85,61 @@ public class FicheServiceImp implements FicheService {
                     .filter(f -> situations.contains(f.getStatus().name()))
                     .collect(Collectors.toList());
         }
-        // Mapper en DTO
+        //Mapper en DTO
         List<FicheDTO> fichesDto = fiches.stream()
                 .map(f -> new FicheDTO(f.getIdFiche(), f.getPdf()))
                 .collect(Collectors.toList());
-        System.out.println(fichesDto);
 
+        // Construire le DTO à envoyer
+        FicheAdvancedDTO ficheAdvancedDTO = new FicheAdvancedDTO();
+        ficheAdvancedDTO.setText(requete);  // Le texte de recherche par ex.
+        ficheAdvancedDTO.setFiches(fichesDto);
 
+        // Préparer RestTemplate
+        RestTemplate restTemplate = new RestTemplate();
 
-        List<Fiche> fichesCompletes = fichesDto.stream()
-                .map(dto -> ficheRepository.findById(dto.getIdFiche()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+        // Construire l'en-tête HTTP
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        return fichesCompletes;
+        // Construire la requête HTTP avec corps JSON
+        HttpEntity<FicheAdvancedDTO> request = new HttpEntity<>(ficheAdvancedDTO, headers);
+
+        String url = "http://127.0.0.1:5000/calculate-similarities";
+
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                System.out.println("ok");
+                String jsonResponse = response.getBody();
+                System.out.println(jsonResponse);
+                ObjectMapper mapper = new ObjectMapper();
+                List<FicheScoreDTO> ficheScores = mapper.readValue(jsonResponse, new TypeReference<List<FicheScoreDTO>>() {});
+
+                // Pour chaque id reçu, récupère la fiche associée
+                List<Fiche> fichesAvecScore = ficheScores.stream()
+                        // Filtrer les scores strictement supérieurs à 0
+                        .filter(fs -> fs.getScore() > 0)
+                        // Récupérer la fiche associée en base
+                        .map(fs -> {
+                            Optional<Fiche> opt = ficheRepository.findById(fs.getId());
+                            return opt.orElse(null);
+                        })
+                        // Supprimer les nulls (fiches non trouvées)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+
+                return fichesAvecScore;
+
+            } else {
+                System.out.println("erreur" + response.getStatusCode());
+                throw new RuntimeException("Erreur API Flask : " + response.getStatusCode());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de l'appel API Flask", e);
+        }
     }
-
-
 
     //historique
     public List<FicheHistoryDTO> getFicheHistory(Long ficheId) {
@@ -545,11 +593,10 @@ public class FicheServiceImp implements FicheService {
         }
     }
 
-
     // pdf
     @Override
     public String saveFile(MultipartFile file) throws Exception {
-
+        System.out.println(STORAGE_DIR);
         if (file.isEmpty()) {
             throw new IOException("Le fichier est vide");
         }
@@ -562,16 +609,17 @@ public class FicheServiceImp implements FicheService {
         //String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename(); // autre facon
 
         // Charger ou générer la clé de chiffrement unique
-        SecretKey secretKey = EncryptionUtils.loadOrGenerateEncryptionKey();
+        //SecretKey secretKey = EncryptionUtils.loadOrGenerateEncryptionKey();
 
         // Crypter les données du fichier
-        byte[] encryptedData = EncryptionUtils.encrypt(file.getBytes(), secretKey);
+        //byte[] encryptedData = EncryptionUtils.encrypt(file.getBytes(), secretKey);
 
         // Définir le chemin complet bech taamel bih write
-        Path destinationPath = Path.of(STORAGE_DIR + fileName);
+        Path destinationPath = Paths.get(STORAGE_DIR).resolve(fileName);
 
         // Sauvegarder le fichier chiffré
-        Files.write(destinationPath, encryptedData);
+        //Files.write(destinationPath, encryptedData);
+        Files.write(destinationPath, file.getBytes());
 
         return fileName; // Retourne juste le nom du fichier
     }
@@ -579,17 +627,18 @@ public class FicheServiceImp implements FicheService {
     public Resource loadPdf(String filename) {
         try {
             // générer la clé de chiffrement unique (ken ma fammech bech yasna3 wehed)
-            SecretKey secretKey = EncryptionUtils.loadOrGenerateEncryptionKey();
+            //SecretKey secretKey = EncryptionUtils.loadOrGenerateEncryptionKey();
 
             // Charger le fichier chiffré bel esm te3ou
             Path filePath = Paths.get(STORAGE_DIR).resolve(filename); //ijib el dossier
             byte[] encryptedData = Files.readAllBytes(filePath); // ijib el file
 
             // Déchiffrer le fichier
-            byte[] decryptedData = EncryptionUtils.decrypt(encryptedData, secretKey);
+            //byte[] decryptedData = EncryptionUtils.decrypt(encryptedData, secretKey);
 
             // Retourner le fichier sous forme de ByteArrayResource
-            return new ByteArrayResource(decryptedData);
+//            return new ByteArrayResource(decryptedData);
+            return new ByteArrayResource(encryptedData);
         } catch (Exception e) {
             throw new RuntimeException("Erreur lors du chargement du fichier PDF : " + filename, e);
         }

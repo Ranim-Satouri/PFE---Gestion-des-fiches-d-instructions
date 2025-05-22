@@ -24,7 +24,7 @@ export class AdvancedSearchComponent {
   searchValue = '';
   selectedSpecialization: string | null = null;
   specializationOptions: string[] = [];
-  fiches: any[] = [];
+  //fiches: any[] = [];
   loading = false;
   isExpanded = false;
   message = 'Les résultats s’afficheront ici...';
@@ -38,13 +38,17 @@ export class AdvancedSearchComponent {
   itemsPerPage = 10;
   isDeleteModelOpen : boolean = false;
   selectedFiche !: number ;
-  filteredFiches: any[] = []; // ta liste de fiches filtrées
+  filteredFiches: any[] = []; 
   searchbar: string = '';
   userConnected !: User;
   rejetComment: string = '';
   isCommentModalOpen: boolean = false;
   qrCodeUrl: string = '';
   isQrPopupOpen: boolean = false;
+  situationDropdownOpen = false;
+  isDescending: boolean = true;
+  selectedSituations: string[] = [];
+  situations: string[] = ['Expirée', 'En attente', 'Acceptée par IPDF', 'Acceptée par IQP' , 'Rejetée par  IPDF' , 'Rejetée par IQP'];
   constructor(private http: HttpClient, private FicheService: FicheService) {}
 
   ngOnInit() {
@@ -66,10 +70,13 @@ export class AdvancedSearchComponent {
     this.isExpanded = false;
     this.selectedSituations = [];
   }
+  restetSituations() {
+    this.selectedSituations = [];
+  }
 
   submitSearch() {
-    if (!this.searchValue && this.selectedSituations.length === 0) {
-      this.message = 'Veuillez saisir une requête ou sélectionner au moins une situation.';
+    if (!this.searchValue) {
+      this.message = 'Veuillez saisir une requête.';
       return;
     }
     this.isExpanded = true;
@@ -79,7 +86,7 @@ export class AdvancedSearchComponent {
 
     this.FicheService.searchFichesAvancee(this.searchValue, this.selectedSituations, idUser!).subscribe({
       next: (response) => {
-        this.fiches = response;
+        //this.fiches = response;
         this.filteredFiches = response;
         this.message = response.length
           ? ''
@@ -92,24 +99,10 @@ export class AdvancedSearchComponent {
         this.loading = false;
       }
     });
-    // this.FicheService.getAllFiches().subscribe({
-    //         next: (response: Fiche[]) => {
-    //           console.log('Response:', response);
-    //           this.filteredFiches = response;
-    //           this.message = response.length ? '' : 'Aucun résultat ne correspond à vos critères de recherche.';
-    //           this.loading = false; 
-    //         },
-    //         error: (error: any) => {
-    //           console.error('Error:', error);
-    //           console.log('ga3mezna:', error);
-    //            this.message = 'Erreur lors du chargement des données. Veuillez réessayer plus tard.';
-    //            this.loading = false;
-    //         }
-    //       });
   }
 
   sortByColumn(column: string, direction: string) {
-    this.fiches.sort((a, b) => {
+    this.filteredFiches.sort((a, b) => {
       return direction === 'asc'
         ? (a[column] > b[column] ? 1 : -1)
         : (a[column] < b[column] ? 1 : -1);
@@ -179,8 +172,17 @@ export class AdvancedSearchComponent {
     }
   }
 
-  sortByDate(): void {
-    this.filteredFiches.sort((a, b) => new Date(b.modifieLe).getTime() - new Date(a.modifieLe).getTime());
+    sortByDate() {
+    this.isDescending = !this.isDescending; // Alterner entre croissant et décroissant
+    this.filteredFiches.sort((a, b) => {
+      // Comparaison des dates
+      const dateA = new Date(a.modifieLe!);
+      const dateB = new Date(b.modifieLe!);
+
+      return this.isDescending
+        ? dateB.getTime() - dateA.getTime()  // Tri décroissant
+        : dateA.getTime() - dateB.getTime();  // Tri croissant
+    });
   }
   deleteFiche(idFiche: number | undefined ): void {
     this.FicheService.deleteFiche(idFiche,this.userConnected.idUser || 1 ).subscribe({
@@ -293,37 +295,33 @@ export class AdvancedSearchComponent {
     }
 }
 
+  situationsMap: { [key: string]: string } = {
+    'Expirée': 'EXPIRED',
+    'En attente': 'PENDING',
+    'Acceptée par IPDF': 'ACCEPTEDIPDF',
+    'Acceptée par IQP': 'ACCEPTEDIQP',
+    'Rejetée par  IPDF': 'REJECTEDIPDF',
+    'Rejetée par IQP': 'REJECTEDIQP',
 
-  selectedSituations: string[] = [];
-situationsMap: { [key: string]: string } = {
-  'Expirée': 'EXPIRED',
-  'En attente': 'PENDING',
-  'Acceptée par IPDF': 'ACCEPTEDIPDF',
-  'Acceptée par IQP': 'ACCEPTEDIQP',
-  'Rejetée par  IPDF': 'REJECTEDIPDF',
-  'Rejetée par IQP': 'REJECTEDIQP',
+  };
 
-};
-situationDropdownOpen = false;
-
-toggleSituationDropdown() {
-  this.situationDropdownOpen = !this.situationDropdownOpen;
-}
-situations: string[] = ['Expirée', 'En attente', 'Acceptée par IPDF', 'Acceptée par IQP' , 'Rejetée par  IPDF' , 'Rejetée par IQP'];
-// Gérer les changements de checkboxes des situations
-onSituationCheckboxChange(event: any) {
-  const value = event.target.value;
-  const mappedValue = this.situationsMap[value];  // Mappage vers la valeur de la base de données
-
-  if (event.target.checked) {
-    if (!this.selectedSituations.includes(mappedValue)) {
-      this.selectedSituations.push(mappedValue);
-    }
-  } else {
-    this.selectedSituations = this.selectedSituations.filter((s) => s !== mappedValue);
+  toggleSituationDropdown() {
+    this.situationDropdownOpen = !this.situationDropdownOpen;
   }
 
-  console.log('Situations sélectionnées:', this.selectedSituations);
-  
-}
+  // Gérer les changements de checkboxes des situations
+  onSituationCheckboxChange(event: any) {
+    const value = event.target.value;
+    const mappedValue = this.situationsMap[value];  // Mappage vers la valeur de la base de données
+
+    if (event.target.checked) {
+      if (!this.selectedSituations.includes(mappedValue)) {
+        this.selectedSituations.push(mappedValue);
+      }
+    } else {
+      this.selectedSituations = this.selectedSituations.filter((s) => s !== mappedValue);
+    }
+
+    console.log('Situations sélectionnées:', this.selectedSituations);
+  }
 }

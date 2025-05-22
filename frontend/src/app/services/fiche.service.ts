@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Fiche } from '../models/Fiche';
@@ -144,13 +144,23 @@ export class FicheService {
   // }
 
   searchFichesAvancee( requete: string,situations: string[], idUser: number): Observable<Fiche[]> {
-  const params = {
-    requete: requete || '',
-    idUser: idUser.toString(),
-    situations: situations.join(',') // format "EXPIRED,PENDING"
-  };
+    const params = {
+      requete: requete || '',
+      idUser: idUser.toString(),
+      situations: situations.join(',') // format "EXPIRED,PENDING"
+    };
 
-  return this.http.get<Fiche[]>(`${this.apiUrl}/search`, { params });
-}
+    return this.http.get<Fiche[]>(`${this.apiUrl}/search`, { params });
+  }
+private apiUrl2 = 'http://localhost:5000/fix-text';
 
+correctText(prompt: string): Observable<any> {
+    const body = {
+      prompt: prompt
+    };
+
+  
+    // Faire la requête POST à l'API Flask
+    return this.http.post<any>(this.apiUrl2, body);
+  }
 }

@@ -53,7 +53,7 @@ export const routes: Routes = [
             { path: 'groupelist', component: GroupeListComponent },
             { path: 'lignelist', component: LigneListComponent },
             { path: 'operationlist', component: OperationListComponent},
-            // { path: 'dashboard', component: DashboardComponent },
+            //{ path: 'dashboard', component: DashboardComponent },
             { path: 'dashboard', component: AdvancedSearchComponent },
         ]
     },
