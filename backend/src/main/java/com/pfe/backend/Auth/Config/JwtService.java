@@ -30,7 +30,7 @@
 
      @Autowired
      private RefreshTokenRepository refreshTokenRepository;
-     private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 ; // 1 minute pour les tests
+     private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15 ; // 1 minute pour les tests
 
      public String extractUsername(String token) { return extractClaim(token, Claims::getSubject); }
 
