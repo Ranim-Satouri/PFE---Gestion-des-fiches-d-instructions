@@ -88,10 +88,7 @@ public class userController {
     }
     @DeleteMapping("/retirerZoneAUser/{idUser}/{idZone}/{idActionneur}")
     public ResponseEntity<?> removeAllZones(
-            @PathVariable long idUser,
-            @PathVariable long idZone,
-            @PathVariable long idActionneur
-    ) {
+            @PathVariable long idUser, @PathVariable long idZone, @PathVariable long idActionneur) {
         try {
             userIservice.retirerZoneAUser(idUser, idZone, idActionneur);
             return ResponseEntity.ok(null);
