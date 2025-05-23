@@ -1,15 +1,15 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FicheValidationComponent} from "../fiche-validation/fiche-validation.component";
-import { FicheService } from '../../services/fiche.service'; // Adjust the path as needed
+import { HttpClient } from '@angular/common/http';
+import { Component, HostListener, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import * as QRCode from 'qrcode';
 import { Fiche, FicheStatus } from '../../models/Fiche';
+import { User } from '../../models/User';
+import { FicheService } from '../../services/fiche.service'; // Adjust the path as needed
 import { FicheHistoryComponent } from '../History/fiche-history/fiche-history.component';
 import { FicheFormComponent } from '../add/fiche-form/fiche-form.component';
 import { DeleteConfirmComponent } from '../delete-confirm/delete-confirm.component';
-import { User } from '../../models/User';
-import * as QRCode from 'qrcode';
+import { FicheValidationComponent } from "../fiche-validation/fiche-validation.component";
 
 @Component({
   selector: 'app-advanced-search',
@@ -87,6 +87,7 @@ export class AdvancedSearchComponent {
     this.FicheService.searchFichesAvancee(this.searchValue, this.selectedSituations, idUser!).subscribe({
       next: (response) => {
         //this.fiches = response;
+        console.log('Réponse de la recherche avancée :', response);
         this.filteredFiches = response;
         this.message = response.length
           ? ''

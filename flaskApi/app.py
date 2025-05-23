@@ -22,6 +22,7 @@ nlp_fr = spacy.load('fr_core_news_sm')
 
 def read_pdf(file_path):  # 1 Lecture de PDF :Utilisation de la bibliothèque pdfplumber pour ouvrir un fichier PDF et extraire le texte page par page. Le texte est ensuite concaténé en une seule chaîne.
     try:
+        print("Reading PDF file:", file_path)
         with pdfplumber.open(file_path) as pdf:
             text_content = []
             for page in pdf.pages:
@@ -57,12 +58,12 @@ def clean_text(text, preserve_numbers=False): # Nettoyage du texte :Le texte ext
     text = ''.join(char for char in text if char not in allowed_punctuation) # suppression des signes de ponctuation non préservés (concatinili les caracteres li mahomch fel allowed_ponctuation)
 
     # Use spaCy French model for tokenization, stopwords removal, and lemmatization
-    doc = nlp_fr(text)
-    words = [token.lemma_ for token in doc if not token.is_stop and token.is_alpha]
+    # doc = nlp_fr(text)
+    # words = [token.lemma_ for token in doc if not token.is_stop and token.is_alpha]
 
-    cleaned_text = ' '.join(words)
-    return cleaned_text
-    # return text
+    # cleaned_text = ' '.join(words)
+    # return cleaned_text
+    return text
 
 def calculate_similarity(search_query, fiche_text):
     try:

@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Router, RouterModule } from '@angular/router';
-import { FicheService } from '../../services/fiche.service';
+import { RouterModule } from '@angular/router';
 // import { NgChartsModule } from 'ng2-charts';
 // import { Chart } from 'chart.js/auto';
 
@@ -22,7 +21,8 @@ export class DashboardComponent  implements OnInit{
  constructor(private sanitizer: DomSanitizer) { }
   
   ngOnInit(): void {
-    const baseUrl = 'https://app.powerbi.com/view?r=eyJrIjoiMTExMzQxYmItNDI4ZC00MDViLThiOGEtMDYwOWRkN2MzZmFmIiwidCI6ImRiZDY2NjRkLTRlYjktNDZlYi05OWQ4LTVjNDNiYTE1M2M2MSIsImMiOjl9';
+    // const baseUrl = 'https://app.powerbi.com/view?r=eyJrIjoiMTExMzQxYmItNDI4ZC00MDViLThiOGEtMDYwOWRkN2MzZmFmIiwidCI6ImRiZDY2NjRkLTRlYjktNDZlYi05OWQ4LTVjNDNiYTE1M2M2MSIsImMiOjl9';
+    const baseUrl = 'https://app.powerbi.com/view?r=eyJrIjoiZTExNjBlMTMtNDMyNS00ZjNiLThlZjktOGZkMmQ2ZTM4M2ZhIiwidCI6ImRiZDY2NjRkLTRlYjktNDZlYi05OWQ4LTVjNDNiYTE1M2M2MSIsImMiOjl9';
     
     const params = [
       'pageName=ReportSection',

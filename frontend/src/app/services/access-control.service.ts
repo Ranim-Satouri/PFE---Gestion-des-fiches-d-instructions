@@ -10,18 +10,17 @@ export class AccessControlService {
   private permissionsSubject = new BehaviorSubject<Permission[]>([]);
 
   // Mappage des noms de menus aux routes frontend
-  private readonly menuRouteMap: Record<string, string> = {
-    'Dashboard': '/dashboard',
-    'fiches': '/fichelist',
-    'utilisateurs': '/userlist',
-    'zones': '/zonelist',
-    'produits': '/produitlist',
-    'familles': '/famillelist',
-    'groupes': '/groupelist',
-    'lignes': '/lignelist',
-    'operations': '/operationlist',
-    'advancedSearch': '/advancedSearch',
-  };
+private readonly menuRouteMap: Record<string, string[]> = {
+  'Dashboard': ['/dashboard'],
+  'fiches': ['/fichelist', '/advanced'],
+  'utilisateurs': ['/userlist'],
+  'zones': ['/zonelist'],
+  'produits': ['/produitlist'],
+  'familles': ['/famillelist'],
+  'groupes': ['/groupelist'],
+  'lignes': ['/lignelist'],
+  'operations': ['/operationlist'],
+};
 
   constructor() {this.restoreGroupeFromStorage();}
 
@@ -45,50 +44,47 @@ export class AccessControlService {
     }
   }
 
-  // Définir le groupe courant et ses permissions
   setCurrentGroupe(groupe: Groupe): void {
     console.log('Définition du groupe:', groupe.nom, 'avec permissions:', groupe.permissions);
     this.currentGroupeSubject.next(groupe);
     this.permissionsSubject.next(groupe.permissions || []);
   }
-  // Obtenir le groupe courant
+
   getCurrentGroupe(): Groupe | undefined {
     return this.currentGroupeSubject.value;
   }
 
-  // Obtenir le nom du groupe courant
   getCurrentGroupeNom(): string | undefined {
     return this.currentGroupeSubject.value?.nom;
   }
 
-  // Obtenir les permissions actuelles
   getPermissions(): Permission[] {
     return this.permissionsSubject.value;
   }
 
-  // Obtenir les interfaces (routes) autorisées basées sur les permissions
   getAllowedInterfaces(): string[] {
     const permissions = this.getPermissions();
     if (!permissions.length) {
       console.warn('Aucune permission chargée, interfaces autorisées vides');
       return [];
     }
-    // Récupérer les routes uniques basées sur les menus des permissions
+
     const routes = new Set<string>();
     permissions.forEach(p => {
-      if (p.menu?.nom && this.menuRouteMap[p.menu.nom]) {
-        routes.add(this.menuRouteMap[p.menu.nom]);
+      const menuName = p.menu?.nom;
+      const mappedRoutes = this.menuRouteMap[menuName];
+      if (mappedRoutes && Array.isArray(mappedRoutes)) {
+        mappedRoutes.forEach(route => routes.add(route));
       }
     });
+
     const allowedRoutes = Array.from(routes);
     console.log('Interfaces autorisées calculées:', allowedRoutes);
     return allowedRoutes;
   }
 
-  // Vérifier si l'utilisateur peut accéder à une route
-canAccess(path: string): boolean {
+  canAccess(path: string): boolean {
     const allowedInterfaces = this.getAllowedInterfaces();
-    // Normaliser l'URL demandée
     const normalizedPath = '/' + path.replace(/^\/+|\/+$/g, '');
     const canAccess = allowedInterfaces.some(route => normalizedPath.startsWith(route));
     console.log(`Vérification d'accès pour ${path} (normalisé: ${normalizedPath}):`, {
@@ -98,7 +94,6 @@ canAccess(path: string): boolean {
     return canAccess;
   }
 
-  // Vérifier si l'utilisateur a une permission spécifique
   hasPermission(permissionNom: string): boolean {
     const permissions = this.getPermissions();
     const hasPerm = permissions.some(p => p.nom === permissionNom);

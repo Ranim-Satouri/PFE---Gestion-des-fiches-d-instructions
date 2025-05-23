@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
 import { RegisterFormComponent } from './components/add/register-form/register-form.component';
+import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
 import { ConfirmModalComponent } from './components/confirm-modal/confirm-modal.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FamilleHistoryComponent } from './components/History/famille-history/famille-history.component';
@@ -19,7 +20,6 @@ import { SpinnerComponent } from './components/spinner/spinner.component';
 import { RoleAccessGuard } from './guards/role-access.guard';
 import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './pages/login/login.component';
-import { AdvancedSearchComponent } from './components/advanced-search/advanced-search.component';
 export const routes: Routes = [
     { path: 'modal', component: ConfirmModalComponent },
     { path: '', component: LoginComponent},
@@ -53,8 +53,8 @@ export const routes: Routes = [
             { path: 'groupelist', component: GroupeListComponent },
             { path: 'lignelist', component: LigneListComponent },
             { path: 'operationlist', component: OperationListComponent},
-            //{ path: 'dashboard', component: DashboardComponent },
-            { path: 'dashboard', component: AdvancedSearchComponent },
+            { path: 'dashboard', component: DashboardComponent },
+            { path: 'advanced', component: AdvancedSearchComponent },
         ]
     },
     {
