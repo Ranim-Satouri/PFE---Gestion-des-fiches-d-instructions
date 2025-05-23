@@ -189,7 +189,9 @@ export class AdvancedSearchComponent {
       next: () => {
         console.log('Fiche supprimée');
         this.dropdownOpen = null;
+        this.resetFilters();
         //this.getFiches() 
+        //this.submitSearch();
       },
       error: err => 
         {console.error('Erreur suppression Fiche', err);}
@@ -205,6 +207,8 @@ export class AdvancedSearchComponent {
   }
   hideForm(){
     //this.getFiches();
+    this.resetFilters();
+    //this.submitSearch();
     this.showForm=false;
     this.ficheToUpdate = undefined ;
   }
