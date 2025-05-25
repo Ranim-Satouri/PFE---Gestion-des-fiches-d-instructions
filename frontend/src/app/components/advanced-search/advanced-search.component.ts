@@ -173,7 +173,7 @@ export class AdvancedSearchComponent {
     }
   }
 
-    sortByDate() {
+  sortByDate() {
     this.isDescending = !this.isDescending; // Alterner entre croissant et décroissant
     this.filteredFiches.sort((a, b) => {
       // Comparaison des dates
@@ -298,7 +298,7 @@ export class AdvancedSearchComponent {
     } else {
       return `${selectedLabels[0]}...`;
     }
-}
+  }
 
   situationsMap: { [key: string]: string } = {
     'Expirée': 'EXPIRED',

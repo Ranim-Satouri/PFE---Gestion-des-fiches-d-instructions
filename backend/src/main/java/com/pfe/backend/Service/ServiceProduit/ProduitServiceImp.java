@@ -69,6 +69,8 @@ public class ProduitServiceImp implements ProduitService {
             if(newProduitData.getNomProduit()!=null ) {
                 if (newProduitData.getNomProduit().isEmpty()) {
                     newProduitData.setNomProduit(newProduitData.getRef() + "-" + newProduitData.getIndice());
+                }else if(newProduitData.getNomProduit().equals(produit.getRef() + "-" + produit.getIndice())) {
+                    newProduitData.setNomProduit(newProduitData.getRef() + "-" + newProduitData.getIndice());
                 }
                 produit.setNomProduit(newProduitData.getNomProduit());
             };

@@ -128,7 +128,7 @@ export class AddOperationComponent {
     if (this.operationForm.valid) { 
       console.log('operationForm.value.nom',this.operationForm.value.ligne.nom);
       console.log('operationForm.value.nom',this.operation.ligne.nom);
-      if(this.operationForm.value.nom !== this.operation.nom || this.operationForm.value.ligne.nom !== this.operation.ligne.nom) {
+      if(this.operationForm.value.nom !== this.operation.nom || this.operationForm.value.ligne.nom + ' ' + this.operationForm.value.ligne.zone.nom  !== this.operation.ligne.nom + ' ' + this.operation.ligne.zone.nom ) {
         //this.newOperation = { ...this.operation }; // bech yaaml copie mennou ma yekhouhouchhowa bidou , kahter ayy changement ysir fi hedha ysir fi hedhaw mech hakka lezem ysir
         this.operation.nom = this.operationForm.value.nom;
         this.operation.ligne = this.operationForm.value.ligne;

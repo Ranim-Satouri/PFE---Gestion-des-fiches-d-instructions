@@ -4,7 +4,7 @@
         <!-- Search Bar and Filters Row -->
         <div class="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-2">
           <!-- Search Bar -->
-          <div class="relative w-full sm:w-[15%]">
+          <div class="relative w-full sm:w-[14%]">
             <input
               type="search"
               [(ngModel)]="searchbar" placeholder="Rechercher ..."
@@ -69,7 +69,7 @@
               name="familleSearchText"/>
             <div
               #familleArrowButton
-              class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+              class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
               (click)="toggleFamilleDropdown()" >
               <svg
                 class="shrink-0 size-3.5 text-gray-500 dark:text-gray-400"
@@ -91,7 +91,7 @@
             </div>
           </div>
           <!-- Zone Dropdown -->
-          <div class="relative w-full sm:w-[10%]" #zoneToggleButton (click)="toggleZoneDropdown()">
+          <div class="relative w-full sm:w-[11%]" #zoneToggleButton (click)="toggleZoneDropdown()">
             <div   
              [ngClass]="{
                      'border-blue-500': zoneDropdownOpen,
@@ -106,9 +106,9 @@
             'dark:focus:border': zoneDropdownOpen,
             'dark:focus:shadow-blue-500': zoneDropdownOpen,'dark:focus:shadow-md': zoneDropdownOpen
           }"
-          class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-4 h-10  w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden"
+          class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-3 h-10  w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden"
             >{{ selectedZones.length > 0 ? getSelectedZoneNames() : 'Zone' }}</div>
-            <div class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
+            <div class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
               <svg class="shrink-0 size-3.5"
                 xmlns="http://www.w3.org/2000/svg" width="24"height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5"></path><path d="m7 9 5-5 5 5"></path>
@@ -133,7 +133,7 @@
           </div>
 
         <!-- Situation Dropdown -->
-        <div class="relative w-full sm:w-[10%]" #situationToggleButton id="situationToggleButton" (click)="toggleSituationDropdown()">
+        <div class="relative w-full sm:w-[12%]" #situationToggleButton id="situationToggleButton" (click)="toggleSituationDropdown()">
           <!-- Situation Dropdown -->
         <div
            [ngClass]="{
@@ -149,12 +149,12 @@
            'dark:focus:shadow-blue-500':  situationDropdownOpen, 'dark:ring-opacity-100':situationDropdownOpen,
            'dark:focus:shadow-md':  situationDropdownOpen
           }"
-          class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-4 h-10  w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden">
+          class="flex flex-wrap items-center uniform-placeholder cursor-pointer py-2 px-3 h-10  w-full border rounded-lg text-sm bg-white text-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 dark:shadow-gray-900 transition-all duration-200 whitespace-normal overflow-hidden">
 
         {{ selectedSituations.length > 0 ? getSelectedSituationNames() : 'Situation' }}
         </div>
           <div
-            class="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
+            class="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition">
             <svg
               class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -180,12 +180,13 @@
                 </svg></div><span style="font-size: 13px">{{ situation }}</span></label>
             </div>
           </div>
+
           <!-- Buttons -->
           <div class="flex items-center gap-1">
             <!-- Reset Filters Button -->
             <button
               (click)="clearFilters()"
-              class="w-fit mx-2 px-1 h-10 bg-gray-trans text-gray-400 rounded-lg hover:text-gray-500" > <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="30" height="31" stroke-width="2.25"> <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path> </svg>  </button>
+              class="w-fit mr-1  h-10 bg-gray-trans text-gray-400 rounded-lg hover:text-gray-500" > <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="30" height="31" stroke-width="2.25"> <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path> <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path> </svg>  </button>
             <!-- Add Fiche Button -->
             <button
               *ngIf="hasPermission('creer_fiche')"

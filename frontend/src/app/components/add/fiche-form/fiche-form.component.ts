@@ -407,29 +407,28 @@ export class FicheFormComponent {
     this.Form.get('operation')?.setValue(null);
     this.filteredOperations = this.fOperations;
     this.showOperationDropdown = false;
+    this.operationSelected = false;
   }
   clearProduitSearch() {
     this.produitSearch = '';
     this.Form.get('produit')?.setValue(null);
     this.filteredProduits = this.produits;
     this.showProduitDropdown = false;
+    this.produitSelected = false;
     this.clearZoneSearch();
   }
   clearZoneSearch() {
     this.zoneSearch = '';
     this.Form.get('zone')?.setValue(null);
+
     this.filteredZones = this.fZones;
+    
     //this.zoneNames= zones.map(zone => zone.nom);
     this.showZoneDropdown = false;
     this.zoneSelected = false;
+    this.zoneSelected = false;
     this.clearLigneSearch();
   }
-
-
-
-
-
-
 
 
 

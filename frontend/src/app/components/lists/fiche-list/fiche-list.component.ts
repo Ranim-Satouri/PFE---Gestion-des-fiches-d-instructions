@@ -86,7 +86,7 @@ export class FicheListComponent {
   // isFiltrageOpen: boolean = false;
   showFamilleDropdown = false;
 // Liste statique des situations
-situations: string[] = ['Expirée', 'En attente', 'IPDF', 'IQP' , 'Rejetée IQP' , 'Rejetée IPDF'];
+situations: string[] = ['Expirée', 'En attente', 'Acceptée IPDF', 'Acceptée IQP' , 'Rejetée IQP' , 'Rejetée IPDF'];
 
 // Situations sélectionnées
 selectedSituations: string[] = [];
@@ -180,8 +180,8 @@ toggleSituationDropdown() {
 situationsMap: { [key: string]: string } = {
   'Expirée': 'EXPIRED',
   'En attente': 'PENDING',
-  'IPDF': 'ACCEPTEDIPDF',
-  'IQP': 'ACCEPTEDIQP',
+  'Acceptée IPDF': 'ACCEPTEDIPDF',
+  'Acceptée IQP': 'ACCEPTEDIQP',
   'Rejetée IPDF': 'REJECTEDIPDF',
   'Rejetée IQP': 'REJECTEDIQP',
 
@@ -212,15 +212,31 @@ onSituationCheckboxChange(event: any) {
 //   }
 //   return this.selectedSituations.join(', ');
 // }
+// getSelectedSituationNames(): string {
+//   // On transforme chaque situation sélectionnée en sa version conviviale
+//   return this.selectedSituations
+//     .map(situation => {
+//       const key = Object.keys(this.situationsMap).find(key => this.situationsMap[key] === situation);
+//       return key || ''; // On retourne le nom de la situation ou une chaîne vide si non trouvé
+//     })
+//     .join(', ');
+// }
 getSelectedSituationNames(): string {
-  // On transforme chaque situation sélectionnée en sa version conviviale
-  return this.selectedSituations
-    .map(situation => {
-      const key = Object.keys(this.situationsMap).find(key => this.situationsMap[key] === situation);
-      return key || ''; // On retourne le nom de la situation ou une chaîne vide si non trouvé
-    })
-    .join(', ');
-}
+    const selectedLabels = this.selectedSituations
+      .map(code => {
+        const label = Object.keys(this.situationsMap).find(
+          key => this.situationsMap[key] === code
+        );
+        return label || '';
+      });
+
+    if (selectedLabels.length <= 1) {
+      return selectedLabels.join(', ');
+    } else {
+      return `${selectedLabels[0]}...`;
+    }
+  }
+
   applyFilters() {
     let filtered = [...this.fiches];
 
@@ -461,8 +477,16 @@ adjustGrpDropdownPosition() {
     }
     const selected = this.zones.filter(
       (z) => z.idZone !== undefined && this.selectedZones.includes(z.idZone)
-    ); return selected.map((z) => z.nom).join(', ');
+    ); 
+    
+     if (selected.length <= 1) {
+      return selected.map((z) => z.nom).join(', ');
+    } else {
+      return `${selected[0].nom}...`;
+    } 
   }
+
+
 
   // Status filter handler
   onStatusChange() {this.applyFilters(); }
@@ -535,6 +559,8 @@ adjustGrpDropdownPosition() {
       this.dropdownOpen = index;
     }
   }
+
+ 
 
   @HostListener('window:scroll', [])
   onScroll(): void {
