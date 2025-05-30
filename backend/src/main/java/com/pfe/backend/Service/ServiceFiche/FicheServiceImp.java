@@ -56,13 +56,11 @@ public class FicheServiceImp implements FicheService {
     private LigneRepository ligneRepository;
     private OperationRepository operationRepository;
     private NotificationService nService;
-
-//    private static final String STORAGE_DIR = "C:\\Users\\Ranim\\Desktop\\pdf_storage\\";
-        private static final String STORAGE_DIR = Paths.get(System.getProperty("user.dir"))
-                .getParent()   // remonter d'un niveau
-                .resolve("fiches")
-                .toAbsolutePath()
-                .toString();
+    private static final String STORAGE_DIR = Paths.get(System.getProperty("user.dir"))
+            .getParent()
+            .resolve("fiches")
+            .toAbsolutePath()
+            .toString();
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired
@@ -215,17 +213,12 @@ public class FicheServiceImp implements FicheService {
     @Override
     public Fiche updateFicheZone(FicheZone ficheZone) {
         FicheZone existingFiche = (FicheZone) ficheRepository.findById(ficheZone.getIdFiche()).orElseThrow(() -> new RuntimeException("FicheZone introuvable"));
-
-        //User ipdf = userRepository.findById(ficheZone.getIPDF().getIdUser()).orElseThrow(() -> new RuntimeException("IPDF introuvable"));
-        //User iqp = userRepository.findById(ficheZone.getIQP().getIdUser()).orElseThrow(() -> new RuntimeException("IQP introuvable"));
         User preparateur = userRepository.findById(ficheZone.getPreparateur().getIdUser()).orElseThrow(() -> new RuntimeException("Preparateur introuvable"));
         Produit produit = produitRepository.findById(ficheZone.getProduit().getIdProduit()).orElseThrow(() -> new RuntimeException("Produit introuvable"));
         User actionneur = userRepository.findById(ficheZone.getActionneur().getIdUser()).orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
 
         Zone zone = zoneRepository.findById(ficheZone.getZone().getIdZone()).orElseThrow(() -> new RuntimeException("Zone introuvable"));
         existingFiche.setZone(zone);
-        //existingFiche.setIPDF(ipdf);
-        //existingFiche.setIQP(iqp);
         existingFiche.setPreparateur(preparateur);
         existingFiche.setProduit(produit);
         existingFiche.setActionneur(actionneur);
@@ -242,16 +235,6 @@ public class FicheServiceImp implements FicheService {
             //maaaaaaaiiiiillllllll
             addFicheMail(existingFiche , zone);
             // maaaaaaill done
-
-//            nService.notifyIPDFAboutFicheInjection(existingFiche, existingFiche.getIPDF());
-//
-//            Optional<Groupe> superuser = groupeRepository.findById(1L);
-//            if(superuser.isPresent()){
-//                List<User> superUsers=userRepository.findByGroupe(superuser.get());
-//                for(User u : superUsers){
-//                    nService.notifySuperUserAboutNewFiche(existingFiche, u);
-//                }
-//            }
         }
         return ficheRepository.save(existingFiche);
     }
@@ -272,11 +255,10 @@ public class FicheServiceImp implements FicheService {
         existingFiche.setActionneur(actionneur);
         existingFiche.setStatus(ficheLigne.getStatus());
         existingFiche.setAction(Fiche.FicheAction.UPDATE);
-        existingFiche.setPdf(ficheLigne.getPdf());
+        System.out.println(ficheLigne.getPdf());
         if(!existingFiche.getPdf().equals(ficheLigne.getPdf())){
             existingFiche.setCommentaire("");
             existingFiche.setFicheAQL("");
-
             LocalDateTime currentDateTime = LocalDateTime.now();
             LocalDateTime expirationDate = currentDateTime.plusHours(24);
             existingFiche.setExpirationDate(expirationDate);
@@ -286,16 +268,6 @@ public class FicheServiceImp implements FicheService {
             addFicheMail(existingFiche , zone);
             // maaaaaaill done
 
-
-//            nService.notifyIPDFAboutFicheInjection(existingFiche, existingFiche.getIPDF());
-//
-//            Optional<Groupe> superuser = groupeRepository.findById(1L);
-//            if(superuser.isPresent()){
-//                List<User> superUsers=userRepository.findByGroupe(superuser.get());
-//                for(User u : superUsers){
-//                    nService.notifySuperUserAboutNewFiche(existingFiche, u);
-//                }
-//            }
         }
         return ficheRepository.save(existingFiche);
     }
@@ -324,19 +296,6 @@ public class FicheServiceImp implements FicheService {
             //maaaaaaaiiiiillllllll
             Zone zone = existingFiche.getOperation().getLigne().getZone();
             addFicheMail(existingFiche , zone);
-            // maaaaaaill done
-//            //maaaaaaaiiiiillllllll
-//
-//            nService.notifyIPDFAboutFicheInjection(existingFiche, existingFiche.getIPDF());
-//
-//            Optional<Groupe> superuser = groupeRepository.findById(1L);
-//            if(superuser.isPresent()){
-//                List<User> superUsers=userRepository.findByGroupe(superuser.get());
-//                for(User u : superUsers){
-//                    nService.notifySuperUserAboutNewFiche(existingFiche, u);
-//                }
-//            }
-//            // maaaaaaill done
         }
         return ficheRepository.save(existingFiche);
     }
@@ -471,15 +430,7 @@ public class FicheServiceImp implements FicheService {
     public List<Fiche> getFiches() {
         return ficheRepository.findByStatusNot(Fiche.FicheStatus.DELETED);
     }
-//    @Override
-//    public List<Fiche> getFichesByPreparateur(Long idPreparateur) {
-//        User preparateur = userRepository.findById(idPreparateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-//        if(preparateur.getRole().equals(Role.PREPARATEUR ) || preparateur.getRole().equals(Role.ADMIN)){
-//            return ficheRepository.findFicheByPreparateurAndActionNot(preparateur , Fiche.FicheAction.DELETE);
-//        }else{
-//            throw new RuntimeException("L'utilisateur n'a pas le rôle Preparateur requis.");
-//        }
-//    }
+
     @Override
     public List<Fiche> getFichesSheetByUserZones(Long idUser) {
         User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
@@ -487,42 +438,21 @@ public class FicheServiceImp implements FicheService {
         List<Fiche> fiches = new ArrayList<>();
         for (UserZone u : zones) {
             Zone zone = u.getZone();
-            //fiches.addAll(ficheRepository.findFichesByZone(zone));
             fiches.addAll(ficheZoneRepository.findByZoneAndStatusNot(zone, Fiche.FicheStatus.DELETED));
             fiches.addAll(ficheLigneRepository.findByLigneZoneAndStatusNot(zone, Fiche.FicheStatus.DELETED));
             fiches.addAll(ficheOperationRepository.findByOperationLigneZoneAndStatusNot(zone , Fiche.FicheStatus.DELETED));
         }
         return  fiches;
     }
-//    @Override
-//    public List<Fiche> getFichesSheetByIPDF(Long idIPDF) {
-//        User ipdf = userRepository.findById(idIPDF).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-//        if(ipdf.getRole().equals(Role.IPDF) || ipdf.getRole().equals(Role.ADMIN) ){
-//            return ficheRepository.findFicheByIPDFAndActionNot(ipdf , Fiche.FicheAction.DELETE );
-//        }
-//        throw new RuntimeException("L'utilisateur n'a pas le rôle IPDF requis.");
-//    }
-//    @Override
-//    public List<Fiche> getFichesSheetByIQP(Long idIQP) {
-//        User iqp = userRepository.findById(idIQP).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
-//        if(iqp.getRole().equals(Role.IQP) || iqp.getRole().equals(Role.ADMIN)){
-//            return  ficheRepository.findFicheByIQPAndActionNotAndStatusNot(iqp , Fiche.FicheAction.DELETE , Fiche.FicheStatus.REJECTEDIPDF );
-//        }else{
-//            throw new RuntimeException("L'utilisateur n'a pas le rôle IQP requis.");
-//        }
-//    }
+
     @Override
     public List<Fiche> getFichesSheetByOperateur(Long idOperateur) {
         User operateur = userRepository.findById(idOperateur).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
         Set<UserZone> zones = operateur.getUserZones();
         List<Fiche> fiches = new ArrayList<>();
-//        for(UserZone u : zones){
-//
-//            fiches.addAll(ficheRepository.findByZoneAndStatus(u.getZone() , Fiche.FicheStatus.ACCEPTEDIQP));
-//        }
         for (UserZone u : zones) {
             Zone zone = u.getZone();
-            //fiches.addAll(ficheRepository.findFichesByZone(zone));
+
             fiches.addAll(ficheZoneRepository.findByZoneAndStatus(zone, Fiche.FicheStatus.ACCEPTEDIQP));
             fiches.addAll(ficheLigneRepository.findByLigneZoneAndStatus(zone, Fiche.FicheStatus.ACCEPTEDIQP));
             fiches.addAll(ficheOperationRepository.findByOperationLigneZoneAndStatus(zone , Fiche.FicheStatus.ACCEPTEDIQP));
@@ -534,9 +464,6 @@ public class FicheServiceImp implements FicheService {
         User admin = userRepository.findById(idAdmin).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
         Set<UserZone> zones = admin.getUserZones();
         List<Fiche> fiches = new ArrayList<>();
-        for(UserZone u : zones){
-            //fiches.addAll(ficheRepository.findByZone(u.getZone()));
-        }
         return  fiches;
     }
 
@@ -555,17 +482,15 @@ public class FicheServiceImp implements FicheService {
     //expiration
     @Override
     public boolean verifierEtMettreAJourFichesExpirees() {
-        List<Fiche.FicheStatus> etatsAExclure = Arrays.asList(Fiche.FicheStatus.EXPIRED, Fiche.FicheStatus.ACCEPTEDIQP , Fiche.FicheStatus.DELETED
-        );
-        //List<Fiche> fichesExpirees = ficheRepository.findFichesNonFinalesEtExpirees(etatsAExclure, LocalDateTime.now());
+        List<Fiche.FicheStatus> etatsAExclure = Arrays.asList(Fiche.FicheStatus.EXPIRED, Fiche.FicheStatus.ACCEPTEDIQP , Fiche.FicheStatus.DELETED);
         List<Fiche> fichesExpirees = ficheRepository.findFichesNonFinalesEtExpirees(etatsAExclure,LocalDateTime.now());
         boolean updated = false;
         if(!fichesExpirees.isEmpty()){
             for (Fiche fiche : fichesExpirees) {
                 fiche.setStatus(Fiche.FicheStatus.EXPIRED);
                 fiche.setAction(Fiche.FicheAction.EXPIRE);
-                //fiche.setActionneur(null);
                 ficheRepository.save(fiche);
+                FicheExpirationMail(fiche);
             }
             updated = true;
         }
@@ -623,6 +548,7 @@ public class FicheServiceImp implements FicheService {
 
         return fileName; // Retourne juste le nom du fichier
     }
+
     @Override
     public Resource loadPdf(String filename) {
         try {
@@ -662,17 +588,17 @@ public class FicheServiceImp implements FicheService {
             nService.notifyIPDFAboutFicheInjection(fiche, user);
         }
 
-        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
-        List<User> superUsers =userRepository.findByGroupe(superuser);
-        for(User u : superUsers){
-            nService.notifySuperUserAboutNewFiche(fiche, u);
-        }
-
-        Groupe admin = groupeRepository.findByNom("ADMIN");
-        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
-        for(User u : admins){
-            nService.notifySuperUserAboutNewFiche(fiche, u);
-        }
+//        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
+//        List<User> superUsers =userRepository.findByGroupe(superuser);
+//        for(User u : superUsers){
+//            nService.notifySuperUserAboutNewFiche(fiche, u);
+//        }
+//
+//        Groupe admin = groupeRepository.findByNom("ADMIN");
+//        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
+//        for(User u : admins){
+//            nService.notifySuperUserAboutNewFiche(fiche, u);
+//        }
         // maaaaaaill done
     }
     public void validationIPDFMail(Fiche fiche ){
@@ -687,19 +613,19 @@ public class FicheServiceImp implements FicheService {
             FicheZone ficheZone = (FicheZone) fiche;
             zone = ficheZone.getZone();
         }
-        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
-        List<User> superUsers=userRepository.findByGroupe(superuser);
-        Groupe admin = groupeRepository.findByNom("ADMIN");
-        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
+//        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
+//        List<User> superUsers=userRepository.findByGroupe(superuser);
+//        Groupe admin = groupeRepository.findByNom("ADMIN");
+//        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
 
         if(fiche.getStatus().equals(Fiche.FicheStatus.ACCEPTEDIPDF)){
             nService.notifyPreparateurAboutIPDFAcceptance(fiche);
-            for(User u : superUsers){
-                nService.notifySuperUserAboutIPDFAcceptence(fiche, u);
-            }
-            for(User u : admins){
-                nService.notifySuperUserAboutIPDFAcceptence(fiche, u);
-            }
+//            for(User u : superUsers){
+//                nService.notifySuperUserAboutIPDFAcceptence(fiche, u);
+//            }
+//            for(User u : admins){
+//                nService.notifySuperUserAboutIPDFAcceptence(fiche, u);
+//            }
             List<UserZone> usersToNotify = userZoneRepository.findByZone(zone);
             List<User> usersWithPermission = new ArrayList<>();
 
@@ -717,12 +643,12 @@ public class FicheServiceImp implements FicheService {
 
         }else{
             nService.notifyPreparateurAboutIPDFRejection(fiche);
-            for(User u : superUsers){
-                nService.notifySuperUserAboutIPDFRejection(fiche, u);
-            }
-            for(User u : admins){
-                nService.notifySuperUserAboutIPDFRejection(fiche, u);
-            }
+//            for(User u : superUsers){
+//                nService.notifySuperUserAboutIPDFRejection(fiche, u);
+//            }
+//            for(User u : admins){
+//                nService.notifySuperUserAboutIPDFRejection(fiche, u);
+//            }
         }
 
     }
@@ -738,27 +664,27 @@ public class FicheServiceImp implements FicheService {
             FicheZone ficheZone = (FicheZone) fiche;
             zone = ficheZone.getZone();
         }
-        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
-        List<User> superUsers=userRepository.findByGroupe(superuser);
-        Groupe admin = groupeRepository.findByNom("ADMIN");
-        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
+//        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
+//        List<User> superUsers=userRepository.findByGroupe(superuser);
+//        Groupe admin = groupeRepository.findByNom("ADMIN");
+//        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
 
         if(fiche.getStatus().equals(Fiche.FicheStatus.ACCEPTEDIQP)){
             nService.notifyPreparateurAboutIQPAcceptance(fiche);
-            for(User u : superUsers){
-                nService.notifySuperUserAboutIQPValidation(fiche , u);
-            }
-            for(User u : admins){
-                nService.notifySuperUserAboutIQPValidation(fiche, u);
-            }
+//            for(User u : superUsers){
+//                nService.notifySuperUserAboutIQPValidation(fiche , u);
+//            }
+//            for(User u : admins){
+//                nService.notifySuperUserAboutIQPValidation(fiche, u);
+//            }
         }else{
             nService.notifyPreparateurAboutIQPRejection(fiche);
-            for(User u : superUsers){
-                nService.notifySuperUserAboutIQPRejection(fiche, u);
-            }
-            for(User u : admins){
-                nService.notifySuperUserAboutIQPRejection(fiche, u);
-            }
+//            for(User u : superUsers){
+//                nService.notifySuperUserAboutIQPRejection(fiche, u);
+//            }
+//            for(User u : admins){
+//                nService.notifySuperUserAboutIQPRejection(fiche, u);
+//            }
         }
 
     }
@@ -774,10 +700,10 @@ public class FicheServiceImp implements FicheService {
             FicheZone ficheZone = (FicheZone) fiche;
             zone = ficheZone.getZone();
         }
-        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
-        List<User> superUsers=userRepository.findByGroupe(superuser);
-        Groupe admin = groupeRepository.findByNom("ADMIN");
-        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
+//        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
+//        List<User> superUsers=userRepository.findByGroupe(superuser);
+//        Groupe admin = groupeRepository.findByNom("ADMIN");
+//        List<User> admins = userRepository.findByGroupeAndUserZones_Zone(admin , zone);
 
         if(fiche.getStatus().equals(Fiche.FicheStatus.PENDING)){
             List<UserZone> usersToNotify = userZoneRepository.findByZone(zone);
@@ -810,12 +736,21 @@ public class FicheServiceImp implements FicheService {
                 nService.sendExpirationReminderForFiche(fiche, hoursUntilExpiration , user);
             }
         }
-        for(User u : superUsers){
-            nService.sendExpirationReminderForFiche(fiche, hoursUntilExpiration , u);
-        }
+//        for(User u : superUsers){
+//            nService.sendExpirationReminderForFiche(fiche, hoursUntilExpiration , u);
+//        }
+//
+//        for(User u : admins){
+//            nService.sendExpirationReminderForFiche(fiche, hoursUntilExpiration , u);
+//        }
+    }
+    public void FicheExpirationMail(Fiche fiche){
 
-        for(User u : admins){
-            nService.sendExpirationReminderForFiche(fiche, hoursUntilExpiration , u);
+        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
+        List<User> superUsers=userRepository.findByGroupe(superuser);
+
+        for(User u : superUsers){
+            nService.notifySuperUserAboutFicheExpiration(fiche, u);
         }
     }
 

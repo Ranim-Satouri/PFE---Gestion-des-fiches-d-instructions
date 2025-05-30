@@ -1,5 +1,4 @@
-<!-- <nav  class="z-20 fixed top-0 w-full h-16 transition-all transition-discrete duration-700 ease-in-out
- bg-navBluelight border-b border-gray-200 dark:bg-navBluedark dark:border-gray-700 "> -->
+
 <nav  class="z-20 fixed top-0 w-full h-16 transition-all transition-discrete duration-700 ease-in-out 
 border-solid border-b shadow-md
  bg-gradient-to-r from-gray-700 via-blue-300 to-gray-700 backdrop-blur-md
@@ -14,12 +13,6 @@ border-solid border-b shadow-md
                     <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
                 </svg>
             </button>
-            
-            <!-- <a class="flex sm:ms-2 md:me-24 ">
-                <img src="assets\logo.png" class="transform hover:scale-110 transition-transform duration-300 sm:h-13 sm:w-13 h-12 w-12 me-1 " alt="Sagemcom Logo" /> -->
-                <!-- <span class="pb-1 self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white ">SagemCom</span> -->
-                <!-- <span class="pb-1 self-center  sm:text-2xl text-xl font-bold text-blue-700 dark:text-white whitespace-nowrap">SagemCom</span>
-            </a> -->
             
             <div class="pl-4 flex items-center space-x-2 group">
                 <div class="relative">
@@ -43,7 +36,6 @@ border-solid border-b shadow-md
             <div class="flex items-center sm:ms-3" (click)="closeDropdown($event)">
               <div class="relative">
                 <button (click)="openList()" type="button" class=" flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
-                  <!-- <img class="w-8 h-8 rounded-full " src="images/profil2.png" alt="user photo">  -->
                   <svg class="bi bi-person-circle w-8 h-8 bg-profil dark:bg-navBluedark text-white rounded-full"  xmlns="http://www.w3.org/2000/svg"  fill="currentColor" viewBox="0 0 16 16">
                     <path  d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                     <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
@@ -62,12 +54,6 @@ border-solid border-b shadow-md
                     <li>
                         <a (click)="openProfileDialog(); $event.preventDefault()" class="block px-4 py-2 mx-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Profile</a>
                     </li>
-                  <!-- <li>
-                    <a  class="block px-4 py-2 mx-2 rounded-lg  text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</a>
-                  </li>
-                  <li>
-                    <a href="#" class="block px-4 py-2 mx-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
-                  </li> -->
                   <li>
                     <a (click)="logout()" class="block px-4 py-2 mx-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Déconnexion</a>
                   </li>
@@ -137,7 +123,6 @@ border-solid border-b shadow-md
                     <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
                 </svg>
                 <span *ngIf="isSideBarOpen" class="flex-1 ms-3 whitespace-nowrap">Famille</span>
-                <!-- <span *ngIf="isSideBarOpen" class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span> -->
             </a>
         </li>
         <li *ngIf="hasPermission('consulter_produit')">
@@ -174,14 +159,6 @@ border-solid border-b shadow-md
             <span *ngIf="isSideBarOpen" class="flex-1 ms-3 whitespace-nowrap">Opération</span>
             </a>
         </li>
-        <!-- <li>
-            <a href="#" class="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-            <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
-            </svg>
-            <span *ngIf="isSideBarOpen" class="flex-1 ms-3 whitespace-nowrap">Sign In</span>
-            </a>
-        </li> -->
         <li  *ngIf="hasPermission('consulter_fiche_validées') || hasPermission('consulter_fiche_non_validées')">
             <a routerLink="/fichelist" class="h-[40px] flex items-center pl-[9.5px] text-white rounded-lg dark:text-gray-400 hover:bg-gray-400  dark:hover:bg-gray-700 dark:hover:text-white group" 
             [ngClass]="{'bg-gray-400 dark:bg-gray-700 dark:text-white': getCurrentPath() === '/fichelist'}">
@@ -191,7 +168,6 @@ border-solid border-b shadow-md
                 <path d="M8.961 16a.93.93 0 0 0 .189-.019l3.4-.679a.961.961 0 0 0 .49-.263l6.118-6.117a2.884 2.884 0 0 0-4.079-4.078l-6.117 6.117a.96.96 0 0 0-.263.491l-.679 3.4A.961.961 0 0 0 8.961 16Zm7.477-9.8a.958.958 0 0 1 .68-.281.961.961 0 0 1 .682 1.644l-.315.315-1.36-1.36.313-.318Zm-5.911 5.911 4.236-4.236 1.359 1.359-4.236 4.237-1.7.339.341-1.699Z"/>
             </svg>
             <span *ngIf="isSideBarOpen" class="flex-1 ms-3 whitespace-nowrap">Fiche d'instruction</span>
-            <!-- <span *ngIf="isSideBarOpen" class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 mr-2 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span> -->
             </a>
         </li>
         <li  *ngIf="hasPermission('consulter_fiche_validées') || hasPermission('consulter_fiche_non_validées')">
@@ -202,7 +178,6 @@ border-solid border-b shadow-md
             </svg>
 
             <span *ngIf="isSideBarOpen" class="flex-1 ms-3 whitespace-nowrap">Recherche avancée</span>
-            <!-- <span *ngIf="isSideBarOpen" class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 mr-2 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span> -->
             </a>
         </li>
     </ul>

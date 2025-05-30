@@ -23,32 +23,16 @@ export class LayoutComponent {
   matricule: string = '';
   email: string = '';
   nom: string = '';
-  // menus !:Menu[]
+  
 
   constructor(private themeService: ThemeService, private router: Router,@Inject(PLATFORM_ID) private platformId: Object) {
     this.isDarkMode = this.themeService.isDarkMode();
-    // try {
-    //   this.isSideBarOpen = JSON.parse(localStorage.getItem('sidebarState') || 'true');
-    // } catch (error) {
-    //   // console.warn("Erreur lors de la récupération de sidebarState:", error);
-    // }
     if (isPlatformBrowser(this.platformId)) {
       try {
         this.currentUser = JSON.parse(localStorage.getItem('user')!);
         this.matricule = this.currentUser.matricule;
         this.email = this.currentUser.email;
         this.nom = this.currentUser.nom;
-        //recuperer les permissions
-        // const permissions = this.currentUser.groupe?.permissions || [];
-        // const uniqueMenusMap = new Map<number, any>();
-        // for (const permission of permissions) {
-        //   const menu = permission.menu;
-        //   if (menu && !uniqueMenusMap.has(menu.idMenu)) {
-        //     uniqueMenusMap.set(menu.idMenu, menu);
-        //   }
-        // }
-        // this.menus = Array.from(uniqueMenusMap.values());
-        
       } catch (error) {
         // console.warn("Erreur lors de la récupération de sidebarState:", error);
       }  
@@ -87,23 +71,17 @@ export class LayoutComponent {
     const target = event.target as HTMLElement;
     const dropdown = document.getElementById('dropdown-user');
     const button = target.closest('button');
-
-    // Vérifiez si le clic est en dehors du bouton et du dropdown
     if (this.isListOpen && dropdown && !dropdown.contains(target) && !button) {
-      this.isListOpen = false; // Ferme la liste
+      this.isListOpen = false; 
     }
   }
   getCurrentPath(): string {
     return this.router.url;
   }
-  // hasMenu(menuName: string): boolean {
-  //   console.log(this.menus.some(menu => menu.nom === menuName));
-  //   return this.menus.some(menu => menu.nom === menuName);
-  // }
 
   openProfileDialog(): void {
     if (this.profileDialog) {
-      this.profileDialog.showProfileDialog(123); // 123 est l'ID de l'utilisateur
+      this.profileDialog.showProfileDialog(1); 
       this.isListOpen = false;
     }
   }

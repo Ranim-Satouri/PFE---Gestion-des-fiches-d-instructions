@@ -4,7 +4,6 @@ package com.pfe.backend.Service.ServiceZone;
 import com.pfe.backend.Model.*;
 import com.pfe.backend.Repository.*;
 import com.pfe.backend.Service.ServiceLigne.LigneService;
-import com.pfe.backend.Repository.FicheRepository;
 import com.pfe.backend.Repository.UserRepository;
 import com.pfe.backend.Repository.ZoneRepository;
 import jakarta.persistence.EntityManager;
@@ -25,8 +24,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.hibernate.envers.RevisionType;
-import org.hibernate.envers.query.AuditEntity;
-import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -63,6 +60,7 @@ public class ZoneServiceImp implements ZoneService {
         Zone savedZone = zoneRepository.save(zone);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedZone);
     }
+
     @Override
     public void DeleteZone(Long idZone , Long idActionneur) {
         Zone zone = zoneRepository.findById(idZone)
@@ -86,6 +84,7 @@ public class ZoneServiceImp implements ZoneService {
         }
         zoneRepository.save(zone);
     }
+
     @Override
     public ResponseEntity<?> updateZone(Long idZone, Zone newZoneData ,Long idActionneur)
     {
@@ -102,15 +101,30 @@ public class ZoneServiceImp implements ZoneService {
         zone.setActionneur(actionneur);
         return ResponseEntity.status(HttpStatus.CREATED).body(zoneRepository.save(zone));
     }
+
     @Override
     public Set<UserZone> getZoneUsers(Long idZone) {
         Zone zone = zoneRepo.findById(idZone)
                 .orElseThrow(() -> new RuntimeException("Zone introuvable"));
         return zone.getUserZones();
     }
+
     @PersistenceContext
     private EntityManager entityManager;
 
+
+    @Override
+    public List<Zone> getZonesPourProduit(Long produitId) {
+        Produit produit = produitRepo.findById(produitId).orElseThrow(() -> new RuntimeException("Produit non trouvé"));
+        Famille famille = produit.getFamille();
+        List<Zone> zonesNonSupprimees = famille.getZones().stream()
+                .filter(zone -> !zone.isDeleted())
+                .collect(Collectors.toList());
+        return zonesNonSupprimees;
+    }
+
+
+    @Override
     public List<Map<String, Object>> getZoneHistory(Long zoneId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         List<Object[]> revisions = auditReader.createQuery()
@@ -169,19 +183,4 @@ public class ZoneServiceImp implements ZoneService {
         return history;
     }
 
-//    @Override
-//    public Set<UserZone> getZonesByProduit(Long idProduit) {
-//        Famille famille = zoneRepo.findByFamille(idProduit)
-//                .orElseThrow(() -> new RuntimeException("Zone introuvable"));
-//        return zone.getUserZones();
-//    }
-    @Override
-    public List<Zone> getZonesPourProduit(Long produitId) {
-        Produit produit = produitRepo.findById(produitId).orElseThrow(() -> new RuntimeException("Produit non trouvé"));
-        Famille famille = produit.getFamille();
-        List<Zone> zonesNonSupprimees = famille.getZones().stream()
-                .filter(zone -> !zone.isDeleted())
-                .collect(Collectors.toList());
-        return zonesNonSupprimees;
-    }
 }

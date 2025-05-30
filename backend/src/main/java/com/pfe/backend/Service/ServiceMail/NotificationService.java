@@ -13,7 +13,6 @@ public interface NotificationService {
     void notifyPreparateurAboutIPDFAcceptance(Fiche fiche);
     void notifySuperUserAboutNewFiche(Fiche fiche , User superuser);
     void notifySuperUserAboutIPDFAcceptence(Fiche fiche , User superuser);
-    //void notifySuperUserAboutAQLAddition(Fiche fiche , User superuser);
     void notifySuperUserAboutIPDFRejection(Fiche fiche, User superuser);
     void notifySuperUserAboutIQPValidation(Fiche fiche, User superuser);
     void notifySuperUserAboutIQPRejection(Fiche fiche, User superuser);

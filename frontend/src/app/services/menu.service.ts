@@ -9,15 +9,15 @@ import { Permission } from '../models/Permission';
 })
 export class MenuService {
 
-  private apiUrl = 'http://localhost:8080/menus';  // URL de l'API backend pour récupérer les menus
+  private apiUrl = 'http://localhost:8080/menus';  
 
   constructor(private http: HttpClient) {}
 
-  // Méthode pour récupérer tous les menus
+  
   getAllMenus(): Observable<Menu[]> {
-    return this.http.get<Menu[]>(this.apiUrl);  // Appel GET à l'API backend
+    return this.http.get<Menu[]>(this.apiUrl);  
   }
   getPermissionsByMenu(idMenu : number): Observable<Permission[]> {
-    return this.http.get<Permission[]>(`${this.apiUrl}/getPermissionsByMenu/${idMenu}`);  // Appel GET à l'API backend
+    return this.http.get<Permission[]>(`${this.apiUrl}/getPermissionsByMenu/${idMenu}`);  
   }
 }

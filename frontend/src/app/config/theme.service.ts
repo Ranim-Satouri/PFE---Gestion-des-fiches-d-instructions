@@ -8,7 +8,6 @@ export class ThemeService {
 
   constructor() {
     this.loadTheme();
-     // Initialiser le thème au démarrage
      this.applyTheme();
   }
   private applyTheme(): void {

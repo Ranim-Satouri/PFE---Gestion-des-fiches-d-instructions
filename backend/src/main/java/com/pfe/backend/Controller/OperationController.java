@@ -1,7 +1,4 @@
 package com.pfe.backend.Controller;
-
-
-import com.pfe.backend.Model.Ligne;
 import com.pfe.backend.Model.Operation;
 import com.pfe.backend.Service.ServiceOperation.OperationService;
 import org.springframework.beans.factory.annotation.Autowired;

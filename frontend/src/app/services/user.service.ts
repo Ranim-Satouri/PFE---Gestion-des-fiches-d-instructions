@@ -97,17 +97,10 @@ updatePassword(idUser: number, password: string, idActionneur: number): Observab
   return this.http.put<string>(`${this.apiUrl2}/password/${idUser}`, null, { params });
 }
 
-//  getZoneUsers(idZone: number): Observable<User_Zone[]> {
-//     return this.http.get<User_Zone[]>(`${this.apiUrl2}/zone-users/${idZone}`);
-//   }
-
-
-
-  attribuerZone(idUser: number, idZone:number,idActionneur:number):Observable<any>
-    {
-   console.log("user",idUser);
-   console.log("zone",idZone);
-   console.log("act",idActionneur);
+  attribuerZone(idUser: number, idZone:number,idActionneur:number):Observable<any>{
+      console.log("user",idUser);
+      console.log("zone",idZone);
+      console.log("act",idActionneur);
       return this.http.post(
     `${this.apiUrl}/attribueZone/${idUser}/${idZone}/${idActionneur}`,null)
   }

@@ -15,12 +15,12 @@ import java.util.List;
 public class FamilleController {
     @Autowired
     private FamilleService familleService;
-    //pour récupérer l’historique des modifications de Famille.
+
     @GetMapping("/famille-history/{idFamille}")
     public List<FamilleHistoriqueDTO> getFamilleHistory(@PathVariable Long idFamille) {
         return familleService.getFamilleHistory(idFamille);
     }
-    //pour récupérer l’audit des modifications de la table famille_zones.
+
     @GetMapping("/zones-audit/{id}")
     public List<FamilleZonesDTO> getFamilleZonesAudit(@PathVariable Long id) {
         return familleService.getFamilleZonesAudit(id);
@@ -80,7 +80,6 @@ public class FamilleController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
     }
 }
 

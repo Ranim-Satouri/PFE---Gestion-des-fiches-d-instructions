@@ -90,13 +90,6 @@ public class DataInitializer implements CommandLineRunner {
             }}
     }
 
-    private void addMenuIfNotExists(String menuName) {
-        if (menuRepository.findByNom(menuName) == null) {  // Vérifier si le menu existe déjà
-            Menu menu = new Menu();
-            menu.setNom(menuName);
-            menuRepository.save(menu); }
-    }
-
     private void addSuperuserGroupIfNotExists() {
         if (groupeRepository.findByNom("SUPERUSER") == null) {
             // Fetch all  permissions
@@ -403,10 +396,3 @@ public class DataInitializer implements CommandLineRunner {
         } else {System.out.println("Groupe OPERATEUR déjà existant");}
     }
 }
-//    private void addPermissionIfNotExists(String permissionName) {
-//        if (permissionRepository.findByNom(permissionName) == null) {  // Vérifier si la permission existe déjà
-//            Permission permission = new Permission();
-//            permission.setNom(permissionName);
-//            permissionRepository.save(permission);
-//        }
-//    }

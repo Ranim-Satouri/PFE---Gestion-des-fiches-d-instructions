@@ -30,7 +30,6 @@ export const routes: Routes = [
     {
       path:'particles' ,
       component :ParticlesComponent,
-      // canActivate: [RoleAccessGuard]
     },
     {
       path: 'access-denied',

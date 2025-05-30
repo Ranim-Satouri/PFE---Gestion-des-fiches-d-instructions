@@ -7,12 +7,11 @@
   <link rel="icon" href="..\assets\instructis.png" type="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
-    if (localStorage.getItem('theme') === 'dark' || 
-        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
-      console.log('✅ Mode sombre activé'); 
+      console.log('Mode sombre activé'); 
   } else {
-    console.log('🌞 Mode clair activé');
+    console.log('Mode clair activé');
   }
   </script>
   <link rel="icon" type="image/x-icon" href="favicon.ico">

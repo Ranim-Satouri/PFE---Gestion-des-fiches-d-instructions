@@ -45,7 +45,6 @@ export class AddFamilleFormComponent {
       this.selectedZones = new Set(this.famille.zones?.map(zone => zone.idZone!));
 
     } else {
-      // Initialize form for new group
       this.familyForm = new FormGroup({
         nom: new FormControl('', [Validators.required])
       });
@@ -73,12 +72,7 @@ export class AddFamilleFormComponent {
         next: (famille) => {
           this.famille = famille;
           this.errorMessage = '';
-          // this.successMessage = `Famille "${famille.nomFamille}" ajoutée avec succès !`;
-  
-          // setTimeout(() => {
-          //   this.successMessage = '';
-          // }, 3000);
-  
+ 
           this.familyForm.reset();
           this.isNewFamille = false;
          
@@ -159,16 +153,13 @@ export class AddFamilleFormComponent {
   
     const dropdown1 = document.getElementById(`dropdownAffectation`);
     const button1 = target.closest('Affectation-input');
-
-    // Vérifiez si le clic est en dehors du dropdown et du bouton
     if (this.showSelectorDropdown  && dropdown1 && !dropdown1.contains(target) && !button1) {
-      this.showSelectorDropdown = false; // Ferme le dropdown
+      this.showSelectorDropdown = false; 
     }
   }
-  updateFamille(buttonType: string) {
+  updateFamille() {
     if (this.familyForm.valid) { 
       if(this.familyForm.value.nom !== this.famille.nomFamille){
-        //this.newFamille = { ...this.famille }; // bech yaaml copie mennou ma yekhouhouchhowa bidou , kahter ayy changement ysir fi hedha ysir fi hedhaw mech hakka lezem ysir
         this.famille.nomFamille = this.familyForm.value.nom;
         this.familleService.updateFamille(this.famille,this.famille.idFamille, this.userConnected.idUser!).subscribe({
           next: (famille) => {
@@ -210,12 +201,8 @@ export class AddFamilleFormComponent {
       this.familleService.addZonesToFamille(this.famille.idFamille!, Array.from(this.selectedZones))
       .subscribe(response => {
         console.log('Zones ajoutées avec succès:', response);
-        // this.successMessage = `Famille "${this.famille.nomFamille}" ajoutée avec succès !`;
-    
-        // setTimeout(() => {
           this.close.emit();
-        //   this.successMessage = '';
-        // }, 2000);
+
       }, error => {
         console.error('Erreur lors de l\'ajout des zones:', error);
       });

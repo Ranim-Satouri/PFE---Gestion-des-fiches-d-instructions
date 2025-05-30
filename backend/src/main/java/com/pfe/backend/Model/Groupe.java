@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder // Assurez-vous que cette annotation est bien après les constructeurs
+@Builder
 @Audited
 @EqualsAndHashCode(exclude = "users") //zedtha bech n7el el erreur ta3 stakc overflow
 public class Groupe {
@@ -32,40 +32,29 @@ public class Groupe {
     @Column(name = "modifie_le", nullable = false)
     private LocalDateTime modifieLe = LocalDateTime.now();
 
-    //    les relations
+
 
     @JsonIgnore
     @OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
     private List<User> users;
-//il faut les initialize = new ArrayList<>() pour eviter l'exception NullPointerException,to ensure they are never null.
 
-//    @JsonIgnore
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "groupe_permissions",joinColumns = @JoinColumn(name = "idGroupe"),
             inverseJoinColumns = @JoinColumn(name = "idPermission"))
     private List<Permission> permissions= new ArrayList<>();
 
-//    @JsonIgnore
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinTable(name = "groupe_menus",joinColumns = @JoinColumn(name = "idGroupe"),
-//            inverseJoinColumns = @JoinColumn(name = "idMenu"))
-//    private List<Menu> menus = new ArrayList<>();
+
    //helper methods , for bette functionning
     public void addUser(User user) {
         users.add(user);
         user.setGroupe(this);
     }
-//    public void removeUser(User user) {
-//        users.remove(user);
-//        user.setGroupe(null);
-//    }
+
     public void addPermission(Permission permission) {
         this.permissions.add(permission);
         permission.getGroupes().add(this);
     }
-//    public void addMenu(Menu menu) {
-//        this.menus.add(menu);
-//        menu.getGroupes().add(this);
-//    }
+
 }

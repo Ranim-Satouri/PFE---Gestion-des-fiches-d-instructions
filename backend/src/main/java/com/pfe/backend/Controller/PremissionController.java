@@ -14,11 +14,11 @@ import java.util.List;
 @RequestMapping("/permissions")
 public class PremissionController {
     @Autowired
-    private PermissionService permissionService;  // Votre service pour récupérer les permissions
+    private PermissionService permissionService;
 
     @GetMapping
     public ResponseEntity<List<Permission>> getAllPermissions() {
-        List<Permission> permissions = permissionService.getAllPermissions();  // Supposons que ce service récupère les permissions
+        List<Permission> permissions = permissionService.getAllPermissions();
         return ResponseEntity.ok(permissions);
     }
 }

@@ -89,7 +89,7 @@
             
                 <button
                     *ngIf="!isNewFamille"
-                    (click)="updateFamille('create')"
+                    (click)="updateFamille()"
                     type="button"
                     [disabled]="familyForm.invalid || famille.nomFamille === familyForm.value.nom "
                     class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
@@ -110,31 +110,14 @@
                         <path d="m9 18 6-6-6-6"></path>
                       </svg>
                 </button>
-                
-            
-                <!-- <button
-                    *ngIf="!isNewFamille"
-                    (click)="updateFamille('createAndAssign')"
-                    type="button"
-                    [disabled]="familyForm.invalid || famille.nomFamille === familyForm.value.nom"
-                    class="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-                >
-                    Modifier et Affecter
-                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
-                        <path d="m9 18 6-6-6-6"></path>
-                      </svg>
-                </button> -->
           </div>
-
-            
       </form>
       </div>
   </div>
 
   <!-- pop up Affectation -->
   <div *ngIf="currentStep === 2" class="relative bg-white  dark:bg-gray-900  rounded-lg shadow-lg  p-6 transition-all  sm:max-h-[71.5vh] sm:w-[60%] overflow-y-auto  border dark:border-gray-700 w-full max-h-lg" >
-    <!-- Bouton X avec z-index élevé et position fixe -->
-
+    
     <button
         (click)="close.emit()"
         type="button"
@@ -240,7 +223,7 @@
                       </div>
                   </div>
               </div> 
-              <!-- Liste utilisateurs -->
+              <!-- Liste zones -->
               <div class="overflow-auto h-[39vh]">
                   <table class="w-full text-sm text-left text-gray-800 dark:text-gray-200">
                   <thead class="sticky-top text-xs uppercase bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
@@ -301,4 +284,4 @@
   </div>
 
 </div>
-
+</div>

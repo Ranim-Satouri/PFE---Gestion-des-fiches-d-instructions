@@ -17,11 +17,11 @@ public class MenuServiceImp implements MenuService {
 
     @Override
     public List<Menu> getAllMenus() {
-        return menuRepository.findAll();  // Récupère tous les menus de la base de données
+        return menuRepository.findAll();
     }
     @Override
     public List<Permission> getPermissionsByMenu(long idMenu) {
         Menu menu = menuRepository.findById(idMenu).orElseThrow(()-> new RuntimeException("Menu introuvable ! "));
-        return menu.getPermissions();  // Récupère tous les menus de la base de données
+        return menu.getPermissions();
     }
 }

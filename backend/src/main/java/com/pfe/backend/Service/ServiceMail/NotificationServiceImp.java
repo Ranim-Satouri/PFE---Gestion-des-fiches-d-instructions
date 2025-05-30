@@ -72,8 +72,6 @@ public class NotificationServiceImp implements NotificationService {
                 + generateFicheDetails(fiche)
                 + "- Date d'expiration de validation : " + formattedDate + "\n"
                 + "- Raison du rejet : " + (commentaire != null ? commentaire : "Aucune raison fournie") + "\n\n"
-//                + "Vous pouvez consulter la fiche dans l'application pour plus de détails et apporter les modifications nécessaires avant de la soumettre à nouveau.\n\n"
-//                + "Pour accéder à la fiche, cliquez sur le lien suivant : https://www.youtube.com \n\n"
                 + "Cordialement,\n"
                 + "L'équipe de gestion des fiches d'instructions\n"
                 + "Sagemcom";
@@ -183,7 +181,6 @@ public class NotificationServiceImp implements NotificationService {
                 + "- Date d'expiration de validation : " + formattedDate + "\n"
                 + "- Raison du rejet : " + (commentaire != null ? commentaire : "Aucune raison fournie") + "\n\n"
                 + "Vous pouvez consulter la fiche dans l'application pour plus de détails avant la date d'éxpiration et apporter les modifications nécessaires.\n\n"
-//                + "Pour accéder à la fiche, cliquez sur le lien suivant : https://www.youtube.com \n\n"
                 + "Cordialement,\n"
                 + "L'équipe de gestion des fiches d'instructions\n"
                 + "Sagemcom";
@@ -201,7 +198,6 @@ public class NotificationServiceImp implements NotificationService {
         String text = "Bonjour " + preparateurName + ",\n\n"
                 + "La fiche suivante que vous avez ajoutée a été validée par l'IQP "+ iqpName + "et la fiche AQL a été ajoutée avec succé.\n\nVoici les détails de cette fiche :\n"
                 + generateFicheDetails(fiche)
-//                + "La fiche est maintenant active et peut être utilisée dans le processus de production.\n\n"
                 + "\n\n"
                 + "Cordialement,\n"
                 + "L'équipe de gestion des fiches d'instructions\n"
@@ -222,7 +218,6 @@ public class NotificationServiceImp implements NotificationService {
                 + "- Préparateur : " + preparateurName + "\n"
                 + generateFicheDetails(fiche)
                 + "\n\n"
-//                + "Pour accéder à la fiche, cliquez sur le lien suivant : https://www.youtube.com \n\n"
                 + "Cordialement,\n"
                 + "L'équipe de gestion des fiches d'instructions\n"
                 + "Sagemcom";
@@ -256,8 +251,6 @@ public class NotificationServiceImp implements NotificationService {
         String preparateurName = fiche.getPreparateur().getPrenom() + " " + fiche.getPreparateur().getNom();
         String produitName = fiche.getProduit().getNomProduit();
         String  superuserName = superuser.getPrenom() + " " + superuser.getNom();
-
-
         String subject = "Fiche d'instruction expirée - " + produitName;
         String text = "Bonjour " + superuserName + ",\n\n"
                 + "La fiche suivante est expirée. \n\nVoici les détails de cette fiche :\n"
@@ -270,6 +263,8 @@ public class NotificationServiceImp implements NotificationService {
 
         emailService.sendEmail(superuser.getEmail(), subject, text);
     }
+
+    @Override
     public void sendExpirationReminderForFiche(Fiche fiche, long hoursUntilExpiration , User  user) {
         String userName = user.getPrenom() + " " + user.getNom();
         String produitName = fiche.getProduit().getNomProduit();

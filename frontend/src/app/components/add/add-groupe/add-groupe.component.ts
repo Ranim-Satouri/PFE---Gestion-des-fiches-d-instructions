@@ -1,10 +1,8 @@
-import { Component, ElementRef, EventEmitter, HostListener, inject, Input, Output, ViewChild } from '@angular/core';
-import { UserService } from '../../../services/user.service';
+import { Component, EventEmitter, HostListener, inject, Input, Output } from '@angular/core';
 import { User } from '../../../models/User';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MenuService } from '../../../services/menu.service';
-import { PermissionService } from '../../../services/permission.service';
 import { Menu } from '../../../models/Menu';
 import { Permission } from '../../../models/Permission';
 import { Groupe } from '../../../models/Groupe';
@@ -19,7 +17,7 @@ import { GroupeService } from '../../../services/groupe.service';
 })
 export class AddGroupeComponent {
   @Output() close = new EventEmitter<void>();
-  constructor(private userService:UserService, private menuService: MenuService,private groupeService: GroupeService) {}
+  constructor(private menuService: MenuService,private groupeService: GroupeService) {}
   currentStep : number = 1;
   userConnected !: User;
   steps = ["Groupe", "Menu & Permissions"];
@@ -60,7 +58,7 @@ export class AddGroupeComponent {
       // Charger les permissions sélectionnées
       this.selectedPermissions = new Set(this.groupe.permissions?.map(permission => permission.idPermission!));
   
-      // Si tu veux que les selectedMenus soient basés sur les selectedPermissions lors de la mise à jour
+      // selectedMenus basés sur les selectedPermissions 
       const permissions = this.groupe?.permissions || [];
       const uniqueMenusMap = new Map<number, Menu>();
   
@@ -118,59 +116,20 @@ export class AddGroupeComponent {
         nom: this.groupeForm.value.nom,
         actionneur: this.userConnected
       };
-        
-      this.groupeService.addGroupe(newGroupe, this.userConnected.idUser!).subscribe({
-        next: (response) => {
-            console.log(response); 
-            this.groupe = response; 
-            this.isNewGroup = false;
-            this.errorMessage = '';
-            //this.goToNextStep();
-            this.addRelationsToGroup();
-            
-      },
-        error: (err) => {
-          this.successMessage = '';
-          console.error('Erreur lors de l’ajout :', err);
-          if (err.status === 404) {
-            this.errorMessage = "Actionneur introuvable";
-          } else if (err.status === 409) {
-            this.errorMessage = "Un groupe avec ce nom existe déjà.";
-          } else {
-            this.errorMessage = "Une erreur inattendue est survenue.";
-          }
-          setTimeout(() => {
-            this.errorMessage = '';
-          }, 2000);
-        }
-      });
-    } else {
-      this.groupeForm.markAllAsTouched();
-    }
-  }
-  onGroupNameUpdate(): void {
-    if (this.groupeForm.valid) {
-      console.log(this.groupeForm.value.nom)
-      const newGroupe: Groupe = {
-        nom: this.groupeForm.value.nom,
-        actionneur: this.userConnected
-      };
-        
-      if(this.groupe.nom !== this.groupeForm.value.nom){
-        this.groupeService.updateGroupe(newGroupe, this.groupe.idGroupe ,this.userConnected.idUser!).subscribe({
+      if(Array.from(this.selectedPermissions).length > 0)
+        this.groupeService.addGroupe(newGroupe, this.userConnected.idUser!).subscribe({
           next: (response) => {
               console.log(response); 
               this.groupe = response; 
-              this.isNewGroup = false;    
+              this.isNewGroup = false;
               this.errorMessage = '';
               //this.goToNextStep();
               this.addRelationsToGroup();
-          },
+              
+        },
           error: (err) => {
-           
             this.successMessage = '';
             console.error('Erreur lors de l’ajout :', err);
-    
             if (err.status === 404) {
               this.errorMessage = "Actionneur introuvable";
             } else if (err.status === 409) {
@@ -178,15 +137,70 @@ export class AddGroupeComponent {
             } else {
               this.errorMessage = "Une erreur inattendue est survenue.";
             }
-    
             setTimeout(() => {
               this.errorMessage = '';
             }, 2000);
           }
         });
-      }else{
-        this.addRelationsToGroup();
+      else{
+        this.successMessage = '';
+        this.errorMessage = "Un groupe doit avoir au moins une permission."; 
+        setTimeout(() => {
+            this.errorMessage = '';
+        }, 2000);
       }
+    } else {
+      this.groupeForm.markAllAsTouched();
+    }
+    
+  }
+  onGroupNameUpdate(): void {
+    if (this.groupeForm.valid ) {
+      console.log(this.groupeForm.value.nom)
+      const newGroupe: Groupe = {
+        nom: this.groupeForm.value.nom,
+        actionneur: this.userConnected
+      };
+      if(Array.from(this.selectedPermissions).length > 0)
+        if(this.groupe.nom !== this.groupeForm.value.nom ){
+          this.groupeService.updateGroupe(newGroupe, this.groupe.idGroupe ,this.userConnected.idUser!).subscribe({
+            next: (response) => {
+                console.log(response); 
+                this.groupe = response; 
+                this.isNewGroup = false;    
+                this.errorMessage = '';
+                //this.goToNextStep();
+                this.addRelationsToGroup();
+            },
+            error: (err) => {
+            
+              this.successMessage = '';
+              console.error('Erreur lors de l’ajout :', err);
+      
+              if (err.status === 404) {
+                this.errorMessage = "Actionneur introuvable";
+              } else if (err.status === 409) {
+                this.errorMessage = "Un groupe avec ce nom existe déjà.";
+              } else {
+                this.errorMessage = "Une erreur inattendue est survenue.";
+              }
+      
+              setTimeout(() => {
+                this.errorMessage = '';
+              }, 2000);
+            }
+          });
+        }else{
+          this.addRelationsToGroup();
+        }
+      else{
+        this.successMessage = '';
+        this.errorMessage = "Un groupe doit avoir au moins une permission."; 
+        setTimeout(() => {
+            this.errorMessage = '';
+        }, 2000);
+      }
+
     } else {
       this.groupeForm.markAllAsTouched();
     }
@@ -194,12 +208,11 @@ export class AddGroupeComponent {
   }
 
   setStep(step: number) {
-    // if (this.groupeForm.valid && this.groupe.nom === this.groupeForm.value.nom ) {
-    //   this.currentStep = step;
-    // } else {
-    //   this.groupeForm.markAllAsTouched();
-    // }
-    this.currentStep = step;
+    if (this.groupeForm.valid) {
+      this.currentStep = step;
+    } else {
+      this.groupeForm.markAllAsTouched();
+    }
   }
 
   goToNextStep() {
@@ -260,13 +273,14 @@ export class AddGroupeComponent {
     }else{
       this.groupeService.addRelationsToGroup(this.groupe.idGroupe!, Array.from(this.selectedPermissions), Array.from(this.selectedUsers), this.userConnected.idUser!)
       .subscribe(response => {
+        
         console.log('Relations ajoutées avec succès:', response);
-        // this.successMessage = `Groupe "${this.groupe.nom}" ajoutée avec succès !`;
+        this.successMessage = `Relations ajoutées avec succès au groupe "${this.groupe.nom}"`; 
     
-        // setTimeout(() => {
+        setTimeout(() => {
           this.closeForm();
-        //   this.successMessage = '';
-        // }, 2000);
+          this.successMessage = '';
+        }, 2000);
       }, error => {
         console.error('Erreur lors de l\'ajout des relations:', error);
       });
@@ -281,16 +295,24 @@ export class AddGroupeComponent {
     
     if (this.selectedPermissions.has(permissionId)) {
       this.selectedPermissions.delete(permissionId);
+      const isValidationPermission = 
+      permissionId === this.PERM_VALIDER_IQP_ID || 
+      permissionId === this.PERM_VALIDER_IPDF_ID;
+      if (isValidationPermission) {
+        if (this.disabledPermissions.has(this.PERM_CONSULTER_NON_VAL_ID)) {
+         this.disabledPermissions.delete(this.PERM_CONSULTER_NON_VAL_ID);
+        }
+      }
     } else {
       this.selectedPermissions.add(permissionId);
       const isValidationPermission = 
       permissionId === this.PERM_VALIDER_IQP_ID || 
       permissionId === this.PERM_VALIDER_IPDF_ID;
       if (isValidationPermission) {
-        if (this.selectedPermissions.has(this.PERM_CONSULTER_NON_VAL_ID)) {
+        if (!this.selectedPermissions.has(this.PERM_CONSULTER_NON_VAL_ID)) {
           this.selectedPermissions.add(this.PERM_CONSULTER_NON_VAL_ID);
+          this.disabledPermissions = new Set([this.PERM_CONSULTER_NON_VAL_ID]);
         }
-      
       }
     }
   }
@@ -355,7 +377,7 @@ export class AddGroupeComponent {
       console.log("loadPermissionsByMenu 2",menuId);
       this.menuService.getPermissionsByMenu(menuId).subscribe(
         (permissions: Permission[]) => {
-          // Récupérer le nom du menu pour une meilleure gestion
+          // Récupérer le nom du menu 
           const menuName = this.menus.find(menu => menu.idMenu === menuId)?.nom;
   
           if (menuName) {

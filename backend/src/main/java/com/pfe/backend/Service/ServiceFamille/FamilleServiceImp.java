@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,36 +35,9 @@ public class FamilleServiceImp implements FamilleService {
     @PersistenceContext
     private EntityManager entityManager;
     private ProduitService produitService;
-    public List<FamilleHistoriqueDTO> getFamilleHistory(Long familleId) {
-        AuditReader auditReader = AuditReaderFactory.get(entityManager);
-        List<Object[]> revisions = auditReader.createQuery()
-                .forRevisionsOfEntity(Famille.class, false, true)
-                .add(AuditEntity.id().eq(familleId))
-                .addOrder(AuditEntity.revisionNumber().asc())
-                .getResultList();
 
-        System.out.println("Nombre de révisions trouvées pour familleId " + familleId + " : " + revisions.size());
 
-        List<FamilleHistoriqueDTO> history = new ArrayList<>();
-        for (Object[] revision : revisions) {
-            Famille famille = (Famille) revision[0]; // Entité Zone
-            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revision[1]; // Métadonnées de révision
-            Integer revisionNumber = revisionEntity.getId(); // Numéro de révision
-            RevisionType revisionType = (RevisionType) revision[2];
-
-            FamilleHistoriqueDTO dto = new FamilleHistoriqueDTO();
-            dto.setRevisionNumber(revisionNumber);
-            dto.setModifieLe(famille.getModifieLe());
-            dto.setActionneurFullName(famille.getActionneur().getNom() + " " + famille.getActionneur().getPrenom());
-            dto.setNom(famille.getNomFamille());
-            dto.setDeleted(famille.isDeleted());
-            List<Zone> zonesAtRevision = auditReader.find(Famille.class, familleId, revisionNumber).getZones();
-            dto.setZones(zonesAtRevision.stream().map(Zone::getNom).collect(Collectors.toList()));
-            history.add(dto);
-        }
-
-        return history;
-    }
+    @Override
     public List<FamilleZonesDTO> getFamilleZonesAudit(Long familleId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
         List<Object[]> revisions = auditReader.createQuery()
@@ -114,6 +86,8 @@ public class FamilleServiceImp implements FamilleService {
     public ResponseEntity<List<Famille>> getFamilles() {
         return ResponseEntity.ok().body(familleRepository.findAll());
     }
+
+
     @Override
     public ResponseEntity<?> updateFamily(Long idFam, Famille NewfamilyData , Long idActionneur)
     {
@@ -133,6 +107,8 @@ public class FamilleServiceImp implements FamilleService {
                 .status(HttpStatus.CREATED) // 201 Created, plus approprié ici
                 .body(familleRepository.save(famille));
     }
+
+
     @Override
     public void DeleteFamily(Long idFam ,Long idActionneur)
     {
@@ -144,8 +120,6 @@ public class FamilleServiceImp implements FamilleService {
             if(!produit.isDeleted()){
                 produitService.DeleteProduit(produit.getIdProduit() , actionneur.getIdUser());
             }
-//            produit.setDeleted(true);
-//            produit.setActionneur(actionneur);
         }
         System.out.println("test ----------------------");
         famille.getZones().clear();
@@ -157,6 +131,7 @@ public class FamilleServiceImp implements FamilleService {
     public List<Famille> getActiveFamilies() {
         return familleRepository.findByIsDeletedFalse();
     }
+
     public Famille addZonesToFamille(Long familleId, List<Long> zoneIds) {
         Famille famille = familleRepository.findById(familleId)
                 .orElseThrow(() -> new RuntimeException("Famille non trouvé"));
@@ -176,5 +151,38 @@ public class FamilleServiceImp implements FamilleService {
                 .distinct()
                 .collect(Collectors.toList());
 
+    }
+
+
+    @Override
+    public List<FamilleHistoriqueDTO> getFamilleHistory(Long familleId) {
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        List<Object[]> revisions = auditReader.createQuery()
+                .forRevisionsOfEntity(Famille.class, false, true)
+                .add(AuditEntity.id().eq(familleId))
+                .addOrder(AuditEntity.revisionNumber().asc())
+                .getResultList();
+
+        System.out.println("Nombre de révisions trouvées pour familleId " + familleId + " : " + revisions.size());
+
+        List<FamilleHistoriqueDTO> history = new ArrayList<>();
+        for (Object[] revision : revisions) {
+            Famille famille = (Famille) revision[0]; // Entité Zone
+            DefaultRevisionEntity revisionEntity = (DefaultRevisionEntity) revision[1]; // Métadonnées de révision
+            Integer revisionNumber = revisionEntity.getId(); // Numéro de révision
+            RevisionType revisionType = (RevisionType) revision[2];
+
+            FamilleHistoriqueDTO dto = new FamilleHistoriqueDTO();
+            dto.setRevisionNumber(revisionNumber);
+            dto.setModifieLe(famille.getModifieLe());
+            dto.setActionneurFullName(famille.getActionneur().getNom() + " " + famille.getActionneur().getPrenom());
+            dto.setNom(famille.getNomFamille());
+            dto.setDeleted(famille.isDeleted());
+            List<Zone> zonesAtRevision = auditReader.find(Famille.class, familleId, revisionNumber).getZones();
+            dto.setZones(zonesAtRevision.stream().map(Zone::getNom).collect(Collectors.toList()));
+            history.add(dto);
+        }
+
+        return history;
     }
 }

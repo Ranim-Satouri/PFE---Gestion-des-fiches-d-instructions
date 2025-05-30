@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,6 +32,8 @@ public class UserServiceImp implements UserIservice {
     private UserZoneRepository userZoneRepository;
     @Autowired
     private GroupeRepository groupeRepo;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public void attribuerZoneAUser(Long idUser, Long idZone, Long idActionneur) {
@@ -41,7 +42,6 @@ public class UserServiceImp implements UserIservice {
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
         Zone zone = zoneRepo.findById(idZone)
                 .orElseThrow(() -> new RuntimeException("Zone introuvable"));
-        // Vérifier si la zone est déjà attribuée à l'utilisateur
         boolean zoneDejaAttribuee = user.getUserZones().stream()
                 .anyMatch(userZone -> userZone.getZone().getIdZone()== idZone);
         if (zoneDejaAttribuee) {
@@ -137,6 +137,7 @@ public class UserServiceImp implements UserIservice {
             throw new RuntimeException("Échec de la suppression de la zone: " + e.getMessage(), e);
         }
     }
+
     @Override
     public Set<UserZone> getUserZones(Long idUser) {
 
@@ -155,6 +156,7 @@ public class UserServiceImp implements UserIservice {
         newUser.setActionneur(updater);
         userRepo.save(newUser);
     }
+
     @Override
     public void ModifyUserStatus(long idUser, String newStatus, long idActionneur) {
         User newUser = userRepo.findById(idUser).orElseThrow(() -> new RuntimeException("User introuvable"));
@@ -168,20 +170,21 @@ public class UserServiceImp implements UserIservice {
             throw new IllegalArgumentException("Statut invalide : " + newStatus);
         }
     }
+
     @Override
     public ResponseEntity<List<User>> getAllUsers()
     {
         List<User>users = userRepo.findAll();
         return ResponseEntity.ok().body(users);
     }
+
     @Override
     public ResponseEntity<List<User>> getUsers()
     {
         List<User>users=userRepo.findByStatusNot(User.UserStatus.DELETED);
         return ResponseEntity.ok().body(users);
     }
-    @PersistenceContext
-    private EntityManager entityManager;
+
     @Transactional(readOnly = true)
     public Map<Integer, UserZoneHistory> getUserZoneHistory(Long userId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
@@ -282,10 +285,14 @@ public class UserServiceImp implements UserIservice {
 
         return zoneHistoryByRevision;
     }
+
+
     public static class UserZoneHistory {
         public List<String> zones;
         public List<UserHistoryDTO.UserZoneChangeDTO> zoneChanges;
     }
+
+
     @Transactional(readOnly = true)
     public List<UserHistoryDTO> getUserHistory(Long userId) {
         AuditReader auditReader = AuditReaderFactory.get(entityManager);
@@ -402,6 +409,8 @@ public class UserServiceImp implements UserIservice {
 
         return history;
     }
+
+
     @Override
     public User updateUser(Long idUser, User updatedUser, Long idActionneur) {
         User existingUser = userRepo.findById(idUser)
@@ -425,6 +434,8 @@ public class UserServiceImp implements UserIservice {
         existingUser.setActionneur(actionneur);
        return userRepo.save(existingUser);
     }
+
+
     @Override
     public ResponseEntity<List<User>> findByGroupe(String nom)
     {

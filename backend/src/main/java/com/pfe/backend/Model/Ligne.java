@@ -32,7 +32,6 @@ public class Ligne {
     @JoinColumn(name = "idActionneur", nullable = false)
     private User actionneur;
 
-//    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "idZone")
     private Zone zone;

@@ -2,25 +2,24 @@
 import { Injectable } from '@angular/core';
 import {Groupe} from '../models/Groupe';
 import {Permission} from '../models/Permission';
-import { BehaviorSubject, catchError, of, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class AccessControlService {
   private currentGroupeSubject = new BehaviorSubject<Groupe | undefined>(undefined);
   private permissionsSubject = new BehaviorSubject<Permission[]>([]);
 
   // Mappage des noms de menus aux routes frontend
-private readonly menuRouteMap: Record<string, string[]> = {
-  'Dashboard': ['/dashboard'],
-  'fiches': ['/fichelist', '/advanced'],
-  'utilisateurs': ['/userlist'],
-  'zones': ['/zonelist'],
-  'produits': ['/produitlist'],
-  'familles': ['/famillelist'],
-  'groupes': ['/groupelist'],
-  'lignes': ['/lignelist'],
-  'operations': ['/operationlist'],
-};
+  private readonly menuRouteMap: Record<string, string[]> = {
+    'Dashboard': ['/dashboard'],
+    'fiches': ['/fichelist', '/advanced'],
+    'utilisateurs': ['/userlist'],
+    'zones': ['/zonelist'],
+    'produits': ['/produitlist'],
+    'familles': ['/famillelist'],
+    'groupes': ['/groupelist'],
+    'lignes': ['/lignelist'],
+    'operations': ['/operationlist'],
+  };
 
   constructor() {this.restoreGroupeFromStorage();}
 

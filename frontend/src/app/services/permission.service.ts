@@ -8,11 +8,10 @@ import { Permission } from '../models/Permission';
 })
 export class PermissionService {
 
-  private apiUrl = 'http://localhost:8080/permissions';  // URL de l'API backend pour récupérer les permissions
-
+  private apiUrl = 'http://localhost:8080/permissions';  
   constructor(private http: HttpClient) {}
 
-  // Méthode pour récupérer toutes les permissions
+  
   getAllPermissions(): Observable<Permission[]> {
-    return this.http.get<Permission[]>(this.apiUrl);  // Appel GET à l'API backend
+    return this.http.get<Permission[]>(this.apiUrl);  
   }}

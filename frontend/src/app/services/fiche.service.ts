@@ -8,6 +8,7 @@ import { FicheHistoryDTO } from '../models/FicheHistoryDto';
 })
 export class FicheService {
   private apiUrl = 'http://localhost:8080/fiche'; 
+  private apiUrl2 = 'http://localhost:5000/fix-text';
   constructor(private http: HttpClient) { } 
   getFicheHistory(idFiche: number): Observable<FicheHistoryDTO[]> {
     return this.http.get<FicheHistoryDTO[]>(`${this.apiUrl}/fiche-history/${idFiche}`);
@@ -108,8 +109,8 @@ export class FicheService {
     return this.http.put(`${this.apiUrl}/validationIQP/${idFiche}`,null, {params});
   }
 
-   // Récupérer les fiches par préparateur
-   getFichesByPreparateur(idPreparateur: number): Observable<any> {
+  // Récupérer les fiches par préparateur
+  getFichesByPreparateur(idPreparateur: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/getFichesByPreparateur/${idPreparateur}`);
   }
 
@@ -132,16 +133,6 @@ export class FicheService {
     return this.http.get<boolean>(`${this.apiUrl}/updateStatus`);
   }
   
-  // Méthode pour ajouter une fiche
-  // addFiche(fiche: Fiche): Observable<any> {
-  //   return this.http.post(`${this.apiUrl}/addFiche`, fiche);
-  // }
-
-  // // Méthode pour mettre à jour une fiche avec un fichier PDF
-  // updateFiche(fiche: Fiche): Observable<any> {
-    
-  //   return this.http.put(`${this.apiUrl}/updateFicheOperation`, fiche);
-  // }
 
   searchFichesAvancee( requete: string,situations: string[], idUser: number): Observable<Fiche[]> {
     const params = {
@@ -152,15 +143,11 @@ export class FicheService {
 
     return this.http.get<Fiche[]>(`${this.apiUrl}/search`, { params });
   }
-private apiUrl2 = 'http://localhost:5000/fix-text';
 
-correctText(prompt: string): Observable<any> {
+  correctText(prompt: string): Observable<any> {
     const body = {
       prompt: prompt
     };
-
-  
-    // Faire la requête POST à l'API Flask
     return this.http.post<any>(this.apiUrl2, body);
   }
 }

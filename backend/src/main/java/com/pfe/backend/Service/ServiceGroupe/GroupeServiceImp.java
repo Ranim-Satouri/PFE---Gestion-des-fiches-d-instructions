@@ -1,21 +1,15 @@
 package com.pfe.backend.Service.ServiceGroupe;
-
 import com.pfe.backend.Model.Groupe;
-import com.pfe.backend.Model.Menu;
 import com.pfe.backend.Model.Permission;
 import com.pfe.backend.Model.User;
 import com.pfe.backend.Repository.GroupeRepository;
-import com.pfe.backend.Repository.MenuRepository;
 import com.pfe.backend.Repository.PermissionRepository;
 import com.pfe.backend.Repository.UserRepository;
-import com.pfe.backend.Service.ServiceUser.UserIservice;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,9 +19,9 @@ public class GroupeServiceImp implements GroupeService {
     @Autowired
     private UserRepository userRepository;
     private GroupeRepository groupeRepository;
-    private MenuRepository menuRepository;
     private PermissionRepository permissionRepository;
-    private UserIservice userService;
+
+    @Override
     public ResponseEntity<?> addGroupe(Groupe groupe , Long idActionneur){
         User actionneur = userRepository.findById(idActionneur)
                 .orElseThrow(() -> new RuntimeException("Actionneur introuvable"));
@@ -92,24 +86,8 @@ public class GroupeServiceImp implements GroupeService {
     public Groupe addRelationsToGroup(Long groupId, List<Long> permissionIds, List<Long> userIds , Long idActionneur) {
         Groupe groupe = groupeRepository.findById(groupId)
                 .orElseThrow(() -> new RuntimeException("Groupe non trouvé"));
-
-//        List<Menu> selectedMenus = menuRepository.findAllById(menuIds);
-//        groupe.setMenus(selectedMenus);
-
         List<Permission> selectedPermissions = permissionRepository.findAllById(permissionIds);
         groupe.setPermissions(selectedPermissions);
-
-//        List<User> currentUsers = new ArrayList<>(groupe.getUsers());
-//        for (User user : currentUsers) {
-//            if (!userIds.contains(user.getIdUser())) {
-//                user.setGroupe(null);
-//                userRepository.save(user);
-//            }
-//        }
-//        List<User> selectedUsers = userRepository.findAllById(userIds);
-//        for (User user : selectedUsers) {
-//            userService.attribuerGroupe(user.getIdUser(), groupe.getIdGroupe(), idActionneur);
-//        }
         return groupeRepository.save(groupe);
     }
 }
