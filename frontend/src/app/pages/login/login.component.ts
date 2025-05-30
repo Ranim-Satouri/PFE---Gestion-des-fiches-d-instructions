@@ -78,7 +78,7 @@ export class LoginComponent {
               });
               break;
             case 'INACTIVE':
-              this.loginError = 'Compte désactivé. Veuillez contacter votre administrateur.';
+              this.loginError = "Votre compte n'est plus actif. Veuillez contacter l'administrateur.";
               this.router.navigate(['/access-denied'], {
                 state: { message: 'Votre compte est désactivé' }
               });
@@ -109,37 +109,13 @@ export class LoginComponent {
     console.log('Redirection vers:', route);
     this.router.navigate([route]);
   }
-// private redirectToGroupeDashboard(groupeNom: string) {
-// const groupeRoutes: Record<string, string> = {
-// 'SUPERUSER': '/userlist',
-// 'ADMIN': '/fichelist',
-// 'PREPARATEUR': '/fichelist',
-// 'IPDF': '/fichelist',
-// 'IQP': '/fichelist',
-// 'OPERATEUR': '/fichelist',
-// 'Test': '/fichelist',
-// '': '/access-denied',
-//   };
-//   const route = groupeRoutes[groupeNom];
-//   if (!route) {
-//   console.error(`Aucune route définie pour le groupe : ${groupeNom}`);
-//   this.router.navigate(['/fichelist']);
-//   return;
-//   }
-//   console.log('Redirection vers:', route);
-//   this.router.navigate([route]);
-//   }
-  clearError() {
-    this.loginError = null;
-  }
-  focusInput(input: HTMLInputElement) {
-    input.focus();
-  }
+
+  clearError() { this.loginError = null; }
+  focusInput(input: HTMLInputElement) {  input.focus(); }
   
   blurInput(input: HTMLInputElement) {
-    // Optionnel : si tu veux qu’il perde le focus quand la souris sort
-    input.blur();
-  }
+    //  perde le focus quand la souris sort
+    input.blur(); }
 openGmailForPasswordReset(): void {
   const to = 'contact.instructis@gmail.com';
   const subject = encodeURIComponent('Réinitialisation de mot de passe - Instructis');
@@ -149,6 +125,4 @@ openGmailForPasswordReset(): void {
   const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${subject}&body=${body}`;
 
   window.open(gmailUrl, '_blank', 'noopener,noreferrer');
-}
-
-  }
+} }

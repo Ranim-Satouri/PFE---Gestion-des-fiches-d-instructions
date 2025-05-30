@@ -83,7 +83,6 @@ public class FicheServiceImp implements FicheService {
                 fiches = getFichesSheetByOperateur(idUser);
             }
         }
-
         // Si des statuts sont sélectionnés, on filtre
         if (situations != null && !situations.isEmpty()) {
             fiches = fiches.stream()
@@ -145,7 +144,6 @@ public class FicheServiceImp implements FicheService {
             throw new RuntimeException("Erreur lors de l'appel API Flask", e);
         }
     }
-
     //historique
     public List<FicheHistoryDTO> getFicheHistory(Long ficheId) {
         // Créer un AuditReader pour interroger l'historique
@@ -211,10 +209,7 @@ public class FicheServiceImp implements FicheService {
             dto.setIpdfMatricule(fiche.getIPDF() != null ? fiche.getIPDF().getNom() + " " + fiche.getIPDF().getPrenom() : null);
             dto.setIqpMatricule(fiche.getIQP() != null ? fiche.getIQP().getNom() + " " + fiche.getIQP().getPrenom() : null);
 
-            history.add(dto);
-        }
-        return history;
-    }
+            history.add(dto); } return history; }
 
     //update
     @Override
@@ -618,8 +613,7 @@ public class FicheServiceImp implements FicheService {
             zone = ficheLigne.getLigne().getZone();
         }else{
             FicheZone ficheZone = (FicheZone) fiche;
-            zone = ficheZone.getZone();
-        }
+            zone = ficheZone.getZone(); }
 //        Groupe superuser = groupeRepository.findByNom("SUPERUSER");
 //        List<User> superUsers=userRepository.findByGroupe(superuser);
 //        Groupe admin = groupeRepository.findByNom("ADMIN");

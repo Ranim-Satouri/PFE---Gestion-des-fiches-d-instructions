@@ -10,8 +10,5 @@ import lombok.ToString;
 @ToString
 public class FicheScoreDTO {
     private long id;
-    private double score;
-
-    // getters & setters
-}
+    private double score; }
 

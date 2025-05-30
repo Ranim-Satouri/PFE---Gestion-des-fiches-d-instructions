@@ -132,14 +132,13 @@ public class AuthenticationService {
         User user = repository.findByMatricule(request.getMatricule())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
         System.out.println("Utilisateur trouvé: " + user.getMatricule() + ", groupe: " + (user.getGroupe() != null ? user.getGroupe().getNom() : "aucun"));
-        if (user.getStatus() == null || user.getStatus() == User.UserStatus.INACTIVE) {
+        if (user.getStatus() == null || user.getStatus() == User.UserStatus.INACTIVE || user.getStatus() == User.UserStatus.DELETED) {
             System.out.println("Utilisateur inactif");
             throw new InactiveAccountException();
         }
         if (user.getGroupe() == null || user.getGroupe().equals("Aucun groupe")) {
             throw new NoGroupException();
         }
-
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         // Ajouter le refreshToken dans un cookie sécurisé
