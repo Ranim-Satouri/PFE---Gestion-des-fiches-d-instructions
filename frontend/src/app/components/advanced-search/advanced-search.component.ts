@@ -117,10 +117,13 @@ export class AdvancedSearchComponent {
     });
   }
 
-  hasPermission(permission: string): boolean {
+  hasPermission(permissionName: string): boolean {
     // À adapter à ta logique d’authentification
-    const permissions = ['valider_fiche_IQP', 'valider_fiche_IPDF', 'modifier_fiche', 'consulter_historique_fiche', 'supprimer_fiche'];
-    return permissions.includes(permission);
+    // console.log('Vérification de la permission:', permission);
+    // const permissions = ['valider_fiche_IQP', 'valider_fiche_IPDF', 'modifier_fiche', 'consulter_historique_fiche', 'supprimer_fiche'];
+    // return permissions.includes(permission);
+    const permissions = this.userConnected.groupe?.permissions || [];
+    return permissions.some(permission => permission.nom === permissionName);
   }
 
   downloadFile(fileName: string) {

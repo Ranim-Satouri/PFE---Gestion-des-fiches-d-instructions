@@ -365,7 +365,10 @@
                     </th>
 
                     <th class="px-4 py-2 text-right relative">
-                        <div class="relative inline-block text-left" *ngIf="hasPermission('modifier_fiche') || hasPermission('consulter_historique_fiche') || hasPermission('supprimer_fiche') || fiche.ficheAQL !== '' ">
+                        <div class="relative inline-block text-left" *ngIf="(hasPermission('modifier_fiche') && fiche.status !== FicheStatus.ACCEPTEDIQP && fiche.status !== FicheStatus.EXPIRED)  
+                                                                      || hasPermission('consulter_historique_fiche') 
+                                                                      || (hasPermission('supprimer_fiche') && fiche.status !== FicheStatus.ACCEPTEDIQP && fiche.status !== FicheStatus.EXPIRED) 
+                                                                      || fiche.ficheAQL !== '' || userConnected.groupe?.nom === 'SUPERUSER'">
                             <button (click)="toggleDropdown(i, $event,fiche)"
                             [ngClass]="{'dark:bg-gray-600 bg-gray-300': dropdownOpen === i , ' bg-transparent': dropdownOpen !== i }"
                             class="p-1 dark:hover:bg-gray-600  hover:bg-gray-300 rounded-full focus:outline-none">
@@ -396,23 +399,6 @@
                                     Fiche AQL
                                 </a>
                                 </li>
-                                <!-- <li>
-                                <a class="flex items-center mx-1 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
-
-                                    <svg class="w-5 h-5 mr-3 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="2">
-                                        <path d="M8.56 3.69a9 9 0 0 0 -2.92 1.95"></path>
-                                        <path d="M3.69 8.56a9 9 0 0 0 -.69 3.44"></path>
-                                        <path d="M3.69 15.44a9 9 0 0 0 1.95 2.92"></path>
-                                        <path d="M8.56 20.31a9 9 0 0 0 3.44 .69"></path>
-                                        <path d="M15.44 20.31a9 9 0 0 0 2.92 -1.95"></path>
-                                        <path d="M20.31 15.44a9 9 0 0 0 .69 -3.44"></path>
-                                        <path d="M20.31 8.56a9 9 0 0 0 -1.95 -2.92"></path>
-                                        <path d="M15.44 3.69a9 9 0 0 0 -3.44 -.69"></path>
-                                        <path d="M9 12l2 2l4 -4"></path>
-                                      </svg>
-                                    Approuver
-                                </a>
-                                </li> -->
                                 <li>
                                 <a *ngIf="(hasPermission('modifier_fiche') && fiche.status !== FicheStatus.ACCEPTEDIQP && fiche.status !== FicheStatus.EXPIRED) ||  userConnected.groupe?.nom === 'SUPERUSER'" (click)="openUpdateForm(fiche)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- Pencil Icon -->

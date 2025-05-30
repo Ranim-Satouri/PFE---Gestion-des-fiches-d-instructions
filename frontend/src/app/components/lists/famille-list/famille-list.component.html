@@ -78,7 +78,7 @@
                     <th scope="col" class="px-5 py-2 font-medium">{{famille.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
 
                     <th class="px-4 py-2 text-right relative">
-                        <div class="relative inline-block text-left">
+                        <div *ngIf="hasPermission('modifier_famille')  || hasPermission('supprimer_famille')" class="relative inline-block text-left">
                             <button (click)="toggleDropdown(i, $event)"
                             [ngClass]="{'dark:bg-gray-600 bg-gray-300': dropdownOpen === i , ' bg-transparent': dropdownOpen !== i}"
                             class="p-1 dark:hover:bg-gray-600  hover:bg-gray-300 rounded-full focus:outline-none">
@@ -97,7 +97,7 @@
 
                                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200 font-medium space-y-1">
                                 <li>
-                                <a (click)="OpenUpdateFamillePopUp(famille , 2)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
+                                <a  *ngIf="hasPermission('modifier_famille')" (click)="OpenUpdateFamillePopUp(famille , 2)" class="flex items-center mx-1 px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-lg cursor-pointer transition-all">
                                     <!-- Pencil Icon -->
                                     <svg class="w-6 h-6 mr-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16v-5.5A3.5 3.5 0 0 0 7.5 7m3.5 9H4v-5.5A3.5 3.5 0 0 1 7.5 7m3.5 9v4M7.5 7H14m0 0V4h2.5M14 7v3m-3.5 6H20v-6a3 3 0 0 0-3-3m-2 9v4m-8-6.5h1"/>

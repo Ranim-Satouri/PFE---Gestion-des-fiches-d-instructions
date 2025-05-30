@@ -91,7 +91,7 @@
                     <th scope="col" class="px-5 py-2 font-medium">{{ligne.modifieLe |date:'dd/MM/yyyy, HH:mm' }}</th>
                     
                     <th class="px-4 py-2 text-right relative">
-                        <div  *ngIf="hasPermission('supprimer_ligne') || hasPermission('consulter_ligne') || hasPermission('modifier_ligne')"  class="relative inline-block text-left">
+                        <div  *ngIf="hasPermission('supprimer_ligne') || hasPermission('modifier_ligne')"  class="relative inline-block text-left">
                             <button (click)="toggleDropdown(i, $event)" 
                             [ngClass]="{'dark:bg-gray-600 bg-gray-300': dropdownOpen === i , ' bg-transparent': dropdownOpen !== i}"
                             class="p-1 dark:hover:bg-gray-600  hover:bg-gray-300 rounded-full focus:outline-none">

@@ -292,16 +292,11 @@ export class AddGroupeComponent {
   private readonly PERM_CONSULTER_NON_VAL_ID = 3;
   // Sélectionner une permission
   togglePermissionSelection(permissionId: number) {
-    
+    console.log(this.disabledPermissions)
     if (this.selectedPermissions.has(permissionId)) {
       this.selectedPermissions.delete(permissionId);
-      const isValidationPermission = 
-      permissionId === this.PERM_VALIDER_IQP_ID || 
-      permissionId === this.PERM_VALIDER_IPDF_ID;
-      if (isValidationPermission) {
-        if (this.disabledPermissions.has(this.PERM_CONSULTER_NON_VAL_ID)) {
-         this.disabledPermissions.delete(this.PERM_CONSULTER_NON_VAL_ID);
-        }
+      if ((permissionId === this.PERM_VALIDER_IQP_ID  && !this.selectedPermissions.has(this.PERM_VALIDER_IPDF_ID)) || (!this.selectedPermissions.has(this.PERM_VALIDER_IQP_ID) && permissionId === this.PERM_VALIDER_IPDF_ID)) {
+        this.disabledPermissions.delete(this.PERM_CONSULTER_NON_VAL_ID);
       }
     } else {
       this.selectedPermissions.add(permissionId);
@@ -309,10 +304,8 @@ export class AddGroupeComponent {
       permissionId === this.PERM_VALIDER_IQP_ID || 
       permissionId === this.PERM_VALIDER_IPDF_ID;
       if (isValidationPermission) {
-        if (!this.selectedPermissions.has(this.PERM_CONSULTER_NON_VAL_ID)) {
-          this.selectedPermissions.add(this.PERM_CONSULTER_NON_VAL_ID);
-          this.disabledPermissions = new Set([this.PERM_CONSULTER_NON_VAL_ID]);
-        }
+        this.selectedPermissions.add(this.PERM_CONSULTER_NON_VAL_ID);
+        this.disabledPermissions.add(this.PERM_CONSULTER_NON_VAL_ID);
       }
     }
   }
@@ -407,6 +400,7 @@ export class AddGroupeComponent {
         }
       );
     }else{
+      console.log("existe deja ");
       // Récupérer le nom du menu pour une meilleure gestion
       const menuName = this.menus.find(menu => menu.idMenu === menuId)?.nom;
   

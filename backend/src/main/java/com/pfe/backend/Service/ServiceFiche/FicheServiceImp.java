@@ -71,10 +71,17 @@ public class FicheServiceImp implements FicheService {
     public List<Fiche> rechercheAvancee(String requete, Long idUser, List<String> situations) {
         User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("utilisateur introuvable"));
         List<Fiche> fiches = new ArrayList<>();
+        List<Permission> permissions = user.getGroupe().getPermissions();
+        boolean hasPermission3 = permissions.stream()
+                .anyMatch(p -> p.getIdPermission() == 3); // consulter_fiche_non_validées
         if(user.getGroupe().getNom().equals("SUPERUSER")){
             fiches = getFiches();
         }else{
-            fiches = getFichesSheetByUserZones(idUser);
+            if(hasPermission3){
+                fiches = getFichesSheetByUserZones(idUser);
+            }else{
+                fiches = getFichesSheetByOperateur(idUser);
+            }
         }
 
         // Si des statuts sont sélectionnés, on filtre
