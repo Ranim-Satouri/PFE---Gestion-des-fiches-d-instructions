@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private String prenom;
     private String email;
     @JsonIgnore
-    @NotAudited
+//    @NotAudited
     private String password;
     private String num;
     @Enumerated(EnumType.STRING)

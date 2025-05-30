@@ -27,7 +27,7 @@ public class UserHistoryDTO {
     private User.UserGenre genre;
     private LocalDateTime modifieLe;
     private String groupeNom;
-
+    private String password;
     // Liste complète des zones à cette révision
     private List<String> zones;
 

@@ -312,13 +312,10 @@ public class UserServiceImp implements UserIservice {
                     DefaultRevisionEntity rev2 = (DefaultRevisionEntity) r2[1];
                     int dateComparison = Long.compare(rev1.getTimestamp(), rev2.getTimestamp());
                     return dateComparison != 0 ? dateComparison : Integer.compare(rev1.getId(), rev2.getId());
-                })
-                .collect(Collectors.toList());
-
+                }).collect(Collectors.toList());
         // Filtrer les révisions sans changement significatif
         List<Object[]> filteredRevisions = new ArrayList<>();
         Object[] previousUserRev = null;
-
         for (Object[] currentRev : sortedUserRevisions) {
             User currentUser = (User) currentRev[0];
             DefaultRevisionEntity currentRevEntity = (DefaultRevisionEntity) currentRev[1];
@@ -337,6 +334,7 @@ public class UserServiceImp implements UserIservice {
                                 !Objects.equals(currentUser.getStatus(), previousUser.getStatus()) ||
                                 !Objects.equals(currentUser.getGenre(), previousUser.getGenre()) ||
                                 !Objects.equals(currentUser.getGroupe(), previousUser.getGroupe()) ||
+                                !Objects.equals(currentUser.getPassword(), previousUser.getPassword()) ||
                                 zoneHistoryByRevision.entrySet().stream()
                                         .anyMatch(entry -> entry.getKey() <= revNumber && !entry.getValue().zoneChanges.isEmpty());
 
@@ -394,6 +392,7 @@ public class UserServiceImp implements UserIservice {
                     .groupeNom(currentUser.getGroupe() != null ? currentUser.getGroupe().getNom() : null)
                     .zones(zonesAtRevision)
                     .zoneChanges(zoneChanges)
+                    .password(currentUser.getPassword())
                     .build();
 
             history.add(historyEntry);
