@@ -244,7 +244,6 @@ getSelectedSituationNames(): string {
   if (this.selectedZones.length > 0) {
     filtered = filtered.filter((fiche) => {
       let zoneId: number | undefined;
-
       // Si la zone est directement définie dans la fiche
       if (fiche.zone?.idZone !== undefined) {
         zoneId = fiche.zone.idZone;
@@ -262,7 +261,14 @@ getSelectedSituationNames(): string {
       console.log(`Fiche ID: ${fiche.idFiche}, Zone ID déduite: ${zoneId}, Matches: ${matchesZone}`);
       return matchesZone;
     });
-  }// Filter by Situation
+  }// Filter by Ligne 
+      if (this.ligneSearchText) {
+        filtered = filtered.filter((fiche) =>
+          
+          fiche.ligne?.nom?.toLowerCase().includes(this.ligneSearchText.toLowerCase()) || fiche.operation?.ligne?.nom?.toLowerCase().includes(this.ligneSearchText.toLowerCase())
+        );
+      }
+  // Filter by Situation
     if (this.selectedSituations.length > 0) {
       filtered = filtered.filter((fiche) => {
         const matchesSituation = fiche.status && this.selectedSituations.includes(fiche.status);
@@ -270,12 +276,6 @@ getSelectedSituationNames(): string {
         return matchesSituation;
       });
     }
-      // Filter by Ligne 
-      if (this.ligneSearchText) {
-        filtered = filtered.filter((fiche) =>
-          fiche.ligne?.nom?.toLowerCase().includes(this.ligneSearchText.toLowerCase())
-        );
-      }
       // Filter by operation
       if (this.OperationSearchText) {
         filtered = filtered.filter((fiche) =>

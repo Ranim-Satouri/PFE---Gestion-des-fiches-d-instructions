@@ -36,15 +36,14 @@ public class User implements UserDetails {
     private String prenom;
     private String email;
     @JsonIgnore
-    @NotAudited
+//    @NotAudited
     private String password;
     private String num;
     @Enumerated(EnumType.STRING)
     @Column(length = 10)
     private UserStatus status;
     public enum UserStatus{ ACTIVE, INACTIVE ,DELETED ; }
-//    @Enumerated(EnumType.STRING)
-//    private Role role;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserZone> userZones = new HashSet<>();
@@ -71,9 +70,6 @@ public class User implements UserDetails {
     @JoinColumn(name = "idGroupe")
     private Groupe groupe;
     public void setGroupe(Groupe groupe) {this.groupe = groupe ;}
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return List.of(new SimpleGrantedAuthority(role.name()));}
 @Override
 public Collection<? extends GrantedAuthority> getAuthorities() {
     if (groupe == null) {
@@ -81,7 +77,6 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
     }
     return List.of(new SimpleGrantedAuthority(groupe.getNom()));
 }
-//        return List.of(new SimpleGrantedAuthority(groupe.getNom()));
     @Override
     public String getUsername() {return matricule;}
     @Override
